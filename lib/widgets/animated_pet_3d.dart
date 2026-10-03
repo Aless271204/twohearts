@@ -3,9 +3,8 @@ import 'package:model_viewer_plus/model_viewer_plus.dart';
 
 /// Reusable viewer for TwoHearts animated GLB pets.
 ///
-/// Pet assets live directly under assets/ so we do not need to add another
-/// asset directory to pubspec.yaml. Meshy animation names can be passed to
-/// [animationName] as they appear inside the GLB.
+/// Meshy animation names can be passed to [animationName] as they appear
+/// inside the exported GLB.
 class AnimatedPet3D extends StatelessWidget {
   final String assetPath;
   final String? animationName;
@@ -17,7 +16,8 @@ class AnimatedPet3D extends StatelessWidget {
 
   const AnimatedPet3D({
     super.key,
-    this.assetPath = 'assets/pebble_penguin.glb',
+    this.assetPath =
+        'assets/images/Meshy_AI_Pebble_the_Penguin_All_Animations.glb',
     this.animationName,
     this.autoPlay = true,
     this.cameraControls = false,
@@ -30,7 +30,7 @@ class AnimatedPet3D extends StatelessWidget {
   Widget build(BuildContext context) {
     return ModelViewer(
       src: assetPath,
-      alt: 'Mascota 3D de TwoHearts',
+      alt: 'Pebble, mascota 3D de TwoHearts',
       autoPlay: autoPlay,
       animationName: animationName,
       cameraControls: cameraControls,
