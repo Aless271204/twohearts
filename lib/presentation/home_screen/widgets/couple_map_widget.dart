@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 
 import '../../../core/app_export.dart';
+import '../../../theme/app_theme.dart';
+import '../../../widgets/custom_image_widget.dart';
 
 class CoupleMapWidget extends StatefulWidget {
   final String myCity;
@@ -576,9 +578,7 @@ class _DottedLinePainter extends CustomPainter {
     final normY = dy / (totalLen > 0 ? totalLen : 1);
 
     // Compute actual distance
-    final actualDist = ((dx * dx + dy * dy) > 0)
-        ? (dx * dx + dy * dy)
-        : 1.0;
+    final actualDist = ((dx * dx + dy * dy) > 0) ? (dx * dx + dy * dy) : 1.0;
 
     // Simple dotted line using path
     final totalDistance = ((to - from).distance);

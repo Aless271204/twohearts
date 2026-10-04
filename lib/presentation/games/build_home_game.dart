@@ -38,8 +38,12 @@ class _BuildOurHomeGameState extends State<BuildOurHomeGame>
   final List<_Block> _blocks = [];
   final List<String> _decorations = [];
 
-  static const List<String> _decoMilestones =
-      ['🪴 Planta', '🛋️ Sofá', '🖼️ Cuadro', '❤️ Decoración romántica'];
+  static const List<String> _decoMilestones = [
+    '🪴 Planta',
+    '🛋️ Sofá',
+    '🖼️ Cuadro',
+    '❤️ Decoración romántica',
+  ];
 
   static const Map<int, String> _decoMap = {
     10: '🪴',

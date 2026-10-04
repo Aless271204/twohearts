@@ -1,7 +1,8 @@
 import 'package:flutter/foundation.dart';
 
-// Conditional import: home_widget only on non-web platforms
 import 'home_widget_stub.dart' if (dart.library.io) 'home_widget_real.dart';
+
+// Conditional import: home_widget only on non-web platforms
 
 /// Service to update home screen widgets on Android and iOS.
 /// On web, all methods are no-ops.
