@@ -16,6 +16,8 @@ class AnimatedPet3D extends StatelessWidget {
       animationName: animationName,
       cameraControls: false,
       disableZoom: true,
+      autoRotate: false,
+      cameraOrbit: '0deg 75deg 105%',
     );
   }
 }
