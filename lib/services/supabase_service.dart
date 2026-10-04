@@ -96,26 +96,54 @@ class SupabaseService {
   Future<Map<String, dynamic>?> getMyProfile() async {
     final uid = currentUser?.id;
     if (uid == null) return null;
+    final pendingRequest = _myProfileRequest;
+    if (pendingRequest != null && _myProfileRequestUserId == uid) {
+      return pendingRequest;
+    }
+
+    final request = _fetchMyProfile(uid);
+    _myProfileRequestUserId = uid;
+    _myProfileRequest = request;
     try {
-      final response = await client
+      return await request;
+    } finally {
+      if (identical(_myProfileRequest, request)) {
+        _myProfileRequest = null;
+        _myProfileRequestUserId = null;
+      }
+    }
+  }
+
+  Future<Map<String, dynamic>?> _fetchMyProfile(String uid) async {
+    try {
+      return await client
           .from('user_profiles')
           .select()
           .eq('id', uid)
           .maybeSingle();
-      return response;
     } on PostgrestException catch (e) {
       debugPrint('getMyProfile error: ${e.message}');
       return null;
     }
   }
 
+  Future<Map<String, dynamic>?>? _myProfileRequest;
+  String? _myProfileRequestUserId;
+
+  void _clearMyProfileRequest() {
+    _myProfileRequest = null;
+    _myProfileRequestUserId = null;
+  }
+
   /// Fetch partner's profile
-  Future<Map<String, dynamic>?> getPartnerProfile() async {
+  Future<Map<String, dynamic>?> getPartnerProfile({
+    Map<String, dynamic>? myProfile,
+  }) async {
     final uid = currentUser?.id;
     if (uid == null) return null;
     try {
-      final myProfile = await getMyProfile();
-      final partnerId = myProfile?['partner_id'];
+      final ownProfile = myProfile ?? await getMyProfile();
+      final partnerId = ownProfile?['partner_id'];
       if (partnerId == null) return null;
 
       final response = await client
@@ -135,6 +163,7 @@ class SupabaseService {
     final uid = currentUser?.id;
     if (uid == null) return;
     await client.from('user_profiles').update(data).eq('id', uid);
+    _clearMyProfileRequest();
   }
 
   /// Get my invite code
@@ -153,57 +182,33 @@ class SupabaseService {
     if (uid == null) return 'Not authenticated';
 
     try {
-      // Find partner by invite code
-      final partnerResult = await client
-          .from('user_profiles')
-          .select('id, partner_id')
-          .eq('invite_code', inviteCode.trim().toUpperCase())
-          .maybeSingle();
-
-      if (partnerResult == null) {
-        return 'Código no encontrado. Verifica el código e intenta de nuevo.';
-      }
-
-      final partnerId = partnerResult['id'] as String;
-
-      if (partnerId == uid) {
-        return 'No puedes enlazarte contigo mismo.';
-      }
-
-      if (partnerResult['partner_id'] != null) {
-        return 'Este usuario ya está enlazado con alguien.';
-      }
-
-      // Check if current user already has a partner
-      final myProfile = await getMyProfile();
-      if (myProfile?['partner_id'] != null) {
-        return 'Ya estás enlazado con alguien.';
-      }
-
-      final startDate = relationshipStart?.toIso8601String().split('T').first;
-
-      // Link both users
-      await client
-          .from('user_profiles')
-          .update({
-            'partner_id': partnerId,
-            'connection_type': connectionType,
-            if (startDate != null) 'relationship_start': startDate,
-          })
-          .eq('id', uid);
-
-      await client
-          .from('user_profiles')
-          .update({
-            'partner_id': uid,
-            'connection_type': connectionType,
-            if (startDate != null) 'relationship_start': startDate,
-          })
-          .eq('id', partnerId);
-
-      return null; // null = success
+      final result = await client.rpc(
+        'link_partner_by_invite_code',
+        params: {
+          'p_invite_code': inviteCode.trim().toUpperCase(),
+          'p_relationship_start': relationshipStart
+              ?.toIso8601String()
+              .split('T')
+              .first,
+          'p_connection_type': connectionType,
+        },
+      );
+      if (result == 'linked') return null;
+      return switch (result) {
+        'not_found' => 'Código no encontrado. Verifica el código e intenta de nuevo.',
+        'self' => 'No puedes enlazarte contigo mismo.',
+        'caller_already_linked' => 'Ya estás enlazado con alguien.',
+        'target_already_linked' => 'Este usuario ya está enlazado con alguien.',
+        'profile_not_found' => 'No se encontró tu perfil de usuario.',
+        'invalid_connection_type' => 'El tipo de conexión seleccionado no es válido.',
+        'not_authenticated' => 'Not authenticated',
+        _ => 'No se pudo completar el enlace. Intenta de nuevo.',
+      };
     } on PostgrestException catch (e) {
       debugPrint('linkPartner error: ${e.message}');
+      return 'Algo salió mal. Por favor intenta de nuevo.';
+    } catch (e) {
+      debugPrint('linkPartner error: $e');
       return 'Algo salió mal. Por favor intenta de nuevo.';
     }
   }
@@ -216,7 +221,9 @@ class SupabaseService {
   /// Get combined couple data (my profile + partner profile)
   Future<Map<String, dynamic>> getCoupleData() async {
     final myProfile = await getMyProfile();
-    final partnerProfile = await getPartnerProfile();
+    final partnerProfile = myProfile == null
+        ? null
+        : await getPartnerProfile(myProfile: myProfile);
 
     // Priority: nickname > full_name > first part of email (never show full email)
     String displayName(Map<String, dynamic>? profile, String fallback) {
@@ -455,15 +462,14 @@ class SupabaseService {
     final uid = currentUser?.id;
     if (uid == null) return null;
     try {
-      final result = await client
-          .from('user_profiles')
-          .select('id, full_name, invite_code, partner_id')
-          .eq('email', email.trim().toLowerCase())
-          .neq('id', uid)
-          .maybeSingle();
-      if (result == null) return null;
+      final result = await client.rpc(
+        'search_user_by_email',
+        params: {'p_email': email.trim().toLowerCase()},
+      );
+      final rows = List<Map<String, dynamic>>.from(result as List);
+      if (rows.isEmpty) return null;
       // Include email in result for display
-      return {...result, 'email': email.trim().toLowerCase()};
+      return {...rows.first, 'email': email.trim().toLowerCase()};
     } on PostgrestException catch (e) {
       debugPrint('searchUserByEmail error: ${e.message}');
       return null;

@@ -45,6 +45,8 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>io.flutter.embedded_views_preview</key>
+	<true/>
 	<!-- Location permissions for GPS real-time map -->
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>TwoHearts necesita tu ubicación para mostrar dónde estás en el mapa en tiempo real.</string>

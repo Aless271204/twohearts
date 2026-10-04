@@ -140,3 +140,31 @@ flutter build ios --release
 - Styled with Material Design
 
 Built with ❤️ on Rocket.new
+
+## Mascotas 3D
+
+Las mascotas se renderizan con `model_viewer_plus` desde archivos GLB. El visor
+reutilizable está en `lib/widgets/pet_3d_viewer.dart`, y
+`lib/core/pet_model_catalog.dart` relaciona el tipo elegido con la ruta del
+modelo. El pingüino disponible actualmente es
+`assets/models/penguin_01.glb`; para añadir otro animal, agrega su GLB y una
+entrada al catálogo. Mientras no exista un modelo para un tipo seleccionado,
+se muestra el pingüino disponible.
+
+El visor web carga el componente `<model-viewer>` desde el paquete en
+`web/index.html`. Para Android, el visor requiere API 24 o posterior y tráfico
+HTTP local limitado a `localhost`; iOS habilita las vistas embebidas requeridas
+por el plugin.
+
+La pantalla Mascota muestra el modelo en el hogar. Pebble Runner está disponible
+en Actividades → Juegos y carga el modelo correspondiente al tipo guardado en
+el perfil.
+
+## Migraciones de Supabase
+
+Las políticas y funciones SQL locales no cambian por sí solas la base remota.
+Aplica `supabase/migrations/20261004140000_fix_user_profiles_rls_recursion.sql`
+al proyecto enlazado con `supabase db push`, o ejecuta su contenido desde el SQL
+Editor de Supabase. La migración conserva RLS, restringe la lectura de perfiles
+a la cuenta propia y su pareja, y mueve la búsqueda/enlace a funciones
+`SECURITY DEFINER` de alcance limitado.

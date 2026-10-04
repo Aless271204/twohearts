@@ -1,9 +1,14 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import '../../widgets/animated_pet_3d.dart';
+
+import '../../core/pet_model_catalog.dart';
+import '../../services/supabase_service.dart';
+import '../../widgets/pet_3d_viewer.dart';
 
 class PebbleRunnerTest extends StatefulWidget {
-  const PebbleRunnerTest({super.key});
+  final String? modelPath;
+
+  const PebbleRunnerTest({super.key, this.modelPath});
 
   @override
   State<PebbleRunnerTest> createState() => _PebbleRunnerTestState();
@@ -12,17 +17,41 @@ class PebbleRunnerTest extends StatefulWidget {
 class _PebbleRunnerTestState extends State<PebbleRunnerTest> {
   double _height = 0;
   double _velocity = 0;
+  double _obstacleX = 300;
   bool _running = false;
+  bool _gameOver = false;
   int _score = 0;
+  String _petModelPath = PetModelCatalog.defaultModelPath;
   Timer? _timer;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.modelPath != null) {
+      _petModelPath = widget.modelPath!;
+    } else {
+      _loadSelectedPet();
+    }
+  }
+
+  Future<void> _loadSelectedPet() async {
+    final profile = await SupabaseService.instance.getMyProfile();
+    final petType = profile?['pet_type'];
+    final modelPath = PetModelCatalog.modelPathFor(
+      petType is String ? petType : null,
+    );
+    if (mounted) setState(() => _petModelPath = modelPath);
+  }
 
   void _start() {
     _timer?.cancel();
     setState(() {
       _running = true;
+      _gameOver = false;
       _height = 0;
       _velocity = 0;
       _score = 0;
+      _obstacleX = MediaQuery.sizeOf(context).width - 66;
     });
     _timer = Timer.periodic(const Duration(milliseconds: 32), (_) {
       if (!mounted || !_running) return;
@@ -30,9 +59,21 @@ class _PebbleRunnerTestState extends State<PebbleRunnerTest> {
         _score++;
         _velocity -= 1.15;
         _height += _velocity;
+        _obstacleX -= 4;
         if (_height <= 0) {
           _height = 0;
           _velocity = 0;
+        }
+        if (_obstacleX < -38) {
+          _obstacleX = MediaQuery.sizeOf(context).width + 100;
+        }
+
+        final overlapsPlayer =
+            _obstacleX <= 36 + 150 && _obstacleX + 38 >= 36;
+        if (overlapsPlayer && _height < 55) {
+          _running = false;
+          _gameOver = true;
+          _timer?.cancel();
         }
       });
     });
@@ -86,21 +127,55 @@ class _PebbleRunnerTestState extends State<PebbleRunnerTest> {
               bottom: 74 + _height,
               width: 150,
               height: 190,
-              child: const AnimatedPet3D(animationName: 'Running'),
+              child: Pet3DViewer(
+                modelPath: _petModelPath,
+                altText: 'Mascota 3D de Pebble Runner',
+                cameraControls: false,
+                disableZoom: true,
+                autoPlay: true,
+                animationName: 'Jump_Run',
+              ),
             ),
             Positioned(
-              right: 28,
+              left: _obstacleX,
               bottom: 74,
-              child: Container(width: 38, height: 55, decoration: BoxDecoration(color: const Color(0xFF6B4F3A), borderRadius: BorderRadius.circular(8))),
+              child: Container(
+                width: 38,
+                height: 55,
+                decoration: BoxDecoration(
+                  color: const Color(0xFF6B4F3A),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
             ),
             if (!_running)
               Center(
-                child: FilledButton(
-                  onPressed: _start,
-                  child: const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                    child: Text('JUGAR CON PEBBLE'),
-                  ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (_gameOver) ...[
+                      Text(
+                        '¡Fin del juego! Puntos: $_score',
+                        style: const TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w800,
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                    ],
+                    FilledButton(
+                      onPressed: _start,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 20,
+                          vertical: 12,
+                        ),
+                        child: Text(
+                          _gameOver ? 'REINTENTAR' : 'JUGAR CON PEBBLE',
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             const Positioned(

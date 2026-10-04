@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../theme/app_theme.dart';
 import '../../services/supabase_service.dart';
 import '../../routes/app_routes.dart';
+import '../../core/pet_model_catalog.dart';
 import './widgets/virtual_pet_widget.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -22,7 +23,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     'myCity': '',
     'partnerCity': '',
     'petName': 'Pollito',
-    'petEmoji': '🐣',
+    'petModelPath': PetModelCatalog.defaultModelPath,
     'petHappiness': 78,
     'petLevel': 3,
   };
@@ -94,6 +95,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             'myCity': data['myCity'],
             'partnerCity': data['partnerCity'],
             'partnerId': data['partnerId'],
+            'petModelPath': PetModelCatalog.modelPathFor(
+              data['petType'] as String?,
+            ),
           };
           _loadingProfile = false;
         });
@@ -148,7 +152,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 Expanded(
                   child: VirtualPetWidget(
                     petName: _coupleData['petName'] as String,
-                    petEmoji: _coupleData['petEmoji'] as String,
+                    petModelPath: _coupleData['petModelPath'] as String,
                     happiness: _coupleData['petHappiness'] as int,
                     level: _coupleData['petLevel'] as int,
                     onFeed: () {

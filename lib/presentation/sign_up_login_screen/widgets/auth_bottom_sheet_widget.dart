@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -162,6 +164,19 @@ class _AuthBottomSheetWidgetState extends State<AuthBottomSheetWidget>
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final isTablet = size.width >= 600;
+    final viewInsets = MediaQuery.viewInsetsOf(context);
+    final availableHeight = math
+        .max(0.0, size.height - viewInsets.bottom)
+        .toDouble();
+    final preferredTabHeight = _tabController.index == 0
+        ? 300.0
+        : (_signupStep == 3 ? 420.0 : (_signupStep == 1 ? 340.0 : 320.0));
+    final tabContentHeight = math
+        .min(
+          preferredTabHeight,
+          math.max(120.0, availableHeight - 180.0),
+        )
+        .toDouble();
 
     return Container(
       margin: EdgeInsets.symmetric(
@@ -171,106 +186,110 @@ class _AuthBottomSheetWidgetState extends State<AuthBottomSheetWidget>
         color: Colors.white,
         borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
       ),
-      padding: EdgeInsets.only(
-        bottom: MediaQuery.of(context).viewInsets.bottom,
-      ),
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.fromLTRB(24, 16, 24, 32),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // Handle
-            Center(
-              child: Container(
-                width: 40,
-                height: 4,
-                decoration: BoxDecoration(
-                  color: const Color(0xFFE0E0E0),
-                  borderRadius: BorderRadius.circular(2),
-                ),
-              ),
-            ),
-            const SizedBox(height: 20),
-
-            // Tab bar
-            Container(
-              decoration: BoxDecoration(
-                color: AppTheme.surfaceVariantLight,
-                borderRadius: BorderRadius.circular(999),
-              ),
-              child: TabBar(
-                controller: _tabController,
-                indicator: BoxDecoration(
-                  color: AppTheme.primary,
-                  borderRadius: BorderRadius.circular(999),
-                ),
-                indicatorSize: TabBarIndicatorSize.tab,
-                dividerColor: Colors.transparent,
-                labelColor: Colors.white,
-                unselectedLabelColor: const Color(0xFF6B6B6B),
-                labelStyle: GoogleFonts.dmSans(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                ),
-                unselectedLabelStyle: GoogleFonts.dmSans(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w400,
-                ),
-                tabs: const [
-                  Tab(text: 'Iniciar sesión'),
-                  Tab(text: 'Crear cuenta'),
-                ],
-              ),
-            ),
-            const SizedBox(height: 24),
-
-            // Error message
-            if (_errorMessage != null) ...[
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 14,
-                  vertical: 10,
-                ),
-                decoration: BoxDecoration(
-                  color: const Color(0xFFFFEBEE),
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: const Color(0xFFEF9A9A)),
-                ),
-                child: Row(
-                  children: [
-                    const Icon(
-                      Icons.error_outline,
-                      size: 16,
-                      color: Color(0xFFE53935),
+      child: Padding(
+        padding: EdgeInsets.only(bottom: viewInsets.bottom),
+        child: ConstrainedBox(
+          constraints: BoxConstraints(maxHeight: availableHeight),
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.fromLTRB(24, 16, 24, 32),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Handle
+                Center(
+                  child: Container(
+                    width: 40,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFE0E0E0),
+                      borderRadius: BorderRadius.circular(2),
                     ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Text(
-                        _errorMessage!,
-                        style: GoogleFonts.dmSans(
-                          fontSize: 13,
-                          color: const Color(0xFFE53935),
+                  ),
+                ),
+                const SizedBox(height: 20),
+
+                // Tab bar
+                Container(
+                  decoration: BoxDecoration(
+                    color: AppTheme.surfaceVariantLight,
+                    borderRadius: BorderRadius.circular(999),
+                  ),
+                  child: TabBar(
+                    controller: _tabController,
+                    indicator: BoxDecoration(
+                      color: AppTheme.primary,
+                      borderRadius: BorderRadius.circular(999),
+                    ),
+                    indicatorSize: TabBarIndicatorSize.tab,
+                    dividerColor: Colors.transparent,
+                    labelColor: Colors.white,
+                    unselectedLabelColor: const Color(0xFF6B6B6B),
+                    labelStyle: GoogleFonts.dmSans(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                    ),
+                    unselectedLabelStyle: GoogleFonts.dmSans(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w400,
+                    ),
+                    tabs: const [
+                      Tab(text: 'Iniciar sesión'),
+                      Tab(text: 'Crear cuenta'),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 24),
+
+                // Error message
+                if (_errorMessage != null) ...[
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 14,
+                      vertical: 10,
+                    ),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFFFEBEE),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: const Color(0xFFEF9A9A)),
+                    ),
+                    child: Row(
+                      children: [
+                        const Icon(
+                          Icons.error_outline,
+                          size: 16,
+                          color: Color(0xFFE53935),
                         ),
-                      ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            _errorMessage!,
+                            style: GoogleFonts.dmSans(
+                              fontSize: 13,
+                              color: const Color(0xFFE53935),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 16),
-            ],
+                  ),
+                  const SizedBox(height: 16),
+                ],
 
-            // Tab content
-            SizedBox(
-              height: _tabController.index == 0
-                  ? 300
-                  : (_signupStep == 3 ? 420 : (_signupStep == 1 ? 340 : 320)),
-              child: TabBarView(
-                controller: _tabController,
-                children: [_buildLoginForm(), _buildSignupForm()],
-              ),
+                // Tab content
+                SizedBox(
+                  height: tabContentHeight,
+                  child: TabBarView(
+                    controller: _tabController,
+                    children: [
+                      SingleChildScrollView(child: _buildLoginForm()),
+                      SingleChildScrollView(child: _buildSignupForm()),
+                    ],
+                  ),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );

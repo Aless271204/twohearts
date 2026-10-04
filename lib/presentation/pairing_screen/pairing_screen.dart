@@ -73,7 +73,7 @@ class _PairingScreenState extends State<PairingScreen>
           _loadingCode = false;
         });
         if (_isAlreadyPaired) {
-          _loadPartnerName();
+          _loadPartnerName(profile);
         }
       }
     } catch (_) {
@@ -81,8 +81,10 @@ class _PairingScreenState extends State<PairingScreen>
     }
   }
 
-  Future<void> _loadPartnerName() async {
-    final partner = await SupabaseService.instance.getPartnerProfile();
+  Future<void> _loadPartnerName([Map<String, dynamic>? myProfile]) async {
+    final partner = await SupabaseService.instance.getPartnerProfile(
+      myProfile: myProfile,
+    );
     if (mounted && partner != null) {
       setState(() {
         _partnerName = partner['full_name'] as String? ?? 'Tu pareja';

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:model_viewer_plus/model_viewer_plus.dart';
+
+import './pet_3d_viewer.dart';
 
 class AnimatedPet3D extends StatelessWidget {
   final String? animationName;
@@ -8,19 +9,13 @@ class AnimatedPet3D extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ModelViewer(
-      src: 'assets/images/Meshy_AI_Pebble_the_Penguin_All_Animations.glb',
-      alt: 'Pebble, mascota 3D de TwoHearts',
+    return Pet3DViewer(
+      modelPath: 'assets/images/Meshy_AI_Pebble_the_Penguin_All_Animations.glb',
+      altText: 'Pebble, mascota 3D de TwoHearts',
       autoPlay: true,
       animationName: animationName,
       cameraControls: false,
       disableZoom: true,
-      backgroundColor: Colors.transparent,
-      cameraOrbit: '0deg 80deg 2.6m',
-      fieldOfView: '28deg',
-      interactionPrompt: InteractionPrompt.none,
-      loading: Loading.eager,
-      ar: false,
     );
   }
 }

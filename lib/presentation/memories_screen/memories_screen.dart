@@ -53,16 +53,9 @@ class _MemoriesScreenState extends State<MemoriesScreen> {
   Future<void> _loadCoupleData() async {
     try {
       final data = await SupabaseService.instance.getCoupleData();
-      final myProfile = await SupabaseService.instance.getMyProfile();
-      final partnerProfile = await SupabaseService.instance.getPartnerProfile();
       if (mounted) {
-        final myNick = (myProfile?['nickname'] as String?)?.isNotEmpty == true
-            ? myProfile!['nickname'] as String
-            : data['myName'] as String;
-        final partnerNick =
-            (partnerProfile?['nickname'] as String?)?.isNotEmpty == true
-            ? partnerProfile!['nickname'] as String
-            : data['partnerName'] as String;
+        final myNick = data['myName'] as String;
+        final partnerNick = data['partnerName'] as String;
 
         setState(() {
           _coupleData = {

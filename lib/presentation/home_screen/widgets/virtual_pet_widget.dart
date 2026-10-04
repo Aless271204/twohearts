@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../../core/pet_model_catalog.dart';
+import '../../../widgets/pet_3d_viewer.dart';
+
 // ─── Data Models ─────────────────────────────────────────────────────────────
 
 class PetEvolutionStage {
@@ -192,7 +195,7 @@ const List<CollectibleMood> kDefaultMoods = [
 
 class VirtualPetWidget extends StatefulWidget {
   final String petName;
-  final String petEmoji;
+  final String petModelPath;
   final int happiness;
   final int level;
   final VoidCallback onFeed;
@@ -200,7 +203,7 @@ class VirtualPetWidget extends StatefulWidget {
   const VirtualPetWidget({
     super.key,
     required this.petName,
-    required this.petEmoji,
+    this.petModelPath = PetModelCatalog.defaultModelPath,
     required this.happiness,
     required this.level,
     required this.onFeed,
@@ -411,7 +414,7 @@ class _VirtualPetWidgetState extends State<VirtualPetWidget>
               ),
             ),
 
-            // Pet emoji — large, bouncing
+            // Centered 3D pet model
             AnimatedBuilder(
               animation: Listenable.merge([_idleAnim, _tapScaleAnim]),
               builder: (_, child) {
@@ -424,38 +427,24 @@ class _VirtualPetWidgetState extends State<VirtualPetWidget>
                   child: Transform.scale(scale: scale, child: child),
                 );
               },
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  // 3D-like shadow layer
-                  Positioned(
-                    bottom: -8,
-                    child: Text(
-                      widget.petEmoji,
-                      style: TextStyle(
-                        fontSize: 130,
-                        shadows: [
-                          Shadow(
-                            color: Colors.black.withAlpha(40),
-                            blurRadius: 20,
-                            offset: const Offset(4, 8),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  // Main pet
-                  Text(widget.petEmoji, style: const TextStyle(fontSize: 130)),
-                  // Feed effect
-                  if (_showFeedEffect)
-                    Positioned(
-                      top: 0,
-                      right: 0,
-                      child: const Text('🍎', style: TextStyle(fontSize: 28)),
-                    ),
-                ],
+              child: FractionallySizedBox(
+                widthFactor: 0.78,
+                heightFactor: 0.68,
+                child: Pet3DViewer(
+                  modelPath: widget.petModelPath,
+                  altText: '${widget.petName}, mascota 3D de TwoHearts',
+                  autoPlay: true,
+                  animationName: 'Idle_11',
+                ),
               ),
             ),
+
+            if (_showFeedEffect)
+              const Positioned(
+                top: 110,
+                right: 64,
+                child: Text('🍎', style: TextStyle(fontSize: 28)),
+              ),
 
             // Floating hearts on tap
             if (_showHearts)

@@ -9,9 +9,10 @@ import './catch_kisses_game.dart';
 import './couple_race_game.dart';
 import './love_merge_game.dart';
 import './perfect_date_game.dart';
+import './pebble_runner_test.dart';
 
 /// Game Hub — shown inside Activities tab
-/// Shows LoveCoins balance, 6 game cards, daily challenges, progression
+/// Shows LoveCoins balance, game cards, daily challenges, progression
 class GameHubScreen extends StatefulWidget {
   const GameHubScreen({super.key});
   @override
@@ -78,6 +79,15 @@ class _GameHubScreenState extends State<GameHubScreen> {
       'textColor': 0xFF1565C0,
       'widget': CoupleRaceGame,
     },
+    {
+      'id': 'pebble_runner',
+      'title': 'Pebble Runner',
+      'emoji': '🐧',
+      'desc': 'Salta obstáculos con tu mascota 3D',
+      'color': 0xFFFFE5EE,
+      'textColor': 0xFFE8547A,
+      'widget': PebbleRunnerTest,
+    },
   ];
 
   @override
@@ -116,6 +126,9 @@ class _GameHubScreenState extends State<GameHubScreen> {
         break;
       case BreakHeartsGame:
         gameWidget = const BreakHeartsGame();
+        break;
+      case PebbleRunnerTest:
+        gameWidget = const PebbleRunnerTest();
         break;
       default:
         gameWidget = const CoupleRaceGame();
