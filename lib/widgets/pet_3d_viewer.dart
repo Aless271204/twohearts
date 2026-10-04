@@ -9,6 +9,7 @@ class Pet3DViewer extends StatelessWidget {
   final bool autoRotate;
   final bool autoPlay;
   final String? animationName;
+  final String? cameraOrbit;
 
   const Pet3DViewer({
     super.key,
@@ -19,12 +20,13 @@ class Pet3DViewer extends StatelessWidget {
     this.autoRotate = false,
     this.autoPlay = false,
     this.animationName,
+    this.cameraOrbit,
   });
 
   @override
   Widget build(BuildContext context) {
     return ModelViewer(
-      key: ValueKey(modelPath),
+      key: ValueKey('$modelPath|$animationName|$cameraOrbit'),
       src: modelPath,
       alt: altText,
       autoPlay: autoPlay,
@@ -32,6 +34,7 @@ class Pet3DViewer extends StatelessWidget {
       cameraControls: cameraControls,
       disableZoom: disableZoom,
       autoRotate: autoRotate,
+      cameraOrbit: cameraOrbit,
       backgroundColor: Colors.transparent,
       interactionPrompt: InteractionPrompt.none,
       loading: Loading.eager,
