@@ -10,6 +10,7 @@ import '../presentation/shop_screen/shop_screen.dart';
 import '../presentation/activities_screen/activities_screen.dart';
 import '../presentation/pairing_screen/pairing_screen.dart';
 import '../presentation/profile_screen/profile_screen.dart';
+import '../presentation/pebble_preview_screen/pebble_preview_screen.dart';
 import '../widgets/app_scaffold.dart';
 
 class AppRoutes {
@@ -22,24 +23,24 @@ class AppRoutes {
   static const String activitiesScreen = '/activities-screen';
   static const String pairingScreen = '/pairing-screen';
   static const String profileScreen = '/profile-screen';
+  static const String pebblePreview = '/pebble-preview';
 }
 
 final GoRouter appRouter = GoRouter(
   initialLocation: AppRoutes.initial,
   redirect: (context, state) {
+    // The Pebble preview is intentionally public during development so it can
+    // be opened directly from Rocket's browser preview.
+    if (state.matchedLocation == AppRoutes.pebblePreview) return null;
+
     final session = Supabase.instance.client.auth.currentSession;
     final isLoggedIn = session != null;
     final isOnAuth =
         state.matchedLocation == AppRoutes.initial ||
         state.matchedLocation == AppRoutes.signUpLogin;
 
-    if (isLoggedIn && isOnAuth) {
-      // Memories is now the home/center tab
-      return AppRoutes.memoriesScreen;
-    }
-    if (!isLoggedIn && !isOnAuth) {
-      return AppRoutes.initial;
-    }
+    if (isLoggedIn && isOnAuth) return AppRoutes.memoriesScreen;
+    if (!isLoggedIn && !isOnAuth) return AppRoutes.initial;
     return null;
   },
   refreshListenable: GoRouterRefreshStream(
@@ -51,15 +52,11 @@ final GoRouter appRouter = GoRouter(
       pageBuilder: (context, state) => CustomTransitionPage(
         key: state.pageKey,
         child: const SignUpLoginScreen(),
-        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          return FadeTransition(
-            opacity: CurvedAnimation(
-              parent: animation,
-              curve: Curves.easeOutCubic,
+        transitionsBuilder: (context, animation, secondaryAnimation, child) =>
+            FadeTransition(
+              opacity: CurvedAnimation(parent: animation, curve: Curves.easeOutCubic),
+              child: child,
             ),
-            child: child,
-          );
-        },
         transitionDuration: const Duration(milliseconds: 280),
       ),
     ),
@@ -68,73 +65,37 @@ final GoRouter appRouter = GoRouter(
       pageBuilder: (context, state) => CustomTransitionPage(
         key: state.pageKey,
         child: const SignUpLoginScreen(),
-        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          return FadeTransition(
-            opacity: CurvedAnimation(
-              parent: animation,
-              curve: Curves.easeOutCubic,
+        transitionsBuilder: (context, animation, secondaryAnimation, child) =>
+            FadeTransition(
+              opacity: CurvedAnimation(parent: animation, curve: Curves.easeOutCubic),
+              child: child,
             ),
-            child: child,
-          );
-        },
         transitionDuration: const Duration(milliseconds: 280),
       ),
     ),
+    GoRoute(
+      path: AppRoutes.pebblePreview,
+      builder: (context, state) => const PebblePreviewScreen(),
+    ),
     StatefulShellRoute.indexedStack(
-      builder: (context, state, navigationShell) {
-        return AppScaffold(navigationShell: navigationShell);
-      },
+      builder: (context, state, navigationShell) =>
+          AppScaffold(navigationShell: navigationShell),
       branches: [
-        // Branch 0: Social
-        StatefulShellBranch(
-          routes: [
-            GoRoute(
-              path: AppRoutes.socialScreen,
-              pageBuilder: (context, state) =>
-                  const NoTransitionPage(child: SocialScreen()),
-            ),
-          ],
-        ),
-        // Branch 1: Tienda
-        StatefulShellBranch(
-          routes: [
-            GoRoute(
-              path: AppRoutes.shopScreen,
-              pageBuilder: (context, state) =>
-                  const NoTransitionPage(child: ShopScreen()),
-            ),
-          ],
-        ),
-        // Branch 2: Recuerdos — CENTER
-        StatefulShellBranch(
-          routes: [
-            GoRoute(
-              path: AppRoutes.memoriesScreen,
-              pageBuilder: (context, state) =>
-                  const NoTransitionPage(child: MemoriesScreen()),
-            ),
-          ],
-        ),
-        // Branch 3: Mascota
-        StatefulShellBranch(
-          routes: [
-            GoRoute(
-              path: AppRoutes.homeScreen,
-              pageBuilder: (context, state) =>
-                  const NoTransitionPage(child: HomeScreen()),
-            ),
-          ],
-        ),
-        // Branch 4: Actividades
-        StatefulShellBranch(
-          routes: [
-            GoRoute(
-              path: AppRoutes.activitiesScreen,
-              pageBuilder: (context, state) =>
-                  const NoTransitionPage(child: ActivitiesScreen()),
-            ),
-          ],
-        ),
+        StatefulShellBranch(routes: [
+          GoRoute(path: AppRoutes.socialScreen, pageBuilder: (context, state) => const NoTransitionPage(child: SocialScreen())),
+        ]),
+        StatefulShellBranch(routes: [
+          GoRoute(path: AppRoutes.shopScreen, pageBuilder: (context, state) => const NoTransitionPage(child: ShopScreen())),
+        ]),
+        StatefulShellBranch(routes: [
+          GoRoute(path: AppRoutes.memoriesScreen, pageBuilder: (context, state) => const NoTransitionPage(child: MemoriesScreen())),
+        ]),
+        StatefulShellBranch(routes: [
+          GoRoute(path: AppRoutes.homeScreen, pageBuilder: (context, state) => const NoTransitionPage(child: HomeScreen())),
+        ]),
+        StatefulShellBranch(routes: [
+          GoRoute(path: AppRoutes.activitiesScreen, pageBuilder: (context, state) => const NoTransitionPage(child: ActivitiesScreen())),
+        ]),
       ],
     ),
     GoRoute(
@@ -142,18 +103,12 @@ final GoRouter appRouter = GoRouter(
       pageBuilder: (context, state) => CustomTransitionPage(
         key: state.pageKey,
         child: const PairingScreen(),
-        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          return SlideTransition(
-            position: Tween<Offset>(begin: const Offset(1, 0), end: Offset.zero)
-                .animate(
-                  CurvedAnimation(
-                    parent: animation,
-                    curve: Curves.easeOutCubic,
-                  ),
-                ),
-            child: child,
-          );
-        },
+        transitionsBuilder: (context, animation, secondaryAnimation, child) =>
+            SlideTransition(
+              position: Tween<Offset>(begin: const Offset(1, 0), end: Offset.zero)
+                  .animate(CurvedAnimation(parent: animation, curve: Curves.easeOutCubic)),
+              child: child,
+            ),
         transitionDuration: const Duration(milliseconds: 300),
       ),
     ),
@@ -162,25 +117,18 @@ final GoRouter appRouter = GoRouter(
       pageBuilder: (context, state) => CustomTransitionPage(
         key: state.pageKey,
         child: const ProfileScreen(),
-        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          return SlideTransition(
-            position: Tween<Offset>(begin: const Offset(1, 0), end: Offset.zero)
-                .animate(
-                  CurvedAnimation(
-                    parent: animation,
-                    curve: Curves.easeOutCubic,
-                  ),
-                ),
-            child: child,
-          );
-        },
+        transitionsBuilder: (context, animation, secondaryAnimation, child) =>
+            SlideTransition(
+              position: Tween<Offset>(begin: const Offset(1, 0), end: Offset.zero)
+                  .animate(CurvedAnimation(parent: animation, curve: Curves.easeOutCubic)),
+              child: child,
+            ),
         transitionDuration: const Duration(milliseconds: 300),
       ),
     ),
   ],
 );
 
-/// Converts Supabase auth stream to a Listenable for GoRouter refresh
 class GoRouterRefreshStream extends ChangeNotifier {
   GoRouterRefreshStream(Stream<AuthState> stream) {
     notifyListeners();
