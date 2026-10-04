@@ -11,6 +11,7 @@ import '../presentation/activities_screen/activities_screen.dart';
 import '../presentation/pairing_screen/pairing_screen.dart';
 import '../presentation/profile_screen/profile_screen.dart';
 import '../presentation/pebble_preview_screen/pebble_preview_screen.dart';
+import '../presentation/games/pebble_runner_test.dart';
 import '../widgets/app_scaffold.dart';
 
 class AppRoutes {
@@ -24,14 +25,17 @@ class AppRoutes {
   static const String pairingScreen = '/pairing-screen';
   static const String profileScreen = '/profile-screen';
   static const String pebblePreview = '/pebble-preview';
+  static const String pebbleRunner = '/pebble-runner';
 }
 
 final GoRouter appRouter = GoRouter(
   initialLocation: AppRoutes.initial,
   redirect: (context, state) {
-    // The Pebble preview is intentionally public during development so it can
-    // be opened directly from Rocket's browser preview.
-    if (state.matchedLocation == AppRoutes.pebblePreview) return null;
+    // Development previews are public so they can be opened directly in Rocket.
+    if (state.matchedLocation == AppRoutes.pebblePreview ||
+        state.matchedLocation == AppRoutes.pebbleRunner) {
+      return null;
+    }
 
     final session = Supabase.instance.client.auth.currentSession;
     final isLoggedIn = session != null;
@@ -76,6 +80,10 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: AppRoutes.pebblePreview,
       builder: (context, state) => const PebblePreviewScreen(),
+    ),
+    GoRoute(
+      path: AppRoutes.pebbleRunner,
+      builder: (context, state) => const PebbleRunnerTest(),
     ),
     StatefulShellRoute.indexedStack(
       builder: (context, state, navigationShell) =>
