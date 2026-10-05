@@ -1,5 +1,6 @@
 import 'dart:convert';
 import '../services/game_service.dart';
+import '../services/inventory_service.dart';
 
 class RunnerBridge {
   Future<Map<String, dynamic>> handle(String raw) async {
@@ -13,6 +14,12 @@ class RunnerBridge {
     try {
       final payload = message['payload'] as Map<String, dynamic>? ?? {};
       switch (message['action']) {
+        case 'cosmetics':
+          await InventoryService.instance.refresh();
+          response['result'] = {
+            for (final e in InventoryService.instance.loadout.entries)
+              e.key: e.value.appearance,
+          };
         case 'start':
           response['result'] = await GameService.instance.startRunnerSession();
         case 'finish':

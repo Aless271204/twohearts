@@ -60,5 +60,7 @@
 	<!-- Microphone (for future features) -->
 	<key>NSMicrophoneUsageDescription</key>
 	<string>TwoHearts puede necesitar el micrófono para actividades de voz.</string>
+<key>NSPhotoLibraryUsageDescription</key>
+<string>Selecciona hasta cinco fotos para compartir un álbum con tu pareja.</string>
 </dict>
 </plist>

@@ -4,6 +4,8 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../../core/pet_model_catalog.dart';
 import '../../../widgets/pet_3d_viewer.dart';
+import '../../../services/inventory_service.dart';
+import '../../../widgets/inventory_scene.dart';
 
 // ─── Data Models ─────────────────────────────────────────────────────────────
 
@@ -235,6 +237,8 @@ class _VirtualPetWidgetState extends State<VirtualPetWidget>
   @override
   void initState() {
     super.initState();
+    InventoryService.instance.addListener(_inventoryChanged);
+    InventoryService.instance.refresh().catchError((Object _) {});
 
     _idleController = AnimationController(
       vsync: this,
@@ -276,8 +280,13 @@ class _VirtualPetWidgetState extends State<VirtualPetWidget>
     );
   }
 
+  void _inventoryChanged() {
+    if (mounted) setState(() {});
+  }
+
   @override
   void dispose() {
+    InventoryService.instance.removeListener(_inventoryChanged);
     _idleController.dispose();
     _tapController.dispose();
     _heartController.dispose();
@@ -339,6 +348,9 @@ class _VirtualPetWidgetState extends State<VirtualPetWidget>
     return Stack(
       children: [
         // ── Pet character (center, large) ──────────────────────────────
+        Positioned.fill(
+          child: InventoryScene(loadout: InventoryService.instance.loadout),
+        ),
         _buildPetCharacter(),
 
         // ── HUD: Level badge (top-left) ────────────────────────────────
@@ -430,14 +442,33 @@ class _VirtualPetWidgetState extends State<VirtualPetWidget>
               child: FractionallySizedBox(
                 widthFactor: 0.78,
                 heightFactor: 0.68,
-                child: Pet3DViewer(
-                  modelPath: widget.petModelPath,
-                  altText: '${widget.petName}, mascota 3D de TwoHearts',
-                  autoPlay: true,
-                  animationName:
-                      widget.petModelPath == PetModelCatalog.penguinModelPath
-                      ? 'Idle_9'
-                      : 'Idle_11',
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    Pet3DViewer(
+                      modelPath: widget.petModelPath,
+                      altText: '${widget.petName}, mascota 3D de TwoHearts',
+                      autoPlay: true,
+                      cameraControls:
+                          widget.petModelPath !=
+                          PetModelCatalog.penguinModelPath,
+                      cameraOrbit:
+                          widget.petModelPath ==
+                              PetModelCatalog.penguinModelPath
+                          ? '0deg 75deg 105%'
+                          : null,
+                      animationName:
+                          widget.petModelPath ==
+                              PetModelCatalog.penguinModelPath
+                          ? 'Idle_9'
+                          : 'Idle_11',
+                    ),
+                    if (widget.petModelPath == PetModelCatalog.penguinModelPath)
+                      InventoryScene(
+                        loadout: InventoryService.instance.loadout,
+                        accessories: true,
+                      ),
+                  ],
                 ),
               ),
             ),
@@ -575,7 +606,7 @@ class _VirtualPetWidgetState extends State<VirtualPetWidget>
           const Text('🪙', style: TextStyle(fontSize: 14)),
           const SizedBox(width: 4),
           Text(
-            '340',
+            '${InventoryService.instance.coins}',
             style: GoogleFonts.dmSans(
               fontSize: 13,
               fontWeight: FontWeight.w700,

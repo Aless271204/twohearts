@@ -1,4 +1,4 @@
-const version = '1.0.3';
+const version = '1.1.0';
 let reported = false;
 export function showRunnerError(error, stage = 'carga') {
   if (reported) return;reported = true;

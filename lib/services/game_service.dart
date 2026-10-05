@@ -84,7 +84,7 @@ class GameService {
           .eq('user_id', uid)
           .maybeSingle();
       if (row == null) {
-        await _db.from('game_stats').insert({'user_id': uid});
+        await _db.rpc('inventory_snapshot');
         return _defaultStats();
       }
       return row;
@@ -388,33 +388,8 @@ class GameService {
   }
 
   Future<bool> purchaseItem(String itemKey, int coinCost) async {
-    final uid = _uid;
-    if (uid == null) return false;
     try {
-      final stats = await getStats();
-      final coins = stats['love_coins'] as int? ?? 0;
-      if (coins < coinCost) return false;
-
-      // Deduct coins
-      await _db
-          .from('game_stats')
-          .update({
-            'love_coins': coins - coinCost,
-            'updated_at': DateTime.now().toIso8601String(),
-          })
-          .eq('user_id', uid);
-
-      // Add to owned
-      await _db
-          .from('owned_items')
-          .upsert(
-            {'user_id': uid, 'item_key': itemKey},
-            onConflict: 'user_id,item_key',
-            ignoreDuplicates: true,
-          );
-
-      // Complete buy challenge
-      await completeChallenge('buy_item');
+      await _db.rpc('inventory_purchase', params: {'p_item_key': itemKey});
       return true;
     } catch (e) {
       debugPrint('purchaseItem error: $e');
