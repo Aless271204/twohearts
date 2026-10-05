@@ -1,7 +1,7 @@
 name: Flutter and forest runner
 on:
   push:
-    branches: [main, codex/pip-forest-runner]
+    branches: [main]
   pull_request:
     branches: [main]
 permissions:
@@ -14,7 +14,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - run: node --test test/runner_replay_test.mjs
+      - run: node --test test/runner_replay_test.mjs test/runner_assets_test.mjs
       - uses: subosito/flutter-action@v2
         with:
           channel: stable
