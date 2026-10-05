@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import 'package:webview_flutter_android/webview_flutter_android.dart';
 import 'runner_bridge.dart';
 import '../core/local_asset_path.dart';
 
@@ -68,6 +69,10 @@ class _ForestRunnerViewState extends State<ForestRunnerView> {
       final controller = WebViewController()
         ..setJavaScriptMode(JavaScriptMode.unrestricted)
         ..setBackgroundColor(const Color(0xFF17392B));
+      if (controller.platform is AndroidWebViewController) {
+        await (controller.platform as AndroidWebViewController)
+            .setMediaPlaybackRequiresUserGesture(false);
+      }
       await controller.addJavaScriptChannel(
         'RunnerBridge',
         onMessageReceived: (message) async {

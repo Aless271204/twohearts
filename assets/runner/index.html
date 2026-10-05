@@ -9,11 +9,11 @@
 #hud{justify-content:flex-start;gap:8px;top:12px;left:12px;right:12px;font-size:13px}#score{display:flex;gap:8px}#distance,#coins,#pause{padding:8px 12px;border:1px solid #fff5;border-radius:13px;background:#18382bc9;backdrop-filter:blur(10px);box-shadow:0 3px 12px #10251b22}#coins{color:#ffe09a}#pause{margin-left:auto}#controls{gap:9px;bottom:max(12px,env(safe-area-inset-bottom))}#controls button{padding:12px 18px;background:#173b2acc;backdrop-filter:blur(8px);border-color:#ffe5ac44}#controls #jump{background:#edc568e8;color:#28412a;min-width:112px}#biome{position:fixed;bottom:72px;left:50%;transform:translateX(-50%);text-align:center;font-size:11px;letter-spacing:.08em;background:#173b2aba;border:1px solid #fff3;border-radius:15px;padding:8px 16px;backdrop-filter:blur(10px);pointer-events:none}#biome small{display:block;margin-top:3px;font-size:10px;letter-spacing:0;color:#e0ebcd}#card{background:#163d2bdc;border:1px solid #ffe4a644;backdrop-filter:blur(12px)}h1{font-size:26px}
 </style>
 <style>#music{pointer-events:auto;padding:8px 12px;border:1px solid #fff5;border-radius:13px;background:#18382bc9;backdrop-filter:blur(10px);font-size:16px}</style>
-<div id="hud"><strong id="score"><span id="distance">0 m</span><span id="coins">♥ 0</span></strong><button id="music" aria-label="Silenciar música">♪</button><button id="pause" aria-label="Pausar partida" disabled>Ⅱ</button></div>
+<div id="hud"><strong id="score"><span id="distance">0 m</span><span id="coins">♥ 0</span></strong><button id="music" aria-label="Silenciar audio">♪</button><button id="pause" aria-label="Pausar partida" disabled>Ⅱ</button></div>
 <div id="toast"></div>
 <div id="panel"><div id="card"><h1 id="title">Corre en pareja</h1><p id="message">Preparando tu bosque…</p><button id="start" disabled>Jugar</button></div></div>
 <div id="controls"><button id="left" aria-label="Mover a la izquierda">←</button><button id="jump">Saltar</button><button id="right" aria-label="Mover a la derecha">→</button></div>
-<div id="biome">🌿 1. BOSQUE<small>Un sendero tranquilo lleno de vida</small></div>
+<div id="biome">🌿 1. BOSQUE<small><span id="difficulty">Ritmo 1/5</span> · Un bosque lleno de vida</small></div>
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"}}</script>
 <script>
 window.runnerBootTimer=setTimeout(()=>{document.getElementById('message').textContent='No se pudo cargar el motor 3D. Comprueba tu conexión y vuelve a abrir el juego.'},30000);
