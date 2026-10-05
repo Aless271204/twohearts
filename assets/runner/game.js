@@ -3,6 +3,7 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { clone as cloneSkeleton } from 'three/addons/utils/SkeletonUtils.js';
 import { LANES, jumpStep, crossesPlayer, hitsObstacle, collectsCoin } from './physics.js';
 import { createLandscape } from './landscape.js';
+import { runnerDifficulty } from './difficulty.js';
 import { AdventureMusic } from './music.js';
 import { requestHost } from './bridge.js';
 clearTimeout(window.runnerBootTimer);
@@ -41,7 +42,7 @@ let ready=false,running=false,paused=false;
 let sessionId=null,frames=[],pendingInputs=[],pendingSave=null,runElapsed=0;
 let lane=1,x=0,height=0,velocity=0,distance=0,coins=0,row=0,untilRow=0,last=performance.now();
 let toastUntil=0,animationId=0,needsRender=true;
-const speed=()=>Math.min(14,8+distance/180);
+const speed=()=>runnerDifficulty(distance).speed;
 
 function fitModel(source,dimensions) {
   const object=cloneSkeleton(source);
@@ -68,8 +69,8 @@ function spawnRow() {
   for(let i=0;i<5;i++)addCoin(obstacleLane,-60-i*4,i===2?1.8:.7);
   addCoin((obstacleLane+1)%3,-68,.7);row++;
 }
-function hud(){$('coins').textContent=`♥ ${coins}`;$('distance').textContent=`${Math.floor(distance)} m`;}
-function jump(){if(running&&!paused&&height===0&&pendingInputs.length<8){velocity=8;pendingInputs.push(0);}}
+function hud(){const level=runnerDifficulty(distance).level;$('difficulty').textContent=`Ritmo ${level}/5`;$('coins').textContent=`♥ ${coins}`;$('distance').textContent=`${Math.floor(distance)} m`;}
+function jump(){if(running&&!paused&&height===0&&pendingInputs.length<8){velocity=8;pendingInputs.push(0);music.effect('jump');}}
 function move(delta){if(running&&!paused&&pendingInputs.length<8){lane=Math.max(0,Math.min(2,lane+delta));pendingInputs.push(delta);}}
 function showPanel(title,message,label){$('title').textContent=title;$('message').textContent=message;start.textContent=label;panel.hidden=false;}
 function reset(){
@@ -104,7 +105,7 @@ async function saveRun(){
   finally{start.disabled=false;}
 }
 pause.onclick=togglePause;$('jump').onclick=jump;$('left').onclick=()=>move(-1);$('right').onclick=()=>move(1);
-$('music').onclick=()=>{if(running&&!paused)music.start();const muted=music.toggleMute();$('music').textContent=muted?'♪ ×':'♪';$('music').setAttribute('aria-label',muted?'Activar música':'Silenciar música');};
+$('music').onclick=()=>{if(running&&!paused)music.start();const muted=music.toggleMute();$('music').textContent=muted?'♪ ×':'♪';$('music').setAttribute('aria-label',muted?'Activar audio':'Silenciar audio');};
 let pointerStart=null;
 renderer.domElement.addEventListener('pointerdown',e=>{pointerStart=[e.clientX,e.clientY];});
 renderer.domElement.addEventListener('pointerup',e=>{
@@ -129,7 +130,7 @@ function frame(now){
     frames.push([microseconds,pendingInputs.splice(0)]);
     runElapsed+=dt;
     const travel=speed()*dt;distance+=travel;[height,velocity]=jumpStep(height,velocity,dt);
-    x+=(LANES[lane]-x)*(1-Math.exp(-dt*10));untilRow-=travel;if(untilRow<=0){spawnRow();untilRow+=28;}
+    x+=(LANES[lane]-x)*(1-Math.exp(-dt*10));untilRow-=travel;if(untilRow<=0){spawnRow();untilRow+=runnerDifficulty(distance).spacing;}
     for(const model of decor){model.position.z+=travel;if(model.position.z>12)model.position.z-=104;}
     for(const model of paths){model.position.z+=travel;if(model.position.z>18)model.position.z-=108;}
     for(let i=objects.length-1;i>=0;i--){
@@ -137,20 +138,20 @@ function frame(now){
       if(item.kind==='coin')item.model.rotation.y+=dt*2;
       if(crossesPlayer(previous,item.z)){
         if(item.kind==='obstacle'&&hitsObstacle(x,item.x,height)){
-          running=false;music.pause();pause.disabled=true;
+          running=false;music.stopForCollision();pause.disabled=true;
           showPanel('¡Vuelve a intentarlo!',`Recogiste ${coins} monedas y recorriste ${Math.floor(distance)} metros.`,'Correr otra vez');
-          if(sessionId){pendingSave={session_id:sessionId,frames};$('message').textContent='Guardando tu partida…';saveRun();}
+          if(sessionId){pendingSave={session_id:sessionId,frames,replay_version:2};$('message').textContent='Guardando tu partida…';saveRun();}
           break;
         }
         if(item.kind==='coin'&&collectsCoin(x,item.x,height,item.y)){
-          coins++;scene.remove(item.model);objects.splice(i,1);$('toast').textContent='+1 ♥';toastUntil=now+650;continue;
+          coins++;music.effect('coin');scene.remove(item.model);objects.splice(i,1);$('toast').textContent='+1 ♥';toastUntil=now+650;continue;
         }
       }
       if(item.z>6){scene.remove(item.model);objects.splice(i,1);}
     }
     if(running&&runElapsed>=1199.96){
       running=false;music.pause();pause.disabled=true;showPanel('¡Buen recorrido!',`Recogiste ${coins} monedas y recorriste ${Math.floor(distance)} metros.`,'Correr otra vez');
-      if(sessionId){pendingSave={session_id:sessionId,frames};$('message').textContent='Guardando tu partida…';saveRun();}
+      if(sessionId){pendingSave={session_id:sessionId,frames,replay_version:2};$('message').textContent='Guardando tu partida…';saveRun();}
     }
     hud();
   }
@@ -227,7 +228,7 @@ async function boot(){
     place('bridgeA',[3,1.2,5],7,-28,decor);place('bridgeB',[3,1.2,5],-7,-64,decor);
     place('guardian',5.5,8,-8,decor);
     clearTimeout(window.runnerBootTimer);ready=true;start.disabled=false;
-    showPanel('Un paseo con Pip','Un bosque lleno de vida. Recoge corazones y salta los obstáculos. Usa ← → o desliza para cambiar de carril; toca o pulsa espacio para saltar.','Correr con Pip');
+    showPanel('Un paseo con Pip','Un bosque lleno de vida. Recoge corazones y salta los obstáculos. El ritmo aumenta a medida que avanzas. Usa ← → o desliza para cambiar de carril; toca o pulsa espacio para saltar.','Correr con Pip');
     last=performance.now();animationId=requestAnimationFrame(frame);
   }catch(error){
     clearTimeout(window.runnerBootTimer);$('title').textContent='No pudimos abrir el bosque';

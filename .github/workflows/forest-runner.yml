@@ -1,7 +1,7 @@
 name: Flutter and forest runner
 on:
   push:
-    branches: [main, codex/android-local-assets]
+    branches: [main, codex/android-local-assets, codex/runner-feedback]
     paths-ignore: [.github/workflows/android-test-download.yml]
   pull_request:
     branches: [main]
@@ -18,7 +18,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - run: node --test test/runner_replay_test.mjs test/runner_assets_test.mjs
+      - run: node --test test/runner_replay_test.mjs test/runner_assets_test.mjs test/runner_feedback_test.mjs
       - uses: subosito/flutter-action@v2
         with:
           channel: stable

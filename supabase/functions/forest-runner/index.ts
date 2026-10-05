@@ -24,7 +24,7 @@ Deno.serve(async req=>{
     if(body.action==='start')return reply(await rpc('runner_start_session',{p_user_id:user.id}));
     if(body.action==='finish'){
       if(typeof body.session_id!=='string'||! /^[0-9a-f-]{36}$/i.test(body.session_id))return reply({error:'Invalid run'},400);
-      const result=replayRun(body.frames);
+      const result=replayRun(body.frames,body.replay_version??1);
       return reply(await rpc('runner_finish_session',{p_user_id:user.id,p_session_id:body.session_id,p_distance:result.distance,p_coins:result.coins,p_elapsed:result.elapsed}));
     }
     return reply({error:'Unknown action'},400);

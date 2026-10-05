@@ -1,8 +1,9 @@
 // An original, gently paced score synthesized locally. No audio downloads.
 export class AdventureMusic {
-  constructor(){this.context=null;this.timer=null;this.muted=false;this.step=0;}
+  constructor(){this.context=null;this.timer=null;this.muted=false;this.step=0;this.endTimer=null;}
   async start(){
     try{
+      clearTimeout(this.endTimer);
       if(!this.context)this.create();
       await this.context.resume();
       if(this.timer)return;
@@ -48,7 +49,31 @@ export class AdventureMusic {
       this.step=(this.step+1)%64;this.next+=eighth;
     }
   }
+  effect(kind){
+    const ctx=this.context;if(!ctx||ctx.state!=='running'||this.muted)return;
+    const time=ctx.currentTime;
+    const tone=(from,to,delay,duration,volume,type='sine')=>{
+      const oscillator=ctx.createOscillator(),gain=ctx.createGain();
+      oscillator.type=type;oscillator.frequency.setValueAtTime(from,time+delay);
+      oscillator.frequency.exponentialRampToValueAtTime(to,time+delay+duration);
+      gain.gain.setValueAtTime(.0001,time+delay);
+      gain.gain.exponentialRampToValueAtTime(volume,time+delay+.012);
+      gain.gain.exponentialRampToValueAtTime(.0001,time+delay+duration);
+      oscillator.connect(gain);gain.connect(this.master);
+      oscillator.start(time+delay);oscillator.stop(time+delay+duration+.02);
+      oscillator.onended=()=>{oscillator.disconnect();gain.disconnect();};
+    };
+    if(kind==='coin'){tone(880,1108,0,.12,.55);tone(1320,1760,.07,.22,.35);}
+    if(kind==='jump')tone(240,650,0,.2,.42,'triangle');
+    if(kind==='collision'){tone(150,45,0,.38,.8,'triangle');tone(85,35,.03,.25,.45);}
+  }
+  stopForCollision(){
+    if(this.timer){clearInterval(this.timer);this.timer=null;}
+    this.effect('collision');
+    // Let the impact finish before suspending the audio context.
+    this.endTimer=setTimeout(()=>this.pause(),500);
+  }
   toggleMute(){this.muted=!this.muted;if(this.master)this.master.gain.setTargetAtTime(this.muted?0:.24,this.context.currentTime,.12);return this.muted;}
   async pause(){if(this.timer){clearInterval(this.timer);this.timer=null;}if(this.context?.state==='running')await this.context.suspend();}
-  dispose(){if(this.timer)clearInterval(this.timer);this.context?.close();this.timer=null;}
+  dispose(){clearTimeout(this.endTimer);if(this.timer)clearInterval(this.timer);this.context?.close();this.timer=null;}
 }
