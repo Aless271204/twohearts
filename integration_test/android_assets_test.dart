@@ -82,14 +82,46 @@ void main() {
       "document.getElementById('title')?.textContent === 'Un paseo con Pip' && !document.getElementById('start').disabled",
       'The complete forest, including the model with spaces in its name',
     );
-    await controller.runJavaScript("document.getElementById('start').click()");
+    await controller.runJavaScript('''
+      window.runnerEffectFrequencies = [];
+      const audioPrototype = (window.AudioContext || window.webkitAudioContext).prototype;
+      const originalOscillator = audioPrototype.createOscillator;
+      audioPrototype.createOscillator = function() {
+        const oscillator = originalOscillator.call(this);
+        const originalSet = oscillator.frequency.setValueAtTime.bind(oscillator.frequency);
+        oscillator.frequency.setValueAtTime = function(value, time) {
+          window.runnerEffectFrequencies.push(value);
+          return originalSet(value, time);
+        };
+        return oscillator;
+      };
+      document.getElementById('start').click();
+    ''');
     await waitForJavaScript(
       tester,
       controller,
       "document.getElementById('panel').hidden && parseInt(document.getElementById('distance').textContent) > 0",
       'Starting a practice run through the native bridge',
     );
-    await controller.runJavaScript("document.getElementById('pause').click()");
+    await waitForJavaScript(
+      tester,
+      controller,
+      'window.runnerEffectFrequencies.includes(880)',
+      'Collecting a coin plays its sound',
+    );
+    await controller.runJavaScript("document.getElementById('jump').click()");
+    await waitForJavaScript(
+      tester,
+      controller,
+      'window.runnerEffectFrequencies.includes(240)',
+      'Jumping plays its sound',
+    );
+    await waitForJavaScript(
+      tester,
+      controller,
+      "window.runnerEffectFrequencies.includes(150) && document.getElementById('title').textContent === '¡Vuelve a intentarlo!'",
+      'Collision plays its sound and ends the practice run',
+    );
     await tester.pumpWidget(const SizedBox.shrink());
   }, timeout: const Timeout(Duration(minutes: 5)));
 }
