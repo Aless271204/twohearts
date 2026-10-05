@@ -1,7 +1,7 @@
 name: twohearts
 description: A new Flutter project.
 publish_to: none
-version: 1.0.0+1
+version: 1.0.1+2
 
 environment:
   sdk: ^3.9.0
@@ -36,6 +36,8 @@ dependencies:
 
 
 dev_dependencies:
+  integration_test:
+    sdk: flutter
   flutter_test:    # CRITICAL: Required for Flutter project testing - DO NOT REMOVE
     sdk: flutter   # CRITICAL: Required for Flutter project testing - DO NOT REMOVE
   flutter_lints: ^5.0.0 # CRITICAL: Required for code quality - DO NOT REMOVE

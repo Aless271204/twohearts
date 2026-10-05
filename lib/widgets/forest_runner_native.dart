@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'runner_bridge.dart';
+import '../core/local_asset_path.dart';
 
 class ForestRunnerView extends StatefulWidget {
-  const ForestRunnerView({super.key});
+  final ValueChanged<WebViewController>? onWebViewCreated;
+  const ForestRunnerView({super.key, this.onWebViewCreated});
   @override
   State<ForestRunnerView> createState() => _ForestRunnerViewState();
 }
@@ -35,14 +37,15 @@ class _ForestRunnerViewState extends State<ForestRunnerView> {
       }
       _server = server;
       server.listen((request) async {
-        final path = request.uri.path.substring(1);
-        if (!path.startsWith('assets/runner/') || path.contains('..')) {
+        final path = runnerAssetPath(request.uri);
+        if (path == null) {
           request.response.statusCode = HttpStatus.notFound;
           await request.response.close();
           return;
         }
         try {
           final data = await rootBundle.load(path);
+          request.response.contentLength = data.lengthInBytes;
           request.response.headers.set(
             'Content-Type',
             path.endsWith('.html')
@@ -56,7 +59,8 @@ class _ForestRunnerViewState extends State<ForestRunnerView> {
           request.response.add(
             data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes),
           );
-        } catch (_) {
+        } catch (error) {
+          debugPrint('Forest asset load failed ($path): $error');
           request.response.statusCode = HttpStatus.notFound;
         }
         await request.response.close();
@@ -82,6 +86,7 @@ class _ForestRunnerViewState extends State<ForestRunnerView> {
         Uri.parse('http://localhost:${server.port}/assets/runner/index.html'),
       );
       if (mounted) setState(() => _controller = controller);
+      if (mounted) widget.onWebViewCreated?.call(controller);
     } catch (_) {
       if (mounted)
         setState(

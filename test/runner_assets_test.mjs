@@ -3,6 +3,15 @@ import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 
 const root=new URL('../assets/runner/',import.meta.url);
+test('Android permits the two local viewer hosts while public HTTP stays blocked',async()=>{
+  const config=await readFile(new URL('../android/app/src/main/res/xml/network_security_config.xml',import.meta.url),'utf8');
+  assert.match(config,/<base-config\s+cleartextTrafficPermitted="false"\s*\/>/);
+  const local=config.match(/<domain-config\s+cleartextTrafficPermitted="true">([\s\S]*?)<\/domain-config>/)?.[1];
+  assert.ok(local,'Local-only cleartext configuration missing');
+  assert.match(local,/<domain>localhost<\/domain>/);
+  assert.match(local,/<domain>127\.0\.0\.1<\/domain>/);
+  assert.equal((local.match(/<domain>/g)??[]).length,2);
+});
 test('all supplied models are complete, self-contained GLBs with valid buffers',async()=>{
   const manifest=JSON.parse(await readFile(new URL('models.json',root),'utf8'));
   assert.equal(Object.keys(manifest).length,12);
