@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
 
-import '../../theme/app_theme.dart';
-import '../../services/supabase_service.dart';
-import '../../services/home_widget_service.dart';
 import '../../routes/app_routes.dart';
+import '../../services/home_widget_service.dart';
+import '../../services/memory_album_service.dart';
 import '../../services/profile_change_notifier.dart';
-import '../home_screen/widgets/daily_quote_widget.dart';
+import '../../services/supabase_service.dart';
+import '../../theme/app_theme.dart';
 import '../home_screen/widgets/couple_map_widget.dart';
+import '../home_screen/widgets/daily_quote_widget.dart';
 import '../home_screen/widgets/couple_header_widget.dart';
+import './widgets/create_album_sheet.dart';
 
 class MemoriesScreen extends StatefulWidget {
   const MemoriesScreen({super.key});
@@ -42,7 +44,6 @@ class _MemoriesScreenState extends State<MemoriesScreen> {
   void initState() {
     super.initState();
     _loadCoupleData();
-    // Listen for profile changes (e.g. nickname updated in ProfileScreen)
     ProfileChangeNotifier.instance.addListener(_onProfileChanged);
   }
 
@@ -53,9 +54,16 @@ class _MemoriesScreenState extends State<MemoriesScreen> {
   Future<void> _loadCoupleData() async {
     try {
       final data = await SupabaseService.instance.getCoupleData();
+      final myProfile = await SupabaseService.instance.getMyProfile();
+      final partnerProfile = await SupabaseService.instance.getPartnerProfile();
       if (mounted) {
-        final myNick = data['myName'] as String;
-        final partnerNick = data['partnerName'] as String;
+        final myNick = (myProfile?['nickname'] as String?)?.isNotEmpty == true
+            ? myProfile!['nickname'] as String
+            : data['myName'] as String;
+        final partnerNick =
+            (partnerProfile?['nickname'] as String?)?.isNotEmpty == true
+            ? partnerProfile!['nickname'] as String
+            : data['partnerName'] as String;
 
         setState(() {
           _coupleData = {
@@ -71,7 +79,6 @@ class _MemoriesScreenState extends State<MemoriesScreen> {
           _loadingProfile = false;
         });
 
-        // Update home screen widgets with fresh data
         final daysTogether = DateTime.now()
             .difference(data['startDate'] as DateTime)
             .inDays;
@@ -129,7 +136,6 @@ class _MemoriesScreenState extends State<MemoriesScreen> {
         bottom: false,
         child: Column(
           children: [
-            // App bar — "Nuestro Nido"
             Padding(
               padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
               child: Row(
@@ -171,7 +177,6 @@ class _MemoriesScreenState extends State<MemoriesScreen> {
                     ],
                   ),
                   const Spacer(),
-                  // Settings / Profile button
                   GestureDetector(
                     onTap: () => context.push(AppRoutes.profileScreen),
                     child: Container(
@@ -203,10 +208,8 @@ class _MemoriesScreenState extends State<MemoriesScreen> {
               ),
             ),
             const SizedBox(height: 16),
-
-            // Tab content
             Expanded(
-              child: _SyncedRecuerdosTab(
+              child: _AlbumJuntosTab(
                 coupleData: _coupleData,
                 daysTogether: _daysTogether,
                 realtimeDistance: _realtimeDistance,
@@ -221,15 +224,23 @@ class _MemoriesScreenState extends State<MemoriesScreen> {
   }
 }
 
-// ── Synced Recuerdos Tab ─────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
+// Album View Mode
+// ─────────────────────────────────────────────────────────────────────────────
 
-class _SyncedRecuerdosTab extends StatefulWidget {
+enum _AlbumViewMode { todos, lugares, fechas, especiales }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Main Tab
+// ─────────────────────────────────────────────────────────────────────────────
+
+class _AlbumJuntosTab extends StatefulWidget {
   final Map<String, dynamic> coupleData;
   final int daysTogether;
   final bool realtimeDistance;
   final ValueChanged<bool> onRealtimeToggle;
 
-  const _SyncedRecuerdosTab({
+  const _AlbumJuntosTab({
     required this.coupleData,
     required this.daysTogether,
     required this.realtimeDistance,
@@ -237,303 +248,170 @@ class _SyncedRecuerdosTab extends StatefulWidget {
   });
 
   @override
-  State<_SyncedRecuerdosTab> createState() => _SyncedRecuerdosTabState();
+  State<_AlbumJuntosTab> createState() => _AlbumJuntosTabState();
 }
 
-class _SyncedRecuerdosTabState extends State<_SyncedRecuerdosTab> {
-  late Stream<List<Map<String, dynamic>>> _memoriesStream;
+class _AlbumJuntosTabState extends State<_AlbumJuntosTab> {
+  _AlbumViewMode _viewMode = _AlbumViewMode.todos;
+  late Stream<List<MemoryAlbum>> _albumsStream;
   late Stream<List<Map<String, dynamic>>> _tripsStream;
-  late Stream<List<Map<String, dynamic>>> _datesStream;
 
   @override
   void initState() {
     super.initState();
-    _memoriesStream = SupabaseService.instance.memoriesStream();
+    _albumsStream = MemoryAlbumService.instance.albumsStream();
     _tripsStream = SupabaseService.instance.tripsStream();
-    _datesStream = SupabaseService.instance.datesStream();
   }
 
-  List<String> _extractTravelCities(List<Map<String, dynamic>> trips) {
-    return trips
-        .map((t) => t['city'] as String? ?? '')
-        .where((c) => c.isNotEmpty)
-        .toList();
+  void _showCreateAlbumSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => CreateAlbumSheet(
+        onAlbumCreated: () {
+          if (mounted)
+            setState(() {
+              _albumsStream = MemoryAlbumService.instance.albumsStream();
+            });
+        },
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<List<Map<String, dynamic>>>(
-      stream: _tripsStream,
-      builder: (context, tripsSnapshot) {
-        final trips = tripsSnapshot.data ?? [];
-        final travelCities = _extractTravelCities(trips);
+    return StreamBuilder<List<MemoryAlbum>>(
+      stream: _albumsStream,
+      builder: (context, albumSnap) {
+        final albums = albumSnap.data ?? [];
+        if (albumSnap.hasError) {
+          return Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text('No pudimos cargar los álbumes.'),
+                TextButton(
+                  onPressed: () => setState(() {
+                    _albumsStream = MemoryAlbumService.instance.albumsStream();
+                  }),
+                  child: const Text('Reintentar'),
+                ),
+              ],
+            ),
+          );
+        }
 
-        return SingleChildScrollView(
-          padding: const EdgeInsets.only(bottom: 120),
+        return StreamBuilder<List<Map<String, dynamic>>>(
+          stream: _tripsStream,
+          builder: (context, tripsSnap) {
+            final trips = tripsSnap.data ?? [];
+            final travelCities = trips
+                .map((t) => t['city'] as String? ?? '')
+                .where((c) => c.isNotEmpty)
+                .toList();
+
+            return SingleChildScrollView(
+              padding: const EdgeInsets.only(bottom: 120),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Couple stats header
+                  CoupleHeaderWidget(
+                    myName: widget.coupleData['myName'] as String,
+                    partnerName: widget.coupleData['partnerName'] as String,
+                    daysTogether: widget.daysTogether,
+                    distanceKm: widget.coupleData['distanceKm'] as int,
+                    myCity: widget.coupleData['myCity'] as String,
+                    partnerCity: widget.coupleData['partnerCity'] as String,
+                  ),
+
+                  // Map
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+                    child: Text(
+                      '🗺️ Mapa interactivo',
+                      style: GoogleFonts.dmSans(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w700,
+                        color: const Color(0xFF1A1A1A),
+                      ),
+                    ),
+                  ),
+                  CoupleMapWidget(
+                    myCity: widget.coupleData['myCity'] as String,
+                    partnerCity: widget.coupleData['partnerCity'] as String,
+                    travelCities: travelCities,
+                    realtimeEnabled: widget.realtimeDistance,
+                    onRealtimeToggle: widget.onRealtimeToggle,
+                  ),
+
+                  // Daily quote
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+                    child: Text(
+                      '✨ Frase del día',
+                      style: GoogleFonts.dmSans(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w700,
+                        color: const Color(0xFF1A1A1A),
+                      ),
+                    ),
+                  ),
+                  const DailyQuoteWidget(),
+
+                  // ── NUESTRO ÁLBUM JUNTOS ──────────────────────────────────
+                  const SizedBox(height: 24),
+                  _buildAlbumHeader(context),
+                  const SizedBox(height: 16),
+                  _buildViewFilterChips(),
+                  const SizedBox(height: 16),
+                  _buildAlbumContent(context, albums, trips),
+                  if (_viewMode == _AlbumViewMode.todos) _legacyPhotos(),
+                ],
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Widget _legacyPhotos() {
+    return StreamBuilder<List<Map<String, dynamic>>>(
+      stream: SupabaseService.instance.memoriesStream(),
+      builder: (context, snap) {
+        final photos = snap.data ?? [];
+        if (photos.isEmpty) return const SizedBox.shrink();
+        return Padding(
+          padding: const EdgeInsets.all(20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // 1. Couple stats
-              CoupleHeaderWidget(
-                myName: widget.coupleData['myName'] as String,
-                partnerName: widget.coupleData['partnerName'] as String,
-                daysTogether: widget.daysTogether,
-                distanceKm: widget.coupleData['distanceKm'] as int,
-                myCity: widget.coupleData['myCity'] as String,
-                partnerCity: widget.coupleData['partnerCity'] as String,
-              ),
-
-              // 2. Interactive map with travel pins
-              Padding(
-                padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
-                child: Text(
-                  '🗺️ Mapa interactivo',
-                  style: GoogleFonts.dmSans(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w700,
-                    color: const Color(0xFF1A1A1A),
-                  ),
-                ),
-              ),
-              CoupleMapWidget(
-                myCity: widget.coupleData['myCity'] as String,
-                partnerCity: widget.coupleData['partnerCity'] as String,
-                travelCities: travelCities,
-                realtimeEnabled: widget.realtimeDistance,
-                onRealtimeToggle: widget.onRealtimeToggle,
-              ),
-
-              // 3. Daily quote
-              Padding(
-                padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
-                child: Text(
-                  '✨ Frase del día',
-                  style: GoogleFonts.dmSans(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w700,
-                    color: const Color(0xFF1A1A1A),
-                  ),
-                ),
-              ),
-              const DailyQuoteWidget(),
-
-              // 4. Send reminder card
-              Padding(
-                padding: const EdgeInsets.fromLTRB(20, 20, 20, 12),
-                child: _buildSendReminderCard(context),
-              ),
-
-              // 5. Photo album — REAL-TIME SYNCED
-              Padding(
-                padding: const EdgeInsets.fromLTRB(20, 4, 20, 0),
-                child: Row(
-                  children: [
-                    const Text('📸', style: TextStyle(fontSize: 18)),
-                    const SizedBox(width: 8),
-                    Text(
-                      'Álbum juntos',
-                      style: GoogleFonts.dmSans(
-                        fontSize: 17,
-                        fontWeight: FontWeight.w700,
-                        color: const Color(0xFF1A1A1A),
-                      ),
-                    ),
-                    const Spacer(),
-                    GestureDetector(
-                      onTap: () => _showAddMemorySheet(context),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 6,
-                        ),
-                        decoration: BoxDecoration(
-                          color: AppTheme.primaryContainer,
-                          borderRadius: BorderRadius.circular(999),
-                        ),
-                        child: Row(
-                          children: [
-                            const Icon(
-                              Icons.add_rounded,
-                              size: 14,
-                              color: AppTheme.primary,
-                            ),
-                            const SizedBox(width: 4),
-                            Text(
-                              'Agregar',
-                              style: GoogleFonts.dmSans(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w600,
-                                color: AppTheme.primary,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+              const Text('Recuerdos anteriores'),
               const SizedBox(height: 12),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: StreamBuilder<List<Map<String, dynamic>>>(
-                  stream: _memoriesStream,
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Center(
-                        child: Padding(
-                          padding: EdgeInsets.all(24),
-                          child: CircularProgressIndicator(),
-                        ),
-                      );
-                    }
-                    final memories = snapshot.data ?? [];
-                    if (memories.isEmpty) {
-                      return _buildEmptyState(
-                        '📸',
-                        'Aún no hay fotos. ¡Agrega la primera!',
-                      );
-                    }
-                    return _buildPhotoGrid(context, memories);
-                  },
-                ),
-              ),
-
-              // 6. Trips — REAL-TIME SYNCED
-              Padding(
-                padding: const EdgeInsets.fromLTRB(20, 24, 20, 0),
-                child: Row(
-                  children: [
-                    const Text('🗺️', style: TextStyle(fontSize: 18)),
-                    const SizedBox(width: 8),
-                    Text(
-                      'Viajes',
-                      style: GoogleFonts.dmSans(
-                        fontSize: 17,
-                        fontWeight: FontWeight.w700,
-                        color: const Color(0xFF1A1A1A),
-                      ),
-                    ),
-                    const Spacer(),
-                    GestureDetector(
-                      onTap: () => _showAddTripSheet(context),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 6,
-                        ),
-                        decoration: BoxDecoration(
-                          color: AppTheme.primaryContainer,
-                          borderRadius: BorderRadius.circular(999),
-                        ),
-                        child: Row(
-                          children: [
-                            const Icon(
-                              Icons.add_rounded,
-                              size: 14,
-                              color: AppTheme.primary,
-                            ),
-                            const SizedBox(width: 4),
-                            Text(
-                              'Agregar',
-                              style: GoogleFonts.dmSans(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w600,
-                                color: AppTheme.primary,
-                              ),
-                            ),
-                          ],
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: photos
+                    .map(
+                      (p) => ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: Image.network(
+                          p['image_url'] as String? ?? '',
+                          width: 96,
+                          height: 96,
+                          fit: BoxFit.cover,
+                          errorBuilder: (_, __, ___) => const SizedBox(
+                            width: 96,
+                            height: 96,
+                            child: Icon(Icons.broken_image_outlined),
+                          ),
                         ),
                       ),
-                    ),
-                  ],
-                ),
+                    )
+                    .toList(),
               ),
-              const SizedBox(height: 12),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: trips.isEmpty
-                    ? _buildEmptyState('🗺️', 'Aún no hay viajes registrados.')
-                    : _buildTripsList(trips),
-              ),
-
-              // 7. Citas — REAL-TIME SYNCED
-              Padding(
-                padding: const EdgeInsets.fromLTRB(20, 24, 20, 0),
-                child: Row(
-                  children: [
-                    const Text('🗓️', style: TextStyle(fontSize: 18)),
-                    const SizedBox(width: 8),
-                    Text(
-                      'Citas & Veces que nos vimos',
-                      style: GoogleFonts.dmSans(
-                        fontSize: 17,
-                        fontWeight: FontWeight.w700,
-                        color: const Color(0xFF1A1A1A),
-                      ),
-                    ),
-                    const Spacer(),
-                    GestureDetector(
-                      onTap: () => _showAddCitaSheet(context),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 6,
-                        ),
-                        decoration: BoxDecoration(
-                          color: AppTheme.primaryContainer,
-                          borderRadius: BorderRadius.circular(999),
-                        ),
-                        child: Row(
-                          children: [
-                            const Icon(
-                              Icons.add_rounded,
-                              size: 14,
-                              color: AppTheme.primary,
-                            ),
-                            const SizedBox(width: 4),
-                            Text(
-                              'Agregar',
-                              style: GoogleFonts.dmSans(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w600,
-                                color: AppTheme.primary,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 12),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: StreamBuilder<List<Map<String, dynamic>>>(
-                  stream: _datesStream,
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Center(
-                        child: Padding(
-                          padding: EdgeInsets.all(24),
-                          child: CircularProgressIndicator(),
-                        ),
-                      );
-                    }
-                    final dates = snapshot.data ?? [];
-                    if (dates.isEmpty) {
-                      return _buildEmptyState(
-                        '🗓️',
-                        'Aún no hay citas registradas.',
-                      );
-                    }
-                    return _buildDatesList(dates);
-                  },
-                ),
-              ),
-
-              const SizedBox(height: 20),
             ],
           ),
         );
@@ -541,564 +419,693 @@ class _SyncedRecuerdosTabState extends State<_SyncedRecuerdosTab> {
     );
   }
 
-  Widget _buildEmptyState(String emoji, String text) {
-    return Container(
-      padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withAlpha(8),
-            blurRadius: 10,
-            offset: const Offset(0, 3),
-          ),
-        ],
-      ),
-      child: Column(
+  Widget _buildAlbumHeader(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Row(
         children: [
-          Text(emoji, style: const TextStyle(fontSize: 36)),
-          const SizedBox(height: 8),
-          Text(
-            text,
-            style: GoogleFonts.dmSans(
-              fontSize: 14,
-              color: const Color(0xFF9E9E9E),
+          Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  AppTheme.primary.withAlpha(30),
+                  AppTheme.secondary.withAlpha(20),
+                ],
+              ),
+              borderRadius: BorderRadius.circular(14),
             ),
+            child: const Text('📷', style: TextStyle(fontSize: 20)),
           ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSendReminderCard(BuildContext context) {
-    final partnerName = widget.coupleData['partnerNickname'] as String;
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            AppTheme.primary.withAlpha(31),
-            AppTheme.secondary.withAlpha(20),
-          ],
-        ),
-        borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: AppTheme.primary.withAlpha(38)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 10,
-                  vertical: 4,
-                ),
-                decoration: BoxDecoration(
-                  color: AppTheme.primary,
-                  borderRadius: BorderRadius.circular(999),
-                ),
-                child: Text(
-                  'Recordatorio del día',
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Nuestro Álbum Juntos',
                   style: GoogleFonts.dmSans(
-                    fontSize: 11,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.white,
+                    fontSize: 18,
+                    fontWeight: FontWeight.w700,
+                    color: const Color(0xFF1A1A1A),
                   ),
                 ),
-              ),
-              const Spacer(),
-              const Text('💌', style: TextStyle(fontSize: 18)),
-            ],
-          ),
-          const SizedBox(height: 12),
-          Text(
-            'Envía algo que te haya hecho pensar en ${partnerName.isNotEmpty ? partnerName : 'tu pareja'} hoy',
-            style: GoogleFonts.dmSans(
-              fontSize: 15,
-              fontWeight: FontWeight.w600,
-              color: const Color(0xFF1A1A1A),
-              height: 1.4,
+                Text(
+                  'Todos sus recuerdos en un solo lugar',
+                  style: GoogleFonts.dmSans(
+                    fontSize: 12,
+                    color: const Color(0xFF9E9E9E),
+                  ),
+                ),
+              ],
             ),
           ),
-          const SizedBox(height: 4),
-          Text(
-            'Aparecerá en su pantalla como widget',
-            style: GoogleFonts.dmSans(
-              fontSize: 12,
-              color: const Color(0xFF6B6B6B),
+          GestureDetector(
+            onTap: () => _showCreateAlbumSheet(context),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  colors: [AppTheme.primary, Color(0xFFFF7A9A)],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                borderRadius: BorderRadius.circular(12),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppTheme.primary.withAlpha(50),
+                    blurRadius: 8,
+                    offset: const Offset(0, 3),
+                  ),
+                ],
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(Icons.add_rounded, color: Colors.white, size: 16),
+                  const SizedBox(width: 4),
+                  Text(
+                    'Crear',
+                    style: GoogleFonts.dmSans(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w700,
+                      color: Colors.white,
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-          const SizedBox(height: 16),
-          Row(
-            children: [
-              Expanded(
-                child: _ReminderTypeButton(
-                  emoji: '📷',
-                  label: 'Foto',
-                  onTap: () {},
-                ),
-              ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: _ReminderTypeButton(
-                  emoji: '✏️',
-                  label: 'Dibujo',
-                  onTap: () {},
-                ),
-              ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: _ReminderTypeButton(
-                  emoji: '💬',
-                  label: 'Frase',
-                  onTap: () {},
-                ),
-              ),
-            ],
           ),
         ],
       ),
     );
   }
 
-  Widget _buildPhotoGrid(
-    BuildContext context,
-    List<Map<String, dynamic>> memories,
-  ) {
-    final isTablet = MediaQuery.of(context).size.width >= 600;
-    return GridView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: isTablet ? 3 : 2,
-        mainAxisSpacing: 10,
-        crossAxisSpacing: 10,
-        childAspectRatio: 0.85,
-      ),
-      itemCount: memories.length,
-      itemBuilder: (context, i) => _PhotoCard(
-        photo: {
-          'imageUrl': memories[i]['image_url'] ?? '',
-          'semanticLabel': memories[i]['caption'] ?? 'Recuerdo compartido',
-          'date': memories[i]['memory_date'] ?? '',
-          'caption': memories[i]['caption'] ?? '',
-          'likes': memories[i]['likes'] ?? 0,
+  Widget _buildViewFilterChips() {
+    final filters = [
+      (_AlbumViewMode.todos, '🗂️', 'Todos'),
+      (_AlbumViewMode.lugares, '📍', 'Lugares'),
+      (_AlbumViewMode.fechas, '📅', 'Fechas'),
+      (_AlbumViewMode.especiales, '⭐', 'Especiales'),
+    ];
+
+    return SizedBox(
+      height: 40,
+      child: ListView.separated(
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        itemCount: filters.length,
+        separatorBuilder: (_, __) => const SizedBox(width: 8),
+        itemBuilder: (context, i) {
+          final (mode, emoji, label) = filters[i];
+          final isSelected = _viewMode == mode;
+          return GestureDetector(
+            onTap: () => setState(() => _viewMode = mode),
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 200),
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+              decoration: BoxDecoration(
+                color: isSelected ? AppTheme.primary : Colors.white,
+                borderRadius: BorderRadius.circular(999),
+                border: Border.all(
+                  color: isSelected
+                      ? AppTheme.primary
+                      : const Color(0xFFEEEEEE),
+                ),
+                boxShadow: isSelected
+                    ? [
+                        BoxShadow(
+                          color: AppTheme.primary.withAlpha(40),
+                          blurRadius: 8,
+                          offset: const Offset(0, 2),
+                        ),
+                      ]
+                    : [],
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(emoji, style: const TextStyle(fontSize: 13)),
+                  const SizedBox(width: 5),
+                  Text(
+                    label,
+                    style: GoogleFonts.dmSans(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                      color: isSelected
+                          ? Colors.white
+                          : const Color(0xFF5A5A5A),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
         },
       ),
     );
   }
 
-  Widget _buildTripsList(List<Map<String, dynamic>> trips) {
+  Widget _buildAlbumContent(
+    BuildContext context,
+    List<MemoryAlbum> albums,
+    List<Map<String, dynamic>> trips,
+  ) {
+    switch (_viewMode) {
+      case _AlbumViewMode.todos:
+        return _buildTodosView(context, albums, trips);
+      case _AlbumViewMode.lugares:
+        return _buildLugaresView(context, albums, trips);
+      case _AlbumViewMode.fechas:
+        return _buildFechasView(context, albums);
+      case _AlbumViewMode.especiales:
+        return _buildEspecialesView(context, albums);
+    }
+  }
+
+  // ── TODOS view: carousels by category ─────────────────────────────────────
+
+  Widget _buildTodosView(
+    BuildContext context,
+    List<MemoryAlbum> albums,
+    List<Map<String, dynamic>> trips,
+  ) {
+    if (albums.isEmpty && trips.isEmpty) {
+      return _buildEmptyAlbumState(context);
+    }
+
     return Column(
-      children: trips.map((trip) {
-        return Padding(
-          padding: const EdgeInsets.only(bottom: 12),
-          child: _TravelCard(
-            travel: {
-              'city': trip['city'] ?? '',
-              'emoji': trip['country_emoji'] ?? '🌍',
-              'date': trip['trip_date'] ?? '',
-              'rating': trip['rating'] ?? 5,
-              'hotel': trip['hotel'] ?? '',
-              'note': trip['note'] ?? '',
-              'imageUrl':
-                  trip['image_url'] ??
-                  'https://images.unsplash.com/photo-1703457428215-96a08a7e81c5',
-              'semanticLabel': '${trip['city'] ?? ''} viaje',
-              'expanded': false,
-            },
-            onToggle: () {},
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Albums carousel
+        if (albums.isNotEmpty) ...[
+          _buildCarouselSection(
+            context,
+            title: 'Álbumes de fotos',
+            emoji: '🗂️',
+            child: _buildAlbumsCarousel(context, albums),
           ),
+          const SizedBox(height: 20),
+        ],
+
+        // Trips carousel
+        if (trips.isNotEmpty) ...[
+          _buildCarouselSection(
+            context,
+            title: 'Viajes',
+            emoji: '✈️',
+            child: _buildTripsCarousel(context, trips),
+          ),
+          const SizedBox(height: 20),
+        ],
+
+        // Add first album CTA if no albums
+        if (albums.isEmpty)
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: _buildCreateFirstAlbumCard(context),
+          ),
+      ],
+    );
+  }
+
+  // ── LUGARES view ──────────────────────────────────────────────────────────
+
+  Widget _buildLugaresView(
+    BuildContext context,
+    List<MemoryAlbum> albums,
+    List<Map<String, dynamic>> trips,
+  ) {
+    albums = albums
+        .where((a) => a.category == 'lugar' || a.category == 'viaje')
+        .toList();
+    // Group albums by location tag (use album name as location hint)
+    // Also show trips as location cards
+    if (albums.isEmpty && trips.isEmpty) {
+      return _buildEmptyFilterState(
+        context,
+        '📍',
+        'Aún no hay recuerdos por lugar',
+        'Crea un álbum con el nombre del lugar para organizarlo aquí',
+      );
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Trips as location cards
+        if (trips.isNotEmpty) ...[
+          Padding(
+            padding: const EdgeInsets.fromLTRB(20, 0, 20, 12),
+            child: Text(
+              'Lugares visitados',
+              style: GoogleFonts.dmSans(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: const Color(0xFF5A5A5A),
+              ),
+            ),
+          ),
+          ...trips.map(
+            (trip) => Padding(
+              padding: const EdgeInsets.fromLTRB(20, 0, 20, 12),
+              child: _LocationCard(trip: trip),
+            ),
+          ),
+        ],
+
+        // Albums as location albums
+        if (albums.isNotEmpty) ...[
+          Padding(
+            padding: const EdgeInsets.fromLTRB(20, 8, 20, 12),
+            child: Text(
+              'Álbumes por lugar',
+              style: GoogleFonts.dmSans(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: const Color(0xFF5A5A5A),
+              ),
+            ),
+          ),
+          ...albums.map(
+            (album) => Padding(
+              padding: const EdgeInsets.fromLTRB(20, 0, 20, 12),
+              child: _AlbumCard(album: album),
+            ),
+          ),
+        ],
+      ],
+    );
+  }
+
+  // ── FECHAS view ───────────────────────────────────────────────────────────
+
+  Widget _buildFechasView(BuildContext context, List<MemoryAlbum> albums) {
+    if (albums.isEmpty) {
+      return _buildEmptyFilterState(
+        context,
+        '📅',
+        'Aún no hay álbumes por fecha',
+        'Los álbumes aparecerán ordenados por fecha de creación',
+      );
+    }
+
+    // Sort albums by creation date descending
+    final sorted = List<MemoryAlbum>.from(albums)
+      ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
+
+    // Group by month/year
+    final Map<String, List<MemoryAlbum>> grouped = {};
+    for (final album in sorted) {
+      final key = _monthYearLabel(album.createdAt);
+      grouped.putIfAbsent(key, () => []).add(album);
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: grouped.entries.map((entry) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 0, 20, 10),
+              child: Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 5,
+                    ),
+                    decoration: BoxDecoration(
+                      color: AppTheme.primaryContainer,
+                      borderRadius: BorderRadius.circular(999),
+                    ),
+                    child: Text(
+                      entry.key,
+                      style: GoogleFonts.dmSans(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w700,
+                        color: AppTheme.primary,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            ...entry.value.map(
+              (album) => Padding(
+                padding: const EdgeInsets.fromLTRB(20, 0, 20, 12),
+                child: _AlbumCard(album: album),
+              ),
+            ),
+            const SizedBox(height: 8),
+          ],
         );
       }).toList(),
     );
   }
 
-  Widget _buildDatesList(List<Map<String, dynamic>> dates) {
+  // ── ESPECIALES view ───────────────────────────────────────────────────────
+
+  Widget _buildEspecialesView(BuildContext context, List<MemoryAlbum> albums) {
+    // Special days: albums with Spotify song or with keywords in name
+    final specialKeywords = [
+      'aniversario',
+      'cumpleaños',
+      'navidad',
+      'año nuevo',
+      'san valentín',
+      'reencuentro',
+      'primera',
+      'primer',
+      'especial',
+      'boda',
+      'compromiso',
+    ];
+
+    final specialAlbums = albums.where((a) {
+      final nameLower = a.albumName.toLowerCase();
+      final hasSpotify =
+          a.spotifyTrackName != null && a.spotifyTrackName!.isNotEmpty;
+      final hasKeyword = specialKeywords.any((k) => nameLower.contains(k));
+      return a.category == 'especial' ||
+          a.category == 'cita' ||
+          hasSpotify ||
+          hasKeyword;
+    }).toList();
+
+    // Built-in special days timeline
+    final startDate = widget.coupleData['startDate'] as DateTime;
+    final specialDays = _getSpecialDays(startDate);
+
+    if (specialAlbums.isEmpty && specialDays.isEmpty) {
+      return _buildEmptyFilterState(
+        context,
+        '⭐',
+        'Aún no hay días especiales',
+        'Los álbumes con canciones o palabras clave como "aniversario" aparecerán aquí',
+      );
+    }
+
     return Column(
-      children: dates.map((date) {
-        return Padding(
-          padding: const EdgeInsets.only(bottom: 12),
-          child: _CitaCard(
-            cita: {
-              'title': date['title'] ?? '',
-              'description': date['description'] ?? '',
-              'date': date['date_on'] ?? '',
-              'photos': (date['photos'] as List?)?.cast<String>() ?? <String>[],
-              'expanded': false,
-            },
-            onToggle: () {},
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Special days timeline
+        if (specialDays.isNotEmpty) ...[
+          Padding(
+            padding: const EdgeInsets.fromLTRB(20, 0, 20, 12),
+            child: Text(
+              'Días especiales',
+              style: GoogleFonts.dmSans(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: const Color(0xFF5A5A5A),
+              ),
+            ),
           ),
-        );
-      }).toList(),
+          SizedBox(
+            height: 100,
+            child: ListView.separated(
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              itemCount: specialDays.length,
+              separatorBuilder: (_, __) => const SizedBox(width: 10),
+              itemBuilder: (context, i) => _SpecialDayChip(day: specialDays[i]),
+            ),
+          ),
+          const SizedBox(height: 20),
+        ],
+
+        // Special albums
+        if (specialAlbums.isNotEmpty) ...[
+          Padding(
+            padding: const EdgeInsets.fromLTRB(20, 0, 20, 12),
+            child: Text(
+              'Álbumes especiales',
+              style: GoogleFonts.dmSans(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: const Color(0xFF5A5A5A),
+              ),
+            ),
+          ),
+          ...specialAlbums.map(
+            (album) => Padding(
+              padding: const EdgeInsets.fromLTRB(20, 0, 20, 12),
+              child: _AlbumCard(album: album),
+            ),
+          ),
+        ],
+      ],
     );
   }
 
-  void _showAddMemorySheet(BuildContext context) {
-    final captionController = TextEditingController();
-    final imageUrlController = TextEditingController();
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (_) => Padding(
-        padding: EdgeInsets.only(
-          bottom: MediaQuery.of(context).viewInsets.bottom,
-        ),
-        child: Container(
-          padding: const EdgeInsets.all(24),
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
+  List<Map<String, String>> _getSpecialDays(DateTime startDate) {
+    return [
+      {'emoji': '💑', 'label': 'Primer día', 'date': _formatDate(startDate)},
+      {
+        'emoji': '🎂',
+        'label': '1 mes juntos',
+        'date': _formatDate(startDate.add(const Duration(days: 30))),
+      },
+      {
+        'emoji': '🥂',
+        'label': '100 días',
+        'date': _formatDate(startDate.add(const Duration(days: 100))),
+      },
+      {
+        'emoji': '🎉',
+        'label': '6 meses',
+        'date': _formatDate(startDate.add(const Duration(days: 180))),
+      },
+      {
+        'emoji': '💍',
+        'label': '1 año',
+        'date': _formatDate(startDate.add(const Duration(days: 365))),
+      },
+    ];
+  }
+
+  String _formatDate(DateTime dt) {
+    const months = [
+      'Ene',
+      'Feb',
+      'Mar',
+      'Abr',
+      'May',
+      'Jun',
+      'Jul',
+      'Ago',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dic',
+    ];
+    return '${dt.day} ${months[dt.month - 1]} ${dt.year}';
+  }
+
+  String _monthYearLabel(DateTime dt) {
+    const months = [
+      'Enero',
+      'Febrero',
+      'Marzo',
+      'Abril',
+      'Mayo',
+      'Junio',
+      'Julio',
+      'Agosto',
+      'Septiembre',
+      'Octubre',
+      'Noviembre',
+      'Diciembre',
+    ];
+    return '${months[dt.month - 1]} ${dt.year}';
+  }
+
+  // ── Carousel section wrapper ───────────────────────────────────────────────
+
+  Widget _buildCarouselSection(
+    BuildContext context, {
+    required String title,
+    required String emoji,
+    required Widget child,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: Row(
             children: [
-              Center(
-                child: Container(
-                  width: 36,
-                  height: 4,
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFDDDDDD),
-                    borderRadius: BorderRadius.circular(999),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20),
+              Text(emoji, style: const TextStyle(fontSize: 16)),
+              const SizedBox(width: 6),
               Text(
-                'Nueva foto 📸',
+                title,
                 style: GoogleFonts.dmSans(
-                  fontSize: 18,
+                  fontSize: 15,
                   fontWeight: FontWeight.w700,
-                ),
-              ),
-              const SizedBox(height: 16),
-              TextField(
-                controller: imageUrlController,
-                decoration: InputDecoration(
-                  hintText: 'URL de la imagen',
-                  hintStyle: GoogleFonts.dmSans(
-                    fontSize: 13,
-                    color: const Color(0xFFBBBBBB),
-                  ),
-                ),
-                style: GoogleFonts.dmSans(fontSize: 13),
-              ),
-              const SizedBox(height: 12),
-              TextField(
-                controller: captionController,
-                decoration: InputDecoration(
-                  hintText: 'Descripción del recuerdo...',
-                  hintStyle: GoogleFonts.dmSans(
-                    fontSize: 13,
-                    color: const Color(0xFFBBBBBB),
-                  ),
-                ),
-                style: GoogleFonts.dmSans(fontSize: 13),
-              ),
-              const SizedBox(height: 20),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () async {
-                    if (captionController.text.isNotEmpty) {
-                      await SupabaseService.instance.addMemory(
-                        imageUrl: imageUrlController.text.isNotEmpty
-                            ? imageUrlController.text
-                            : 'https://images.unsplash.com/photo-1673973655340-d735897a7cdf',
-                        caption: captionController.text,
-                      );
-                      if (context.mounted) Navigator.pop(context);
-                    }
-                  },
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 14),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(14),
-                    ),
-                  ),
-                  child: Text(
-                    'Guardar foto',
-                    style: GoogleFonts.dmSans(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
+                  color: const Color(0xFF1A1A1A),
                 ),
               ),
             ],
           ),
         ),
+        const SizedBox(height: 12),
+        child,
+      ],
+    );
+  }
+
+  // ── Albums horizontal carousel ─────────────────────────────────────────────
+
+  Widget _buildAlbumsCarousel(BuildContext context, List<MemoryAlbum> albums) {
+    return SizedBox(
+      height: 200,
+      child: ListView.separated(
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        itemCount: albums.length,
+        separatorBuilder: (_, __) => const SizedBox(width: 12),
+        itemBuilder: (context, i) => _AlbumCarouselCard(album: albums[i]),
       ),
     );
   }
 
-  void _showAddTripSheet(BuildContext context) {
-    final cityController = TextEditingController();
-    final noteController = TextEditingController();
-    final hotelController = TextEditingController();
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (_) => Padding(
-        padding: EdgeInsets.only(
-          bottom: MediaQuery.of(context).viewInsets.bottom,
-        ),
-        child: Container(
-          padding: const EdgeInsets.all(24),
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Center(
-                child: Container(
-                  width: 36,
-                  height: 4,
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFDDDDDD),
-                    borderRadius: BorderRadius.circular(999),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20),
-              Text(
-                'Nuevo viaje 🗺️',
-                style: GoogleFonts.dmSans(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-              const SizedBox(height: 16),
-              TextField(
-                controller: cityController,
-                decoration: InputDecoration(
-                  hintText: 'Ciudad, País (ej: Madrid, España)',
-                  hintStyle: GoogleFonts.dmSans(
-                    fontSize: 13,
-                    color: const Color(0xFFBBBBBB),
-                  ),
-                  helperText: 'Se marcará en el mapa automáticamente',
-                  helperStyle: GoogleFonts.dmSans(
-                    fontSize: 10,
-                    color: AppTheme.primary,
-                  ),
-                ),
-                style: GoogleFonts.dmSans(fontSize: 13),
-              ),
-              const SizedBox(height: 12),
-              TextField(
-                controller: hotelController,
-                decoration: InputDecoration(
-                  hintText: 'Hotel o alojamiento',
-                  hintStyle: GoogleFonts.dmSans(
-                    fontSize: 13,
-                    color: const Color(0xFFBBBBBB),
-                  ),
-                ),
-                style: GoogleFonts.dmSans(fontSize: 13),
-              ),
-              const SizedBox(height: 12),
-              TextField(
-                controller: noteController,
-                maxLines: 2,
-                decoration: InputDecoration(
-                  hintText: 'Nota del viaje...',
-                  hintStyle: GoogleFonts.dmSans(
-                    fontSize: 13,
-                    color: const Color(0xFFBBBBBB),
-                  ),
-                ),
-                style: GoogleFonts.dmSans(fontSize: 13),
-              ),
-              const SizedBox(height: 20),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () async {
-                    if (cityController.text.isNotEmpty) {
-                      await SupabaseService.instance.addTrip(
-                        city: cityController.text,
-                        countryEmoji: '🌍',
-                        tripDate: DateTime.now().toString().substring(0, 7),
-                        hotel: hotelController.text,
-                        note: noteController.text,
-                      );
-                      if (context.mounted) Navigator.pop(context);
-                    }
-                  },
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 14),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(14),
-                    ),
-                  ),
-                  child: Text(
-                    'Guardar viaje',
-                    style: GoogleFonts.dmSans(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
+  // ── Trips horizontal carousel ──────────────────────────────────────────────
+
+  Widget _buildTripsCarousel(
+    BuildContext context,
+    List<Map<String, dynamic>> trips,
+  ) {
+    return SizedBox(
+      height: 160,
+      child: ListView.separated(
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        itemCount: trips.length,
+        separatorBuilder: (_, __) => const SizedBox(width: 12),
+        itemBuilder: (context, i) => _TripCarouselCard(trip: trips[i]),
       ),
     );
   }
 
-  void _showAddCitaSheet(BuildContext context) {
-    final titleController = TextEditingController();
-    final descController = TextEditingController();
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (_) => Padding(
-        padding: EdgeInsets.only(
-          bottom: MediaQuery.of(context).viewInsets.bottom,
-        ),
-        child: Container(
-          padding: const EdgeInsets.all(24),
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Center(
-                child: Container(
-                  width: 36,
-                  height: 4,
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFDDDDDD),
-                    borderRadius: BorderRadius.circular(999),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20),
-              Text(
-                'Nueva cita 🗓️',
-                style: GoogleFonts.dmSans(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-              const SizedBox(height: 16),
-              TextField(
-                controller: titleController,
-                decoration: InputDecoration(
-                  hintText: 'Título (ej: Reencuentro en Madrid)',
-                  hintStyle: GoogleFonts.dmSans(
-                    fontSize: 13,
-                    color: const Color(0xFFBBBBBB),
-                  ),
-                ),
-                style: GoogleFonts.dmSans(fontSize: 13),
-              ),
-              const SizedBox(height: 12),
-              TextField(
-                controller: descController,
-                maxLines: 3,
-                decoration: InputDecoration(
-                  hintText: 'Descripción de ese momento especial...',
-                  hintStyle: GoogleFonts.dmSans(
-                    fontSize: 13,
-                    color: const Color(0xFFBBBBBB),
-                  ),
-                ),
-                style: GoogleFonts.dmSans(fontSize: 13),
-              ),
-              const SizedBox(height: 20),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () async {
-                    if (titleController.text.isNotEmpty) {
-                      await SupabaseService.instance.addDate(
-                        title: titleController.text,
-                        description: descController.text,
-                      );
-                      if (context.mounted) Navigator.pop(context);
-                    }
-                  },
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 14),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(14),
-                    ),
-                  ),
-                  child: Text(
-                    'Guardar cita',
-                    style: GoogleFonts.dmSans(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
+  // ── Empty states ───────────────────────────────────────────────────────────
+
+  Widget _buildEmptyAlbumState(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: _buildCreateFirstAlbumCard(context),
     );
   }
-}
 
-// ── Shared sub-widgets ───────────────────────────────────────────────────────
-
-class _ReminderTypeButton extends StatelessWidget {
-  final String emoji;
-  final String label;
-  final VoidCallback onTap;
-
-  const _ReminderTypeButton({
-    required this.emoji,
-    required this.label,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _buildCreateFirstAlbumCard(BuildContext context) {
     return GestureDetector(
-      onTap: onTap,
+      onTap: () => _showCreateAlbumSheet(context),
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 12),
+        padding: const EdgeInsets.all(28),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              AppTheme.primary.withAlpha(20),
+              AppTheme.secondary.withAlpha(15),
+            ],
+          ),
+          borderRadius: BorderRadius.circular(24),
+          border: Border.all(
+            color: AppTheme.primary.withAlpha(40),
+            style: BorderStyle.solid,
+          ),
+        ),
+        child: Column(
+          children: [
+            const Text('📷', style: TextStyle(fontSize: 48)),
+            const SizedBox(height: 12),
+            Text(
+              'Crea su primer álbum juntos',
+              style: GoogleFonts.dmSans(
+                fontSize: 16,
+                fontWeight: FontWeight.w700,
+                color: const Color(0xFF1A1A1A),
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 6),
+            Text(
+              'Agrega fotos, un título y una descripción para guardar sus recuerdos',
+              style: GoogleFonts.dmSans(
+                fontSize: 13,
+                color: const Color(0xFF6B6B6B),
+                height: 1.4,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 16),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              decoration: BoxDecoration(
+                color: AppTheme.primary,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Text(
+                '+ Crear álbum',
+                style: GoogleFonts.dmSans(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildEmptyFilterState(
+    BuildContext context,
+    String emoji,
+    String title,
+    String subtitle,
+  ) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Container(
+        padding: const EdgeInsets.all(24),
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(20),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withAlpha(13),
-              blurRadius: 8,
-              offset: const Offset(0, 2),
+              color: Colors.black.withAlpha(8),
+              blurRadius: 10,
+              offset: const Offset(0, 3),
             ),
           ],
         ),
         child: Column(
           children: [
-            Text(emoji, style: const TextStyle(fontSize: 22)),
-            const SizedBox(height: 4),
+            Text(emoji, style: const TextStyle(fontSize: 36)),
+            const SizedBox(height: 8),
             Text(
-              label,
+              title,
               style: GoogleFonts.dmSans(
-                fontSize: 12,
-                fontWeight: FontWeight.w500,
+                fontSize: 15,
+                fontWeight: FontWeight.w600,
                 color: const Color(0xFF1A1A1A),
               ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 4),
+            Text(
+              subtitle,
+              style: GoogleFonts.dmSans(
+                fontSize: 12,
+                color: const Color(0xFF9E9E9E),
+                height: 1.4,
+              ),
+              textAlign: TextAlign.center,
             ),
           ],
         ),
@@ -1107,15 +1114,150 @@ class _ReminderTypeButton extends StatelessWidget {
   }
 }
 
-class _PhotoCard extends StatelessWidget {
-  final Map<String, dynamic> photo;
-  const _PhotoCard({required this.photo});
+// ─────────────────────────────────────────────────────────────────────────────
+// Album Carousel Card (compact horizontal card)
+// ─────────────────────────────────────────────────────────────────────────────
+
+class _AlbumCarouselCard extends StatefulWidget {
+  final MemoryAlbum album;
+  const _AlbumCarouselCard({required this.album});
+
+  @override
+  State<_AlbumCarouselCard> createState() => _AlbumCarouselCardState();
+}
+
+class _AlbumCarouselCardState extends State<_AlbumCarouselCard> {
+  final bool _expanded = false;
 
   @override
   Widget build(BuildContext context) {
+    final album = widget.album;
+    final hasPhotos = album.photoUrls.isNotEmpty;
+
+    return GestureDetector(
+      onTap: () => _showAlbumDetail(context, album),
+      child: Container(
+        width: 160,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: AppTheme.primary.withAlpha(18),
+              blurRadius: 12,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Cover photo
+            ClipRRect(
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(20),
+              ),
+              child: hasPhotos
+                  ? Image.network(
+                      album.photoUrls.first,
+                      width: 160,
+                      height: 110,
+                      fit: BoxFit.cover,
+                      errorBuilder: (_, __, ___) => Container(
+                        width: 160,
+                        height: 110,
+                        color: AppTheme.primaryContainer,
+                        child: const Center(
+                          child: Text('📸', style: TextStyle(fontSize: 32)),
+                        ),
+                      ),
+                    )
+                  : Container(
+                      width: 160,
+                      height: 110,
+                      color: AppTheme.primaryContainer,
+                      child: const Center(
+                        child: Text('📸', style: TextStyle(fontSize: 32)),
+                      ),
+                    ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    album.albumName,
+                    style: GoogleFonts.dmSans(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w700,
+                      color: const Color(0xFF1A1A1A),
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 3),
+                  Row(
+                    children: [
+                      const Icon(
+                        Icons.photo_library_outlined,
+                        size: 11,
+                        color: Color(0xFF9E9E9E),
+                      ),
+                      const SizedBox(width: 3),
+                      Text(
+                        '${album.photoUrls.length} foto${album.photoUrls.length != 1 ? 's' : ''}',
+                        style: GoogleFonts.dmSans(
+                          fontSize: 11,
+                          color: const Color(0xFF9E9E9E),
+                        ),
+                      ),
+                      if (album.spotifyTrackName?.isNotEmpty == true) ...[
+                        const SizedBox(width: 6),
+                        const Text('🎵', style: TextStyle(fontSize: 10)),
+                      ],
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showAlbumDetail(BuildContext context, MemoryAlbum album) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => _AlbumDetailSheet(album: album),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Trip Carousel Card
+// ─────────────────────────────────────────────────────────────────────────────
+
+class _TripCarouselCard extends StatelessWidget {
+  final Map<String, dynamic> trip;
+  const _TripCarouselCard({required this.trip});
+
+  @override
+  Widget build(BuildContext context) {
+    final imageUrl =
+        trip['image_url'] as String? ??
+        'https://images.unsplash.com/photo-1703457428215-96a08a7e81c5';
+    final city = trip['city'] as String? ?? '';
+    final emoji = trip['country_emoji'] as String? ?? '🌍';
+    final date = trip['trip_date'] as String? ?? '';
+
     return Container(
+      width: 140,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(18),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withAlpha(18),
@@ -1125,64 +1267,51 @@ class _PhotoCard extends StatelessWidget {
         ],
       ),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(18),
         child: Stack(
           fit: StackFit.expand,
           children: [
             Image.network(
-              photo['imageUrl'] as String,
+              imageUrl,
               fit: BoxFit.cover,
-              semanticLabel: photo['semanticLabel'] as String,
               errorBuilder: (_, __, ___) =>
                   Container(color: AppTheme.primaryContainer),
             ),
+            Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [Colors.transparent, Colors.black.withAlpha(180)],
+                ),
+              ),
+            ),
             Positioned(
-              bottom: 0,
-              left: 0,
-              right: 0,
-              child: Container(
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [Colors.transparent, Colors.black.withAlpha(153)],
+              bottom: 10,
+              left: 10,
+              right: 10,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '$emoji $city',
+                    style: GoogleFonts.dmSans(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w700,
+                      color: Colors.white,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
+                  if (date.isNotEmpty)
                     Text(
-                      photo['caption'] as String,
+                      date,
                       style: GoogleFonts.dmSans(
-                        fontSize: 11,
-                        fontWeight: FontWeight.w500,
-                        color: Colors.white,
+                        fontSize: 10,
+                        color: Colors.white70,
                       ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
                     ),
-                    const SizedBox(height: 2),
-                    Row(
-                      children: [
-                        const Icon(
-                          Icons.favorite_rounded,
-                          color: Colors.white,
-                          size: 11,
-                        ),
-                        const SizedBox(width: 3),
-                        Text(
-                          '${photo['likes']}',
-                          style: GoogleFonts.dmSans(
-                            fontSize: 10,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
+                ],
               ),
             ),
           ],
@@ -1192,22 +1321,28 @@ class _PhotoCard extends StatelessWidget {
   }
 }
 
-class _TravelCard extends StatefulWidget {
-  final Map<String, dynamic> travel;
-  final VoidCallback onToggle;
+// ─────────────────────────────────────────────────────────────────────────────
+// Album Card (full width, expandable)
+// ─────────────────────────────────────────────────────────────────────────────
 
-  const _TravelCard({required this.travel, required this.onToggle});
+class _AlbumCard extends StatefulWidget {
+  final MemoryAlbum album;
+  const _AlbumCard({required this.album});
 
   @override
-  State<_TravelCard> createState() => _TravelCardState();
+  State<_AlbumCard> createState() => _AlbumCardState();
 }
 
-class _TravelCardState extends State<_TravelCard> {
+class _AlbumCardState extends State<_AlbumCard> {
   bool _expanded = false;
 
   @override
   Widget build(BuildContext context) {
-    final rating = widget.travel['rating'] as int;
+    final album = widget.album;
+    final hasPhotos = album.photoUrls.isNotEmpty;
+    final hasSpotify =
+        album.spotifyTrackName != null && album.spotifyTrackName!.isNotEmpty;
+
     return GestureDetector(
       onTap: () => setState(() => _expanded = !_expanded),
       child: AnimatedContainer(
@@ -1218,13 +1353,14 @@ class _TravelCardState extends State<_TravelCard> {
           borderRadius: BorderRadius.circular(20),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withAlpha(13),
-              blurRadius: 12,
-              offset: const Offset(0, 3),
+              color: AppTheme.primary.withAlpha(18),
+              blurRadius: 14,
+              offset: const Offset(0, 4),
             ),
           ],
         ),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
               padding: const EdgeInsets.all(16),
@@ -1232,83 +1368,174 @@ class _TravelCardState extends State<_TravelCard> {
                 children: [
                   ClipRRect(
                     borderRadius: BorderRadius.circular(12),
-                    child: Image.network(
-                      widget.travel['imageUrl'] as String,
-                      width: 56,
-                      height: 56,
-                      fit: BoxFit.cover,
-                      semanticLabel: widget.travel['semanticLabel'] as String,
-                      errorBuilder: (_, __, ___) => Container(
-                        width: 56,
-                        height: 56,
-                        color: AppTheme.primaryContainer,
-                      ),
-                    ),
+                    child: hasPhotos
+                        ? Image.network(
+                            album.photoUrls.first,
+                            width: 60,
+                            height: 60,
+                            fit: BoxFit.cover,
+                            errorBuilder: (_, __, ___) => Container(
+                              width: 60,
+                              height: 60,
+                              color: AppTheme.primaryContainer,
+                              child: const Center(
+                                child: Text(
+                                  '📸',
+                                  style: TextStyle(fontSize: 24),
+                                ),
+                              ),
+                            ),
+                          )
+                        : Container(
+                            width: 60,
+                            height: 60,
+                            color: AppTheme.primaryContainer,
+                            child: const Center(
+                              child: Text('📸', style: TextStyle(fontSize: 24)),
+                            ),
+                          ),
                   ),
                   const SizedBox(width: 12),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        Text(
+                          album.albumName,
+                          style: GoogleFonts.dmSans(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w700,
+                            color: const Color(0xFF1A1A1A),
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        const SizedBox(height: 3),
                         Row(
                           children: [
-                            Text(
-                              widget.travel['emoji'] as String,
-                              style: const TextStyle(fontSize: 16),
+                            const Icon(
+                              Icons.photo_library_outlined,
+                              size: 12,
+                              color: Color(0xFF9E9E9E),
                             ),
-                            const SizedBox(width: 6),
-                            Expanded(
-                              child: Text(
-                                widget.travel['city'] as String,
+                            const SizedBox(width: 4),
+                            Text(
+                              '${album.photoUrls.length} foto${album.photoUrls.length != 1 ? 's' : ''}',
+                              style: GoogleFonts.dmSans(
+                                fontSize: 12,
+                                color: const Color(0xFF9E9E9E),
+                              ),
+                            ),
+                            if (hasSpotify) ...[
+                              const SizedBox(width: 8),
+                              const Text('🎵', style: TextStyle(fontSize: 12)),
+                            ],
+                          ],
+                        ),
+                        if (album.description.isNotEmpty) ...[
+                          const SizedBox(height: 2),
+                          Text(
+                            album.description,
+                            style: GoogleFonts.dmSans(
+                              fontSize: 12,
+                              color: const Color(0xFF6B6B6B),
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
+                      ],
+                    ),
+                  ),
+                  Icon(
+                    _expanded
+                        ? Icons.keyboard_arrow_up_rounded
+                        : Icons.keyboard_arrow_down_rounded,
+                    color: const Color(0xFF9E9E9E),
+                    size: 22,
+                  ),
+                ],
+              ),
+            ),
+            if (_expanded) ...[
+              if (hasPhotos)
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(12, 0, 12, 0),
+                  child: GridView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 3,
+                          mainAxisSpacing: 6,
+                          crossAxisSpacing: 6,
+                          childAspectRatio: 1,
+                        ),
+                    itemCount: album.photoUrls.length,
+                    itemBuilder: (context, i) => ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: Image.network(
+                        album.photoUrls[i],
+                        fit: BoxFit.cover,
+                        errorBuilder: (_, __, ___) => Container(
+                          color: AppTheme.primaryContainer,
+                          child: const Center(
+                            child: Text('📸', style: TextStyle(fontSize: 18)),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              if (hasSpotify)
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(12, 10, 12, 0),
+                  child: Container(
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF1DB954).withAlpha(15),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: const Color(0xFF1DB954).withAlpha(50),
+                      ),
+                    ),
+                    child: Row(
+                      children: [
+                        const Text('🎵', style: TextStyle(fontSize: 16)),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                album.spotifyTrackName!,
                                 style: GoogleFonts.dmSans(
-                                  fontSize: 15,
+                                  fontSize: 13,
                                   fontWeight: FontWeight.w600,
                                   color: const Color(0xFF1A1A1A),
                                 ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
                               ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 4),
-                        Row(
-                          children: List.generate(
-                            5,
-                            (i) => Icon(
-                              i < rating
-                                  ? Icons.star_rounded
-                                  : Icons.star_outline_rounded,
-                              size: 14,
-                              color: i < rating
-                                  ? const Color(0xFFFFB347)
-                                  : const Color(0xFFDDDDDD),
-                            ),
+                              if (album.spotifyArtistName != null)
+                                Text(
+                                  album.spotifyArtistName!,
+                                  style: GoogleFonts.dmSans(
+                                    fontSize: 11,
+                                    color: const Color(0xFF6B6B6B),
+                                  ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                            ],
                           ),
                         ),
                       ],
                     ),
                   ),
-                  Text(
-                    widget.travel['date'] as String,
-                    style: GoogleFonts.dmSans(
-                      fontSize: 11,
-                      color: const Color(0xFF9E9E9E),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            if (_expanded && (widget.travel['note'] as String).isNotEmpty)
-              Padding(
-                padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-                child: Text(
-                  widget.travel['note'] as String,
-                  style: GoogleFonts.dmSans(
-                    fontSize: 13,
-                    color: const Color(0xFF5A5A5A),
-                    height: 1.5,
-                  ),
                 ),
-              ),
+              const SizedBox(height: 14),
+            ],
           ],
         ),
       ),
@@ -1316,97 +1543,435 @@ class _TravelCardState extends State<_TravelCard> {
   }
 }
 
-class _CitaCard extends StatefulWidget {
-  final Map<String, dynamic> cita;
-  final VoidCallback onToggle;
+// ─────────────────────────────────────────────────────────────────────────────
+// Location Card (for trips in Lugares view)
+// ─────────────────────────────────────────────────────────────────────────────
 
-  const _CitaCard({required this.cita, required this.onToggle});
-
-  @override
-  State<_CitaCard> createState() => _CitaCardState();
-}
-
-class _CitaCardState extends State<_CitaCard> {
-  bool _expanded = false;
+class _LocationCard extends StatelessWidget {
+  final Map<String, dynamic> trip;
+  const _LocationCard({required this.trip});
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => setState(() => _expanded = !_expanded),
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(20),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withAlpha(13),
-              blurRadius: 12,
-              offset: const Offset(0, 3),
+    final city = trip['city'] as String? ?? '';
+    final emoji = trip['country_emoji'] as String? ?? '🌍';
+    final date = trip['trip_date'] as String? ?? '';
+    final note = trip['note'] as String? ?? '';
+    final imageUrl =
+        trip['image_url'] as String? ??
+        'https://images.unsplash.com/photo-1703457428215-96a08a7e81c5';
+    final rating = trip['rating'] as int? ?? 5;
+
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withAlpha(13),
+            blurRadius: 12,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          ClipRRect(
+            borderRadius: const BorderRadius.horizontal(
+              left: Radius.circular(20),
             ),
-          ],
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Container(
-                  width: 40,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    color: AppTheme.primaryContainer,
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: const Center(
-                    child: Text('🗓️', style: TextStyle(fontSize: 20)),
-                  ),
+            child: Image.network(
+              imageUrl,
+              width: 90,
+              height: 90,
+              fit: BoxFit.cover,
+              errorBuilder: (_, __, ___) => Container(
+                width: 90,
+                height: 90,
+                color: AppTheme.primaryContainer,
+                child: const Center(
+                  child: Text('📍', style: TextStyle(fontSize: 28)),
                 ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+              ),
+            ),
+          ),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.all(14),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
                     children: [
-                      Text(
-                        widget.cita['title'] as String,
-                        style: GoogleFonts.dmSans(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                          color: const Color(0xFF1A1A1A),
-                        ),
-                      ),
-                      Text(
-                        widget.cita['date'] as String,
-                        style: GoogleFonts.dmSans(
-                          fontSize: 11,
-                          color: const Color(0xFF9E9E9E),
+                      Text(emoji, style: const TextStyle(fontSize: 16)),
+                      const SizedBox(width: 6),
+                      Expanded(
+                        child: Text(
+                          city,
+                          style: GoogleFonts.dmSans(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w700,
+                            color: const Color(0xFF1A1A1A),
+                          ),
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
                     ],
                   ),
-                ),
-                Icon(
-                  _expanded
-                      ? Icons.keyboard_arrow_up
-                      : Icons.keyboard_arrow_down,
-                  color: const Color(0xFF9E9E9E),
-                ),
-              ],
+                  const SizedBox(height: 4),
+                  Row(
+                    children: List.generate(
+                      5,
+                      (i) => Icon(
+                        i < rating
+                            ? Icons.star_rounded
+                            : Icons.star_outline_rounded,
+                        size: 13,
+                        color: i < rating
+                            ? const Color(0xFFFFB347)
+                            : const Color(0xFFDDDDDD),
+                      ),
+                    ),
+                  ),
+                  if (note.isNotEmpty) ...[
+                    const SizedBox(height: 4),
+                    Text(
+                      note,
+                      style: GoogleFonts.dmSans(
+                        fontSize: 12,
+                        color: const Color(0xFF6B6B6B),
+                        height: 1.3,
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                  if (date.isNotEmpty) ...[
+                    const SizedBox(height: 4),
+                    Text(
+                      date,
+                      style: GoogleFonts.dmSans(
+                        fontSize: 11,
+                        color: const Color(0xFF9E9E9E),
+                      ),
+                    ),
+                  ],
+                ],
+              ),
             ),
-            if (_expanded &&
-                (widget.cita['description'] as String).isNotEmpty) ...[
-              const SizedBox(height: 12),
-              Text(
-                widget.cita['description'] as String,
-                style: GoogleFonts.dmSans(
-                  fontSize: 13,
-                  color: const Color(0xFF5A5A5A),
-                  height: 1.5,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Special Day Chip
+// ─────────────────────────────────────────────────────────────────────────────
+
+class _SpecialDayChip extends StatelessWidget {
+  final Map<String, String> day;
+  const _SpecialDayChip({required this.day});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 110,
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            AppTheme.primary.withAlpha(25),
+            AppTheme.secondary.withAlpha(18),
+          ],
+        ),
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: AppTheme.primary.withAlpha(40)),
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(day['emoji'] ?? '⭐', style: const TextStyle(fontSize: 24)),
+          const SizedBox(height: 4),
+          Text(
+            day['label'] ?? '',
+            style: GoogleFonts.dmSans(
+              fontSize: 11,
+              fontWeight: FontWeight.w700,
+              color: AppTheme.primary,
+            ),
+            textAlign: TextAlign.center,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+          const SizedBox(height: 2),
+          Text(
+            day['date'] ?? '',
+            style: GoogleFonts.dmSans(
+              fontSize: 9,
+              color: const Color(0xFF9E9E9E),
+            ),
+            textAlign: TextAlign.center,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Album Detail Bottom Sheet (full photo view)
+// ─────────────────────────────────────────────────────────────────────────────
+
+class _AlbumDetailSheet extends StatefulWidget {
+  final MemoryAlbum album;
+  const _AlbumDetailSheet({required this.album});
+
+  @override
+  State<_AlbumDetailSheet> createState() => _AlbumDetailSheetState();
+}
+
+class _AlbumDetailSheetState extends State<_AlbumDetailSheet> {
+  int _currentPhotoIndex = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    final album = widget.album;
+    final hasPhotos = album.photoUrls.isNotEmpty;
+    final hasSpotify =
+        album.spotifyTrackName != null && album.spotifyTrackName!.isNotEmpty;
+
+    return Container(
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+      ),
+      child: DraggableScrollableSheet(
+        initialChildSize: 0.85,
+        minChildSize: 0.5,
+        maxChildSize: 0.95,
+        expand: false,
+        builder: (context, scrollController) {
+          return Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 12, bottom: 4),
+                child: Center(
+                  child: Container(
+                    width: 36,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFDDDDDD),
+                      borderRadius: BorderRadius.circular(999),
+                    ),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(24, 8, 24, 0),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            album.albumName,
+                            style: GoogleFonts.dmSans(
+                              fontSize: 20,
+                              fontWeight: FontWeight.w700,
+                              color: const Color(0xFF1A1A1A),
+                            ),
+                          ),
+                          if (album.description.isNotEmpty)
+                            Text(
+                              album.description,
+                              style: GoogleFonts.dmSans(
+                                fontSize: 13,
+                                color: const Color(0xFF6B6B6B),
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: () => Navigator.of(context).pop(),
+                      icon: const Icon(Icons.close_rounded, size: 22),
+                      color: const Color(0xFF9E9E9E),
+                    ),
+                  ],
+                ),
+              ),
+              Expanded(
+                child: SingleChildScrollView(
+                  controller: scrollController,
+                  padding: const EdgeInsets.fromLTRB(20, 16, 20, 32),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Photo carousel
+                      if (hasPhotos) ...[
+                        SizedBox(
+                          height: 260,
+                          child: PageView.builder(
+                            itemCount: album.photoUrls.length,
+                            onPageChanged: (i) =>
+                                setState(() => _currentPhotoIndex = i),
+                            itemBuilder: (context, i) => Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 4,
+                              ),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(20),
+                                child: Image.network(
+                                  album.photoUrls[i],
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (_, __, ___) => Container(
+                                    color: AppTheme.primaryContainer,
+                                    child: const Center(
+                                      child: Text(
+                                        '📸',
+                                        style: TextStyle(fontSize: 48),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        if (album.photoUrls.length > 1) ...[
+                          const SizedBox(height: 10),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: List.generate(
+                              album.photoUrls.length,
+                              (i) => AnimatedContainer(
+                                duration: const Duration(milliseconds: 200),
+                                margin: const EdgeInsets.symmetric(
+                                  horizontal: 3,
+                                ),
+                                width: i == _currentPhotoIndex ? 18 : 6,
+                                height: 6,
+                                decoration: BoxDecoration(
+                                  color: i == _currentPhotoIndex
+                                      ? AppTheme.primary
+                                      : AppTheme.primary.withAlpha(60),
+                                  borderRadius: BorderRadius.circular(999),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                        const SizedBox(height: 16),
+                      ],
+
+                      // Spotify track
+                      if (hasSpotify) ...[
+                        Container(
+                          padding: const EdgeInsets.all(14),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFF1DB954).withAlpha(15),
+                            borderRadius: BorderRadius.circular(16),
+                            border: Border.all(
+                              color: const Color(0xFF1DB954).withAlpha(50),
+                            ),
+                          ),
+                          child: Row(
+                            children: [
+                              Container(
+                                width: 40,
+                                height: 40,
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFF1DB954),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: const Center(
+                                  child: Text(
+                                    '🎵',
+                                    style: TextStyle(fontSize: 18),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      album.spotifyTrackName!,
+                                      style: GoogleFonts.dmSans(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w700,
+                                        color: const Color(0xFF1A1A1A),
+                                      ),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                    if (album.spotifyArtistName != null)
+                                      Text(
+                                        album.spotifyArtistName!,
+                                        style: GoogleFonts.dmSans(
+                                          fontSize: 12,
+                                          color: const Color(0xFF6B6B6B),
+                                        ),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                      ],
+
+                      // Photo grid (thumbnails)
+                      if (hasPhotos && album.photoUrls.length > 1) ...[
+                        Text(
+                          'Todas las fotos',
+                          style: GoogleFonts.dmSans(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                            color: const Color(0xFF1A1A1A),
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        GridView.builder(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 3,
+                                mainAxisSpacing: 6,
+                                crossAxisSpacing: 6,
+                                childAspectRatio: 1,
+                              ),
+                          itemCount: album.photoUrls.length,
+                          itemBuilder: (context, i) => ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: Image.network(
+                              album.photoUrls[i],
+                              fit: BoxFit.cover,
+                              errorBuilder: (_, __, ___) =>
+                                  Container(color: AppTheme.primaryContainer),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
                 ),
               ),
             ],
-          ],
-        ),
+          );
+        },
       ),
     );
   }
