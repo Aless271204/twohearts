@@ -18,6 +18,7 @@ dependencies:
   shared_preferences: ^2.2.2 # Required for local data storage
   model_viewer_plus: ^1.9.3
   web: ^1.1.1
+  webview_flutter: ^4.14.1
   
   # Feature dependencies - safe to modify
   cached_network_image: ^3.3.1
@@ -45,6 +46,8 @@ flutter:
     - assets/
     - assets/images/
     - assets/models/
+    - assets/runner/
+    - assets/runner/models/
   
   # CRITICAL FONTS RULE: 
   # - THIS PROJECT USES GOOGLE FONTS INSTEAD OF LOCAL FONTS

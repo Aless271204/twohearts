@@ -81,9 +81,9 @@ class _GameHubScreenState extends State<GameHubScreen> {
     },
     {
       'id': 'pebble_runner',
-      'title': 'Pebble Runner',
+      'title': 'Corre en pareja · Bosque',
       'emoji': '🐧',
-      'desc': 'Salta obstáculos con tu mascota 3D',
+      'desc': 'Corre con Pip por el bosque, salta y recoge monedas',
       'color': 0xFFFFE5EE,
       'textColor': 0xFFE8547A,
       'widget': PebbleRunnerTest,
@@ -97,6 +97,7 @@ class _GameHubScreenState extends State<GameHubScreen> {
   }
 
   Future<void> _load() async {
+    await GameService.instance.retryPendingRunnerRewards();
     final stats = await GameService.instance.getStats();
     final challenges = await GameService.instance.getDailyChallenges();
     if (mounted) {

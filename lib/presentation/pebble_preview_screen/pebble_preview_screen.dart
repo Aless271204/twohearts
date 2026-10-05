@@ -14,14 +14,8 @@ class _PebblePreviewScreenState extends State<PebblePreviewScreen> {
   static const _animations = <String>[
     'Walking',
     'Running',
-    'Angry_Ground_Stomp',
-    'Back_Jump',
-    'Casual_Walk',
-    'Happy_jump_f',
-    'Jump_Run',
-    'Jump_and_Grab_Wall',
+    'Idle_9',
     'Regular_Jump',
-    'happy_jump_m',
   ];
 
   @override

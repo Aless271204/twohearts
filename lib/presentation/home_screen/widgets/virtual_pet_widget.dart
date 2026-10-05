@@ -434,7 +434,10 @@ class _VirtualPetWidgetState extends State<VirtualPetWidget>
                   modelPath: widget.petModelPath,
                   altText: '${widget.petName}, mascota 3D de TwoHearts',
                   autoPlay: true,
-                  animationName: 'Idle_11',
+                  animationName:
+                      widget.petModelPath == PetModelCatalog.penguinModelPath
+                      ? 'Idle_9'
+                      : 'Idle_11',
                 ),
               ),
             ),
