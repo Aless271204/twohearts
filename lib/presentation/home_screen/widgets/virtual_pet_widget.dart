@@ -606,7 +606,7 @@ class _VirtualPetWidgetState extends State<VirtualPetWidget>
           const Text('🪙', style: TextStyle(fontSize: 14)),
           const SizedBox(width: 4),
           Text(
-            '340',
+            '${InventoryService.instance.coins}',
             style: GoogleFonts.dmSans(
               fontSize: 13,
               fontWeight: FontWeight.w700,
