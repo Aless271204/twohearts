@@ -76,12 +76,12 @@ class _Pet3DViewerState extends State<Pet3DViewer> {
         petViewer.addEventListener('error', e => reportPet(e.detail?.sourceError?.message || e.detail?.type || 'No se pudo cargar el modelo'));
         setTimeout(() => { if (!petViewer.loaded) reportPet('La mascota no terminó de cargar en 60 segundos'); }, 60000);
       ''',
-      javascriptChannels: [
+      javascriptChannels: {
         JavascriptChannel(
           'PetDiagnostics',
           onMessageReceived: (message) => _report(message.message),
         ),
-      ],
+      },
       onWebViewCreated: (controller) {
         controller.setNavigationDelegate(
           NavigationDelegate(
