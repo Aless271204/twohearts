@@ -1,0 +1,25 @@
+name: Publish Android test APK
+on:
+  push:
+    branches: [main]
+    paths: [.github/workflows/android-test-download.yml]
+permissions:
+  actions: read
+  contents: write
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: twohearts-android-debug
+          run-id: 37271033696
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: apk
+      - name: Publish verified APK for phone testing
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          test -s apk/app-debug.apk
+          sha256sum apk/app-debug.apk
+          gh release create android-test-2026-10-05 apk/app-debug.apk --repo Aless271204/twohearts --target cce58509bd364088c13e8a1aee3ef8228f9a527e --prerelease --title "TwoHearts · Prueba Android con Pip" --notes "APK de prueba: Pip, bosque 3D, música y guardado de monedas y récords en Supabase. Versión compilada y verificada en GitHub Actions. No es una publicación en Google Play."
