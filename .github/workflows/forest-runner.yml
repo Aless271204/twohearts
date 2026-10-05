@@ -1,7 +1,7 @@
 name: Flutter and forest runner
 on:
   push:
-    branches: [main, codex/android-local-assets, codex/runner-feedback, codex/pixel-local-rendering]
+    branches: [main, codex/android-local-assets, codex/runner-feedback, codex/pixel-local-rendering, codex/duo-games-inventory]
     paths-ignore: [.github/workflows/android-test-download.yml]
   pull_request:
     branches: [main]
@@ -25,7 +25,7 @@ jobs:
           cache: true
       - run: flutter pub get
       - run: flutter analyze --no-fatal-infos --no-fatal-warnings
-      - run: flutter test test/local_asset_path_test.dart
+      - run: flutter test test/local_asset_path_test.dart test/inventory_test.dart
       - name: Prepare public build configuration
         run: |
           python3 -c "import json; d=json.load(open('env.json')); json.dump({k:d[k] for k in ['SUPABASE_URL','SUPABASE_ANON_KEY','GOOGLE_WEB_CLIENT_ID'] if k in d},open('build-env.json','w'))"

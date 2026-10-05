@@ -44,7 +44,7 @@ class _Pet3DViewerState extends State<Pet3DViewer> {
           child: Padding(
             padding: const EdgeInsets.all(16),
             child: SelectableText(
-              'No pudimos mostrar la mascota.\nVersión 1.0.3\n$_failure',
+              'No pudimos mostrar la mascota.\nVersión 1.1.0\n$_failure',
             ),
           ),
         ),

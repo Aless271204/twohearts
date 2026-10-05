@@ -75,7 +75,7 @@ class _ForestRunnerViewState extends State<ForestRunnerView> {
             if (error.isForMainFrame != false && mounted) {
               setState(
                 () => _error =
-                    'No se pudo abrir el bosque.\nVersión 1.0.3\n${error.errorCode}: ${error.description}',
+                    'No se pudo abrir el bosque.\nVersión 1.1.0\n${error.errorCode}: ${error.description}',
               );
             }
           },
@@ -107,7 +107,7 @@ class _ForestRunnerViewState extends State<ForestRunnerView> {
     } catch (error) {
       if (mounted)
         setState(
-          () => _error = 'No se pudo abrir el bosque.\nVersión 1.0.3\n$error',
+          () => _error = 'No se pudo abrir el bosque.\nVersión 1.1.0\n$error',
         );
     }
   }

@@ -8,6 +8,7 @@ import { AdventureMusic } from './music.js';
 import { limitTextureMemory } from './texture_budget.js';
 import { showRunnerError } from './diagnostics.js';
 import { requestHost } from './bridge.js';
+import { equipRunnerCosmetics } from './cosmetics.js';
 clearTimeout(window.runnerBootTimer);
 
 const $ = id => document.getElementById(id);
@@ -215,6 +216,7 @@ async function boot(){
       if(key==='coin')gltf.scene.traverse(o=>{if(o.isMesh){o.material=o.material.clone();o.material.emissive=new THREE.Color('#be6a05');o.material.emissiveIntensity=.3;}});
       if(key==='pip'){
         penguin=fitModel(gltf.scene,1.15);penguin.rotation.y=Math.PI;scene.add(penguin);
+        requestHost('cosmetics').then(loadout=>{equipRunnerCosmetics(penguin,loadout);needsRender=true;}).catch(()=>{});
         mixer=new THREE.AnimationMixer(penguin);
         for(const clip of gltf.animations)actions[clip.name]=mixer.clipAction(clip);
         if(actions.Regular_Jump){actions.Regular_Jump.setLoop(THREE.LoopOnce,1);actions.Regular_Jump.clampWhenFinished=true;}
