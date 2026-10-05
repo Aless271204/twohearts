@@ -13,7 +13,7 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: twohearts-android-debug
-          run-id: 37336567536
+          run-id: 37347466212
           github-token: ${{ secrets.GITHUB_TOKEN }}
           path: apk
       - name: Publish verified APK for phone testing
@@ -21,5 +21,6 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           test -s apk/app-debug.apk
-          sha256sum apk/app-debug.apk
-          gh release create android-test-2026-10-05-fix1 apk/app-debug.apk --repo Aless271204/twohearts --target dc2ca5a2038d5291231bdb9f25628d2538f67278 --prerelease --title "TwoHearts · Android 1.0.2 con sonidos y dificultad progresiva" --notes "Corrige la carga de Pip y el bosque en Android. Añade dificultad progresiva y sonidos cálidos al recoger monedas, saltar y chocar. Compilación web y APK verificadas; prueba de Pip, sus animaciones, bosque y efectos de sonido pasada en emulador Android 35. Desinstala el APK anterior e inicia sesión de nuevo después de instalar. APK de prueba."
+          cp apk/app-debug.apk apk/TwoHearts-1.0.3.apk
+          sha256sum apk/TwoHearts-1.0.3.apk
+          gh release create android-test-2026-10-05-pixel1 apk/TwoHearts-1.0.3.apk --repo Aless271204/twohearts --target 010579e0dfba25910d30b827c551d51f50569b19 --prerelease --title "TwoHearts · Android 1.0.3 con motor 3D local" --notes "Motor Three.js incluido en el APK y texturas con menor consumo de memoria. Conserva Pip, sus animaciones, dificultad y sonidos. Prueba de carga de Pip y del bosque, carrera de práctica y sonidos pasada en emulador Android sin Wi-Fi ni datos. La pantalla de fallo muestra el detalle y versión para diagnosticar el Pixel 6; ese teléfono aún necesita comprobarse. Desinstala el APK anterior e instala TwoHearts-1.0.3.apk. Guardar partidas requiere conexión e iniciar sesión."
