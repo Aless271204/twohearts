@@ -1,12 +1,15 @@
 name: Flutter and forest runner
 on:
   push:
-    branches: [main]
+    branches: [main, codex/android-local-assets]
     paths-ignore: [.github/workflows/android-test-download.yml]
   pull_request:
     branches: [main]
 permissions:
   contents: read
+concurrency:
+  group: flutter-${{ github.event.pull_request.head.ref || github.ref_name }}
+  cancel-in-progress: true
 jobs:
   verify:
     runs-on: ubuntu-latest
