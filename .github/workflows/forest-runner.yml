@@ -1,0 +1,40 @@
+name: Flutter and forest runner
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node --test test/runner_replay_test.mjs test/runner_assets_test.mjs
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - run: flutter pub get
+      - run: flutter analyze --no-fatal-infos --no-fatal-warnings
+      - name: Prepare public build configuration
+        run: |
+          python3 -c "import json; d=json.load(open('env.json')); json.dump({k:d[k] for k in ['SUPABASE_URL','SUPABASE_ANON_KEY','GOOGLE_WEB_CLIENT_ID'] if k in d},open('build-env.json','w'))"
+      - run: flutter build web --release --dart-define-from-file=build-env.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: twohearts-web
+          path: build/web
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - run: flutter build apk --debug --dart-define-from-file=build-env.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: twohearts-android-debug
+          path: build/app/outputs/flutter-apk/app-debug.apk

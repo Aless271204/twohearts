@@ -1,4 +1,6 @@
 import 'package:flutter/foundation.dart';
+import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import './supabase_service.dart';
@@ -11,6 +13,64 @@ class GameService {
 
   SupabaseClient get _db => SupabaseService.instance.client;
   String? get _uid => SupabaseService.instance.currentUser?.id;
+  bool _retryingRunner = false;
+
+  Future<Map<String, dynamic>> _runnerRequest(
+    Map<String, dynamic> payload,
+  ) async {
+    final response = await _db.functions.invoke('forest-runner', body: payload);
+    final data = Map<String, dynamic>.from(response.data as Map);
+    if (response.status != 200 || data['error'] != null)
+      throw StateError('Runner request failed');
+    return data;
+  }
+
+  Future<Map<String, dynamic>> startRunnerSession() async {
+    if (_uid == null) return {'guest': true};
+    return _runnerRequest({'action': 'start'});
+  }
+
+  Future<Map<String, dynamic>> finishRunnerSession(
+    Map<String, dynamic> payload,
+  ) async {
+    final uid = _uid;
+    if (uid == null) throw StateError('Sign in to save your run');
+    final sessionId = payload['session_id'];
+    if (sessionId is! String || payload['frames'] is! List)
+      throw const FormatException('Invalid runner result');
+    final prefs = await SharedPreferences.getInstance();
+    final key = 'runner_pending_${uid}_$sessionId';
+    final request = {'action': 'finish', ...payload};
+    await prefs.setString(key, jsonEncode(request));
+    final result = await _runnerRequest(request);
+    await prefs.remove(key);
+    return result;
+  }
+
+  Future<void> retryPendingRunnerRewards() async {
+    final uid = _uid;
+    if (uid == null || _retryingRunner) return;
+    _retryingRunner = true;
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      for (final key
+          in prefs
+              .getKeys()
+              .where((key) => key.startsWith('runner_pending_${uid}_'))
+              .take(5)) {
+        try {
+          final request =
+              jsonDecode(prefs.getString(key)!) as Map<String, dynamic>;
+          await _runnerRequest(request);
+          await prefs.remove(key);
+        } catch (_) {
+          /* Retry the same idempotent session on the next visit. */
+        }
+      }
+    } finally {
+      _retryingRunner = false;
+    }
+  }
 
   // ─── GAME STATS ──────────────────────────────────────────────────────────
 

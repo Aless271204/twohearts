@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../theme/app_theme.dart';
+import '../../../core/pet_model_catalog.dart';
+import '../../../widgets/pet_3d_viewer.dart';
 
 class PetSelectionWidget extends StatelessWidget {
   final String? selectedPet;
@@ -78,7 +80,25 @@ class PetSelectionWidget extends StatelessWidget {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(pet['emoji']!, style: const TextStyle(fontSize: 24)),
+                      if (pet['name'] == 'Pingüino')
+                        const Expanded(
+                          child: IgnorePointer(
+                            child: Pet3DViewer(
+                              modelPath: PetModelCatalog.penguinModelPath,
+                              altText: 'Pip, pingüino',
+                              cameraControls: false,
+                              disableZoom: true,
+                              autoPlay: true,
+                              animationName: 'Idle_9',
+                              cameraOrbit: '0deg 75deg 105%',
+                            ),
+                          ),
+                        )
+                      else
+                        Text(
+                          pet['emoji']!,
+                          style: const TextStyle(fontSize: 24),
+                        ),
                       const SizedBox(height: 2),
                       Text(
                         pet['desc']!,

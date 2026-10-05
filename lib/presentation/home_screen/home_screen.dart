@@ -95,6 +95,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             'myCity': data['myCity'],
             'partnerCity': data['partnerCity'],
             'partnerId': data['partnerId'],
+            'petName':
+                PetModelCatalog.modelPathFor(data['petType'] as String?) ==
+                    PetModelCatalog.penguinModelPath
+                ? 'Pip'
+                : _coupleData['petName'],
             'petModelPath': PetModelCatalog.modelPathFor(
               data['petType'] as String?,
             ),
