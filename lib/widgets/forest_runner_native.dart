@@ -69,6 +69,18 @@ class _ForestRunnerViewState extends State<ForestRunnerView> {
       final controller = WebViewController()
         ..setJavaScriptMode(JavaScriptMode.unrestricted)
         ..setBackgroundColor(const Color(0xFF17392B));
+      await controller.setNavigationDelegate(
+        NavigationDelegate(
+          onWebResourceError: (error) {
+            if (error.isForMainFrame != false && mounted) {
+              setState(
+                () => _error =
+                    'No se pudo abrir el bosque.\nVersión 1.0.3\n${error.errorCode}: ${error.description}',
+              );
+            }
+          },
+        ),
+      );
       if (controller.platform is AndroidWebViewController) {
         await (controller.platform as AndroidWebViewController)
             .setMediaPlaybackRequiresUserGesture(false);
@@ -92,10 +104,10 @@ class _ForestRunnerViewState extends State<ForestRunnerView> {
       );
       if (mounted) setState(() => _controller = controller);
       if (mounted) widget.onWebViewCreated?.call(controller);
-    } catch (_) {
+    } catch (error) {
       if (mounted)
         setState(
-          () => _error = 'No se pudo abrir el bosque. Vuelve a intentarlo.',
+          () => _error = 'No se pudo abrir el bosque.\nVersión 1.0.3\n$error',
         );
     }
   }

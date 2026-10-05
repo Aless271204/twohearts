@@ -5,6 +5,8 @@ import { LANES, jumpStep, crossesPlayer, hitsObstacle, collectsCoin } from './ph
 import { createLandscape } from './landscape.js';
 import { runnerDifficulty } from './difficulty.js';
 import { AdventureMusic } from './music.js';
+import { limitTextureMemory } from './texture_budget.js';
+import { showRunnerError } from './diagnostics.js';
 import { requestHost } from './bridge.js';
 clearTimeout(window.runnerBootTimer);
 
@@ -18,6 +20,7 @@ const renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:'high-per
 renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));renderer.setSize(innerWidth,innerHeight);
 renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.22;
 document.body.prepend(renderer.domElement);
+renderer.domElement.addEventListener('webglcontextlost',()=>showRunnerError('Android perdió el contexto gráfico 3D','gráficos'));
 scene.add(new THREE.HemisphereLight(0xf4ffe2,0x715632,2.3));
 const sun=new THREE.DirectionalLight(0xffdf9c,3.4);sun.position.set(-10,18,-16);scene.add(sun);
 const fill=new THREE.DirectionalLight(0xd5eaff,1.2);fill.position.set(4,6,8);scene.add(fill);
@@ -208,6 +211,7 @@ async function boot(){
     for(let i=0;i<entries.length;i++){
       const [key,file]=entries[i];$('message').textContent=`Cargando bosque ${i+1}/${entries.length}…`;
       const gltf=await loader.loadAsync(`models/${file}`);templates[key]=gltf.scene;
+      limitTextureMemory(gltf.scene);
       if(key==='coin')gltf.scene.traverse(o=>{if(o.isMesh){o.material=o.material.clone();o.material.emissive=new THREE.Color('#be6a05');o.material.emissiveIntensity=.3;}});
       if(key==='pip'){
         penguin=fitModel(gltf.scene,1.15);penguin.rotation.y=Math.PI;scene.add(penguin);
@@ -232,7 +236,7 @@ async function boot(){
     last=performance.now();animationId=requestAnimationFrame(frame);
   }catch(error){
     clearTimeout(window.runnerBootTimer);$('title').textContent='No pudimos abrir el bosque';
-    $('message').textContent='Comprueba tu conexión y vuelve a abrir el juego.';console.error('Forest runner load failed',error);
+    showRunnerError(error, 'modelo del bosque');console.error('Forest runner load failed',error);
   }
 }
 addEventListener('pagehide',()=>{

@@ -1,7 +1,7 @@
 name: twohearts
 description: A new Flutter project.
 publish_to: none
-version: 1.0.2+3
+version: 1.0.3+4
 
 environment:
   sdk: ^3.9.0
@@ -51,6 +51,9 @@ flutter:
     - assets/models/
     - assets/runner/
     - assets/runner/models/
+    - assets/runner/vendor/
+    - assets/runner/vendor/loaders/
+    - assets/runner/vendor/utils/
   
   # CRITICAL FONTS RULE: 
   # - THIS PROJECT USES GOOGLE FONTS INSTEAD OF LOCAL FONTS
