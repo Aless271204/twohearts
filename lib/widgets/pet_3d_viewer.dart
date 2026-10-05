@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:model_viewer_plus/model_viewer_plus.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 class Pet3DViewer extends StatelessWidget {
   final String modelPath;
@@ -10,6 +11,7 @@ class Pet3DViewer extends StatelessWidget {
   final bool autoPlay;
   final String? animationName;
   final String? cameraOrbit;
+  final ValueChanged<WebViewController>? onWebViewCreated;
 
   const Pet3DViewer({
     super.key,
@@ -21,6 +23,7 @@ class Pet3DViewer extends StatelessWidget {
     this.autoPlay = false,
     this.animationName,
     this.cameraOrbit,
+    this.onWebViewCreated,
   });
 
   @override
@@ -39,6 +42,7 @@ class Pet3DViewer extends StatelessWidget {
       interactionPrompt: InteractionPrompt.none,
       loading: Loading.eager,
       ar: false,
+      onWebViewCreated: onWebViewCreated,
     );
   }
 }

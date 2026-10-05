@@ -2,6 +2,7 @@ name: Flutter and forest runner
 on:
   push:
     branches: [main]
+    paths-ignore: [.github/workflows/android-test-download.yml]
   pull_request:
     branches: [main]
 permissions:
@@ -21,6 +22,7 @@ jobs:
           cache: true
       - run: flutter pub get
       - run: flutter analyze --no-fatal-infos --no-fatal-warnings
+      - run: flutter test test/local_asset_path_test.dart
       - name: Prepare public build configuration
         run: |
           python3 -c "import json; d=json.load(open('env.json')); json.dump({k:d[k] for k in ['SUPABASE_URL','SUPABASE_ANON_KEY','GOOGLE_WEB_CLIENT_ID'] if k in d},open('build-env.json','w'))"
@@ -33,8 +35,43 @@ jobs:
         with:
           distribution: temurin
           java-version: '17'
+      - uses: actions/cache@v4
+        with:
+          path: ~/.android/debug.keystore
+          key: twohearts-android-test-keystore-v1
       - run: flutter build apk --debug --dart-define-from-file=build-env.json
       - uses: actions/upload-artifact@v4
         with:
           name: twohearts-android-debug
           path: build/app/outputs/flutter-apk/app-debug.apk
+  android-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - run: flutter pub get
+      - name: Prepare public build configuration
+        run: |
+          python3 -c "import json; d=json.load(open('env.json')); json.dump({k:d[k] for k in ['SUPABASE_URL','SUPABASE_ANON_KEY','GOOGLE_WEB_CLIENT_ID'] if k in d},open('build-env.json','w'))"
+      - name: Enable emulator acceleration
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+      - uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 35
+          target: google_apis
+          arch: x86_64
+          ram-size: 4096M
+          emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim
+          disable-animations: true
+          script: flutter test integration_test/android_assets_test.dart -d emulator-5554 --dart-define-from-file=build-env.json
