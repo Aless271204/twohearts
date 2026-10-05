@@ -36,18 +36,20 @@ class _ShopScreenState extends State<ShopScreen> {
   Future<void> _load() async {
     try {
       await inventory.refresh();
-      if (mounted)
+      if (mounted) {
         setState(() {
           loading = false;
           error = null;
         });
+      }
     } catch (_) {
-      if (mounted)
+      if (mounted) {
         setState(() {
           loading = false;
           error =
               'No pudimos abrir tu inventario. Comprueba tu conexión e inicia sesión.';
         });
+      }
     }
   }
 
@@ -85,7 +87,7 @@ class _ShopScreenState extends State<ShopScreen> {
         await inventory.equip(item, !inventory.equipped(item.key));
       }
     } catch (e) {
-      if (mounted)
+      if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
@@ -95,6 +97,7 @@ class _ShopScreenState extends State<ShopScreen> {
             ),
           ),
         );
+      }
     } finally {
       if (mounted) setState(() => busy = false);
     }
@@ -306,7 +309,7 @@ class InventoryPreview extends StatelessWidget {
   });
   @override
   Widget build(BuildContext context) {
-    if (scope == 'pet' || scope == 'room')
+    if (scope == 'pet' || scope == 'room') {
       return Container(
         height: 210,
         decoration: BoxDecoration(
@@ -341,7 +344,8 @@ class InventoryPreview extends StatelessWidget {
           ],
         ),
       );
-    if (scope == 'pong')
+    }
+    if (scope == 'pong') {
       return Container(
         height: 180,
         padding: const EdgeInsets.all(18),
@@ -381,6 +385,7 @@ class InventoryPreview extends StatelessWidget {
           ],
         ),
       );
+    }
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(

@@ -13,16 +13,18 @@ void main() {
       ' #FFFFFF',
       null,
       {},
-    ])
+    ]) {
       expect(InventoryItem.parseColor(value), const Color(0xFF92BDA7));
+    }
   });
   test('Opposing phones mirror input while preserving collision limits', () {
     expect(pongToServerX(.25, false), .25);
     expect(pongToServerX(.25, true), .75);
     expect(pongToServerX(-5, false), .11);
     expect(pongToServerX(3, true), .11);
-    for (final x in [.11, .25, .5, .75, .89])
+    for (final x in [.11, .25, .5, .75, .89]) {
       expect(pongFromServer(pongFromServer(x, true), true), closeTo(x, .00001));
+    }
   });
   test('Prediction reflects at walls and never advances more than 200ms', () {
     expect(pongBallX(.97, .5, .1), closeTo(.93, .00001));

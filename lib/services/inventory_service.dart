@@ -19,8 +19,9 @@ class InventoryItem {
   String get style => appearance['style'] as String? ?? '';
   Color get color => parseColor(appearance['color']);
   static Color parseColor(dynamic value) {
-    if (value is! String || !RegExp(r'^#[0-9a-fA-F]{6}$').hasMatch(value))
+    if (value is! String || !RegExp(r'^#[0-9a-fA-F]{6}$').hasMatch(value)) {
       return const Color(0xFF92BDA7);
+    }
     return Color(0xFF000000 | int.parse(value.substring(1), radix: 16));
   }
 
@@ -101,8 +102,9 @@ class InventoryService extends ChangeNotifier {
     final raw = Map<String, dynamic>.from(
       await _db.rpc('inventory_snapshot') as Map,
     );
-    if (_uid != uid || generation != _generation || raw['user_id'] != uid)
+    if (_uid != uid || generation != _generation || raw['user_id'] != uid) {
       return;
+    }
     _account = uid;
     coins = raw['coins'] as int;
     catalog = (raw['catalog'] as List)

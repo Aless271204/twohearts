@@ -63,8 +63,9 @@ class _DuoGameScreenState extends State<DuoGameScreen>
     if (!mounted) return;
     final next = Map<String, dynamic>.from(raw as Map);
     if (next['state']['question_no'] != match?['state']?['question_no'] ||
-        next['state']['phase'] != match?['state']?['phase'])
+        next['state']['phase'] != match?['state']?['phase']) {
       pendingChoice = null;
+    }
     setState(() {
       match = next;
       received = DateTime.now();
@@ -93,12 +94,13 @@ class _DuoGameScreenState extends State<DuoGameScreen>
         (_) => _tick(),
       );
     } catch (e) {
-      if (mounted)
+      if (mounted) {
         setState(
           () => failure = e is PostgrestException
               ? e.message
               : 'No pudimos conectar. Revisa tu conexión y vuelve a intentarlo.',
         );
+      }
     }
   }
 
@@ -121,7 +123,7 @@ class _DuoGameScreenState extends State<DuoGameScreen>
         ),
       );
     } catch (e) {
-      if (mounted)
+      if (mounted) {
         setState(() {
           failure = e is PostgrestException
               ? e.message
@@ -129,6 +131,7 @@ class _DuoGameScreenState extends State<DuoGameScreen>
           answerBusy = false;
           pendingChoice = null;
         });
+      }
     } finally {
       inFlight = false;
     }
@@ -138,8 +141,9 @@ class _DuoGameScreenState extends State<DuoGameScreen>
     if (inFlight ||
         answerBusy ||
         state['my_choice'] != null ||
-        pendingChoice != null)
+        pendingChoice != null) {
       return;
+    }
     setState(() {
       pendingChoice = value;
       answerBusy = true;
@@ -148,8 +152,9 @@ class _DuoGameScreenState extends State<DuoGameScreen>
   }
 
   Future<bool> _leave() async {
-    if (match == null || ['finished', 'cancelled'].contains(match!['status']))
+    if (match == null || ['finished', 'cancelled'].contains(match!['status'])) {
       return true;
+    }
     final confirm = await showDialog<bool>(
       context: context,
       builder: (c) => AlertDialog(
@@ -175,7 +180,7 @@ class _DuoGameScreenState extends State<DuoGameScreen>
       );
       return true;
     } catch (_) {
-      if (mounted)
+      if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text(
@@ -183,6 +188,7 @@ class _DuoGameScreenState extends State<DuoGameScreen>
             ),
           ),
         );
+      }
       return false;
     }
   }
@@ -197,7 +203,8 @@ class _DuoGameScreenState extends State<DuoGameScreen>
     return PopScope(
       canPop: match == null || ['finished', 'cancelled'].contains(status),
       onPopInvokedWithResult: (popped, result) async {
-        if (!popped && await _leave() && mounted) Navigator.pop(context);
+        if (!popped && await _leave() && context.mounted)
+          Navigator.pop(context);
       },
       child: Scaffold(
         backgroundColor: dark
@@ -381,8 +388,9 @@ class _DuoGameScreenState extends State<DuoGameScreen>
     String label(dynamic i) =>
         i is int && i >= 0 && i < options.length ? options[i] : 'Sin respuesta';
     final border = inventory.at('quiz_card')?.color ?? const Color(0xFFE69FBB);
-    if (s['paused'] == true)
+    if (s['paused'] == true) {
       return const Center(child: Text('Esperando la conexión de tu pareja…'));
+    }
     return ListView(
       padding: const EdgeInsets.all(20),
       children: [
@@ -403,16 +411,23 @@ class _DuoGameScreenState extends State<DuoGameScreen>
           },
         ),
         const SizedBox(height: 16),
-        Text(
-          '${inventory.at('quiz_badge')?.emoji ?? '💌'} ${phase == 'self'
-              ? 'Elige tu respuesta secreta'
-              : phase == 'guess'
-              ? '¿Qué crees que eligió tu pareja?'
-              : phase == 'reveal'
-              ? '¡Así nos conocemos!'
-              : '¡Prepárense!'}',
-          textAlign: TextAlign.center,
-          style: const TextStyle(fontSize: 19, fontWeight: FontWeight.bold),
+        Container(
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: inventory.at('quiz_badge')?.color.withAlpha(80),
+            borderRadius: BorderRadius.circular(18),
+          ),
+          child: Text(
+            '${inventory.at('quiz_badge')?.emoji ?? '💌'} ${phase == 'self'
+                ? 'Elige tu respuesta secreta'
+                : phase == 'guess'
+                ? '¿Qué crees que eligió tu pareja?'
+                : phase == 'reveal'
+                ? '¡Así nos conocemos!'
+                : '¡Prepárense!'}',
+            textAlign: TextAlign.center,
+            style: const TextStyle(fontSize: 19, fontWeight: FontWeight.bold),
+          ),
         ),
         if ((s['round_questions'] as int? ?? 0) >= 5)
           const Text(
@@ -531,7 +546,13 @@ class _PongPainter extends CustomPainter {
       .9,
       cosmetics['pong_paddle']?.color ?? const Color(0xFF6393E7),
     );
-    paddle(pongFromServer(opponent, sideB), .1, const Color(0xFFF39D75));
+    paddle(
+      pongFromServer(opponent, sideB),
+      .1,
+      s['opponent_paddle_color'] == null
+          ? const Color(0xFFF39D75)
+          : InventoryItem.parseColor(s['opponent_paddle_color']),
+    );
     final play = s['phase'] == 'play' && s['paused'] != true;
     final elapsed = play ? dt : 0.0;
     final x = pongBallX(
