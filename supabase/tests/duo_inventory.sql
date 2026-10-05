@@ -39,6 +39,18 @@ begin result:=public.duo_tick((select m from fixtures),null,1,0,'self');if resul
 select set_config('request.jwt.claim.sub',(select a::text from fixtures),true);
 do $$declare result jsonb;
 begin result:=public.duo_tick((select m from fixtures),null,1,0,'guess');if result->'state'->>'phase'<>'reveal' or result->'state'->>'score_a'<>'1' or result->'state'->>'score_b'<>'1' then raise exception 'Quiz reveal or scoring incorrect';end if;end $$;
+-- Resolve a second round and check the winner receives the same reward only once.
+update public.duo_matches set state=state||jsonb_build_object('round_questions',4,'wins_a',1,'score_a',3,'score_b',2,'deadline',extract(epoch from now())-1),created_at=now()-interval '1 minute' where id=(select m from fixtures);
+select set_config('request.jwt.claim.sub',(select player_a::text from public.duo_matches where id=(select m from fixtures)),true);
+do $$declare result jsonb;before_coins integer;after_coins integer;
+begin
+ select love_coins into before_coins from public.game_stats where user_id=auth.uid();
+ result:=public.duo_tick((select m from fixtures));
+ if result->>'status'<>'finished' or result->>'winner'<>auth.uid()::text or (result->>'reward')::int<>20 then raise exception 'Best of three resolution or winner reward failed';end if;
+ perform public.duo_tick((select m from fixtures));
+ select love_coins into after_coins from public.game_stats where user_id=auth.uid();
+ if after_coins-before_coins<>20 or (select count(*) from public.duo_rewards where match_id=(select m from fixtures))<>2 then raise exception 'Reward credited more than once';end if;
+end $$;
 select set_config('request.jwt.claim.sub',(select c::text from fixtures),true);
 do $$begin begin perform public.duo_tick((select m from fixtures));raise exception 'Third account entered';exception when insufficient_privilege then null;end;end $$;
 do $$declare st jsonb;r jsonb;

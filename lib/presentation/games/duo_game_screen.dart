@@ -26,7 +26,6 @@ class _DuoGameScreenState extends State<DuoGameScreen>
   double paddle = .5;
   int? pendingChoice;
   DateTime received = DateTime.now();
-  DateTime? selectedAt;
   final Stopwatch elapsed = Stopwatch()..start();
   int receivedAt = 0;
   @override
@@ -309,11 +308,13 @@ class _DuoGameScreenState extends State<DuoGameScreen>
                           behavior: HitTestBehavior.opaque,
                           onPanDown: (d) => setState(
                             () => paddle = (d.localPosition.dx / box.maxWidth)
-                                .clamp(.11, .89),
+                                .clamp(.11, .89)
+                                .toDouble(),
                           ),
                           onPanUpdate: (d) => setState(
                             () => paddle = (d.localPosition.dx / box.maxWidth)
-                                .clamp(.11, .89),
+                                .clamp(.11, .89)
+                                .toDouble(),
                           ),
                           child: Stack(
                             children: [
@@ -541,7 +542,8 @@ class _PongPainter extends CustomPainter {
     final y =
         ((s['y'] as num).toDouble() +
                 (s['vy'] as num).toDouble() * elapsed.clamp(0, .2))
-            .clamp(0.02, .98);
+            .clamp(0.02, .98)
+            .toDouble();
     final pos = Offset(
       pongFromServer(x, sideB) * size.width,
       pongFromServer(y, sideB) * size.height,
