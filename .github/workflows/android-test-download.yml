@@ -13,7 +13,7 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: twohearts-android-debug
-          run-id: 37271033696
+          run-id: 37336567536
           github-token: ${{ secrets.GITHUB_TOKEN }}
           path: apk
       - name: Publish verified APK for phone testing
@@ -22,4 +22,4 @@ jobs:
         run: |
           test -s apk/app-debug.apk
           sha256sum apk/app-debug.apk
-          gh release create android-test-2026-10-05 apk/app-debug.apk --repo Aless271204/twohearts --target cce58509bd364088c13e8a1aee3ef8228f9a527e --prerelease --title "TwoHearts · Prueba Android con Pip" --notes "APK de prueba: Pip, bosque 3D, música y guardado de monedas y récords en Supabase. Versión compilada y verificada en GitHub Actions. No es una publicación en Google Play."
+          gh release create android-test-2026-10-05-fix1 apk/app-debug.apk --repo Aless271204/twohearts --target dc2ca5a2038d5291231bdb9f25628d2538f67278 --prerelease --title "TwoHearts · Android 1.0.2 con sonidos y dificultad progresiva" --notes "Corrige la carga de Pip y el bosque en Android. Añade dificultad progresiva y sonidos cálidos al recoger monedas, saltar y chocar. Compilación web y APK verificadas; prueba de Pip, sus animaciones, bosque y efectos de sonido pasada en emulador Android 35. Desinstala el APK anterior e inicia sesión de nuevo después de instalar. APK de prueba."
