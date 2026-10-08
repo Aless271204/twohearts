@@ -74,11 +74,13 @@ class _CoupleMapWidgetState extends State<CoupleMapWidget> {
   Future<void> _requestAndFetchLocation() async {
     if (kIsWeb) {
       // Web: use browser geolocation via geolocator
+      if (!mounted) return;
       setState(() => _locating = true);
       try {
         bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
         if (!serviceEnabled) {
-          setState(() {
+          if (!mounted) return;
+      setState(() {
             _locationError = 'Activa la ubicación en tu dispositivo';
             _locating = false;
           });
@@ -90,7 +92,8 @@ class _CoupleMapWidgetState extends State<CoupleMapWidget> {
         }
         if (permission == LocationPermission.deniedForever ||
             permission == LocationPermission.denied) {
-          setState(() {
+          if (!mounted) return;
+      setState(() {
             _locationError = 'Permiso de ubicación denegado';
             _locating = false;
           });
@@ -101,14 +104,16 @@ class _CoupleMapWidgetState extends State<CoupleMapWidget> {
             accuracy: LocationAccuracy.medium,
           ),
         );
-        setState(() {
+        if (!mounted) return;
+      setState(() {
           _myLat = pos.latitude;
           _myLon = pos.longitude;
           _locating = false;
           _locationError = null;
         });
       } catch (e) {
-        setState(() {
+        if (!mounted) return;
+      setState(() {
           _locationError = 'No se pudo obtener la ubicación';
           _locating = false;
         });
@@ -117,11 +122,13 @@ class _CoupleMapWidgetState extends State<CoupleMapWidget> {
     }
 
     // Mobile: request permission then get location
-    setState(() => _locating = true);
+    if (!mounted) return;
+      setState(() => _locating = true);
     try {
       bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
       if (!serviceEnabled) {
-        setState(() {
+        if (!mounted) return;
+      setState(() {
           _locationError = 'Activa el GPS en tu dispositivo';
           _locating = false;
         });
@@ -132,7 +139,8 @@ class _CoupleMapWidgetState extends State<CoupleMapWidget> {
       if (permission == LocationPermission.denied) {
         permission = await Geolocator.requestPermission();
         if (permission == LocationPermission.denied) {
-          setState(() {
+          if (!mounted) return;
+      setState(() {
             _locationError = 'Permiso de ubicación denegado';
             _locating = false;
           });
@@ -140,7 +148,8 @@ class _CoupleMapWidgetState extends State<CoupleMapWidget> {
         }
       }
       if (permission == LocationPermission.deniedForever) {
-        setState(() {
+        if (!mounted) return;
+      setState(() {
           _locationError =
               'Permiso denegado permanentemente. Actívalo en Ajustes.';
           _locating = false;
@@ -153,6 +162,7 @@ class _CoupleMapWidgetState extends State<CoupleMapWidget> {
           accuracy: LocationAccuracy.medium,
         ),
       );
+      if (!mounted) return;
       setState(() {
         _myLat = pos.latitude;
         _myLon = pos.longitude;
@@ -160,6 +170,7 @@ class _CoupleMapWidgetState extends State<CoupleMapWidget> {
         _locationError = null;
       });
     } catch (e) {
+      if (!mounted) return;
       setState(() {
         _locationError = 'No se pudo obtener la ubicación';
         _locating = false;
@@ -197,7 +208,7 @@ class _CoupleMapWidgetState extends State<CoupleMapWidget> {
               const Text('📍', style: TextStyle(fontSize: 14)),
               const SizedBox(width: 6),
               Text(
-                'Distancia en tiempo real',
+                'Mi ubicación actual',
                 style: GoogleFonts.dmSans(
                   fontSize: 12,
                   color: const Color(0xFF5A5A5A),
@@ -417,7 +428,7 @@ class _CoupleMapWidgetState extends State<CoupleMapWidget> {
                                     const SizedBox(width: 4),
                                     Text(
                                       _myLat != null
-                                          ? 'GPS activo'
+                                          ? 'Ubicación consultada'
                                           : 'Obteniendo...',
                                       style: GoogleFonts.dmSans(
                                         fontSize: 11,

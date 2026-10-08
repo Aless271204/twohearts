@@ -66,6 +66,21 @@ void main() {
     await tester.pumpWidget(const SizedBox.shrink());
     await tester.pump(const Duration(seconds: 1));
 
+    final fittedPet = Completer<WebViewController>();
+    await tester.pumpWidget(MaterialApp(home: Scaffold(body: ForestRunnerView(
+      petOnly: true,
+      animationName: 'Running',
+      appearance: '{"pet_head":{"style":"crown","color":"#f6ce68"},"pet_neck":{"style":"scarf","color":"#e6546a"},"pet_back":{"style":"backpack","color":"#538ee5"}}',
+      onWebViewCreated: fittedPet.complete,
+    ))));
+    await tester.pump(const Duration(seconds: 1));
+    final fittedController = await fittedPet.future.timeout(const Duration(seconds: 30));
+    await waitForJavaScript(tester, fittedController,
+      "document.body.classList.contains('pet-only') && ['Head','Neck','Spine2'].every(name => document.body.dataset.petAnchors?.includes(name)) && document.body.dataset.petAnimation === 'Running'",
+      'The actual pet renderer attaches accessories to the animated original rig offline');
+    await tester.pumpWidget(const SizedBox.shrink());
+    await tester.pump(const Duration(seconds: 1));
+
     final forest = Completer<WebViewController>();
     await tester.pumpWidget(
       MaterialApp(
@@ -153,5 +168,5 @@ void main() {
       'Collision plays its sound and ends the practice run',
     );
     await tester.pumpWidget(const SizedBox.shrink());
-  }, timeout: const Timeout(Duration(minutes: 5)));
+  }, timeout: const Timeout(Duration(minutes: 7)));
 }

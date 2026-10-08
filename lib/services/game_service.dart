@@ -102,109 +102,7 @@ class GameService {
     'total_coins_earned': 0,
   };
 
-  /// Add coins and XP after a game session
-  Future<Map<String, dynamic>> addReward({
-    required int coins,
-    required int xp,
-    required String gameId,
-    required int score,
-  }) async {
-    final uid = _uid;
-    if (uid == null) return _defaultStats();
-    try {
-      // Ensure stats row exists
-      await _db
-          .from('game_stats')
-          .upsert(
-            {'user_id': uid},
-            onConflict: 'user_id',
-            ignoreDuplicates: true,
-          );
-
-      // Fetch current stats
-      final current = await getStats();
-      final newCoins = (current['love_coins'] as int? ?? 0) + coins;
-      final newXp = (current['xp'] as int? ?? 0) + xp;
-      final newLevel = _calcLevel(newXp);
-      final newTotal = (current['total_games_played'] as int? ?? 0) + 1;
-      final newTotalCoins =
-          (current['total_coins_earned'] as int? ?? 0) + coins;
-
-      await _db
-          .from('game_stats')
-          .update({
-            'love_coins': newCoins,
-            'xp': newXp,
-            'level': newLevel,
-            'total_games_played': newTotal,
-            'total_coins_earned': newTotalCoins,
-            'updated_at': DateTime.now().toIso8601String(),
-          })
-          .eq('user_id', uid);
-
-      // Record score
-      await _db.from('game_scores').insert({
-        'user_id': uid,
-        'game_id': gameId,
-        'score': score,
-        'coins_earned': coins,
-      });
-
-      // Update record
-      await _updateRecord(uid, gameId, score, coins);
-
-      return {
-        'love_coins': newCoins,
-        'xp': newXp,
-        'level': newLevel,
-        'total_games_played': newTotal,
-        'total_coins_earned': newTotalCoins,
-      };
-    } catch (e) {
-      debugPrint('addReward error: $e');
-      return _defaultStats();
-    }
-  }
-
-  Future<void> _updateRecord(
-    String uid,
-    String gameId,
-    int score,
-    int coins,
-  ) async {
-    try {
-      final existing = await _db
-          .from('game_records')
-          .select()
-          .eq('user_id', uid)
-          .eq('game_id', gameId)
-          .maybeSingle();
-
-      if (existing == null) {
-        await _db.from('game_records').insert({
-          'user_id': uid,
-          'game_id': gameId,
-          'best_score': score,
-          'best_coins': coins,
-          'times_played': 1,
-        });
-      } else {
-        final isBest = score > (existing['best_score'] as int? ?? 0);
-        await _db
-            .from('game_records')
-            .update({
-              'best_score': isBest ? score : existing['best_score'],
-              'best_coins': isBest ? coins : existing['best_coins'],
-              'times_played': (existing['times_played'] as int? ?? 0) + 1,
-              'updated_at': DateTime.now().toIso8601String(),
-            })
-            .eq('user_id', uid)
-            .eq('game_id', gameId);
-      }
-    } catch (e) {
-      debugPrint('_updateRecord error: $e');
-    }
-  }
+  // Rewards and records are written only by validated server functions.
 
   Future<Map<String, dynamic>?> getRecord(String gameId) async {
     final uid = _uid;
@@ -219,14 +117,6 @@ class GameService {
     } catch (e) {
       return null;
     }
-  }
-
-  int _calcLevel(int xp) {
-    if (xp < 200) return 1;
-    if (xp < 500) return 2;
-    if (xp < 1000) return 3;
-    if (xp < 2000) return 4;
-    return 5;
   }
 
   int xpForNextLevel(int level) {

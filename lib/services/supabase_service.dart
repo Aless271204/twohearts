@@ -45,6 +45,7 @@ class SupabaseService {
     required String password,
     required String fullName,
   }) async {
+    if (password.length < 12) throw const AuthException('Usa una contraseña de al menos 12 caracteres');
     return await client.auth.signUp(
       email: email.trim(),
       password: password,

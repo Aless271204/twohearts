@@ -215,6 +215,7 @@ function frame(now){
       if(activeAction)actions[activeAction].fadeOut(.16);activeAction=name;
     }
     if(!paused)mixer.update(dt);
+    if(petOnly)document.body.dataset.petAnimation=activeAction??'';
   }
   shadow.position.x=x;shadow.material.opacity=.22/(1+height);shadow.scale.set(1+height*.18,.65+height*.1,1);
   cameraX=THREE.MathUtils.lerp(cameraX,0,1-Math.exp(-dt*4));
@@ -252,7 +253,7 @@ async function boot(){
         for(const clip of gltf.animations)actions[clip.name]=mixer.clipAction(clip);
         if(actions.Regular_Jump){actions.Regular_Jump.setLoop(THREE.LoopOnce,1);actions.Regular_Jump.clampWhenFinished=true;}
         if(actions.Idle_9){actions.Idle_9.play();activeAction='Idle_9';mixer.update(0);}
-        (petOnly?Promise.resolve(JSON.parse(params.get('appearance')??'{}')):requestHost('cosmetics')).then(loadout=>{equipRunnerCosmetics(penguin,loadout);needsRender=true;}).catch(()=>{});
+        (petOnly?Promise.resolve(JSON.parse(params.get('appearance')??'{}')):requestHost('cosmetics')).then(loadout=>{const equipped=equipRunnerCosmetics(penguin,loadout);if(petOnly)document.body.dataset.petAnchors=equipped.userData.slots.map(slot=>slot.parent.name).join(',');needsRender=true;}).catch(()=>{});
       }
     }
     if(!petOnly)boardwalk();

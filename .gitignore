@@ -53,3 +53,5 @@ android/app/.cxx
 *.p12
 android/key.properties
 build-env.json
+
+/supabase/.temp/
