@@ -1,6 +1,6 @@
 # NIDO 1.1.3: bosque y mascota compartida
 
-La habitación utiliza la pose Idle_9 del modelo original de Pip. La posición, la rotación y el contacto de los pies con el suelo se mantienen fijos; arrastrar la mascota no desplaza la cámara. Se eliminó el movimiento vertical decorativo del contenedor.
+La habitación utiliza Idle_9 del modelo original de Pip como base, con las patas recogidas en una pose de descanso. El contacto con el suelo se calcula desde los vértices reales de las patas después de aplicar el esqueleto. La posición y la rotación se mantienen fijas; arrastrar la mascota no desplaza la cámara. Se eliminó el movimiento vertical decorativo del contenedor.
 
 El recorrido utiliza un bosque dentro del mismo renderizador Three.js del puente: árboles, helechos, flores, rocas, río y cascada animados, con un reino sobre una plataforma de roca. El puente continúa fuera de la distancia visible. La cámara conserva al personaje dentro de la pantalla en los dos carriles exteriores, también en formato vertical estrecho.
 
