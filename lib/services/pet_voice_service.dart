@@ -7,13 +7,15 @@ class PetVoiceService {
   static const _channel = MethodChannel('nido/pet_voice');
   static final instance = PetVoiceService();
   Future<void> prepare() async {
-    final ready = await _channel.invokeMethod<bool>('prepare');
+    final ready = await _channel.invokeMethod<bool>('prepare').timeout(const Duration(seconds: 15));
     if (ready != true) throw StateError('Instala una voz en español en los ajustes de voz de Android.');
   }
   Future<void> speak(String text) async {
-    await _channel.invokeMethod('speak', {'text': text});
+    try { await _channel.invokeMethod('speak', {'text': text}).timeout(const Duration(seconds: 60)); } catch (_) { await stop(); rethrow; }
   }
-  Future<String> dictate() async => await _channel.invokeMethod<String>('dictate') ?? '';
+  Future<String> dictate() async {
+    try { return await _channel.invokeMethod<String>('dictate').timeout(const Duration(seconds: 30)) ?? ''; } catch (_) { await stop(); rethrow; }
+  }
   Future<void> stop() async { try { await _channel.invokeMethod('stop'); } catch (_) {} }
   Future<List<Map<String, dynamic>>> messages() async {
     final result = await SupabaseService.instance.client.rpc('pet_message_list');

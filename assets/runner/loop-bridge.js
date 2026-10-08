@@ -55,7 +55,7 @@ export function createLoopBridge(z){
 
 // All repeated sections share seven draws instead of seven per section.
 export function createBridgeBelt(){
-  const sections=Array.from({length:9},(_,i)=>createLoopBridge(8-i*12));
+  const sections=Array.from({length:18},(_,i)=>createLoopBridge(8-i*12));
   const belt=new THREE.Group(), matrix=new THREE.Matrix4(), color=new THREE.Color();
   for(let type=0;type<sections[0].children.length;type++){
     const source=sections[0].children[type];

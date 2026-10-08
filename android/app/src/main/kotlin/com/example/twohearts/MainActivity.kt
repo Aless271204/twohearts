@@ -45,7 +45,7 @@ class MainActivity : FlutterFragmentActivity() {
                 "prepare" -> if (initialized) result.success(ready) else preparations.add(result)
                 "speak" -> {
                     val text = call.argument<String>("text")?.trim().orEmpty()
-                    if (!ready || text.isEmpty() || text.length > 500 || speaking != null) result.error("voice", "Voz no disponible", null)
+                    if (!ready || text.isEmpty() || text.codePointCount(0, text.length) > 500 || speaking != null) result.error("voice", "Voz no disponible", null)
                     else {
                         speaking = result
                         if (tts?.speak(text, TextToSpeech.QUEUE_FLUSH, null, "pip-message") == TextToSpeech.ERROR) {

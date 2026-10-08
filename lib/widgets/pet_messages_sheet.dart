@@ -19,7 +19,7 @@ class _PetMessagesSheetState extends State<PetMessagesSheet> {
     if (_busy) return;
     setState(() { _busy = true; _notice = null; });
     try { await action(); }
-    catch (_) { if (mounted) setState(() => _notice = 'No se completó. Comprueba tu conexión y que Android tenga voz y dictado en español disponibles.'); }
+    catch (_) { await _load(); if (mounted) setState(() => _notice = 'No se completó. Comprueba tu conexión y que Android tenga voz y dictado en español disponibles.'); }
     finally { if (mounted) setState(() => _busy = false); }
   }
   @override void dispose() { PetVoiceService.instance.stop(); _text.dispose(); super.dispose(); }
