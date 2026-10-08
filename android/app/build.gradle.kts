@@ -7,7 +7,7 @@ plugins {
 
 android {
     namespace = "com.example.twohearts"
-    compileSdk = flutter.compileSdkVersion
+    compileSdk = maxOf(flutter.compileSdkVersion, 37)
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
