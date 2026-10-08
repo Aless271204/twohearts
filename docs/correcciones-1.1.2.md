@@ -1,7 +1,7 @@
 # NIDO 1.1.2: correcciones y validación
 
 ## Implementado en el código
-- Pip utiliza la misma escena 3D y el mismo inventario en inicio, tienda y runner. Los accesorios se unen a los huesos Head y Spine2 del GLB original. Se elimina la capa de accesorios pintada sobre la pantalla.
+- Pip utiliza la misma escena 3D y el mismo inventario en inicio, tienda y runner. Los accesorios se unen a los huesos Head, Neck y Spine2 del GLB original. Se elimina la capa de accesorios pintada sobre la pantalla.
 - Puente: siete dibujos compartidos para todas sus secciones. Sin sombras dinámicas; resolución adaptativa, reutilización de obstáculos y monedas, HUD limitado y cámara estable para el fondo pintado.
 - Carrera: patrones deterministas variados, monedas iniciales en un carril seguro, ritmo cada 150 m, meta del reino a 600 m y validador versión 3 compatible con versiones 1 y 2.
 - Fotos: referencias estables y enlaces autorizados de cinco minutos, renovación y reacción al cierre de sesión. Compatibilidad con enlaces antiguos.
@@ -23,8 +23,8 @@ No hay medición en un teléfono físico. Las suscripciones y precios nuevos que
 
 
 ## Evidencia
-Primera revisión CI: Actions 37835122314, commit c2d13e3: 18 pruebas JavaScript, análisis y pruebas Flutter, web release, APK de pruebas y ejecución Android sin conexión correctas. Las últimas mejoras de ajuste y agrupación de monedas se verifican en una segunda compilación.
-Carrera real del navegador: 600 m y 32 monedas, reproducidos exactamente por el validador versión 3. Se publicó la función forest-runner versión 4 con JWT obligatorio; rechazo sin sesión comprobado con HTTP 401. Reglas históricas 1/2 conservadas.
+Primera revisión CI: Actions 37835122314, commit c2d13e3: 18 pruebas JavaScript, análisis y pruebas Flutter, web release, APK de pruebas y ejecución Android sin conexión correctas. Revisión final del código 747bb84: pruebas JavaScript, análisis y pruebas Flutter y compilación web correctas en Actions 37838721564; compilación APK y prueba Android todavía en curso al escribir este informe.
+Carrera real del navegador tras la agrupación final de monedas: 600 m y 32 monedas, reproducidos exactamente por el validador versión 3; 45 llamadas de dibujo en la llegada al reino. No equivale a una medición en teléfono físico. Se publicó la función forest-runner versión 4 con JWT obligatorio; rechazo sin sesión comprobado con HTTP 401. Reglas históricas 1/2 conservadas.
 El catálogo visual `pip-catalogue-1.1.2.png` contiene renders reales de los 17 objetos. Se corrigieron gafas sobre la frente, ropa demasiado ancha y posición de la bufanda después de inspeccionarlos.
 
 La pantalla del mapa describe la lectura puntual como «Mi ubicación actual»; se elimina la afirmación de distancia en tiempo real. No se introduce rastreo continuo. Se retira el antiguo código cliente que pretendía acreditar monedas directamente.
