@@ -100,6 +100,14 @@ class _ForestRunnerViewState extends State<ForestRunnerView> {
         ..setBackgroundColor(widget.petOnly ? Colors.transparent : const Color(0xFF17392B));
       await controller.setNavigationDelegate(
         NavigationDelegate(
+          onNavigationRequest: (request) {
+            final target = Uri.tryParse(request.url);
+            final local = target != null && target.scheme == 'http' &&
+                (target.host == 'localhost' || target.host == '127.0.0.1') &&
+                target.port == server.port && target.path.startsWith('/assets/runner/');
+            return local || request.url == 'about:blank'
+                ? NavigationDecision.navigate : NavigationDecision.prevent;
+          },
           onWebResourceError: (error) {
             if (error.isForMainFrame != false && mounted) {
               setState(
@@ -143,6 +151,7 @@ class _ForestRunnerViewState extends State<ForestRunnerView> {
 
   @override
   void dispose() {
+    _controller?.loadRequest(Uri.parse('about:blank'));
     _server?.close(force: true);
     super.dispose();
   }

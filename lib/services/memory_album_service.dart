@@ -1,3 +1,4 @@
+import '../core/memory_photo_reference.dart';
 import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -157,7 +158,26 @@ class MemoryAlbumService {
   /// Delete an album
   Future<String?> deleteAlbum(String albumId) async {
     try {
-      await _client.from('memory_albums').delete().eq('id', albumId);
+      final uid = _currentUserId;
+      if (uid == null) return 'Inicia sesión para eliminar el álbum';
+      final album = await _client.from('memory_albums').select('user_id,photo_urls').eq('id', albumId).maybeSingle();
+      if (album == null || album['user_id'] != uid) return 'Solo puedes eliminar tus álbumes';
+      await _client.from('memory_albums').delete().eq('id', albumId).eq('user_id', uid);
+      // Do not delete a photo reused by another accessible album.
+      try {
+        final remaining = await _client.from('memory_albums').select('photo_urls');
+        final references = <String>{
+          for (final row in remaining)
+            for (final photo in (row['photo_urls'] as List? ?? []))
+              if (memoryPhotoPath(photo.toString(), SupabaseService.supabaseUrl) case final String path) path,
+        };
+        final unused = <String>[
+          for (final photo in (album['photo_urls'] as List? ?? []))
+            if (memoryPhotoPath(photo.toString(), SupabaseService.supabaseUrl) case final String path)
+              if (path.startsWith('albums/$uid/') && !references.contains(path)) path,
+        ];
+        if (unused.isNotEmpty) await _client.storage.from('memory-photos').remove(unused);
+      } catch (error) { debugPrint('Album removed; photo cleanup needs retry: $error'); }
       return null;
     } on PostgrestException catch (e) {
       debugPrint('deleteAlbum error: ${e.message}');

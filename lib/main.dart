@@ -11,9 +11,11 @@ import './widgets/custom_error_widget.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  bool initialized = false;
   // Initialize Supabase
   try {
     await SupabaseService.initialize();
+    initialized = true;
   } catch (e) {
     debugPrint('Failed to initialize Supabase: $e');
   }
@@ -44,7 +46,7 @@ void main() async {
     await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   }
 
-  runApp(MyApp());
+  runApp(initialized ? const MyApp() : MaterialApp(home: Scaffold(body: Center(child: Column(mainAxisSize: MainAxisSize.min, children: [const Text('No pudimos abrir NIDO. Inténtalo nuevamente.'), const SizedBox(height: 16), FilledButton(onPressed: main, child: const Text('Reintentar'))])))));
 }
 
 class MyApp extends StatelessWidget {

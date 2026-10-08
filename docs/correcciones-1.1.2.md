@@ -11,12 +11,18 @@
 ## Cambios remotos pendientes de aprobación
 La revisión automática rechazó la primera migración amplia y la creación/envío de una clave privada de firma. No se aplicaron por otra vía.
 
-La migración reducida `supabase/migrations/20261008192545_privacy_and_server_authority.sql` vuelve privado memory-photos, limita subir/borrar a la carpeta del propietario, permite leer al propietario y su pareja, fija siete funciones y retira privilegios estructurales y escrituras de monedas. Restringe la edición de partner_id e invite_code para impedir enlaces falsificados. Las cuatro fotos existentes tienen rutas compatibles. Las APK antiguas necesitarán actualización para abrir recuerdos privados.
+La migración reducida `supabase/migrations/20261008192545_privacy_and_server_authority.sql` vuelve privado memory-photos, limita subir/borrar a la carpeta del propietario, permite leer al propietario y su pareja, fija la configuración de siete funciones y retira privilegios estructurales y escrituras de monedas. Restringe la edición de partner_id e invite_code para impedir enlaces falsificados. Las cuatro fotos existentes tienen rutas compatibles. Las APK antiguas necesitarán actualización para abrir recuerdos privados.
 
-Firma propuesta: PKCS12, RSA 3072, alias nido-upload; cuatro secretos cifrados en Aless271204/twohearts: NIDO_KEYSTORE_BASE64, NIDO_STORE_PASSWORD, NIDO_KEY_PASSWORD, NIDO_KEY_ALIAS. Copia local cifrada en outputs/signing/nido-upload.p12, fuera del repositorio. La contraseña de recuperación debe guardarse en un gestor de contraseñas del propietario; no se publicará en archivos, logs o artefactos. No se ha generado ni enviado la clave.
+Firma propuesta: PKCS12, RSA 3072, alias nido-upload; cuatro secretos cifrados en Aless271204/twohearts: NIDO_KEYSTORE_BASE64, NIDO_STORE_PASSWORD, NIDO_KEY_PASSWORD, NIDO_KEY_ALIAS. Copia local cifrada en outputs/signing/nido-upload.p12, fuera del repositorio. La contraseña se conserva en credentials.dpapi, protegida por el usuario de Windows, y debe respaldarse además en el gestor de contraseñas del propietario; no se publicará en archivos, logs o artefactos. No se ha generado ni enviado la clave.
 
 ## Catálogo
-Se conservan propiedad y precios actuales; no se introducen pagos. Los 17 accesorios de Pip tienen formas 3D por estilo y anclajes comunes. Cabeza/gafas siguen Head; bufandas, ropa y mochila siguen Spine2. El ajuste visual de cada combinación necesita revisión; un test de geometría no demuestra que todas las combinaciones carezcan de intersecciones.
+Se conservan propiedad y precios actuales; no se introducen pagos. Los 17 accesorios de Pip tienen formas 3D por estilo y anclajes comunes. Cabeza/gafas siguen Head; bufandas siguen Neck; ropa y mochila siguen Spine2. El ajuste visual de cada combinación necesita revisión; un test de geometría no demuestra que todas las combinaciones carezcan de intersecciones.
 
 ## Límites
 No hay medición en un teléfono físico. Las suscripciones y precios nuevos quedan para el final, por indicación del usuario. La protección de contraseñas filtradas de Supabase requiere revisar la disponibilidad del plan; no se cambia el plan ni se contrata un servicio. Google nativo necesita configuración de proveedor/redirecciones; no se da por operativo.
+
+
+## Evidencia
+Primera revisión CI: Actions 37835122314, commit c2d13e3: 18 pruebas JavaScript, análisis y pruebas Flutter, web release, APK de pruebas y ejecución Android sin conexión correctas. Las últimas mejoras de ajuste y agrupación de monedas se verifican en una segunda compilación.
+Carrera real del navegador: 600 m y 32 monedas, reproducidos exactamente por el validador versión 3. Se publicó la función forest-runner versión 4 con JWT obligatorio; rechazo sin sesión comprobado con HTTP 401. Reglas históricas 1/2 conservadas.
+El catálogo visual `pip-catalogue-1.1.2.png` contiene renders reales de los 17 objetos. Se corrigieron gafas sobre la frente, ropa demasiado ancha y posición de la bufanda después de inspeccionarlos.
