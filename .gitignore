@@ -1,4 +1,6 @@
 # Miscellaneous
+.tools/
+outputs/
 *.class
 *.log
 *.pyc

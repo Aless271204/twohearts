@@ -1,4 +1,4 @@
-// An original, gently paced score synthesized locally. No audio downloads.
+// Original tropical loop: marimba-like plucks, flute, bass and soft hand drums.
 export class AdventureMusic {
   constructor(){this.context=null;this.timer=null;this.muted=false;this.step=0;this.endTimer=null;}
   async start(){
@@ -38,16 +38,25 @@ export class AdventureMusic {
     oscillators[0].onended=()=>{voice.disconnect();filter.disconnect();pan.disconnect();};
   }
   schedule(){
-    const eighth=60/84/2;
+    const eighth=60/96/2;
     const chords=[[48,55,60,64,67],[43,55,59,62,67],[45,57,60,64,69],[41,53,57,60,65],[48,55,60,64,67],[45,57,60,64,69],[50,57,62,65,69],[43,55,59,62,67]];
     const melody=[[72,76,79,76],[74,71,67,71],[72,76,81,79],[77,76,72,69],[76,79,84,79],[81,79,76,72],[74,77,81,77],[79,74,71,72]];
     while(this.next<this.context.currentTime+.25){
       const bar=Math.floor(this.step/8)%8,beat=this.step%8,chord=chords[bar];
       this.note(chord[[1,2,3,2,4,3,2,1][beat]],this.next,.75,.085);
+      this.drum(this.next,beat%2===0?150:260,beat%2===0?.065:.035);
+      if(beat===3||beat===6)this.drum(this.next+eighth*.5,340,.025);
       if(beat===0){this.note(chord[0],this.next,2.5,.15);for(const note of chord.slice(2,4))this.note(note,this.next,2.7,.025,'pad');}
       if(beat%2===0)this.note(melody[bar][beat/2],this.next,1.1,.07,'flute');
       this.step=(this.step+1)%64;this.next+=eighth;
     }
+  }
+  drum(time,frequency,volume){
+    const ctx=this.context,oscillator=ctx.createOscillator(),gain=ctx.createGain();
+    oscillator.type='sine';oscillator.frequency.setValueAtTime(frequency,time);oscillator.frequency.exponentialRampToValueAtTime(frequency*.45,time+.12);
+    gain.gain.setValueAtTime(.0001,time);gain.gain.exponentialRampToValueAtTime(volume,time+.005);gain.gain.exponentialRampToValueAtTime(.0001,time+.16);
+    oscillator.connect(gain);gain.connect(this.master);oscillator.start(time);oscillator.stop(time+.18);
+    oscillator.onended=()=>{oscillator.disconnect();gain.disconnect();};
   }
   effect(kind){
     const ctx=this.context;if(!ctx||ctx.state!=='running'||this.muted)return;
@@ -65,6 +74,7 @@ export class AdventureMusic {
     };
     if(kind==='coin'){tone(880,1108,0,.12,.55);tone(1320,1760,.07,.22,.35);}
     if(kind==='jump')tone(240,650,0,.2,.42,'triangle');
+    if(kind==='land')tone(95,55,0,.09,.12,'triangle');
     if(kind==='collision'){tone(150,45,0,.38,.8,'triangle');tone(85,35,.03,.25,.45);}
   }
   stopForCollision(){

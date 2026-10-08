@@ -82,6 +82,22 @@ void main() {
       "document.getElementById('title')?.textContent === 'Un paseo con Pip' && !document.getElementById('start').disabled",
       'The complete forest, including the model with spaces in its name',
     );
+    await waitForJavaScript(
+      tester, controller,
+      "document.getElementById('forest-background-video')?.currentTime > 0 && document.getElementById('forest-background-video').loop",
+      'The bundled background video plays offline',
+    );
+    await controller.runJavaScript('''
+      window.runnerMediaRangeValid = false;
+      fetch('forest-kingdom-loop.mp4', {headers: {Range: 'bytes=0-31'}})
+        .then(async response => {
+          const data = new Uint8Array(await response.arrayBuffer());
+          window.runnerMediaRangeValid = response.status === 206 && data.length === 32 &&
+            String.fromCharCode(...data.slice(4, 8)) === 'ftyp';
+        });
+    ''');
+    await waitForJavaScript(tester, controller,
+      'window.runnerMediaRangeValid === true', 'Local video byte-range delivery');
     await controller.runJavaScript('''
       window.runnerEffectFrequencies = [];
       const audioPrototype = (window.AudioContext || window.webkitAudioContext).prototype;
@@ -109,6 +125,14 @@ void main() {
       'window.runnerEffectFrequencies.includes(880)',
       'Collecting a coin plays its sound',
     );
+    await controller.runJavaScript("document.getElementById('pause').click()");
+    await waitForJavaScript(tester, controller,
+      "document.getElementById('forest-background-video').paused && !document.getElementById('panel').hidden",
+      'Pausing freezes the background video');
+    await controller.runJavaScript("document.getElementById('start').click()");
+    await waitForJavaScript(tester, controller,
+      "!document.getElementById('forest-background-video').paused && document.getElementById('panel').hidden",
+      'Resuming restarts the background video');
     await controller.runJavaScript("document.getElementById('jump').click()");
     await waitForJavaScript(
       tester,

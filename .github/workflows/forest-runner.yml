@@ -1,7 +1,7 @@
 name: Flutter and forest runner
 on:
   push:
-    branches: [main, codex/android-local-assets, codex/runner-feedback, codex/pixel-local-rendering, codex/duo-games-inventory]
+    branches: [main, codex/android-local-assets, codex/runner-feedback, codex/pixel-local-rendering, codex/duo-games-inventory, codex/forest-video-loop]
     paths-ignore: [.github/workflows/android-test-download.yml]
   pull_request:
     branches: [main]
@@ -18,14 +18,14 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - run: node --test test/runner_replay_test.mjs test/runner_assets_test.mjs test/runner_feedback_test.mjs test/runner_mobile_test.mjs test/inventory_cosmetics_test.mjs
+      - run: node --test test/runner_replay_test.mjs test/runner_assets_test.mjs test/runner_feedback_test.mjs test/runner_mobile_test.mjs test/runner_art_test.mjs test/inventory_cosmetics_test.mjs
       - uses: subosito/flutter-action@v2
         with:
           channel: stable
           cache: true
       - run: flutter pub get
       - run: flutter analyze --no-fatal-infos --no-fatal-warnings
-      - run: flutter test test/local_asset_path_test.dart test/inventory_test.dart test/memory_album_test.dart
+      - run: flutter test test/local_asset_path_test.dart test/asset_byte_range_test.dart test/inventory_test.dart test/memory_album_test.dart
       - name: Prepare public build configuration
         run: |
           python3 -c "import json; d=json.load(open('env.json')); json.dump({k:d[k] for k in ['SUPABASE_URL','SUPABASE_ANON_KEY','GOOGLE_WEB_CLIENT_ID'] if k in d},open('build-env.json','w'))"
@@ -42,11 +42,11 @@ jobs:
         with:
           path: ~/.android/debug.keystore
           key: twohearts-android-test-keystore-v1
-      - run: flutter build apk --debug --dart-define-from-file=build-env.json
+      - run: flutter build apk --release --dart-define-from-file=build-env.json
       - uses: actions/upload-artifact@v4
         with:
-          name: twohearts-android-debug
-          path: build/app/outputs/flutter-apk/app-debug.apk
+          name: twohearts-android-release
+          path: build/app/outputs/flutter-apk/app-release.apk
   android-smoke:
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -81,3 +81,24 @@ jobs:
             adb -s emulator-5554 shell svc wifi disable
             adb -s emulator-5554 shell svc data disable
             flutter test integration_test/android_assets_test.dart -d emulator-5554 --dart-define-from-file=build-env.json
+  publish-forest-apk:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/codex/forest-video-loop'
+    needs: [verify, android-smoke]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: twohearts-android-release
+          path: apk
+      - name: Publish tested APK
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          SOURCE_SHA: ${{ github.sha }}
+        run: |
+          mv apk/app-release.apk apk/NIDO-1.1.1-bosque.apk
+          sha256sum apk/NIDO-1.1.1-bosque.apk > apk/NIDO-1.1.1-bosque.apk.sha256
+          printf 'Bosque con fondo animado en bucle, puente conectado a la orilla y apoyos de madera.\nVersion: 1.1.1+6\nCommit: %s\nValidado con pruebas de Flutter y recorrido en Android sin conexion.\n' "$SOURCE_SHA" > release-notes.txt
+          gh release create bosque-1.1.1 apk/NIDO-1.1.1-bosque.apk apk/NIDO-1.1.1-bosque.apk.sha256 --target "$SOURCE_SHA" --title "NIDO 1.1.1 · Bosque animado" --notes-file release-notes.txt --prerelease

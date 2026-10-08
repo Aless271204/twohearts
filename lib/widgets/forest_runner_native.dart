@@ -6,6 +6,7 @@ import 'package:webview_flutter/webview_flutter.dart';
 import 'package:webview_flutter_android/webview_flutter_android.dart';
 import 'runner_bridge.dart';
 import '../core/local_asset_path.dart';
+import '../core/asset_byte_range.dart';
 
 class ForestRunnerView extends StatefulWidget {
   final ValueChanged<WebViewController>? onWebViewCreated;
@@ -46,7 +47,10 @@ class _ForestRunnerViewState extends State<ForestRunnerView> {
         }
         try {
           final data = await rootBundle.load(path);
-          request.response.contentLength = data.lengthInBytes;
+          final length = data.lengthInBytes;
+          var start = 0;
+          var end = length - 1;
+          request.response.headers.set('Accept-Ranges', 'bytes');
           request.response.headers.set(
             'Content-Type',
             path.endsWith('.html')
@@ -55,11 +59,33 @@ class _ForestRunnerViewState extends State<ForestRunnerView> {
                 ? 'text/javascript; charset=utf-8'
                 : path.endsWith('.json')
                 ? 'application/json'
+                : path.endsWith('.jpg') || path.endsWith('.jpeg')
+                ? 'image/jpeg'
+                : path.endsWith('.png')
+                ? 'image/png'
+                : path.endsWith('.mp4')
+                ? 'video/mp4'
                 : 'model/gltf-binary',
           );
-          request.response.add(
-            data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes),
-          );
+          final rangeHeader = request.headers.value('range');
+          if (rangeHeader != null) {
+            try {
+              final range = parseAssetByteRange(rangeHeader, length);
+              start = range.start;
+              end = range.end;
+              request.response.statusCode = HttpStatus.partialContent;
+              request.response.headers.set('Content-Range', 'bytes $start-$end/$length');
+            } on FormatException {
+              request.response.statusCode = HttpStatus.requestedRangeNotSatisfiable;
+              request.response.headers.set('Content-Range', 'bytes */$length');
+              await request.response.close();
+              return;
+            }
+          }
+          request.response.contentLength = end - start + 1;
+          if (request.method != 'HEAD') {
+            request.response.add(data.buffer.asUint8List(data.offsetInBytes + start, end - start + 1));
+          }
         } catch (error) {
           debugPrint('Forest asset load failed ($path): $error');
           request.response.statusCode = HttpStatus.notFound;
@@ -75,7 +101,7 @@ class _ForestRunnerViewState extends State<ForestRunnerView> {
             if (error.isForMainFrame != false && mounted) {
               setState(
                 () => _error =
-                    'No se pudo abrir el bosque.\nVersión 1.1.0\n${error.errorCode}: ${error.description}',
+                    'No se pudo abrir el bosque.\nVersión 1.1.1\n${error.errorCode}: ${error.description}',
               );
             }
           },
@@ -107,7 +133,7 @@ class _ForestRunnerViewState extends State<ForestRunnerView> {
     } catch (error) {
       if (mounted)
         setState(
-          () => _error = 'No se pudo abrir el bosque.\nVersión 1.1.0\n$error',
+          () => _error = 'No se pudo abrir el bosque.\nVersión 1.1.1\n$error',
         );
     }
   }
@@ -129,3 +155,4 @@ class _ForestRunnerViewState extends State<ForestRunnerView> {
     return WebViewWidget(controller: _controller!);
   }
 }
+
