@@ -125,5 +125,5 @@ jobs:
         run: |
           mv apk/app-release.apk apk/NIDO-1.1.2-bosque.apk
           sha256sum apk/NIDO-1.1.2-bosque.apk > apk/NIDO-1.1.2-bosque.apk.sha256
-          printf 'Pip con accesorios unidos al esqueleto, puente optimizado, progreso hasta el reino y acceso privado a las fotos.\nVersion: 1.1.2+7\nCommit: %s\nValidado con pruebas de Flutter y recorrido en Android sin conexion.\n' "$SOURCE_SHA" > release-notes.txt
+          printf 'Pip con accesorios unidos al esqueleto, puente optimizado, progreso hasta el reino y cliente preparado para fotos privadas. Migracion de permisos de fotos pendiente de aprobacion.\nVersion: 1.1.2+7\nCommit: %s\nValidado con pruebas de Flutter y recorrido en Android sin conexion.\n' "$SOURCE_SHA" > release-notes.txt
           gh release create bosque-1.1.2 apk/NIDO-1.1.2-bosque.apk apk/NIDO-1.1.2-bosque.apk.sha256 --target "$SOURCE_SHA" --title "NIDO 1.1.2 · Bosque animado" --notes-file release-notes.txt --prerelease
