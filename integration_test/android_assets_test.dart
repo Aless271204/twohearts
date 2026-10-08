@@ -111,34 +111,40 @@ void main() {
         };
         return oscillator;
       };
+      // Send both controls inside the WebView at the first running frame. Host
+      // polling can be delayed by software rendering and miss this window.
+      const earlyControls = setInterval(() => {
+        if (document.getElementById('panel').hidden &&
+            parseInt(document.getElementById('distance').textContent) > 0) {
+          document.getElementById('jump').click();
+          document.getElementById('pause').click();
+          window.runnerEarlyControlsValid = window.runnerEffectFrequencies.includes(240) &&
+            document.getElementById('forest-background-video').paused &&
+            !document.getElementById('panel').hidden;
+          clearInterval(earlyControls);
+        }
+      }, 16);
       document.getElementById('start').click();
     ''');
     await waitForJavaScript(
       tester,
       controller,
-      "document.getElementById('panel').hidden && parseInt(document.getElementById('distance').textContent) > 0",
-      'Starting a practice run through the native bridge',
+      'window.runnerEarlyControlsValid === true',
+      'Starting, jumping and pausing the native run freezes its video',
     );
+    await controller.runJavaScript('''
+      document.getElementById('start').click();
+      window.runnerResumeValid = !document.getElementById('forest-background-video').paused &&
+        document.getElementById('panel').hidden;
+    ''');
+    await waitForJavaScript(tester, controller,
+      'window.runnerResumeValid === true',
+      'Resuming restarts the background video');
     await waitForJavaScript(
       tester,
       controller,
       'window.runnerEffectFrequencies.includes(880)',
       'Collecting a coin plays its sound',
-    );
-    await controller.runJavaScript("document.getElementById('pause').click()");
-    await waitForJavaScript(tester, controller,
-      "document.getElementById('forest-background-video').paused && !document.getElementById('panel').hidden",
-      'Pausing freezes the background video');
-    await controller.runJavaScript("document.getElementById('start').click()");
-    await waitForJavaScript(tester, controller,
-      "!document.getElementById('forest-background-video').paused && document.getElementById('panel').hidden",
-      'Resuming restarts the background video');
-    await controller.runJavaScript("document.getElementById('jump').click()");
-    await waitForJavaScript(
-      tester,
-      controller,
-      'window.runnerEffectFrequencies.includes(240)',
-      'Jumping plays its sound',
     );
     await waitForJavaScript(
       tester,
