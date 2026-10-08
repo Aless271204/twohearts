@@ -1,3 +1,5 @@
+import 'private_memory_image.dart';
+import '../services/supabase_service.dart';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -109,6 +111,10 @@ class CustomImageWidget extends StatelessWidget {
 
   Widget _buildImageView() {
     if (imageUrl != null) {
+      if (imageUrl!.startsWith('memory-photo:') || memoryPhotoPath(imageUrl!, SupabaseService.supabaseUrl) != null) {
+        return PrivateMemoryImage(imageUrl!, width: width, height: height, fit: fit,
+          errorBuilder: (_, __, ___) => errorWidget ?? const Icon(Icons.lock_outline));
+      }
       switch (imageUrl!.imageType) {
         case ImageType.svg:
           return SizedBox(

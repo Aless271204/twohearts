@@ -364,55 +364,7 @@ class _AuthBottomSheetWidgetState extends State<AuthBottomSheetWidget>
                     ),
             ),
           ),
-          const SizedBox(height: 16),
-          Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: AppTheme.primaryContainer.withAlpha(128),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Demo',
-                  style: GoogleFonts.dmSans(
-                    fontSize: 11,
-                    fontWeight: FontWeight.w600,
-                    color: AppTheme.primary,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                _credRow('Email', 'sofia@twohearts.app'),
-                _credRow('Contraseña', 'LoveAlways2026'),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 
-  Widget _credRow(String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 2),
-      child: Row(
-        children: [
-          Text(
-            '$label: ',
-            style: GoogleFonts.dmSans(
-              fontSize: 12,
-              color: const Color(0xFF6B6B6B),
-            ),
-          ),
-          Text(
-            value,
-            style: GoogleFonts.dmSans(
-              fontSize: 12,
-              fontWeight: FontWeight.w600,
-              color: const Color(0xFF1A1A1A),
-            ),
-          ),
         ],
       ),
     );
@@ -496,7 +448,7 @@ class _AuthBottomSheetWidgetState extends State<AuthBottomSheetWidget>
                   setState(() => _obscurePassword = !_obscurePassword),
             ),
             validator: (v) =>
-                (v?.length ?? 0) < 6 ? 'Mínimo 6 caracteres' : null,
+                (v?.length ?? 0) < 12 ? 'Mínimo 12 caracteres' : null,
           ),
           const SizedBox(height: 20),
           SizedBox(

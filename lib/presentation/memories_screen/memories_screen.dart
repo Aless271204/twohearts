@@ -1,3 +1,4 @@
+import '../../widgets/private_memory_image.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -397,7 +398,7 @@ class _AlbumJuntosTabState extends State<_AlbumJuntosTab> {
                     .map(
                       (p) => ClipRRect(
                         borderRadius: BorderRadius.circular(12),
-                        child: Image.network(
+                        child: PrivateMemoryImage(
                           p['image_url'] as String? ?? '',
                           width: 96,
                           height: 96,
@@ -1158,7 +1159,7 @@ class _AlbumCarouselCardState extends State<_AlbumCarouselCard> {
                 top: Radius.circular(20),
               ),
               child: hasPhotos
-                  ? Image.network(
+                  ? PrivateMemoryImage(
                       album.photoUrls.first,
                       width: 160,
                       height: 110,
@@ -1271,7 +1272,7 @@ class _TripCarouselCard extends StatelessWidget {
         child: Stack(
           fit: StackFit.expand,
           children: [
-            Image.network(
+            PrivateMemoryImage(
               imageUrl,
               fit: BoxFit.cover,
               errorBuilder: (_, __, ___) =>
@@ -1369,7 +1370,7 @@ class _AlbumCardState extends State<_AlbumCard> {
                   ClipRRect(
                     borderRadius: BorderRadius.circular(12),
                     child: hasPhotos
-                        ? Image.network(
+                        ? PrivateMemoryImage(
                             album.photoUrls.first,
                             width: 60,
                             height: 60,
@@ -1474,7 +1475,7 @@ class _AlbumCardState extends State<_AlbumCard> {
                     itemCount: album.photoUrls.length,
                     itemBuilder: (context, i) => ClipRRect(
                       borderRadius: BorderRadius.circular(10),
-                      child: Image.network(
+                      child: PrivateMemoryImage(
                         album.photoUrls[i],
                         fit: BoxFit.cover,
                         errorBuilder: (_, __, ___) => Container(
@@ -1580,7 +1581,7 @@ class _LocationCard extends StatelessWidget {
             borderRadius: const BorderRadius.horizontal(
               left: Radius.circular(20),
             ),
-            child: Image.network(
+            child: PrivateMemoryImage(
               imageUrl,
               width: 90,
               height: 90,
@@ -1828,7 +1829,7 @@ class _AlbumDetailSheetState extends State<_AlbumDetailSheet> {
                               ),
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(20),
-                                child: Image.network(
+                                child: PrivateMemoryImage(
                                   album.photoUrls[i],
                                   fit: BoxFit.cover,
                                   errorBuilder: (_, __, ___) => Container(
@@ -1956,7 +1957,7 @@ class _AlbumDetailSheetState extends State<_AlbumDetailSheet> {
                           itemCount: album.photoUrls.length,
                           itemBuilder: (context, i) => ClipRRect(
                             borderRadius: BorderRadius.circular(10),
-                            child: Image.network(
+                            child: PrivateMemoryImage(
                               album.photoUrls[i],
                               fit: BoxFit.cover,
                               errorBuilder: (_, __, ___) =>

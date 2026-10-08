@@ -329,10 +329,6 @@ class InventoryPreview extends StatelessWidget {
                 cameraOrbit: '0deg 75deg 105%',
               ),
             ),
-            if (scope == 'pet')
-              Positioned.fill(
-                child: InventoryScene(loadout: loadout, accessories: true),
-              ),
             const Positioned(
               bottom: 8,
               left: 12,

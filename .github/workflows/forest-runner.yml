@@ -12,6 +12,8 @@ concurrency:
   cancel-in-progress: true
 jobs:
   verify:
+    outputs:
+      production-signed: ${{ steps.signing.outputs.production }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -25,7 +27,7 @@ jobs:
           cache: true
       - run: flutter pub get
       - run: flutter analyze --no-fatal-infos --no-fatal-warnings
-      - run: flutter test test/local_asset_path_test.dart test/asset_byte_range_test.dart test/inventory_test.dart test/memory_album_test.dart
+      - run: flutter test test/local_asset_path_test.dart test/asset_byte_range_test.dart test/inventory_test.dart test/memory_album_test.dart test/private_memory_image_test.dart
       - name: Prepare public build configuration
         run: |
           python3 -c "import json; d=json.load(open('env.json')); json.dump({k:d[k] for k in ['SUPABASE_URL','SUPABASE_ANON_KEY','GOOGLE_WEB_CLIENT_ID'] if k in d},open('build-env.json','w'))"
@@ -42,7 +44,30 @@ jobs:
         with:
           path: ~/.android/debug.keystore
           key: twohearts-android-test-keystore-v1
+      - name: Prepare private release signing
+        id: signing
+        env:
+          STORE: ${{ secrets.NIDO_KEYSTORE_BASE64 }}
+          STORE_PASSWORD: ${{ secrets.NIDO_STORE_PASSWORD }}
+          KEY_PASSWORD: ${{ secrets.NIDO_KEY_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.NIDO_KEY_ALIAS }}
+        run: |
+          if [ -n "$STORE" ]; then
+            printf '%s' "$STORE" | base64 --decode > "$RUNNER_TEMP/nido-upload.p12"
+            chmod 600 "$RUNNER_TEMP/nido-upload.p12"
+            echo "NIDO_KEYSTORE_PATH=$RUNNER_TEMP/nido-upload.p12" >> "$GITHUB_ENV"
+            echo "NIDO_STORE_PASSWORD=$STORE_PASSWORD" >> "$GITHUB_ENV"
+            echo "NIDO_KEY_PASSWORD=$KEY_PASSWORD" >> "$GITHUB_ENV"
+            echo "NIDO_KEY_ALIAS=$KEY_ALIAS" >> "$GITHUB_ENV"
+            echo 'production=true' >> "$GITHUB_OUTPUT"
+          else
+            echo 'NIDO_ALLOW_TEST_SIGNING=true' >> "$GITHUB_ENV"
+            echo 'production=false' >> "$GITHUB_OUTPUT"
+          fi
       - run: flutter build apk --release --dart-define-from-file=build-env.json
+      - name: Remove temporary signing material
+        if: always()
+        run: rm -f "$RUNNER_TEMP/nido-upload.p12"
       - uses: actions/upload-artifact@v4
         with:
           name: twohearts-android-release
@@ -82,7 +107,7 @@ jobs:
             adb -s emulator-5554 shell svc data disable
             flutter test integration_test/android_assets_test.dart -d emulator-5554 --dart-define-from-file=build-env.json
   publish-forest-apk:
-    if: github.event_name == 'push' && github.ref == 'refs/heads/codex/forest-video-loop'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/codex/forest-video-loop' && needs.verify.outputs.production-signed == 'true'
     needs: [verify, android-smoke]
     runs-on: ubuntu-latest
     permissions:
@@ -98,7 +123,7 @@ jobs:
           GH_REPO: ${{ github.repository }}
           SOURCE_SHA: ${{ github.sha }}
         run: |
-          mv apk/app-release.apk apk/NIDO-1.1.1-bosque.apk
-          sha256sum apk/NIDO-1.1.1-bosque.apk > apk/NIDO-1.1.1-bosque.apk.sha256
-          printf 'Bosque con fondo animado en bucle, puente conectado a la orilla y apoyos de madera.\nVersion: 1.1.1+6\nCommit: %s\nValidado con pruebas de Flutter y recorrido en Android sin conexion.\n' "$SOURCE_SHA" > release-notes.txt
-          gh release create bosque-1.1.1 apk/NIDO-1.1.1-bosque.apk apk/NIDO-1.1.1-bosque.apk.sha256 --target "$SOURCE_SHA" --title "NIDO 1.1.1 · Bosque animado" --notes-file release-notes.txt --prerelease
+          mv apk/app-release.apk apk/NIDO-1.1.2-bosque.apk
+          sha256sum apk/NIDO-1.1.2-bosque.apk > apk/NIDO-1.1.2-bosque.apk.sha256
+          printf 'Pip con accesorios unidos al esqueleto, puente optimizado, progreso hasta el reino y acceso privado a las fotos.\nVersion: 1.1.2+7\nCommit: %s\nValidado con pruebas de Flutter y recorrido en Android sin conexion.\n' "$SOURCE_SHA" > release-notes.txt
+          gh release create bosque-1.1.2 apk/NIDO-1.1.2-bosque.apk apk/NIDO-1.1.2-bosque.apk.sha256 --target "$SOURCE_SHA" --title "NIDO 1.1.2 · Bosque animado" --notes-file release-notes.txt --prerelease

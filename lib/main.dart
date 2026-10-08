@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 import 'package:sizer/sizer.dart';
 
 import './core/app_export.dart';
-import './services/audio_service.dart';
 import './services/supabase_service.dart';
 import './theme/app_theme.dart';
 import './widgets/custom_error_widget.dart';
@@ -19,12 +18,7 @@ void main() async {
     debugPrint('Failed to initialize Supabase: $e');
   }
 
-  // Initialize ambient background music
-  try {
-    await AudioService.instance.initialize();
-  } catch (e) {
-    debugPrint('Failed to initialize audio: $e');
-  }
+  // Audio loads on demand, so network audio never blocks app startup.
 
   bool hasShownError = false;
 

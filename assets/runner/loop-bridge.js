@@ -2,10 +2,10 @@ import * as THREE from 'three';
 import { createWoodTexture } from './tropical.js';
 
 const woodMap=createWoodTexture();
-const deckMaterial=new THREE.MeshStandardMaterial({color:0xffffff,map:woodMap,roughness:.9,fog:false});
-const wood=new THREE.MeshStandardMaterial({color:'#79502e',map:woodMap,roughness:.95});
-const rope=new THREE.MeshStandardMaterial({color:'#dfbd86',roughness:1});
-const iron=new THREE.MeshStandardMaterial({color:'#4d4034',roughness:.7});
+const deckMaterial=new THREE.MeshLambertMaterial({color:0xffffff,map:woodMap});
+const wood=new THREE.MeshLambertMaterial({color:'#79502e',map:woodMap});
+const rope=new THREE.MeshLambertMaterial({color:'#dfbd86'});
+const iron=new THREE.MeshLambertMaterial({color:'#4d4034'});
 const boardGeometry=new THREE.BoxGeometry(5,.17,.54);
 const postGeometry=new THREE.BoxGeometry(.24,.96,.24);
 const beamGeometry=new THREE.BoxGeometry(.22,.24,12);
@@ -51,4 +51,29 @@ export function createLoopBridge(z){
   for(let i=0;i<40;i++){transform.position.set((i%2?1:-1)*2.15,.185,-5.7+Math.floor(i/2)*.6);transform.updateMatrix();nails.setMatrixAt(i,transform.matrix);}deck.add(nails);
   const canopy=new THREE.Mesh(canopyGeometry,canopyMaterial);canopy.rotation.x=-Math.PI/2;canopy.position.y=.181;deck.add(canopy);
   return deck;
+}
+
+// All repeated sections share seven draws instead of seven per section.
+export function createBridgeBelt(){
+  const sections=Array.from({length:9},(_,i)=>createLoopBridge(8-i*12));
+  const belt=new THREE.Group(), matrix=new THREE.Matrix4(), color=new THREE.Color();
+  for(let type=0;type<sections[0].children.length;type++){
+    const source=sections[0].children[type];
+    const perSection=source.isInstancedMesh?source.count:1;
+    const mesh=new THREE.InstancedMesh(source.geometry,source.material,perSection*sections.length);
+    mesh.receiveShadow=source.receiveShadow;
+    let index=0;
+    for(const section of sections){
+      const child=section.children[type];child.updateMatrix();
+      for(let i=0;i<perSection;i++){
+        if(child.isInstancedMesh)child.getMatrixAt(i,matrix);else matrix.copy(child.matrix);
+        matrix.elements[14]+=section.position.z;mesh.setMatrixAt(index,matrix);
+        if(child.instanceColor){child.getColorAt(i,color);mesh.setColorAt(index,color);}
+        index++;
+      }
+    }
+    mesh.computeBoundingSphere();belt.add(mesh);
+  }
+  for(const section of sections)for(const child of section.children)if(child.isInstancedMesh)child.dispose();
+  return belt;
 }

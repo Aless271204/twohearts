@@ -5,6 +5,9 @@ plugins {
     id("dev.flutter.flutter-gradle-plugin")
 }
 
+val releaseStore = System.getenv("NIDO_KEYSTORE_PATH")
+val allowTestSigning = System.getenv("NIDO_ALLOW_TEST_SIGNING") == "true"
+
 android {
     namespace = "com.example.twohearts"
     compileSdk = maxOf(flutter.compileSdkVersion, 37)
@@ -31,12 +34,31 @@ android {
         versionName = flutter.versionName
     }
 
+    signingConfigs {
+        if (!releaseStore.isNullOrBlank()) {
+            create("nidoRelease") {
+                storeFile = file(releaseStore)
+                storeType = "PKCS12"
+                storePassword = System.getenv("NIDO_STORE_PASSWORD")
+                keyAlias = System.getenv("NIDO_KEY_ALIAS")
+                keyPassword = System.getenv("NIDO_KEY_PASSWORD")
+            }
+        }
+    }
     buildTypes {
         release {
             // TODO: Add your own signing config for the release build.
             // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig = signingConfigs.getByName("debug")
+            signingConfig = if (!releaseStore.isNullOrBlank()) signingConfigs.getByName("nidoRelease")
+                else if (allowTestSigning) signingConfigs.getByName("debug") else null
         }
+    }
+}
+
+gradle.taskGraph.whenReady {
+    if (allTasks.any { it.name == "packageRelease" || it.name == "bundleRelease" } &&
+        releaseStore.isNullOrBlank() && !allowTestSigning) {
+        throw GradleException("Configure the private NIDO release signing secrets. Debug signing is only allowed explicitly for CI tests.")
     }
 }
 

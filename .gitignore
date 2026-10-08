@@ -46,3 +46,10 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 android/app/.cxx
+
+# Private publishing credentials
+*.keystore
+*.jks
+*.p12
+android/key.properties
+build-env.json

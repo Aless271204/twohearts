@@ -26,7 +26,7 @@ test('new replays validate and older installed apps retain their rules',()=>{
   }
   assert.ok(result.distance>=90&&result.distance<=96);
   assert.ok(result.coins>0);
-  assert.throws(()=>replayRun(frames,3),/version/);
+  assert.throws(()=>replayRun(frames,4),/version/);
   assert.equal(runnerDifficulty(720,1).spacing,28);
 });
 
@@ -44,4 +44,15 @@ test('effects produce distinct short sounds and obey mute and suspension',()=>{
   assert.ok(voices.some(voice=>voice.type==='triangle'));
   music.muted=true;music.effect('coin');assert.equal(voices.length,5);
   music.muted=false;music.context.state='suspended';music.effect('jump');assert.equal(voices.length,5);
+});
+
+
+test('version 3 offers a safe starting coin lane and preserves historical patterns', async()=>{
+  const {runnerRow}=await import('../assets/runner/patterns.js');
+  for(let row=0;row<40;row++){
+    const early=runnerRow(row,100);assert.notEqual(early.coinLane,early.obstacleLane);
+    const old=runnerRow(row,100,2);assert.equal(old.obstacleLane,row%3);assert.equal(old.coinLane,row%3);
+  }
+  assert.notEqual(runnerDifficulty(300,3).speed,runnerDifficulty(300,2).speed);
+  assert.throws(()=>replayRun([[16667,[]]],3),/terminal collision/);
 });

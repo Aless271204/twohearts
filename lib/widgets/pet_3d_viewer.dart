@@ -1,3 +1,7 @@
+import 'dart:convert';
+import 'forest_runner_view.dart';
+import '../core/pet_model_catalog.dart';
+import '../services/inventory_service.dart';
 import 'package:flutter/material.dart';
 import 'package:model_viewer_plus/model_viewer_plus.dart';
 import 'package:webview_flutter/webview_flutter.dart';
@@ -49,6 +53,14 @@ class _Pet3DViewerState extends State<Pet3DViewer> {
           ),
         ),
       );
+    }
+    if (widget.modelPath == PetModelCatalog.penguinModelPath && widget.onWebViewCreated == null) {
+      return ListenableBuilder(listenable: InventoryService.instance, builder: (context, _) {
+        final appearance = jsonEncode({for (final entry in InventoryService.instance.loadout.entries)
+          entry.key: entry.value.appearance});
+        return ForestRunnerView(key: ValueKey('$appearance|${widget.animationName}'), petOnly: true,
+          appearance: appearance, animationName: widget.animationName);
+      });
     }
     return ModelViewer(
       key: ValueKey(

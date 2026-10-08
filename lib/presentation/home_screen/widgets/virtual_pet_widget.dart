@@ -463,11 +463,7 @@ class _VirtualPetWidgetState extends State<VirtualPetWidget>
                           ? 'Idle_9'
                           : 'Idle_11',
                     ),
-                    if (widget.petModelPath == PetModelCatalog.penguinModelPath)
-                      InventoryScene(
-                        loadout: InventoryService.instance.loadout,
-                        accessories: true,
-                      ),
+
                   ],
                 ),
               ),

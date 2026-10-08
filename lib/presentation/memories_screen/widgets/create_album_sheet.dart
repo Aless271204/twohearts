@@ -132,7 +132,7 @@ class _CreateAlbumSheetState extends State<CreateAlbumSheet> {
               photo.bytes,
               fileOptions: FileOptions(contentType: mime, upsert: false),
             );
-        final url = client.storage.from('memory-photos').getPublicUrl(path);
+        final url = 'memory-photo:$path';
         urls.add(url);
         _uploadedUrls[photo] = url;
       } catch (e) {

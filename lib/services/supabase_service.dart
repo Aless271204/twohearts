@@ -160,6 +160,10 @@ class SupabaseService {
 
   /// Update current user's profile
   Future<void> updateProfile(Map<String, dynamic> data) async {
+    const editable = {'full_name','avatar_url','relationship_start','pet_type','city','connection_type','nickname','bio'};
+    if (data.keys.any((key) => !editable.contains(key))) {
+      throw ArgumentError('Este campo debe modificarse mediante una operación autorizada');
+    }
     final uid = currentUser?.id;
     if (uid == null) return;
     await client.from('user_profiles').update(data).eq('id', uid);

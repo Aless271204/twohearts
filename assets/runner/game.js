@@ -6,7 +6,8 @@ import { createRunnerEffects, createButterflies } from './tropical.js';
 import { createRunnerCoin } from './runner-coin.js';
 import { createBirds } from './forest-life.js';
 import { createForestBackdrop } from './forest-backdrop.js';
-import { createLoopBridge } from './loop-bridge.js';
+import { createBridgeBelt } from './loop-bridge.js';
+import {runnerRow} from './patterns.js';
 import { runnerDifficulty } from './difficulty.js';
 import { AdventureMusic } from './music.js';
 import { limitTextureMemory } from './texture_budget.js';
@@ -15,25 +16,28 @@ import { requestHost } from './bridge.js';
 import { equipRunnerCosmetics } from './cosmetics.js';
 clearTimeout(window.runnerBootTimer);
 
+const params=new URLSearchParams(location.search),petOnly=params.get('pet')==='1';
 const $ = id => document.getElementById(id);
 const panel=$('panel'), start=$('start'), pause=$('pause');
 const scene=new THREE.Scene();
 scene.background=null;scene.fog=new THREE.Fog('#a9d9db',55,110);
 const camera=new THREE.PerspectiveCamera(56,innerWidth/innerHeight,0.08,300);
-const backdrop=createForestBackdrop(scene),music=new AdventureMusic(),birds=createBirds(scene);
+const backdrop=petOnly?{load:async()=>{},update(){},setPaused(){},dispose(){}}:createForestBackdrop(scene),music=new AdventureMusic(),birds=createBirds(scene);
 const effects=createRunnerEffects(scene),butterflies=createButterflies(scene);
 let visualTime=0,landingPulse=0,pickupStreak=0;
-const renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:'high-performance'});
-renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));renderer.setSize(innerWidth,innerHeight);
-renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.05;
-renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+const renderer=new THREE.WebGLRenderer({antialias:true,alpha:petOnly,powerPreference:'high-performance'});
+let renderScale=Math.min(devicePixelRatio,1.25);renderer.setPixelRatio(renderScale);renderer.setSize(innerWidth,innerHeight);
+renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.NoToneMapping;renderer.toneMappingExposure=1;
+renderer.shadowMap.enabled=false;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
 document.body.prepend(renderer.domElement);
 renderer.domElement.addEventListener('webglcontextlost',()=>showRunnerError('Android perdió el contexto gráfico 3D','gráficos'));
 scene.add(new THREE.HemisphereLight(0xd3f5ff,0x435d45,1.35));
 const sun=new THREE.DirectionalLight(0xffe4aa,2.5);sun.position.set(-10,18,-16);scene.add(sun);
 sun.castShadow=true;sun.shadow.mapSize.set(1024,1024);sun.shadow.camera.left=-12;sun.shadow.camera.right=12;sun.shadow.camera.top=18;sun.shadow.camera.bottom=-18;sun.shadow.camera.far=65;sun.shadow.normalBias=.035;
 const fill=new THREE.DirectionalLight(0xe1eeff,.8);fill.position.set(4,6,8);scene.add(fill);
-const loader=new GLTFLoader(),templates={},paths=[],objects=[];
+const loader=new GLTFLoader(),templates={},paths=[],objects=[],pools=new Map();
+const pool=key=>{if(!pools.has(key))pools.set(key,[]);return pools.get(key);};
+function releaseObject(item){scene.remove(item.model);pool(item.model.userData.poolKey).push(item.model);}
 const glowCanvas=document.createElement('canvas');glowCanvas.width=glowCanvas.height=64;
 const glowContext=glowCanvas.getContext('2d');
 const glowGradient=glowContext.createRadialGradient(32,32,2,32,32,32);
@@ -54,10 +58,10 @@ let lane=1,x=0,height=0,velocity=0,distance=0,coins=0,row=0,untilRow=0,last=perf
 let toastUntil=0,animationId=0,needsRender=true;
 const speed=()=>runnerDifficulty(distance).speed;
 // Read-only diagnostics for the standalone preview; absent in the app WebView.
-if(window.parent===window&&!window.RunnerBridge)window.runnerPreview=Object.freeze({stats:()=>({distance,height,lane,running,paused,coins,drawCalls:renderer.info.render.calls,triangles:renderer.info.render.triangles,textures:renderer.info.memory.textures,sceneryTime:visualTime,videoTime:backdrop.video?.currentTime??0,videoPaused:backdrop.video?.paused??true})});
+if(window.parent===window&&!window.RunnerBridge)window.runnerPreview=Object.freeze({stats:()=>({distance,height,lane,running,paused,coins,drawCalls:renderer.info.render.calls,triangles:renderer.info.render.triangles,textures:renderer.info.memory.textures,sceneryTime:visualTime,videoTime:backdrop.video?.currentTime??0,videoPaused:backdrop.video?.paused??true,fps:Math.round(measuredFps),renderScale})});
 
 function fitModel(source,dimensions) {
-  const object=cloneSkeleton(source);
+  const object=source.getObjectByProperty('isSkinnedMesh',true)?cloneSkeleton(source):source.clone(true);
   const bounds=new THREE.Box3().setFromObject(object),size=bounds.getSize(new THREE.Vector3());
   if(!Number.isFinite(size.y)||Math.max(size.x,size.y,size.z)<=0)throw Error('Modelo sin geometría');
   if(typeof dimensions==='number')object.scale.multiplyScalar(dimensions/Math.max(size.y,.001));
@@ -67,29 +71,40 @@ function fitModel(source,dimensions) {
   const group=new THREE.Group();group.add(object);return group;
 }
 function place(key,dimensions,x,z,list) {
-  const model=fitModel(templates[key],dimensions);model.position.set(x,0,z);scene.add(model);list.push(model);return model;
+  const model=pool(key).pop()??fitModel(templates[key],dimensions);model.userData.poolKey=key;model.position.set(x,0,z);scene.add(model);list.push(model);return model;
 }
 function addCoin(laneIndex,z,y=.7) {
-  const model=createRunnerCoin();model.position.set(LANES[laneIndex],y+floorY,z);scene.add(model);
-  const halo=new THREE.Sprite(glowMaterial);halo.scale.set(.9,.9,1);model.add(halo);
+  let model=pool('coin').pop();
+  if(!model){model=createRunnerCoin();const halo=new THREE.Sprite(glowMaterial);halo.scale.set(.9,.9,1);model.add(halo);model.userData.poolKey='coin';}
+  model.rotation.set(0,0,0);model.position.set(LANES[laneIndex],y+floorY,z);scene.add(model);
   objects.push({model,kind:'coin',x:LANES[laneIndex],y,z});
 }
 function spawnRow() {
-  const obstacleLane=row%3,kind=['crate','fence','rock'][row%3];
+  const {obstacleLane,kind,coinLane,alternateLane}=runnerRow(row,distance);
   const model=place(kind,[1.15,.85,.75],LANES[obstacleLane],-68,[]);model.position.y=floorY;
   objects.push({model,kind:'obstacle',x:LANES[obstacleLane],z:-68});
-  for(let i=0;i<5;i++)addCoin(obstacleLane,-60-i*4,i===2?1.8:.7);
-  addCoin((obstacleLane+1)%3,-68,.7);row++;
+  for(let i=0;i<5;i++)addCoin(coinLane,-60-i*4,i===2?1.8:.7);
+  addCoin(alternateLane,-68,.7);row++;
 }
-function hud(){const level=runnerDifficulty(distance).level;$('difficulty').textContent=`Ritmo ${level}/5`;$('coins').textContent=`♥ ${coins}`;$('distance').textContent=`${Math.floor(distance)} m`;}
+let hudKey='',lastMilestone=0,frameSample=0,frameCount=0,measuredFps=60,lastHudTime=0;
+function hud(){
+ const level=runnerDifficulty(distance).level,m=Math.floor(distance),key=`${level}|${m}|${coins}`;
+ if(key===hudKey)return;hudKey=key;
+ $('difficulty').textContent=`Ritmo ${level}/5`;$('coins').textContent=`♥ ${coins}`;$('distance').textContent=`${m} m`;
+ $('goal').textContent=`Reino · ${Math.min(100,Math.floor(distance/6))}%`;
+ $('progress').value=Math.min(distance,600);
+ const step=Math.floor(distance/150);
+ if(step>lastMilestone){lastMilestone=step;music.effect('coin');$('toast').textContent=['','¡Llegaste al río!','¡Cruza las cascadas!','¡El reino está cerca!','¡Llegaste al reino!'][step]??'';toastUntil=performance.now()+2400;}
+}
+
 function jump(){if(running&&!paused&&height===0&&pendingInputs.length<8){velocity=8;pendingInputs.push(0);music.effect('jump');}}
 function move(delta){if(running&&!paused&&pendingInputs.length<8){lane=Math.max(0,Math.min(2,lane+delta));pendingInputs.push(delta);}}
 function showPanel(title,message,label){$('title').textContent=title;$('message').textContent=message;start.textContent=label;panel.hidden=false;}
 function reset(){
-  for(const item of objects)scene.remove(item.model);objects.length=0;
+  for(const item of objects)releaseObject(item);objects.length=0;
   lane=1;x=height=velocity=distance=coins=row=cameraX=0;untilRow=0;paused=false;running=true;
   frames=[];pendingInputs=[];pendingSave=null;runElapsed=0;
-  effects.reset();landingPulse=pickupStreak=0;
+  effects.reset();landingPulse=pickupStreak=lastMilestone=0;hudKey='';backdrop.setPaused(false);
   $('toast').textContent='';panel.hidden=true;pause.disabled=false;pause.textContent='Pausa';hud();
   music.start();
 }
@@ -136,18 +151,24 @@ addEventListener('keydown',e=>{
 document.addEventListener('visibilitychange',()=>{if(document.hidden&&running&&!paused)togglePause();backdrop.setPaused(document.hidden||paused);});
 addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);needsRender=true;});
 function frame(now){
-  animationId=requestAnimationFrame(frame);if(now-last<16)return;
-  const microseconds=Math.max(1,Math.round(Math.min((now-last)/1000,.04)*1000000));const dt=microseconds/1000000;last=now;
+  animationId=requestAnimationFrame(frame);if(now-last<(running?16:33))return;
+  frameCount++;frameSample+=now-last;
+  if(frameSample>=2000){measuredFps=1000*frameCount/frameSample;frameSample=frameCount=0;
+    if(measuredFps<42&&renderScale>.75){renderScale=Math.max(.75,renderScale-.125);renderer.setPixelRatio(renderScale);}}
+  const microseconds=Math.max(1,Math.round(Math.min((now-last)/1000,.12)*1000000));const dt=microseconds/1000000;last=now;
   if(paused&&!needsRender)return;
   needsRender=false;
-  if(running&&!paused){
-    frames.push([microseconds,pendingInputs.splice(0)]);
+  const simulationTime=dt;
+  for(let remaining=simulationTime; running&&!paused&&remaining>0;){
+    const stepMicroseconds=Math.max(1,Math.min(40000,Math.round(remaining*1000000)));
+    const dt=stepMicroseconds/1000000;remaining=Math.max(0,remaining-dt);
+    frames.push([stepMicroseconds,pendingInputs.splice(0)]);
     runElapsed+=dt;
     const previousHeight=height;
     const travel=speed()*dt;distance+=travel;[height,velocity]=jumpStep(height,velocity,dt);
     if(previousHeight>0&&height===0){landingPulse=1;effects.burst(x,floorY+.05,0,true);music.effect('land');}
     x+=(LANES[lane]-x)*(1-Math.exp(-dt*10));untilRow-=travel;if(untilRow<=0){spawnRow();untilRow+=runnerDifficulty(distance).spacing;}
-    for(const model of paths){model.position.z+=travel;if(model.position.z>18)model.position.z-=108;}
+    for(const model of paths)model.position.z=distance%12;
     for(let i=objects.length-1;i>=0;i--){
       const item=objects[i],previous=item.z;item.z+=travel;item.model.position.z=item.z;
       if(item.kind==='coin'){item.model.rotation.y+=dt*2.4;item.model.position.y=item.y+floorY+Math.sin(runElapsed*3+item.z*.2)*.055;}
@@ -155,23 +176,23 @@ function frame(now){
         if(item.kind==='obstacle'&&hitsObstacle(x,item.x,height)){
           running=false;music.stopForCollision();pause.disabled=true;
           showPanel('¡Vuelve a intentarlo!',`Recogiste ${coins} monedas y recorriste ${Math.floor(distance)} metros.`,'Correr otra vez');
-          if(sessionId){pendingSave={session_id:sessionId,frames,replay_version:2};$('message').textContent='Guardando tu partida…';saveRun();}
+          if(sessionId){pendingSave={session_id:sessionId,frames,replay_version:3};$('message').textContent='Guardando tu partida…';saveRun();}
           break;
         }
         if(item.kind==='coin'&&collectsCoin(x,item.x,height,item.y)){
-          coins++;pickupStreak++;music.effect('coin');effects.burst(item.x,item.y+floorY,0);scene.remove(item.model);objects.splice(i,1);
+          coins++;pickupStreak++;music.effect('coin');effects.burst(item.x,item.y+floorY,0);releaseObject(item);objects.splice(i,1);
           $('coins').animate([{transform:'scale(1)'},{transform:'scale(1.2)'},{transform:'scale(1)'}],{duration:280});
           $('toast').textContent=pickupStreak%5===0?'¡5 seguidas! ✨':'+1 ♥';toastUntil=now+650;continue;
         }
       }
       if(item.kind==='coin'&&crossesPlayer(previous,item.z))pickupStreak=0;
-      if(item.z>6){scene.remove(item.model);objects.splice(i,1);}
+      if(item.z>6){releaseObject(item);objects.splice(i,1);}
     }
-    if(running&&runElapsed>=1199.96){
-      running=false;music.pause();pause.disabled=true;showPanel('¡Buen recorrido!',`Recogiste ${coins} monedas y recorriste ${Math.floor(distance)} metros.`,'Correr otra vez');
-      if(sessionId){pendingSave={session_id:sessionId,frames,replay_version:2};$('message').textContent='Guardando tu partida…';saveRun();}
+    if(running&&(distance>=600||runElapsed>=1199.96)){
+      running=false;music.pause();pause.disabled=true;showPanel(distance>=600?'¡Llegaste al reino!':'¡Buen recorrido!',`Recogiste ${coins} monedas y recorriste ${Math.floor(distance)} metros.`,'Correr otra vez');
+      if(sessionId){pendingSave={session_id:sessionId,frames,replay_version:3};$('message').textContent='Guardando tu partida…';saveRun();}
     }
-    hud();
+    if(now-lastHudTime>80){hud();lastHudTime=now;}
   }
   if(now>toastUntil)$('toast').textContent='';
   if(penguin){
@@ -180,7 +201,7 @@ function frame(now){
     penguin.scale.set(1+landingPulse*.07,1-landingPulse*.09,1+landingPulse*.07);
     penguin.rotation.x=THREE.MathUtils.lerp(penguin.rotation.x,height>0?-.08:0,1-Math.exp(-dt*8));
     penguin.rotation.z=THREE.MathUtils.lerp(penguin.rotation.z,(LANES[lane]-x)*-.08,1-Math.exp(-dt*8));
-    const name=running?(height>.01?'Regular_Jump':'Running'):'Idle_9';
+    const name=petOnly?(params.get('animation')??'Idle_9'):running?(height>.01?'Regular_Jump':'Running'):'Idle_9';
     if(activeAction!==name&&actions[name]){
       const next=actions[name];next.reset().fadeIn(.16).play();
       if(activeAction)actions[activeAction].fadeOut(.16);activeAction=name;
@@ -188,9 +209,9 @@ function frame(now){
     if(!paused)mixer.update(dt);
   }
   shadow.position.x=x;shadow.material.opacity=.22/(1+height);shadow.scale.set(1+height*.18,.65+height*.1,1);
-  cameraX=THREE.MathUtils.lerp(cameraX,x*.28,1-Math.exp(-dt*4));
-  camera.position.set(cameraX,2.2+height*.12,4.8);
-  camera.lookAt(cameraX*.7,.95+height*.08,-10);
+  cameraX=THREE.MathUtils.lerp(cameraX,0,1-Math.exp(-dt*4));
+  camera.position.set(0,petOnly?.75:2.2,petOnly?2.2:4.8);
+  camera.lookAt(0,petOnly?.62:.95,petOnly?0:-10);
   backdrop.update(paused?0:dt,camera.aspect,cameraX);
   if(!paused){
     visualTime+=dt;effects.update(dt);butterflies.update(dt);birds.update(dt);
@@ -198,12 +219,12 @@ function frame(now){
   }
   renderer.render(scene,camera);
 }
-function boardwalk(z){const deck=createLoopBridge(z);scene.add(deck);paths.push(deck);}
+function boardwalk(){const deck=createBridgeBelt();scene.add(deck);paths.push(deck);}
 async function boot(){
   try{
     await backdrop.load();
     const manifest=await fetch('models.json').then(r=>{if(!r.ok)throw Error('Catálogo no disponible');return r.json();});
-    const entries=Object.entries(manifest).filter(([key])=>['pip','crate','fence','rock'].includes(key));
+    const entries=Object.entries(manifest).filter(([key])=>(petOnly?['pip']:['pip','crate','fence','rock']).includes(key));
     for(let i=0;i<entries.length;i++){
       const [key,file]=entries[i];$('message').textContent=`Cargando bosque ${i+1}/${entries.length}…`;
       const gltf=await loader.loadAsync(`play-models/${file}`);templates[key]=gltf.scene;
@@ -216,17 +237,18 @@ async function boot(){
         o.material=Array.isArray(o.material)?o.material.map(tune):tune(o.material);
       });
       if(key==='pip'){
-        penguin=fitModel(gltf.scene,1.15);penguin.rotation.y=Math.PI;scene.add(penguin);
-        requestHost('cosmetics').then(loadout=>{equipRunnerCosmetics(penguin,loadout);needsRender=true;}).catch(()=>{});
+        penguin=fitModel(gltf.scene,1.15);penguin.rotation.y=petOnly?0:Math.PI;scene.add(penguin);
+        (petOnly?Promise.resolve(JSON.parse(params.get('appearance')??'{}')):requestHost('cosmetics')).then(loadout=>{equipRunnerCosmetics(penguin,loadout);needsRender=true;}).catch(()=>{});
         mixer=new THREE.AnimationMixer(penguin);
         for(const clip of gltf.animations)actions[clip.name]=mixer.clipAction(clip);
         if(actions.Regular_Jump){actions.Regular_Jump.setLoop(THREE.LoopOnce,1);actions.Regular_Jump.clampWhenFinished=true;}
       }
     }
-    for(let i=0;i<9;i++)boardwalk(8-i*12);
+    if(!petOnly)boardwalk();
     penguin.traverse(o=>{if(o.isMesh)o.castShadow=true;});
     clearTimeout(window.runnerBootTimer);ready=true;start.disabled=false;
     showPanel('Un paseo con Pip','Un bosque lleno de vida. Recoge corazones y salta los obstáculos. El ritmo aumenta a medida que avanzas. Usa ← → o desliza para cambiar de carril; toca o pulsa espacio para saltar.','Correr con Pip');
+    if(petOnly){document.body.classList.add('pet-only');scene.fog=null;renderer.setClearColor(0,0);for(const child of scene.children)if(child!==penguin&&!child.isLight)child.visible=false;}
     last=performance.now();animationId=requestAnimationFrame(frame);
   }catch(error){
     clearTimeout(window.runnerBootTimer);$('title').textContent='No pudimos abrir el bosque';

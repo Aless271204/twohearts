@@ -29,6 +29,6 @@ test('incomplete, oversized and invalid replays cannot claim rewards',()=>{
   assert.throws(()=>replayRun([]),/length/);
 });
 test('the deployed simulator and physics exactly match the browser',()=>{
-  for(const name of ['physics.js','replay.js','difficulty.js'])
+  for(const name of ['physics.js','replay.js','difficulty.js','patterns.js'])
     assert.equal(readFileSync(new URL(`../assets/runner/${name}`,import.meta.url),'utf8'),readFileSync(new URL(`../supabase/functions/forest-runner/${name}`,import.meta.url),'utf8'));
 });

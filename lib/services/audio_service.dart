@@ -31,12 +31,12 @@ class AudioService {
       await _player!.setLoopMode(LoopMode.one);
       await _player!.setVolume(0.18); // Very subtle, non-intrusive
       try {
-        await _player!.setUrl(_ambientUrl);
+        await _player!.setUrl(_ambientUrl).timeout(const Duration(seconds: 5));
       } catch (_) {
-        await _player!.setUrl(_fallbackUrl);
+        await _player!.setUrl(_fallbackUrl).timeout(const Duration(seconds: 5));
       }
       _initialized = true;
-      await _player!.play();
+      // Playback begins only after user interaction.
     } catch (e) {
       debugPrint('AudioService init error: $e');
     }
