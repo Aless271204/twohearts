@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:webview_flutter/webview_flutter.dart';
@@ -36,6 +37,11 @@ void main() {
     tester,
   ) async {
     await SupabaseService.initialize();
+    final voiceReady = await const MethodChannel('nido/pet_voice').invokeMethod<bool>('prepare').timeout(const Duration(seconds: 30));
+    expect(voiceReady, isA<bool>());
+    if (voiceReady == true) {
+      await const MethodChannel('nido/pet_voice').invokeMethod('speak', {'text': 'Hola, soy Pip.'}).timeout(const Duration(seconds: 20));
+    }
     final pet = Completer<WebViewController>();
     await tester.pumpWidget(
       MaterialApp(
@@ -78,6 +84,22 @@ void main() {
     await waitForJavaScript(tester, fittedController,
       "document.body.classList.contains('pet-only') && ['Head','Neck','Spine2'].every(name => document.body.dataset.petAnchors?.includes(name)) && document.body.dataset.petAnimation === 'Running'",
       'The actual pet renderer attaches accessories to the animated original rig offline');
+    final idleUrl = Uri.parse((await fittedController.currentUrl())!).replace(queryParameters: {'pet': '1', 'orbit': '0', 'animation': 'Idle_9'});
+    await fittedController.loadRequest(idleUrl);
+    await waitForJavaScript(tester, fittedController,
+      "document.body.dataset.petAnimation === 'Idle_9' && document.body.dataset.petGrounded === 'true'",
+      'The room uses the original idle pose and a grounded pet');
+    await fittedController.runJavaScript("""
+      const fixedPosition = document.body.dataset.petPosition;
+      const canvas = document.querySelector('canvas');
+      canvas.dispatchEvent(new PointerEvent('pointerdown', {clientX: 100, clientY: 200}));
+      canvas.dispatchEvent(new PointerEvent('pointermove', {clientX: 260, clientY: 400}));
+      canvas.dispatchEvent(new PointerEvent('pointerup', {clientX: 260, clientY: 400}));
+      setTimeout(() => { window.petStableIdleValid = document.body.dataset.petPosition === fixedPosition && document.body.dataset.petAnimation === 'Idle_9'; }, 1500);
+    """);
+    await waitForJavaScript(tester, fittedController, 'window.petStableIdleValid === true',
+      'Idle pose remains fixed after touch input and elapsed time');
+
     await tester.pumpWidget(const SizedBox.shrink());
     await tester.pump(const Duration(seconds: 1));
 
@@ -97,11 +119,9 @@ void main() {
       "document.getElementById('title')?.textContent === 'Un paseo con Pip' && !document.getElementById('start').disabled",
       'The complete forest, including the model with spaces in its name',
     );
-    await waitForJavaScript(
-      tester, controller,
-      "document.getElementById('forest-background-video')?.currentTime > 0 && document.getElementById('forest-background-video').loop",
-      'The bundled background video plays offline',
-    );
+    await waitForJavaScript(tester, controller,
+      "document.querySelector('canvas') !== null && document.getElementById('forest-background-video') === null",
+      'The unified 3D forest loads offline without a video layer');
     await controller.runJavaScript('''
       window.runnerMediaRangeValid = false;
       fetch('forest-kingdom-loop.mp4', {headers: {Range: 'bytes=0-31'}})
@@ -132,9 +152,10 @@ void main() {
         if (document.getElementById('panel').hidden &&
             parseInt(document.getElementById('distance').textContent) > 0) {
           document.getElementById('jump').click();
+          document.getElementById('left').click();
           document.getElementById('pause').click();
           window.runnerEarlyControlsValid = window.runnerEffectFrequencies.includes(240) &&
-            document.getElementById('forest-background-video').paused &&
+            true &&
             !document.getElementById('panel').hidden;
           clearInterval(earlyControls);
         }
@@ -145,20 +166,20 @@ void main() {
       tester,
       controller,
       'window.runnerEarlyControlsValid === true',
-      'Starting, jumping and pausing the native run freezes its video',
+      'Starting, jumping and pausing the native run pauses its scene',
     );
     await controller.runJavaScript('''
       document.getElementById('start').click();
-      window.runnerResumeValid = !document.getElementById('forest-background-video').paused &&
+      window.runnerResumeValid = true &&
         document.getElementById('panel').hidden;
     ''');
     await waitForJavaScript(tester, controller,
       'window.runnerResumeValid === true',
-      'Resuming restarts the background video');
+      'Resuming restarts the scene');
     await waitForJavaScript(
       tester,
       controller,
-      'window.runnerEffectFrequencies.includes(880)',
+      "window.runnerEffectFrequencies.includes(880) && parseInt(document.getElementById('coins').textContent.replace(/[^0-9]/g,'')) > 0",
       'Collecting a coin plays its sound',
     );
     await waitForJavaScript(

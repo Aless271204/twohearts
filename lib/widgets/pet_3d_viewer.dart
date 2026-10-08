@@ -58,8 +58,8 @@ class _Pet3DViewerState extends State<Pet3DViewer> {
       return ListenableBuilder(listenable: InventoryService.instance, builder: (context, _) {
         final appearance = jsonEncode({for (final entry in InventoryService.instance.loadout.entries)
           entry.key: entry.value.appearance});
-        return ForestRunnerView(key: ValueKey('$appearance|${widget.animationName}'), petOnly: true,
-          appearance: appearance, animationName: widget.animationName);
+        return ForestRunnerView(key: ValueKey('$appearance|${widget.animationName}'), petOnly: true, petOrbit: widget.cameraControls,
+          appearance: appearance, animationName: widget.cameraControls ? widget.animationName : 'Idle_9');
       });
     }
     return ModelViewer(

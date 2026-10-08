@@ -5,7 +5,7 @@ import { LANES, jumpStep, crossesPlayer, hitsObstacle, collectsCoin } from './ph
 import { createRunnerEffects, createButterflies } from './tropical.js';
 import { createRunnerCoin } from './runner-coin.js';
 import { createBirds } from './forest-life.js';
-import { createForestBackdrop } from './forest-backdrop.js';
+import { createLivingForest } from './living-forest.js';
 import { createBridgeBelt } from './loop-bridge.js';
 import {runnerRow} from './patterns.js';
 import { runnerDifficulty } from './difficulty.js';
@@ -16,13 +16,14 @@ import { requestHost } from './bridge.js';
 import { equipRunnerCosmetics } from './cosmetics.js';
 clearTimeout(window.runnerBootTimer);
 
-const params=new URLSearchParams(location.search),petOnly=params.get('pet')==='1';
+const params=new URLSearchParams(location.search),petOnly=params.get('pet')==='1',petOrbit=params.get('orbit')==='1';
 const $ = id => document.getElementById(id);
 const panel=$('panel'), start=$('start'), pause=$('pause');
 const scene=new THREE.Scene();
 scene.background=null;scene.fog=new THREE.Fog('#a9d9db',55,110);
 const camera=new THREE.PerspectiveCamera(56,innerWidth/innerHeight,0.08,300);
-const backdrop=petOnly?{load:async()=>{},update(){},setPaused(){},dispose(){}}:createForestBackdrop(scene),music=new AdventureMusic(),birds=createBirds(scene);
+function frameCamera(){camera.aspect=innerWidth/innerHeight;camera.fov=THREE.MathUtils.radToDeg(2*Math.atan(Math.tan(THREE.MathUtils.degToRad(56)/2)*Math.max(1,.46/camera.aspect)));camera.updateProjectionMatrix();}frameCamera();
+const backdrop=petOnly?{load:async()=>{},update(){},setPaused(){},dispose(){}}:createLivingForest(scene),music=new AdventureMusic(),birds=createBirds(scene);
 const effects=createRunnerEffects(scene),butterflies=createButterflies(scene);
 let visualTime=0,landingPulse=0,pickupStreak=0;
 const renderer=new THREE.WebGLRenderer({antialias:true,alpha:petOnly,powerPreference:'high-performance'});
@@ -59,12 +60,14 @@ for(let i=0;i<45;i++){particlePositions[i*3]=Math.sin(i*17)*8;particlePositions[
 const particlesGeometry=new THREE.BufferGeometry();particlesGeometry.setAttribute('position',new THREE.BufferAttribute(particlePositions,3));
 const particles=new THREE.Points(particlesGeometry,new THREE.PointsMaterial({color:0xffe6a0,size:.05,transparent:true,opacity:.65,depthWrite:false}));scene.add(particles);
 let ready=false,running=false,paused=false;
+let checkpointIndex=1,checkpointElapsed=0,checkpointBusy=false,checkpointFailed=false,terminalAfterCheckpoint=false;
+let bestDistance=0;
 let sessionId=null,frames=[],pendingInputs=[],pendingSave=null,runElapsed=0;
 let lane=1,x=0,height=0,velocity=0,distance=0,coins=0,row=0,untilRow=0,last=performance.now();
 let toastUntil=0,animationId=0,needsRender=true;
 const speed=()=>runnerDifficulty(distance).speed;
 // Read-only diagnostics for the standalone preview; absent in the app WebView.
-if(window.parent===window&&!window.RunnerBridge)window.runnerPreview=Object.freeze({stats:()=>({distance,height,lane,running,paused,coins,drawCalls:renderer.info.render.calls,triangles:renderer.info.render.triangles,textures:renderer.info.memory.textures,sceneryTime:visualTime,videoTime:backdrop.video?.currentTime??0,videoPaused:backdrop.video?.paused??true,fps:Math.round(measuredFps),renderScale}),rig:()=>{const bones=[];penguin?.traverse(o=>{if(o.isBone&&/(Head|Neck|Spine2)$/.test(o.name))bones.push({name:o.name,position:penguin.worldToLocal(o.getWorldPosition(new THREE.Vector3())).toArray()});});const box=penguin?new THREE.Box3().setFromObject(penguin.children[0],true):null;return {bones,bounds:box?{min:box.min.toArray(),max:box.max.toArray()}:null};},replay:()=>({frames:frames.map(frame=>[frame[0],[...frame[1]]]),replay_version:3})});
+if(window.parent===window&&!window.RunnerBridge)window.runnerPreview=Object.freeze({stats:()=>({distance,height,lane,running,paused,coins,drawCalls:renderer.info.render.calls,triangles:renderer.info.render.triangles,textures:renderer.info.memory.textures,sceneryTime:visualTime,videoTime:backdrop.video?.currentTime??0,videoPaused:backdrop.video?.paused??true,fps:Math.round(measuredFps),renderScale}),rig:()=>{const bones=[];penguin?.traverse(o=>{if(o.isBone&&/(Head|Neck|Spine2)$/.test(o.name))bones.push({name:o.name,position:penguin.worldToLocal(o.getWorldPosition(new THREE.Vector3())).toArray()});});const box=penguin?new THREE.Box3().setFromObject(penguin.children[0],true):null;return {bones,bounds:box?{min:box.min.toArray(),max:box.max.toArray()}:null};},screen:()=>{if(!penguin)return null;const b=new THREE.Box3().setFromObject(penguin,true),points=[];for(const x of [b.min.x,b.max.x])for(const y of [b.min.y,b.max.y])for(const z of [b.min.z,b.max.z])points.push(new THREE.Vector3(x,y,z).project(camera).toArray());return {points,feet:penguin.position.y,rotation:penguin.rotation.y};},replay:()=>({frames:frames.map(frame=>[frame[0],[...frame[1]]]),replay_version:4})});
 
 function fitModel(source,dimensions) {
   const object=source.getObjectByProperty('isSkinnedMesh',true)?cloneSkeleton(source):source.clone(true);
@@ -94,13 +97,13 @@ function spawnRow() {
 }
 let hudKey='',lastMilestone=0,frameSample=0,frameCount=0,measuredFps=60,lastHudTime=0;
 function hud(){
- const level=runnerDifficulty(distance).level,m=Math.floor(distance),key=`${level}|${m}|${coins}`;
+ const level=runnerDifficulty(distance).level,m=Math.floor(distance),key=`${level}|${m}|${coins}|${bestDistance}`;
  if(key===hudKey)return;hudKey=key;
  $('difficulty').textContent=`Ritmo ${level}/5`;$('coins').textContent=`♥ ${coins}`;$('distance').textContent=`${m} m`;
- $('goal').textContent=`Reino · ${Math.min(100,Math.floor(distance/6))}%`;
- $('progress').value=Math.min(distance,600);
- const step=Math.floor(distance/150);
- if(step>lastMilestone){lastMilestone=step;music.effect('coin');$('toast').textContent=['','¡Llegaste al río!','¡Cruza las cascadas!','¡El reino está cerca!','¡Llegaste al reino!'][step]??'';toastUntil=performance.now()+2400;}
+ $('goal').textContent=`Siguiente hito · ${(Math.floor(distance/500)+1)*500} m`;
+ $('progress').value=distance%500;$('record').textContent=`🏆 Récord: ${bestDistance} m`;
+ const step=Math.floor(distance/500);
+ if(step>lastMilestone){lastMilestone=step;music.effect('coin');$('toast').textContent=`${step*500} metros · ¡Sigue rompiendo récords!`;toastUntil=performance.now()+2400;}
 }
 
 function jump(){if(running&&!paused&&height===0&&pendingInputs.length<8){velocity=8;pendingInputs.push(0);music.effect('jump');}}
@@ -109,7 +112,7 @@ function showPanel(title,message,label){$('title').textContent=title;$('message'
 function reset(){
   for(const item of objects)releaseObject(item);objects.length=0;
   lane=1;x=height=velocity=distance=coins=row=cameraX=0;untilRow=0;paused=false;running=true;
-  frames=[];pendingInputs=[];pendingSave=null;runElapsed=0;
+  frames=[];pendingInputs=[];pendingSave=null;runElapsed=0;checkpointIndex=1;checkpointElapsed=0;checkpointBusy=false;checkpointFailed=terminalAfterCheckpoint=false;
   effects.reset();landingPulse=pickupStreak=lastMilestone=0;hudKey='';backdrop.setPaused(false);
   $('toast').textContent='';panel.hidden=true;pause.disabled=false;pause.textContent='Pausa';hud();
   music.start();
@@ -125,25 +128,34 @@ start.onclick=async()=>{
   if(pendingSave){await saveRun();return;}
   if(paused){togglePause();return;}
   start.disabled=true;
-  try{const session=await requestHost('start');sessionId=session.session_id??null;reset();}
+  try{const session=await requestHost('start');sessionId=session.session_id??null;bestDistance=session.best_distance??bestDistance;reset();}
   catch(error){showPanel('No pudimos iniciar la partida',error.message,'Volver a intentar');}
   finally{start.disabled=false;}
 };
+function finishPayload(){return {session_id:sessionId,frames,replay_version:4,checkpoint_index:checkpointIndex};}
 async function saveRun(){
-  start.disabled=true;
+  start.disabled=true;const payload=pendingSave;
   try{
-    const result=await requestHost('finish',pendingSave);
+    const continuing=payload.checkpoint===true;
+    const result=await requestHost(continuing?'checkpoint':'finish',payload);
+    bestDistance=result.best_distance??Math.max(bestDistance,Math.floor(distance));hudKey='';
     pendingSave=null;
+    if(continuing){
+      checkpointIndex++;checkpointBusy=false;
+      if(terminalAfterCheckpoint){terminalAfterCheckpoint=false;pendingSave=finishPayload();await saveRun();return;}
+      if(checkpointFailed){checkpointFailed=false;paused=false;panel.hidden=true;music.start();}
+      return;
+    }
     const awarded=result.coins_awarded??0;
     showPanel('¡Partida guardada!',`Recorriste ${Math.floor(distance)} metros. Se sumaron ${awarded} monedas a tu saldo. Récord: ${result.best_distance??Math.floor(distance)} m.`,'Correr otra vez');
-  }catch(error){showPanel('Tu partida está pendiente',error.message,'Reintentar guardado');}
+  }catch(error){pendingSave=payload;checkpointFailed=payload.checkpoint===true;if(running){paused=true;music.pause();}showPanel('Tu partida está pendiente',error.message,'Reintentar guardado');}
   finally{start.disabled=false;}
 }
 pause.onclick=togglePause;$('jump').onclick=jump;$('left').onclick=()=>move(-1);$('right').onclick=()=>move(1);
 $('music').onclick=()=>{if(running&&!paused)music.start();const muted=music.toggleMute();$('music').textContent=muted?'♪ ×':'♪';$('music').setAttribute('aria-label',muted?'Activar audio':'Silenciar audio');};
 let pointerStart=null;
 renderer.domElement.addEventListener('pointerdown',e=>{pointerStart=[e.clientX,e.clientY];});
-renderer.domElement.addEventListener('pointermove',e=>{if(petOnly&&pointerStart&&penguin){penguin.rotation.y+=(e.clientX-pointerStart[0])*.015;pointerStart=[e.clientX,e.clientY];}});
+renderer.domElement.addEventListener('pointermove',e=>{if(petOnly&&petOrbit&&pointerStart&&penguin){penguin.rotation.y+=(e.clientX-pointerStart[0])*.015;pointerStart=[e.clientX,e.clientY];}});
 renderer.domElement.addEventListener('pointerup',e=>{
   if(!pointerStart)return;
   if(petOnly){pointerStart=null;return;}
@@ -157,7 +169,7 @@ addEventListener('keydown',e=>{
   if(e.code==='ArrowRight'||e.code==='KeyD')move(1);if(e.code==='Escape'||e.code==='KeyP')togglePause();
 });
 document.addEventListener('visibilitychange',()=>{if(document.hidden&&running&&!paused)togglePause();backdrop.setPaused(document.hidden||paused);});
-addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);needsRender=true;});
+addEventListener('resize',()=>{frameCamera();renderer.setSize(innerWidth,innerHeight);needsRender=true;});
 function frame(now){
   animationId=requestAnimationFrame(frame);if(now-last<(running?16:33))return;
   if(running){frameCount++;frameSample+=now-last;}else{frameCount=0;frameSample=0;}
@@ -184,7 +196,7 @@ function frame(now){
         if(item.kind==='obstacle'&&hitsObstacle(x,item.x,height)){
           running=false;music.stopForCollision();pause.disabled=true;
           showPanel('¡Vuelve a intentarlo!',`Recogiste ${coins} monedas y recorriste ${Math.floor(distance)} metros.`,'Correr otra vez');
-          if(sessionId){pendingSave={session_id:sessionId,frames,replay_version:3};$('message').textContent='Guardando tu partida…';saveRun();}
+          if(sessionId){$('message').textContent='Guardando tu partida…';if(checkpointBusy){terminalAfterCheckpoint=true;}else{pendingSave=finishPayload();saveRun();}}else{bestDistance=Math.max(bestDistance,Math.floor(distance));}
           break;
         }
         if(item.kind==='coin'&&collectsCoin(x,item.x,height,item.y)){
@@ -196,11 +208,11 @@ function frame(now){
       if(item.kind==='coin'&&crossesPlayer(previous,item.z))pickupStreak=0;
       if(item.z>6){releaseObject(item);objects.splice(i,1);}
     }
-    if(running&&(distance>=600||runElapsed>=1199.96)){
-      running=false;music.pause();pause.disabled=true;showPanel(distance>=600?'¡Llegaste al reino!':'¡Buen recorrido!',`Recogiste ${coins} monedas y recorriste ${Math.floor(distance)} metros.`,'Correr otra vez');
-      if(sessionId){pendingSave={session_id:sessionId,frames,replay_version:3};$('message').textContent='Guardando tu partida…';saveRun();}
-    }
     if(now-lastHudTime>80){hud();lastHudTime=now;}
+  }
+  if(running&&!paused&&runElapsed-checkpointElapsed>=90){
+    if(sessionId&&!checkpointBusy){checkpointBusy=true;pendingSave={session_id:sessionId,frames,replay_version:4,checkpoint_index:checkpointIndex,checkpoint:true};frames=[];checkpointElapsed=runElapsed;saveRun();}
+    else if(!sessionId){frames=[];checkpointElapsed=runElapsed;}
   }
   if(now>toastUntil)$('toast').textContent='';
   if(penguin){
@@ -215,13 +227,18 @@ function frame(now){
       if(activeAction)actions[activeAction].fadeOut(.16);activeAction=name;
     }
     if(!paused)mixer.update(dt);
-    if(petOnly)document.body.dataset.petAnimation=activeAction??'';
+    if(petOnly){
+      const feet=[];penguin.traverse(o=>{if(o.isBone&&/(LeftToeBase|RightToeBase)$/.test(o.name))feet.push(o.getWorldPosition(new THREE.Vector3()).y);});
+      if(feet.length)penguin.position.y+=floorY+.065-Math.min(...feet);
+      document.body.dataset.petGrounded='true';
+    }
+    if(petOnly){document.body.dataset.petAnimation=activeAction??'';if(!petOrbit){penguin.rotation.set(0,0,0);document.body.dataset.petPosition=penguin.position.toArray().join(',');}}
   }
   shadow.position.x=x;shadow.material.opacity=.22/(1+height);shadow.scale.set(1+height*.18,.65+height*.1,1);
-  cameraX=THREE.MathUtils.lerp(cameraX,0,1-Math.exp(-dt*4));
-  camera.position.set(0,petOnly?.75:2.2,petOnly?2.2:4.8);
-  camera.lookAt(0,petOnly?.62:.95,petOnly?0:-10);
-  backdrop.update(paused?0:dt,camera.aspect,cameraX);
+  cameraX=THREE.MathUtils.lerp(cameraX,petOnly?0:x*.72,1-Math.exp(-dt*9));
+  camera.position.set(cameraX,petOnly?.75:2.35,petOnly?2.2:5.8);
+  camera.lookAt(cameraX,petOnly?.62:.95,petOnly?0:-10);
+  backdrop.update(paused?0:dt,camera.aspect,cameraX,distance);
   if(!paused){
     visualTime+=dt;effects.update(dt);butterflies.update(dt);birds.update(dt);
     particles.position.y=Math.sin(visualTime*.8)*.12;particles.position.z=distance%18;
@@ -252,7 +269,7 @@ async function boot(){
         mixer=new THREE.AnimationMixer(penguin);
         for(const clip of gltf.animations)actions[clip.name]=mixer.clipAction(clip);
         if(actions.Regular_Jump){actions.Regular_Jump.setLoop(THREE.LoopOnce,1);actions.Regular_Jump.clampWhenFinished=true;}
-        if(actions.Idle_9){actions.Idle_9.play();activeAction='Idle_9';mixer.update(0);}
+        if(actions.Idle_9){actions.Idle_9.play();activeAction='Idle_9';if(petOnly&&!petOrbit&&(params.get('animation')??'Idle_9')==='Idle_9'){actions.Idle_9.time=Math.min(.75,actions.Idle_9.getClip().duration/2);actions.Idle_9.paused=true;}mixer.update(0);}
         (petOnly?Promise.resolve(JSON.parse(params.get('appearance')??'{}')):requestHost('cosmetics')).then(loadout=>{const equipped=equipRunnerCosmetics(penguin,loadout);if(petOnly)document.body.dataset.petAnchors=equipped.userData.slots.map(slot=>slot.parent.name).join(',');needsRender=true;}).catch(()=>{});
       }
     }
@@ -260,7 +277,7 @@ async function boot(){
     penguin.traverse(o=>{if(o.isMesh)o.castShadow=true;});
     clearTimeout(window.runnerBootTimer);ready=true;start.disabled=false;
     showPanel('Un paseo con Pip','Un bosque lleno de vida. Recoge corazones y salta los obstáculos. El ritmo aumenta a medida que avanzas. Usa ← → o desliza para cambiar de carril; toca o pulsa espacio para saltar.','Correr con Pip');
-    if(petOnly){document.body.classList.add('pet-only');scene.fog=null;renderer.setClearColor(0,0);for(const child of scene.children)if(child!==penguin&&!child.isLight)child.visible=false;}
+    if(petOnly){document.body.classList.add('pet-only');scene.background=null;scene.fog=null;renderer.setClearColor(0,0);for(const child of scene.children)if(child!==penguin&&child!==shadow&&!child.isLight)child.visible=false;}
     last=performance.now();animationId=requestAnimationFrame(frame);
   }catch(error){
     clearTimeout(window.runnerBootTimer);$('title').textContent='No pudimos abrir el bosque';

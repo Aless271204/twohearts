@@ -23,7 +23,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     'myCity': '',
     'partnerCity': '',
     'petName': 'Pollito',
-    'petModelPath': PetModelCatalog.defaultModelPath,
+    'petModelPath': PetModelCatalog.penguinModelPath,
     'petHappiness': 78,
     'petLevel': 3,
   };
@@ -95,14 +95,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             'myCity': data['myCity'],
             'partnerCity': data['partnerCity'],
             'partnerId': data['partnerId'],
-            'petName':
-                PetModelCatalog.modelPathFor(data['petType'] as String?) ==
-                    PetModelCatalog.penguinModelPath
-                ? 'Pip'
-                : _coupleData['petName'],
-            'petModelPath': PetModelCatalog.modelPathFor(
-              data['petType'] as String?,
-            ),
+            'petName': 'Pip',
+            'petModelPath': PetModelCatalog.penguinModelPath,
           };
           _loadingProfile = false;
         });
@@ -160,15 +154,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                     petModelPath: _coupleData['petModelPath'] as String,
                     happiness: _coupleData['petHappiness'] as int,
                     level: _coupleData['petLevel'] as int,
-                    onFeed: () {
-                      setState(() {
-                        _coupleData['petHappiness'] =
-                            ((_coupleData['petHappiness'] as int) + 5).clamp(
-                              0,
-                              100,
-                            );
-                      });
-                    },
+                    onFeed: () {},
                   ),
                 ),
               ],

@@ -1,0 +1,22 @@
+begin;
+create temp table runner_test_data(u uuid,r uuid);
+insert into runner_test_data(u) values(gen_random_uuid());
+insert into auth.users(id,email,raw_user_meta_data) select u,u::text||'@test.invalid','{}'::jsonb from runner_test_data;
+update runner_test_data set r=(public.runner_start_session(u)->>'session_id')::uuid;
+update public.runner_sessions set started_at=now()-interval '5 minutes' where id=(select r from runner_test_data);
+do $$declare u uuid;r uuid;checkpoint jsonb;result_a jsonb;result_b jsonb;begin
+select t.u,t.r into u,r from runner_test_data t;
+checkpoint:='{"distance":1200,"coins":80,"elapsed":100,"lane":1,"x":0,"height":0,"velocity":0,"row":0,"untilRow":10,"objects":[]}'::jsonb;
+result_a:=public.runner_save_checkpoint(u,r,1,checkpoint,false);
+result_b:=public.runner_save_checkpoint(u,r,1,checkpoint,false);
+if result_a<>result_b then raise exception 'Checkpoint not idempotent';end if;
+if (select love_coins from public.game_stats where user_id=u)<>0 then raise exception 'Early coins';end if;
+checkpoint:=checkpoint||'{"distance":1600,"coins":100,"elapsed":150}'::jsonb;
+result_a:=public.runner_save_checkpoint(u,r,2,checkpoint,true);
+result_b:=public.runner_save_checkpoint(u,r,2,checkpoint,true);
+if result_a<>result_b then raise exception 'Finish not idempotent';end if;
+if (select times_played from public.game_records where user_id=u and game_id='pebble_runner')<>1 then raise exception 'Games counted twice';end if;
+if (result_a->>'distance')::integer<>1600 or (result_a->>'coins_awarded')::integer>500 then raise exception 'Score or reward incorrect';end if;
+end $$;
+select 'PASS: checkpoint and finish idempotent, record beyond 600m, one game, capped reward' as audit;
+rollback;

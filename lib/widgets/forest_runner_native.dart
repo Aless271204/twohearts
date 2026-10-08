@@ -10,10 +10,11 @@ import '../core/asset_byte_range.dart';
 
 class ForestRunnerView extends StatefulWidget {
   final bool petOnly;
+  final bool petOrbit;
   final String? appearance;
   final String? animationName;
   final ValueChanged<WebViewController>? onWebViewCreated;
-  const ForestRunnerView({super.key, this.onWebViewCreated, this.petOnly = false, this.appearance, this.animationName});
+  const ForestRunnerView({super.key, this.onWebViewCreated, this.petOnly = false, this.petOrbit = false, this.appearance, this.animationName});
   @override
   State<ForestRunnerView> createState() => _ForestRunnerViewState();
 }
@@ -137,7 +138,7 @@ class _ForestRunnerViewState extends State<ForestRunnerView> {
         },
       );
       await controller.loadRequest(
-        Uri.parse('http://localhost:${server.port}/assets/runner/index.html').replace(queryParameters: widget.petOnly ? {'pet':'1', 'appearance':widget.appearance ?? '{}', 'animation':widget.animationName ?? 'Idle_9'} : null),
+        Uri.parse('http://localhost:${server.port}/assets/runner/index.html').replace(queryParameters: widget.petOnly ? {'pet':'1','orbit':widget.petOrbit?'1':'0', 'appearance':widget.appearance ?? '{}', 'animation':widget.animationName ?? 'Idle_9'} : null),
       );
       if (mounted) setState(() => _controller = controller);
       if (mounted) widget.onWebViewCreated?.call(controller);

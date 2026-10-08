@@ -22,6 +22,8 @@ class RunnerBridge {
           };
         case 'start':
           response['result'] = await GameService.instance.startRunnerSession();
+        case 'checkpoint':
+          response['result'] = await GameService.instance.checkpointRunnerSession(payload);
         case 'finish':
           response['result'] = await GameService.instance.finishRunnerSession(
             payload,

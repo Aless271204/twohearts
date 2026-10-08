@@ -1,4 +1,7 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
+import '../../../services/shared_pet_service.dart';
+import '../../../widgets/pet_messages_sheet.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -231,13 +234,22 @@ class _VirtualPetWidgetState extends State<VirtualPetWidget>
   bool _showFeedEffect = false;
   String _activeMoodId = 'happy';
   final List<CollectibleMood> _moods = List.from(kDefaultMoods);
-  int _hunger = 85;
-  int _energy = 70;
+  final _pet = SharedPetService.instance;
+  Timer? _carePoll;
+  bool _careBusy = false;
+  int get _hunger => _pet.hunger;
+  int get _energy => _pet.energy;
 
   @override
   void initState() {
     super.initState();
     InventoryService.instance.addListener(_inventoryChanged);
+    _pet.addListener(_inventoryChanged);
+    _pet.refresh().catchError((Object _) {});
+    _carePoll = Timer.periodic(const Duration(seconds: 20), (_) {
+      _pet.refresh().catchError((Object _) {});
+      InventoryService.instance.refresh().catchError((Object _) {});
+    });
     InventoryService.instance.refresh().catchError((Object _) {});
 
     _idleController = AnimationController(
@@ -265,9 +277,9 @@ class _VirtualPetWidgetState extends State<VirtualPetWidget>
     );
 
     _tapScaleAnim = TweenSequence<double>([
-      TweenSequenceItem(tween: Tween(begin: 1.0, end: 1.2), weight: 30),
-      TweenSequenceItem(tween: Tween(begin: 1.2, end: 0.92), weight: 30),
-      TweenSequenceItem(tween: Tween(begin: 0.92, end: 1.0), weight: 40),
+      TweenSequenceItem(tween: Tween(begin: 1.0, end: 1.025), weight: 30),
+      TweenSequenceItem(tween: Tween(begin: 1.025, end: 0.985), weight: 30),
+      TweenSequenceItem(tween: Tween(begin: 0.985, end: 1.0), weight: 40),
     ]).animate(CurvedAnimation(parent: _tapController, curve: Curves.easeOut));
 
     _heartAnim = Tween<double>(
@@ -287,6 +299,8 @@ class _VirtualPetWidgetState extends State<VirtualPetWidget>
   @override
   void dispose() {
     InventoryService.instance.removeListener(_inventoryChanged);
+    _pet.removeListener(_inventoryChanged);
+    _carePoll?.cancel();
     _idleController.dispose();
     _tapController.dispose();
     _heartController.dispose();
@@ -297,14 +311,14 @@ class _VirtualPetWidgetState extends State<VirtualPetWidget>
   PetEvolutionStage get _currentStage {
     PetEvolutionStage stage = kEvolutionStages.first;
     for (final s in kEvolutionStages) {
-      if (widget.level >= s.requiredLevel) stage = s;
+      if (_pet.level >= s.requiredLevel) stage = s;
     }
     return stage;
   }
 
   PetEvolutionStage? get _nextStage {
     for (final s in kEvolutionStages) {
-      if (widget.level < s.requiredLevel) return s;
+      if (_pet.level < s.requiredLevel) return s;
     }
     return null;
   }
@@ -315,6 +329,7 @@ class _VirtualPetWidgetState extends State<VirtualPetWidget>
   );
 
   void _handlePetTap() {
+    _care('stroke');
     HapticFeedback.lightImpact();
     _tapController.forward(from: 0);
     setState(() => _showHearts = true);
@@ -324,18 +339,21 @@ class _VirtualPetWidgetState extends State<VirtualPetWidget>
     });
   }
 
-  void _handleFeed() {
-    HapticFeedback.mediumImpact();
-    setState(() {
-      _showFeedEffect = true;
-      _hunger = (_hunger + 15).clamp(0, 100);
-    });
-    _tapController.forward(from: 0);
-    widget.onFeed();
-    Future.delayed(const Duration(seconds: 2), () {
-      if (mounted) setState(() => _showFeedEffect = false);
-    });
+  Future<void> _care(String action) async {
+    if (_careBusy) return;
+    _careBusy = true;
+    try {
+      await _pet.care(action);
+      if (!mounted) return;
+      HapticFeedback.lightImpact();
+      setState(() => _showFeedEffect = action == 'feed');
+      _tapController.forward(from: 0);
+      Future.delayed(const Duration(seconds: 2), () { if (mounted) setState(() => _showFeedEffect = false); });
+    } catch (_) {
+      if (mounted) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('No se guardó el cuidado. Comprueba la conexión o espera 30 segundos antes de repetirlo.')));
+    } finally { _careBusy = false; }
   }
+  void _handleFeed() { _care('feed'); }
 
   Color _meterColor(int v) {
     if (v >= 70) return const Color(0xFF4CAF50);
@@ -353,6 +371,10 @@ class _VirtualPetWidgetState extends State<VirtualPetWidget>
         ),
         _buildPetCharacter(),
 
+        Positioned(top: 48, left: 16, right: 16, child: Center(child: Text(
+          !_pet.ready ? 'Conectando con vuestro nido…' : _pet.paired ? 'Una mascota para los dos · Cuidado compartido' : 'Tu nido · Vincula a tu pareja para cuidarlo juntos',
+          textAlign: TextAlign.center, style: const TextStyle(color: Color(0xFF345146), fontSize: 12),
+        ))),
         // ── HUD: Level badge (top-left) ────────────────────────────────
         Positioned(top: 8, left: 16, child: _buildLevelBadge()),
 
@@ -410,36 +432,21 @@ class _VirtualPetWidgetState extends State<VirtualPetWidget>
               ),
             ),
 
-            // Shadow under pet
-            AnimatedBuilder(
-              animation: _idleAnim,
-              builder: (_, __) => Positioned(
-                bottom: 80,
-                child: Container(
-                  width: 120 - _idleAnim.value * 15,
-                  height: 18 - _idleAnim.value * 6,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.black.withAlpha(30),
-                  ),
-                ),
-              ),
-            ),
-
             // Centered 3D pet model
             AnimatedBuilder(
               animation: Listenable.merge([_idleAnim, _tapScaleAnim]),
               builder: (_, child) {
-                final idleOffset = _idleAnim.value * -10;
+                final idleOffset = 0.0;
                 final scale = _tapController.isAnimating
                     ? _tapScaleAnim.value
                     : 1.0;
                 return Transform.translate(
                   offset: Offset(0, idleOffset),
-                  child: Transform.scale(scale: scale, child: child),
+                  child: Transform.scale(scale: scale, alignment: Alignment.bottomCenter, child: child),
                 );
               },
               child: FractionallySizedBox(
+                alignment: Alignment.bottomCenter,
                 widthFactor: 0.78,
                 heightFactor: 0.68,
                 child: Stack(
@@ -449,9 +456,7 @@ class _VirtualPetWidgetState extends State<VirtualPetWidget>
                       modelPath: widget.petModelPath,
                       altText: '${widget.petName}, mascota 3D de TwoHearts',
                       autoPlay: true,
-                      cameraControls:
-                          widget.petModelPath !=
-                          PetModelCatalog.penguinModelPath,
+                      cameraControls: false,
                       cameraOrbit:
                           widget.petModelPath ==
                               PetModelCatalog.penguinModelPath
@@ -559,7 +564,7 @@ class _VirtualPetWidgetState extends State<VirtualPetWidget>
             ),
             child: Center(
               child: Text(
-                '${widget.level}',
+                '${_pet.level}',
                 style: GoogleFonts.dmSans(
                   fontSize: 11,
                   fontWeight: FontWeight.w800,
@@ -632,16 +637,16 @@ class _VirtualPetWidgetState extends State<VirtualPetWidget>
             color: const Color(0xFF6B9FFF),
             onTap: () {
               HapticFeedback.lightImpact();
-              setState(() => _energy = (_energy + 10).clamp(0, 100));
+              _care('play');
             },
           ),
           _HudActionButton(
-            emoji: '🛁',
-            label: 'Bañar',
+            emoji: '💌',
+            label: 'Mensajes',
             color: const Color(0xFF6BDDFF),
             onTap: () {
               HapticFeedback.lightImpact();
-              setState(() => _hunger = (_hunger + 5).clamp(0, 100));
+              showModalBottomSheet(context: context, isScrollControlled: true, builder: (_) => const PetMessagesSheet());
             },
           ),
           _HudActionButton(
@@ -650,7 +655,7 @@ class _VirtualPetWidgetState extends State<VirtualPetWidget>
             color: const Color(0xFFB39DDB),
             onTap: () {
               HapticFeedback.lightImpact();
-              setState(() => _energy = (_energy + 20).clamp(0, 100));
+              _care('rest');
             },
           ),
         ],
@@ -673,7 +678,7 @@ class _VirtualPetWidgetState extends State<VirtualPetWidget>
                 width: 14,
                 height: 14,
                 decoration: BoxDecoration(
-                  color: _meterColor(widget.happiness),
+                  color: _meterColor(_pet.joy),
                   shape: BoxShape.circle,
                   border: Border.all(color: Colors.white, width: 1.5),
                 ),
@@ -719,7 +724,7 @@ class _VirtualPetWidgetState extends State<VirtualPetWidget>
     final next = _nextStage;
     final stage = _currentStage;
     final xpProgress = next != null
-        ? (widget.level - stage.requiredLevel) /
+        ? (_pet.level - stage.requiredLevel) /
               (next.requiredLevel - stage.requiredLevel)
         : 1.0;
 
@@ -748,7 +753,7 @@ class _VirtualPetWidgetState extends State<VirtualPetWidget>
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Nv. ${widget.level}',
+                  'Nv. ${_pet.level}',
                   style: GoogleFonts.dmSans(
                     fontSize: 11,
                     fontWeight: FontWeight.w700,
@@ -791,17 +796,17 @@ class _VirtualPetWidgetState extends State<VirtualPetWidget>
       context: context,
       backgroundColor: Colors.transparent,
       builder: (_) => _CareMeterSheet(
-        happiness: widget.happiness,
+        happiness: _pet.joy,
         hunger: _hunger,
         energy: _energy,
         meterColor: _meterColor,
         onFeed: _handleFeed,
         onPlay: () {
-          setState(() => _energy = (_energy + 10).clamp(0, 100));
+          _care('play');
           Navigator.pop(context);
         },
         onSleep: () {
-          setState(() => _energy = (_energy + 20).clamp(0, 100));
+          _care('rest');
           Navigator.pop(context);
         },
       ),
@@ -836,7 +841,7 @@ class _VirtualPetWidgetState extends State<VirtualPetWidget>
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
       builder: (_) =>
-          _EvolutionSheet(currentLevel: widget.level, stages: kEvolutionStages),
+          _EvolutionSheet(currentLevel: _pet.level, stages: kEvolutionStages),
     );
   }
 
@@ -1048,7 +1053,7 @@ class _CareMeterSheet extends StatelessWidget {
           const SizedBox(height: 20),
           _buildMeter('❤️', 'Felicidad', happiness, meterColor(happiness)),
           const SizedBox(height: 12),
-          _buildMeter('🍎', 'Hambre', hunger, meterColor(hunger)),
+          _buildMeter('🍎', 'Comida', hunger, meterColor(hunger)),
           const SizedBox(height: 12),
           _buildMeter('⚡', 'Energía', energy, meterColor(energy)),
           const SizedBox(height: 24),

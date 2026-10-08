@@ -30,6 +30,10 @@ class GameService {
     return _runnerRequest({'action': 'start'});
   }
 
+  Future<Map<String, dynamic>> checkpointRunnerSession(Map<String, dynamic> replay) async {
+    return _runnerRequest({'action': 'checkpoint', ...replay});
+  }
+
   Future<Map<String, dynamic>> finishRunnerSession(
     Map<String, dynamic> payload,
   ) async {

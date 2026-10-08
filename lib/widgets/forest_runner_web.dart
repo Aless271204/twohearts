@@ -7,9 +7,10 @@ import 'runner_bridge.dart';
 
 class ForestRunnerView extends StatefulWidget {
   final bool petOnly;
+  final bool petOrbit;
   final String? appearance;
   final String? animationName;
-  const ForestRunnerView({super.key, this.petOnly = false, this.appearance, this.animationName});
+  const ForestRunnerView({super.key, this.petOnly = false, this.petOrbit = false, this.appearance, this.animationName});
   @override
   State<ForestRunnerView> createState() => _ForestRunnerViewState();
 }
@@ -27,7 +28,7 @@ class _ForestRunnerViewState extends State<ForestRunnerView> {
     _frame = web.HTMLIFrameElement()
       ..src = Uri.parse(
         web.document.baseURI,
-      ).resolve('assets/assets/runner/index.html').replace(queryParameters: widget.petOnly ? {'pet':'1', 'appearance':widget.appearance ?? '{}', 'animation':widget.animationName ?? 'Idle_9'} : null).toString()
+      ).resolve('assets/assets/runner/index.html').replace(queryParameters: widget.petOnly ? {'pet':'1','orbit':widget.petOrbit?'1':'0', 'appearance':widget.appearance ?? '{}', 'animation':widget.animationName ?? 'Idle_9'} : null).toString()
       ..title = 'Corre en pareja: bosque 3D'
       ..style.border = '0'
       ..style.width = '100%'

@@ -70,8 +70,13 @@ class InventoryService extends ChangeNotifier {
   List<InventoryItem> catalog = [];
   Map<String, Map<String, dynamic>> owned = {};
   int _generation = 0;
+  Map<String, InventoryItem>? _sharedLoadout;
   bool owns(String key) => owned.containsKey(key);
-  bool equipped(String key) => owned[key]?['equipped'] == true;
+  bool equipped(String key) {
+    final item = catalog.where((i) => i.key == key).firstOrNull;
+    if (_sharedLoadout != null && item != null && ['pet','room'].contains(item.scope)) return _sharedLoadout![item.slot]?.key == key;
+    return owned[key]?['equipped'] == true;
+  }
   InventoryItem? at(String slot) {
     for (final item in catalog) {
       if (item.slot == slot && equipped(item.key)) return item;
@@ -81,12 +86,14 @@ class InventoryService extends ChangeNotifier {
 
   Map<String, InventoryItem> get loadout => {
     for (final i in catalog)
-      if (equipped(i.key)) i.slot: i,
+      if (equipped(i.key) && (_sharedLoadout == null || !['pet','room'].contains(i.scope))) i.slot: i,
+    ...?_sharedLoadout,
   };
   void _clear() {
     _generation++;
     _account = _uid;
     coins = 0;
+    _sharedLoadout = null;
     catalog = [];
     owned = {};
     notifyListeners();
@@ -105,6 +112,13 @@ class InventoryService extends ChangeNotifier {
     if (_uid != uid || generation != _generation || raw['user_id'] != uid) {
       return;
     }
+    Map<String, InventoryItem>? shared = _sharedLoadout;
+    try {
+      final pet = Map<String, dynamic>.from(await _db.rpc('shared_pet_snapshot') as Map);
+      shared = {for (final item in pet['equipment'] as List) (item as Map)['equip_slot'] as String: InventoryItem(Map<String, dynamic>.from(item))};
+    } catch (_) { /* Older servers retain personal equipment until migration. */ }
+    if (_uid != uid || generation != _generation) return;
+    _sharedLoadout = shared;
     _account = uid;
     coins = raw['coins'] as int;
     catalog = (raw['catalog'] as List)
@@ -124,7 +138,7 @@ class InventoryService extends ChangeNotifier {
 
   Future<void> equip(InventoryItem item, bool enabled) async {
     await _db.rpc(
-      'inventory_equip',
+      ['pet','room'].contains(item.scope) ? 'shared_pet_equip' : 'inventory_equip',
       params: {'p_item_key': item.key, 'p_equipped': enabled},
     );
     await refresh();
