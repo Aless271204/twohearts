@@ -35,6 +35,9 @@ class AppTheme {
 
   static ThemeData get lightTheme => ThemeData(
     useMaterial3: true,
+    snackBarTheme: SnackBarThemeData(behavior: SnackBarBehavior.floating, backgroundColor: const Color(0xFF294737), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)), elevation: 4, insetPadding: const EdgeInsets.all(16)),
+    dialogTheme: DialogThemeData(backgroundColor: const Color(0xFFFFF8F1), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28))),
+    pageTransitionsTheme: const PageTransitionsTheme(builders: {TargetPlatform.android: FadeForwardsPageTransitionsBuilder(), TargetPlatform.iOS: CupertinoPageTransitionsBuilder()}),
     colorScheme: ColorScheme.light(
       primary: primary,
       onPrimary: Colors.white,

@@ -61,6 +61,10 @@ class _ScenePainter extends CustomPainter {
       ).createShader(wallRect));
       // Architecture and furniture stay behind the fixed central pet area.
       rect(const Rect.fromLTWH(0, 250, 300, 10), const Color(0xFFFAF1E3), 0);
+      line(const Offset(0, 259), const Offset(300, 259), const Color(0x33846948), 3);
+      for (var x = 12; x < 300; x += 38) {
+        rect(Rect.fromLTWH(x.toDouble(), 214, 27, 29), wallColor.withAlpha(80), 3);
+      }
       rect(const Rect.fromLTWH(24, 125, 67, 84), const Color(0xFFAD8E6B), 14);
       rect(const Rect.fromLTWH(29, 130, 57, 74), const Color(0xFFD6F1F5), 10);
       final night = wall?.key.endsWith('_night') ?? false;
@@ -95,16 +99,24 @@ class _ScenePainter extends CustomPainter {
       final bed = items['room_bed'];
       if (bed != null) {
         oval(const Rect.fromLTWH(8, 271, 77, 23), const Color(0x22000000));
+        rect(const Rect.fromLTWH(13, 268, 6, 22), const Color(0xFF9B7655), 3);
+        rect(const Rect.fromLTWH(72, 268, 6, 22), const Color(0xFF9B7655), 3);
+        rect(const Rect.fromLTWH(8, 246, 77, 30), Color.lerp(bed.color, Colors.black, .18)!, 12);
         oval(const Rect.fromLTWH(8, 258, 77, 30), bed.color);
         oval(
           const Rect.fromLTWH(16, 262, 61, 19),
           Color.lerp(bed.color, Colors.white, .45)!,
         );
         oval(const Rect.fromLTWH(22, 260, 27, 11), const Color(0xFFFFF6E6));
+        line(const Offset(52, 269), const Offset(71, 269), Colors.white54, 2);
+        line(const Offset(53, 274), const Offset(68, 274), Colors.white38, 2);
       }
       final plant = items['room_plant'];
       if (plant != null) {
+        oval(const Rect.fromLTWH(18, 261, 43, 11), const Color(0x22000000));
         rect(const Rect.fromLTWH(23, 230, 32, 38), plant.color);
+        oval(const Rect.fromLTWH(23, 226, 32, 12), Color.lerp(plant.color, Colors.white, .25)!);
+        oval(const Rect.fromLTWH(27, 229, 24, 6), const Color(0xFF6D5947));
         line(
           const Offset(39, 235),
           const Offset(39, 182),
@@ -127,6 +139,8 @@ class _ScenePainter extends CustomPainter {
         oval(const Rect.fromLTWH(221, 100, 75, 150), const Color(0x22FFE4A2));
         line(const Offset(256, 157), const Offset(256, 271), lamp.color, 5);
         rect(const Rect.fromLTWH(229, 131, 54, 30), lamp.color);
+        line(const Offset(238, 138), const Offset(274, 138), Colors.white54, 2);
+        rect(const Rect.fromLTWH(232, 157, 48, 5), const Color(0xFFFFDC99), 2);
         oval(const Rect.fromLTWH(238, 263, 37, 9), lamp.color);
       }
       final decor = items['room_decor'];

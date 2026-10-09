@@ -178,6 +178,12 @@ void main() {
     await waitForJavaScript(tester, controller,
       'window.runnerResumeValid === true',
       'Resuming restarts the scene');
+    tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.paused);
+    await waitForJavaScript(tester, controller,
+      "window.runnerAudioState() === 'suspended' && !document.getElementById('panel').hidden",
+      'Backgrounding the native app suspends music and pauses the run');
+    tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+    await controller.runJavaScript("document.getElementById('start').click();");
     await waitForJavaScript(
       tester,
       controller,

@@ -1,12 +1,19 @@
-import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 import 'package:just_audio/just_audio.dart';
 
 /// Manages warm ambient background music throughout the app.
 /// Uses a royalty-free ambient/lo-fi audio stream.
-class AudioService {
+class AudioService with WidgetsBindingObserver {
   static AudioService? _instance;
   static AudioService get instance => _instance ??= AudioService._();
-  AudioService._();
+  AudioService._() { WidgetsBinding.instance.addObserver(this); }
+  bool _foreground = true;
+  bool _sceneActive = false;
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    _foreground = state == AppLifecycleState.resumed;
+    if (!_foreground) pause();
+  }
 
   AudioPlayer? _player;
   bool _initialized = false;
@@ -43,8 +50,9 @@ class AudioService {
   }
 
   Future<void> play() async {
+    _sceneActive = true;
     if (!_initialized) await initialize();
-    if (!_muted) {
+    if (!_muted && _foreground && _sceneActive) {
       try {
         await _player?.play();
       } catch (e) {
@@ -54,6 +62,7 @@ class AudioService {
   }
 
   Future<void> pause() async {
+    _sceneActive = false;
     try {
       await _player?.pause();
     } catch (e) {
@@ -67,13 +76,14 @@ class AudioService {
       await _player?.setVolume(0.0);
     } else {
       await _player?.setVolume(0.18);
-      if (!(_player?.playing ?? false)) {
+      if (_foreground && _sceneActive && !(_player?.playing ?? false)) {
         await _player?.play();
       }
     }
   }
 
   Future<void> dispose() async {
+    WidgetsBinding.instance.removeObserver(this);
     await _player?.dispose();
     _player = null;
     _initialized = false;

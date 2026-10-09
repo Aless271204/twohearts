@@ -24,14 +24,15 @@ Deno.serve(async req=>{
     if(body.action==='start')return reply(await rpc('runner_start_session',{p_user_id:user.id}));
     if(body.action==='finish'||body.action==='checkpoint'){
       if(typeof body.session_id!=='string'||! /^[0-9a-f-]{36}$/i.test(body.session_id))return reply({error:'Invalid run'},400);
-      if(body.replay_version===4){
+      if(body.replay_version===4||body.replay_version===5){
         if(!Number.isInteger(body.checkpoint_index)||body.checkpoint_index<1)return reply({error:'Invalid checkpoint'},400);
         const response=await fetch(`${url}/rest/v1/runner_sessions?id=eq.${body.session_id}&user_id=eq.${user.id}&select=status,checkpoint_state,checkpoint_index,checkpoint_result`,{headers:{apikey:serviceKey,Authorization:`Bearer ${serviceKey}`}});
         if(!response.ok)throw Error('Checkpoint unavailable');
         const [saved]=await response.json();if(!saved)throw Error('Run not owned');
         if(body.checkpoint_index===saved.checkpoint_index)return reply(saved.checkpoint_result);
         if(saved.status!=='started'||body.checkpoint_index!==saved.checkpoint_index+1)throw Error('Checkpoint out of order');
-        const result=replayChunk(body.frames,saved.checkpoint_state);
+        if(saved.checkpoint_state && (saved.checkpoint_state.version??4)!==body.replay_version)throw Error('Checkpoint version changed');
+        const result=replayChunk(body.frames,saved.checkpoint_state,body.replay_version);
         if((body.action==='finish')!==result.ended)throw Error('Terminal collision does not match checkpoint');
         return reply(await rpc('runner_save_checkpoint',{p_user_id:user.id,p_session_id:body.session_id,p_index:body.checkpoint_index,p_state:result.state,p_terminal:result.ended}));
       }

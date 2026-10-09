@@ -5,17 +5,17 @@ import {AdventureMusic} from '../assets/runner/music.js';
 import {replayRun} from '../assets/runner/replay.js';
 
 test('difficulty grows smoothly, stays bounded and leaves time to jump',()=>{
-  let previous=runnerDifficulty(0);
+  let previous=runnerDifficulty(0,3);
   for(let distance=1;distance<=3000;distance++){
-    const next=runnerDifficulty(distance);
+    const next=runnerDifficulty(distance,3);
     assert.ok(next.speed>=previous.speed&&next.speed<=14);
     assert.ok(next.spacing<=previous.spacing&&next.spacing>=18);
     assert.ok(next.spacing/next.speed>1.2);
     assert.ok(next.level>=1&&next.level<=5);
     previous=next;
   }
-  assert.deepEqual(runnerDifficulty(0),{speed:8,spacing:28,level:1});
-  assert.deepEqual(runnerDifficulty(900),{speed:14,spacing:18,level:5});
+  assert.deepEqual(runnerDifficulty(0,3),{speed:8,spacing:28,level:1});
+  assert.deepEqual(runnerDifficulty(900,3),{speed:14,spacing:18,level:5});
 });
 
 test('new replays validate and older installed apps retain their rules',()=>{

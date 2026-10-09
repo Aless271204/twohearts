@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:webview_flutter_android/webview_flutter_android.dart';
 import 'runner_bridge.dart';
+import 'scene_status.dart';
 import '../core/local_asset_path.dart';
 import '../core/asset_byte_range.dart';
 
@@ -21,7 +22,7 @@ class ForestRunnerView extends StatefulWidget {
   State<ForestRunnerView> createState() => _ForestRunnerViewState();
 }
 
-class _ForestRunnerViewState extends State<ForestRunnerView> {
+class _ForestRunnerViewState extends State<ForestRunnerView> with WidgetsBindingObserver {
   HttpServer? _server;
   WebViewController? _controller;
   String? _error;
@@ -29,6 +30,7 @@ class _ForestRunnerViewState extends State<ForestRunnerView> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _open();
   }
 
@@ -153,7 +155,14 @@ class _ForestRunnerViewState extends State<ForestRunnerView> {
   }
 
   @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state != AppLifecycleState.resumed) _controller?.runJavaScript('window.runnerSuspend?.();').catchError((Object _) {});
+  }
+
+  @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    _controller?.runJavaScript('window.runnerSuspend?.();').catchError((Object _) {});
     _controller?.loadRequest(Uri.parse('about:blank'));
     _server?.close(force: true);
     super.dispose();
@@ -162,11 +171,9 @@ class _ForestRunnerViewState extends State<ForestRunnerView> {
   @override
   Widget build(BuildContext context) {
     if (_error != null)
-      return Center(
-        child: Text(_error!, style: const TextStyle(color: Colors.white)),
-      );
+      return SceneStatus(title: 'No pudimos abrir el bosque', message: _error!, loading: false, onRetry: () => Navigator.maybePop(context));
     if (_controller == null)
-      return const Center(child: CircularProgressIndicator());
+      return const SceneStatus(title: 'Preparando tu aventura', message: 'Abrimos el bosque y preparamos a tu mascota…');
     return WebViewWidget(controller: _controller!);
   }
 }

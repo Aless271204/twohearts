@@ -43,7 +43,8 @@ export function replayRun(frames, version = 1) {
 
 // Version 4 keeps only a short input chunk in the client. Initial state comes
 // exclusively from the server's previous validated checkpoint, never the body.
-export function replayChunk(frames, initial=null) {
+export function replayChunk(frames, initial=null, version=4) {
+  if (![4,5].includes(version) || (initial?.version != null && initial.version !== version)) throw Error('Invalid checkpoint version');
   if(!Array.isArray(frames)||frames.length<1||frames.length>10000)throw Error('Invalid replay length');
   let {lane=1,x=0,height=0,velocity=0,distance=0,coins=0,row=0,untilRow=0,elapsed=0}=initial??{};
   const objects=(initial?.objects??[]).map(item=>({...item}));
@@ -56,12 +57,12 @@ export function replayChunk(frames, initial=null) {
       if(input===0){if(height===0)velocity=8;}else lane=Math.max(0,Math.min(2,lane+input));
     }
     const dt=frame[0]/1000000;elapsed+=dt;chunkElapsed+=dt;if(chunkElapsed>180)throw Error('Checkpoint is too long');
-    const travel=runnerDifficulty(distance,4).speed*dt;distance+=travel;
+    const travel=runnerDifficulty(distance,version).speed*dt;distance+=travel;
     [height,velocity]=jumpStep(height,velocity,dt);x+=(LANES[lane]-x)*(1-Math.exp(-dt*10));untilRow-=travel;
     if(untilRow<=0){
       const pattern=runnerRow(row,distance,4);objects.push({kind:'obstacle',x:LANES[pattern.obstacleLane],z:-68});
       for(let i=0;i<5;i++)objects.push({kind:'coin',x:LANES[pattern.coinLane],z:-60-i*4,y:i===2?1.8:.7});
-      objects.push({kind:'coin',x:LANES[pattern.alternateLane],z:-68,y:.7});row++;untilRow+=runnerDifficulty(distance,4).spacing;
+      objects.push({kind:'coin',x:LANES[pattern.alternateLane],z:-68,y:.7});row++;untilRow+=runnerDifficulty(distance,version).spacing;
     }
     for(let i=objects.length-1;i>=0;i--){
       const item=objects[i],previous=item.z;item.z+=travel;
@@ -72,5 +73,5 @@ export function replayChunk(frames, initial=null) {
       if(item.z>6){objects.splice(i,1);}
     }
   }
-  return {ended,state:{lane,x,height,velocity,distance,coins,row,untilRow,elapsed,objects}};
+  return {ended,state:{lane,x,height,velocity,distance,coins,row,untilRow,elapsed,objects,...(version>=5?{version}: {})}};
 }

@@ -17,7 +17,7 @@ class ForestRunnerView extends StatefulWidget {
   State<ForestRunnerView> createState() => _ForestRunnerViewState();
 }
 
-class _ForestRunnerViewState extends State<ForestRunnerView> {
+class _ForestRunnerViewState extends State<ForestRunnerView> with WidgetsBindingObserver {
   static int _nextId = 0;
   late final String _viewType;
   late final web.HTMLIFrameElement _frame;
@@ -26,6 +26,7 @@ class _ForestRunnerViewState extends State<ForestRunnerView> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _viewType = 'forest-runner-${_nextId++}';
     _frame = web.HTMLIFrameElement()
       ..src = Uri.parse(
@@ -61,7 +62,14 @@ class _ForestRunnerViewState extends State<ForestRunnerView> {
   }
 
   @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state != AppLifecycleState.resumed) _frame.contentWindow?.postMessage('runner-suspend'.toJS, Uri.base.origin.toJS);
+  }
+
+  @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    _frame.contentWindow?.postMessage('runner-suspend'.toJS, Uri.base.origin.toJS);
     web.window.removeEventListener('message', _listener);
     _frame.src = 'about:blank';
     super.dispose();

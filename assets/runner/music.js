@@ -1,11 +1,13 @@
 // Original tropical loop: marimba-like plucks, flute, bass and soft hand drums.
 export class AdventureMusic {
-  constructor(){this.context=null;this.timer=null;this.muted=false;this.step=0;this.endTimer=null;}
+  constructor(){this.context=null;this.timer=null;this.muted=false;this.step=0;this.endTimer=null;this.generation=0;this.intensity=0;}
   async start(){
+    const generation=++this.generation;
     try{
       clearTimeout(this.endTimer);
       if(!this.context)this.create();
       await this.context.resume();
+      if(generation!==this.generation){if(this.context.state==='running')await this.context.suspend();return;}
       if(this.timer)return;
       this.next=this.context.currentTime+.08;
       this.timer=setInterval(()=>this.schedule(),80);this.schedule();
@@ -38,7 +40,7 @@ export class AdventureMusic {
     oscillators[0].onended=()=>{voice.disconnect();filter.disconnect();pan.disconnect();};
   }
   schedule(){
-    const eighth=60/96/2;
+    const eighth=60/(96+this.intensity*20)/2;
     const chords=[[48,55,60,64,67],[43,55,59,62,67],[45,57,60,64,69],[41,53,57,60,65],[48,55,60,64,67],[45,57,60,64,69],[50,57,62,65,69],[43,55,59,62,67]];
     const melody=[[72,76,79,76],[74,71,67,71],[72,76,81,79],[77,76,72,69],[76,79,84,79],[81,79,76,72],[74,77,81,77],[79,74,71,72]];
     while(this.next<this.context.currentTime+.25){
@@ -84,6 +86,6 @@ export class AdventureMusic {
     this.endTimer=setTimeout(()=>this.pause(),500);
   }
   toggleMute(){this.muted=!this.muted;if(this.master)this.master.gain.setTargetAtTime(this.muted?0:.24,this.context.currentTime,.12);return this.muted;}
-  async pause(){if(this.timer){clearInterval(this.timer);this.timer=null;}if(this.context?.state==='running')await this.context.suspend();}
-  dispose(){clearTimeout(this.endTimer);if(this.timer)clearInterval(this.timer);this.context?.close();this.timer=null;}
+  async pause(){this.generation++;clearTimeout(this.endTimer);if(this.timer){clearInterval(this.timer);this.timer=null;}if(this.context?.state==='running')await this.context.suspend();}
+  dispose(){this.generation++;clearTimeout(this.endTimer);if(this.timer)clearInterval(this.timer);this.context?.close();this.timer=null;}
 }

@@ -73,7 +73,7 @@ let lane=1,x=0,height=0,velocity=0,distance=0,coins=0,row=0,untilRow=0,last=perf
 let toastUntil=0,animationId=0,needsRender=true;
 const speed=()=>runnerDifficulty(distance).speed;
 // Read-only diagnostics for the standalone preview; absent in the app WebView.
-if(window.parent===window&&!window.RunnerBridge)window.runnerPreview=Object.freeze({stats:()=>({distance,height,lane,running,paused,coins,drawCalls:renderer.info.render.calls,triangles:renderer.info.render.triangles,textures:renderer.info.memory.textures,sceneryTime:visualTime,videoTime:backdrop.video?.currentTime??0,videoPaused:backdrop.video?.paused??true,fps:Math.round(measuredFps),renderScale}),rig:()=>{const bones=[];penguin?.traverse(o=>{if(o.isBone&&/(Head|Neck|Spine2|Hips|LeftUpLeg|RightUpLeg|LeftLeg|RightLeg|LeftFoot|RightFoot|LeftToeBase|RightToeBase|LeftToe_End|RightToe_End)$/.test(o.name))bones.push({name:o.name,position:penguin.worldToLocal(o.getWorldPosition(new THREE.Vector3())).toArray()});});const box=penguin?new THREE.Box3().setFromObject(penguin.children[0],true):null;return {bones,bounds:box?{min:box.min.toArray(),max:box.max.toArray()}:null};},screen:()=>{if(!penguin)return null;const b=new THREE.Box3().setFromObject(penguin,true),points=[];for(const x of [b.min.x,b.max.x])for(const y of [b.min.y,b.max.y])for(const z of [b.min.z,b.max.z])points.push(new THREE.Vector3(x,y,z).project(camera).toArray());return {points,feet:penguin.position.y,rotation:penguin.rotation.y};},replay:()=>({frames:frames.map(frame=>[frame[0],[...frame[1]]]),replay_version:4})});
+if(window.parent===window&&!window.RunnerBridge)window.runnerPreview=Object.freeze({stats:()=>({distance,height,lane,running,paused,coins,drawCalls:renderer.info.render.calls,triangles:renderer.info.render.triangles,textures:renderer.info.memory.textures,sceneryTime:visualTime,videoTime:backdrop.video?.currentTime??0,videoPaused:backdrop.video?.paused??true,fps:Math.round(measuredFps),renderScale}),rig:()=>{const bones=[];penguin?.traverse(o=>{if(o.isBone&&/(Head|Neck|Spine2|Hips|LeftUpLeg|RightUpLeg|LeftLeg|RightLeg|LeftFoot|RightFoot|LeftToeBase|RightToeBase|LeftToe_End|RightToe_End)$/.test(o.name))bones.push({name:o.name,position:penguin.worldToLocal(o.getWorldPosition(new THREE.Vector3())).toArray()});});const box=penguin?new THREE.Box3().setFromObject(penguin.children[0],true):null;return {bones,bounds:box?{min:box.min.toArray(),max:box.max.toArray()}:null};},screen:()=>{if(!penguin)return null;const b=new THREE.Box3().setFromObject(penguin,true),points=[];for(const x of [b.min.x,b.max.x])for(const y of [b.min.y,b.max.y])for(const z of [b.min.z,b.max.z])points.push(new THREE.Vector3(x,y,z).project(camera).toArray());return {points,feet:penguin.position.y,rotation:penguin.rotation.y};},replay:()=>({frames:frames.map(frame=>[frame[0],[...frame[1]]]),replay_version:5})});
 
 function fitModel(source,dimensions) {
   const object=source.getObjectByProperty('isSkinnedMesh',true)?cloneSkeleton(source):source.clone(true);
@@ -105,7 +105,7 @@ let hudKey='',lastMilestone=0,frameSample=0,frameCount=0,measuredFps=60,lastHudT
 function hud(){
  const level=runnerDifficulty(distance).level,m=Math.floor(distance),key=`${level}|${m}|${coins}|${bestDistance}`;
  if(key===hudKey)return;hudKey=key;
- $('difficulty').textContent=`Ritmo ${level}/5`;$('coins').textContent=`♥ ${coins}`;$('distance').textContent=`${m} m`;
+ $('difficulty').textContent=`Ritmo ${level}`;$('coins').textContent=`♥ ${coins}`;$('distance').textContent=`${m} m`;
  $('goal').textContent=`Siguiente hito · ${(Math.floor(distance/500)+1)*500} m`;
  $('progress').value=distance%500;$('record').textContent=`🏆 Récord: ${bestDistance} m`;
  const step=Math.floor(distance/500);
@@ -138,7 +138,7 @@ start.onclick=async()=>{
   catch(error){showPanel('No pudimos iniciar la partida',error.message,'Volver a intentar');}
   finally{start.disabled=false;}
 };
-function finishPayload(){return {session_id:sessionId,frames,replay_version:4,checkpoint_index:checkpointIndex};}
+function finishPayload(){return {session_id:sessionId,frames,replay_version:5,checkpoint_index:checkpointIndex};}
 async function saveRun(){
   start.disabled=true;const payload=pendingSave;
   try{
@@ -175,6 +175,10 @@ addEventListener('keydown',e=>{
   if(e.code==='ArrowRight'||e.code==='KeyD')move(1);if(e.code==='Escape'||e.code==='KeyP')togglePause();
 });
 document.addEventListener('visibilitychange',()=>{if(document.hidden&&running&&!paused)togglePause();backdrop.setPaused(document.hidden||paused);});
+window.runnerSuspend=()=>{if(running&&!paused)togglePause();music.pause();backdrop.setPaused(true);};
+window.runnerAudioState=()=>music.context?.state??'silent';
+addEventListener('message',event=>{if(event.origin===location.origin&&event.data==='runner-suspend')window.runnerSuspend();});
+addEventListener('blur',()=>window.runnerSuspend());
 addEventListener('resize',()=>{frameCamera();renderer.setSize(innerWidth,innerHeight);needsRender=true;});
 function frame(now){
   animationId=requestAnimationFrame(frame);if(now-last<(running?16:33))return;
@@ -217,7 +221,7 @@ function frame(now){
     if(now-lastHudTime>80){hud();lastHudTime=now;}
   }
   if(running&&!paused&&runElapsed-checkpointElapsed>=90){
-    if(sessionId&&!checkpointBusy){checkpointBusy=true;pendingSave={session_id:sessionId,frames,replay_version:4,checkpoint_index:checkpointIndex,checkpoint:true};frames=[];checkpointElapsed=runElapsed;saveRun();}
+    if(sessionId&&!checkpointBusy){checkpointBusy=true;pendingSave={session_id:sessionId,frames,replay_version:5,checkpoint_index:checkpointIndex,checkpoint:true};frames=[];checkpointElapsed=runElapsed;saveRun();}
     else if(!sessionId){frames=[];checkpointElapsed=runElapsed;}
   }
   if(now>toastUntil)$('toast').textContent='';
@@ -232,7 +236,7 @@ function frame(now){
       const next=actions[name];next.reset().fadeIn(.16).play();
       if(activeAction)actions[activeAction].fadeOut(.16);activeAction=name;
     }
-    if(!paused)mixer.update(dt);
+    if(!paused){music.intensity=Math.max(0,(speed()-14)/10);if(actions.Running)actions.Running.timeScale=Math.min(1.7,speed()/14);mixer.update(dt);}
     if(petOnly){
       const feet=[];penguin.traverse(o=>{if(o.isBone&&/(LeftToeBase|RightToeBase)$/.test(o.name))feet.push(o.getWorldPosition(new THREE.Vector3()).y);});
       if(restSole!==null)penguin.position.y=floorY+.006-restSole;
@@ -303,5 +307,3 @@ addEventListener('pagehide',()=>{
   for(const g of geometries)g.dispose();for(const t of textures)t.dispose();for(const m of materials)m.dispose();renderer.dispose();
 },{once:true});
 boot();
-
-

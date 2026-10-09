@@ -123,7 +123,7 @@ jobs:
           GH_REPO: ${{ github.repository }}
           SOURCE_SHA: ${{ github.sha }}
         run: |
-          mv apk/app-release.apk apk/NIDO-1.1.3-bosque.apk
-          sha256sum apk/NIDO-1.1.3-bosque.apk > apk/NIDO-1.1.3-bosque.apk.sha256
-          printf 'Bosque 3D continuo, carrera infinita con records y guardado por tramos, Pip fijo en pose idle, mascota compartida y prueba Android de mensajes con voz sintetizada y limite de cinco escuchas. Migracion de permisos de fotos pendiente de aprobacion.\nVersion: 1.1.3+8\nCommit: %s\nValidado con pruebas de Flutter y recorrido en Android sin conexion.\n' "$SOURCE_SHA" > release-notes.txt
-          gh release create bosque-1.1.3 apk/NIDO-1.1.3-bosque.apk apk/NIDO-1.1.3-bosque.apk.sha256 --target "$SOURCE_SHA" --title "NIDO 1.1.3 · Bosque infinito y nido compartido" --notes-file release-notes.txt --prerelease
+          mv apk/app-release.apk apk/NIDO-1.1.4-bosque.apk
+          sha256sum apk/NIDO-1.1.4-bosque.apk > apk/NIDO-1.1.4-bosque.apk.sha256
+          printf 'Aceleración continua después de 600 m, audio detenido al salir y suspender, habitación con muebles mejorados, carrera infinita con records y guardado por tramos, Mascotas en pose natural, mascota compartida y prueba Android de mensajes con voz sintetizada y limite de cinco escuchas. Migracion de permisos de fotos pendiente de aprobacion.\nVersion: 1.1.4+9\nCommit: %s\nValidado con pruebas de Flutter y recorrido en Android sin conexion.\n' "$SOURCE_SHA" > release-notes.txt
+          gh release create bosque-1.1.4 apk/NIDO-1.1.4-bosque.apk apk/NIDO-1.1.4-bosque.apk.sha256 --target "$SOURCE_SHA" --title "NIDO 1.1.4 · Ritmo progresivo y habitación" --notes-file release-notes.txt --prerelease
