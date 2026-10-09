@@ -14,7 +14,7 @@ import { limitTextureMemory } from './texture_budget.js';
 import { showRunnerError } from './diagnostics.js';
 import { requestHost } from './bridge.js';
 import { equipRunnerCosmetics } from './cosmetics.js';
-import { measurePetSoles } from './pet-rest-pose.js';
+import { measurePetSoles, createNaturalRest } from './pet-rest-pose.js';
 clearTimeout(window.runnerBootTimer);
 
 const params=new URLSearchParams(location.search),petOnly=params.get('pet')==='1',petOrbit=params.get('orbit')==='1';
@@ -223,12 +223,12 @@ function frame(now){
     penguin.scale.set(1+landingPulse*.07,1-landingPulse*.09,1+landingPulse*.07);
     penguin.rotation.x=THREE.MathUtils.lerp(penguin.rotation.x,height>0?-.08:0,1-Math.exp(-dt*8));
     penguin.rotation.z=THREE.MathUtils.lerp(penguin.rotation.z,(LANES[lane]-x)*-.08,1-Math.exp(-dt*8));
-    const name=petOnly?(params.get('animation')??'Idle_9'):running?(height>.01?'Regular_Jump':'Running'):'Idle_9';
+    const name=petOnly?(!petOrbit?'Natural_Rest':params.get('animation')??'Natural_Rest'):running?(height>.01?'Regular_Jump':'Running'):'Idle_9';
     if(activeAction!==name&&actions[name]){
       const next=actions[name];next.reset().fadeIn(.16).play();
       if(activeAction)actions[activeAction].fadeOut(.16);activeAction=name;
     }
-    if(!paused&&restSole===null)mixer.update(dt);
+    if(!paused)mixer.update(dt);
     if(petOnly){
       const feet=[];penguin.traverse(o=>{if(o.isBone&&/(LeftToeBase|RightToeBase)$/.test(o.name))feet.push(o.getWorldPosition(new THREE.Vector3()).y);});
       if(restSole!==null)penguin.position.y=floorY+.006-restSole;
@@ -270,10 +270,10 @@ async function boot(){
         penguin=fitModel(gltf.scene,1.15);penguin.rotation.y=petOnly?Number(params.get('angle')??0):Math.PI;scene.add(penguin);
 
         mixer=new THREE.AnimationMixer(penguin);
-        for(const clip of gltf.animations)actions[clip.name]=mixer.clipAction(clip);
+        for(const clip of gltf.animations){if(petOnly&&!petOrbit&&clip.name==='Idle_9')continue;actions[clip.name]=mixer.clipAction(clip);}
         if(actions.Regular_Jump){actions.Regular_Jump.setLoop(THREE.LoopOnce,1);actions.Regular_Jump.clampWhenFinished=true;}
         if(actions.Idle_9){actions.Idle_9.play();activeAction='Idle_9';if(petOnly&&!petOrbit&&(params.get('animation')??'Idle_9')==='Idle_9'){actions.Idle_9.time=0;actions.Idle_9.paused=true;}mixer.update(0);}
-        if(petOnly&&!petOrbit&&(params.get('animation')??'Idle_9')==='Idle_9'){restSole=measurePetSoles(penguin);document.body.dataset.petPose='standing';}
+        if(petOnly&&!petOrbit){mixer.stopAllAction();actions.Natural_Rest=mixer.clipAction(createNaturalRest(penguin));actions.Natural_Rest.play();activeAction='Natural_Rest';mixer.update(0);restSole=measurePetSoles(penguin);document.body.dataset.petPose='standing';}
         (petOnly?Promise.resolve(JSON.parse(params.get('appearance')??'{}')):requestHost('cosmetics')).then(loadout=>{const equipped=equipRunnerCosmetics(penguin,loadout);if(petOnly)document.body.dataset.petAnchors=equipped.userData.slots.map(slot=>slot.parent.name).join(',');needsRender=true;}).catch(()=>{});
       }
     }

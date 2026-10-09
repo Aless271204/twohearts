@@ -75,6 +75,7 @@ void main() {
     final fittedPet = Completer<WebViewController>();
     await tester.pumpWidget(MaterialApp(home: Scaffold(body: ForestRunnerView(
       petOnly: true,
+      petOrbit: true,
       animationName: 'Running',
       appearance: '{"pet_head":{"style":"crown","color":"#f6ce68"},"pet_neck":{"style":"scarf","color":"#e6546a"},"pet_back":{"style":"backpack","color":"#538ee5"}}',
       onWebViewCreated: fittedPet.complete,
@@ -87,7 +88,7 @@ void main() {
     final idleUrl = Uri.parse((await fittedController.currentUrl())!).replace(queryParameters: {'pet': '1', 'orbit': '0', 'animation': 'Idle_9'});
     await fittedController.loadRequest(idleUrl);
     await waitForJavaScript(tester, fittedController,
-      "document.body.dataset.petAnimation === 'Idle_9' && document.body.dataset.petPose === 'standing' && document.body.dataset.petGrounded === 'true'",
+      "document.body.dataset.petAnimation === 'Natural_Rest' && document.body.dataset.petPose === 'standing' && document.body.dataset.petGrounded === 'true'",
       'The room uses the original idle pose and a grounded pet');
     await fittedController.runJavaScript("""
       const fixedPosition = document.body.dataset.petPosition;
@@ -95,7 +96,7 @@ void main() {
       canvas.dispatchEvent(new PointerEvent('pointerdown', {clientX: 100, clientY: 200}));
       canvas.dispatchEvent(new PointerEvent('pointermove', {clientX: 260, clientY: 400}));
       canvas.dispatchEvent(new PointerEvent('pointerup', {clientX: 260, clientY: 400}));
-      setTimeout(() => { window.petStableIdleValid = document.body.dataset.petPosition === fixedPosition && document.body.dataset.petAnimation === 'Idle_9'; }, 1500);
+      setTimeout(() => { window.petStableIdleValid = document.body.dataset.petPosition === fixedPosition && document.body.dataset.petAnimation === 'Natural_Rest'; }, 1500);
     """);
     await waitForJavaScript(tester, fittedController, 'window.petStableIdleValid === true',
       'Idle pose remains fixed after touch input and elapsed time');
