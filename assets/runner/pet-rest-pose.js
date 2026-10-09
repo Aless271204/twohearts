@@ -30,6 +30,8 @@ export function measurePetSoles(model) {
   // Measure the actual skinned soles rather than guessing from a joint pivot.
   let sole=Infinity;
   model.traverse(mesh=>{
+    if(mesh.name.endsWith('RoundedFoot')){sole=Math.min(sole,new THREE.Box3().setFromObject(mesh,true).min.y);return;}
+    if(model.userData.delicatePip)return;
     if(!mesh.isSkinnedMesh)return;
     mesh.skeleton.update();
     const positions=mesh.geometry.attributes.position,indices=mesh.geometry.attributes.skinIndex,weights=mesh.geometry.attributes.skinWeight;

@@ -2,6 +2,10 @@
 
 La habitación excluye Idle_9 y utiliza Natural_Rest, una nueva animación sobre la postura neutra del rig original. Las patas conservan su pose de enlace y su escala; las alas se relajan a los lados y cabeza y torso tienen una respiración suave. El GLB original permanece intacto y coincide por SHA256 con el archivo proporcionado por el usuario. El contacto con el suelo se calcula desde los vértices reales de las patas después de aplicar el esqueleto. La posición y la rotación del personaje se mantienen fijas; arrastrarlo no desplaza la cámara.
 
+La referencia del usuario se implementa con una variante procedural de la habitación (`pip-delicate.js`): alas ovaladas, patas pequeñas con tres dedos, cierre interior de las uniones, materiales suaves y luz neutra. Se conservan la cara, el cuerpo pintado y los anclajes del modelo; el archivo GLB original no se sobrescribe. La geometría añadida permanece unida al rig en 3D. El suelo se calcula desde las patas nuevas. La habitación usa texturas limitadas a 1024; el recorrido conserva su límite de 512 y su modelo original.
+
+La variante se inspeccionó de frente, a tres cuartos y desde atrás. La prueba de un ciclo completo de respiración y arrastre mantuvo los ejes fijos y no mostró errores de carga. El parecido con la referencia es una adaptación del modelo existente, no una reproducción idéntica de la ilustración.
+
 El recorrido utiliza un bosque dentro del mismo renderizador Three.js del puente: árboles, helechos, flores, rocas, río y cascada animados, con un reino sobre una plataforma de roca. El puente continúa fuera de la distancia visible. La cámara conserva al personaje dentro de la pantalla en los dos carriles exteriores, también en formato vertical estrecho.
 
 La carrera nueva no termina a los 600 metros. Guarda progreso por tramos, conserva los récords y aumenta la dificultad. Los límites de recompensa por partida y por día siguen vigentes. El servidor valida los tramos y los reintentos; guardar un tramo no entrega monedas anticipadas.

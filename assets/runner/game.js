@@ -15,6 +15,7 @@ import { showRunnerError } from './diagnostics.js';
 import { requestHost } from './bridge.js';
 import { equipRunnerCosmetics } from './cosmetics.js';
 import { measurePetSoles, createNaturalRest } from './pet-rest-pose.js';
+import { refinePip } from './pip-delicate.js';
 clearTimeout(window.runnerBootTimer);
 
 const params=new URLSearchParams(location.search),petOnly=params.get('pet')==='1',petOrbit=params.get('orbit')==='1';
@@ -34,8 +35,8 @@ renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.NoTone
 renderer.shadowMap.enabled=false;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
 document.body.prepend(renderer.domElement);
 renderer.domElement.addEventListener('webglcontextlost',()=>showRunnerError('Android perdió el contexto gráfico 3D','gráficos'));
-scene.add(new THREE.HemisphereLight(0xd3f5ff,0x435d45,1.35));
-const sun=new THREE.DirectionalLight(0xffe4aa,2.5);sun.position.set(-10,18,-16);scene.add(sun);
+scene.add(new THREE.HemisphereLight(petOnly?0xfff6ee:0xd3f5ff,petOnly?0xa4a6b5:0x435d45,petOnly?1.6:1.35));
+const sun=new THREE.DirectionalLight(petOnly?0xffffff:0xffe4aa,petOnly?1.8:2.5);sun.position.set(...(petOnly?[-3,6,5]:[-10,18,-16]));scene.add(sun);
 sun.castShadow=true;sun.shadow.mapSize.set(1024,1024);sun.shadow.camera.left=-12;sun.shadow.camera.right=12;sun.shadow.camera.top=18;sun.shadow.camera.bottom=-18;sun.shadow.camera.far=65;sun.shadow.normalBias=.035;
 const fill=new THREE.DirectionalLight(0xe1eeff,.8);fill.position.set(4,6,8);scene.add(fill);
 const loader=new GLTFLoader(),templates={},paths=[],objects=[],pools=new Map();
@@ -56,6 +57,7 @@ function updateCoinBatch(){let count=0;for(const item of objects){if(item.kind!=
 let penguin,mixer,actions={},activeAction,cameraX=0;
 const floorY=.18;
 const shadow=new THREE.Mesh(new THREE.CircleGeometry(.55,24),new THREE.MeshBasicMaterial({color:0x1b3020,transparent:true,opacity:.22,depthWrite:false}));
+if(petOnly){const canvas=document.createElement('canvas');canvas.width=canvas.height=64;const context=canvas.getContext('2d');const fade=context.createRadialGradient(32,32,0,32,32,32);fade.addColorStop(0,'rgba(255,255,255,1)');fade.addColorStop(.35,'rgba(255,255,255,.6)');fade.addColorStop(1,'rgba(255,255,255,0)');context.fillStyle=fade;context.fillRect(0,0,64,64);shadow.material.map=new THREE.CanvasTexture(canvas);shadow.material.color.set('#35353d');}
 shadow.rotation.x=-Math.PI/2;shadow.position.y=floorY+.01;shadow.scale.y=.65;scene.add(shadow);
 const particlePositions=new Float32Array(45*3);
 for(let i=0;i<45;i++){particlePositions[i*3]=Math.sin(i*17)*8;particlePositions[i*3+1]=1+(i%7)*.55;particlePositions[i*3+2]=-i*2;}
@@ -237,7 +239,7 @@ function frame(now){
     }
     if(petOnly){document.body.dataset.petAnimation=activeAction??'';if(!petOrbit){penguin.rotation.set(0,0,0);document.body.dataset.petPosition=penguin.position.toArray().join(',');}}
   }
-  shadow.position.x=x;shadow.material.opacity=.22/(1+height);shadow.scale.set(1+height*.18,.65+height*.1,1);
+  shadow.position.x=x;shadow.material.opacity=.22/(1+height);shadow.scale.set(petOnly?.7:1+height*.18,petOnly?.45:.65+height*.1,1);
   cameraX=THREE.MathUtils.lerp(cameraX,petOnly?0:x*.72,1-Math.exp(-dt*9));
   camera.position.set(cameraX,petOnly?.75:2.35,petOnly?2.2:5.8);
   camera.lookAt(cameraX,petOnly?.62:.95,petOnly?0:-10);
@@ -258,7 +260,7 @@ async function boot(){
     for(let i=0;i<entries.length;i++){
       const [key,file]=entries[i];$('message').textContent=`Cargando bosque ${i+1}/${entries.length}…`;
       const gltf=await loader.loadAsync(`play-models/${file}`);templates[key]=gltf.scene;
-      limitTextureMemory(gltf.scene);
+      limitTextureMemory(gltf.scene,petOnly?1024:512);
       // The supplied maps carry the artwork. Keep them, but make natural props
       // non-metallic and soften exaggerated normal-map relief under sunlight.
       if(key!=='pip')gltf.scene.traverse(o=>{
@@ -273,7 +275,7 @@ async function boot(){
         for(const clip of gltf.animations){if(petOnly&&!petOrbit&&clip.name==='Idle_9')continue;actions[clip.name]=mixer.clipAction(clip);}
         if(actions.Regular_Jump){actions.Regular_Jump.setLoop(THREE.LoopOnce,1);actions.Regular_Jump.clampWhenFinished=true;}
         if(actions.Idle_9){actions.Idle_9.play();activeAction='Idle_9';if(petOnly&&!petOrbit&&(params.get('animation')??'Idle_9')==='Idle_9'){actions.Idle_9.time=0;actions.Idle_9.paused=true;}mixer.update(0);}
-        if(petOnly&&!petOrbit){mixer.stopAllAction();actions.Natural_Rest=mixer.clipAction(createNaturalRest(penguin));actions.Natural_Rest.play();activeAction='Natural_Rest';mixer.update(0);restSole=measurePetSoles(penguin);document.body.dataset.petPose='standing';}
+        if(petOnly&&!petOrbit){mixer.stopAllAction();actions.Natural_Rest=mixer.clipAction(createNaturalRest(penguin));actions.Natural_Rest.play();activeAction='Natural_Rest';mixer.update(0);refinePip(penguin);restSole=measurePetSoles(penguin);document.body.dataset.petPose='standing';document.body.dataset.petShape='delicate';}
         (petOnly?Promise.resolve(JSON.parse(params.get('appearance')??'{}')):requestHost('cosmetics')).then(loadout=>{const equipped=equipRunnerCosmetics(penguin,loadout);if(petOnly)document.body.dataset.petAnchors=equipped.userData.slots.map(slot=>slot.parent.name).join(',');needsRender=true;}).catch(()=>{});
       }
     }
