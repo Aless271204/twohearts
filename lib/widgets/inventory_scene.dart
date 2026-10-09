@@ -12,10 +12,10 @@ class InventoryScene extends StatelessWidget {
   });
   @override
   Widget build(BuildContext context) => IgnorePointer(
-    child: CustomPaint(
-      painter: _ScenePainter(loadout, accessories),
-      size: Size.infinite,
-    ),
+    child: Stack(fit: StackFit.expand, children: [
+      if (!accessories) Image.asset('assets/images/ui/room-background.png', fit: BoxFit.cover),
+      CustomPaint(painter: _ScenePainter(loadout, accessories), size: Size.infinite),
+    ]),
   );
 }
 
@@ -54,6 +54,7 @@ class _ScenePainter extends CustomPainter {
     if (!accessories) {
       final wall = items['room_wall'];
       final wallColor = wall?.color ?? const Color(0xFFE9DCCB);
+      if (wall != null) {
       final wallRect = const Rect.fromLTWH(0, 0, 300, 260);
       canvas.drawRect(wallRect, Paint()..shader = LinearGradient(
         begin: Alignment.topCenter, end: Alignment.bottomCenter,
@@ -80,7 +81,9 @@ class _ScenePainter extends CustomPainter {
         }
       }
       final floor = items['room_floor'];
-      {
+      }
+      final floor = items['room_floor'];
+      if (floor != null) {
         final floorColor = floor?.color ?? const Color(0xFFD2AC7E);
         rect(const Rect.fromLTWH(0, 260, 300, 90), Color.lerp(floorColor, const Color(0xFFAA8058), .35)!, 0);
         for (var y = 265; y < 350; y += 20) {

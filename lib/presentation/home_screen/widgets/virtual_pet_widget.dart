@@ -319,47 +319,20 @@ class _VirtualPetWidgetState extends State<VirtualPetWidget>
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        // ── Pet character (center, large) ──────────────────────────────
-        Positioned.fill(
-          child: InventoryScene(loadout: InventoryService.instance.loadout),
-        ),
+    return Column(children: [
+      Padding(padding: const EdgeInsets.fromLTRB(20, 10, 20, 6), child: Row(children: [_buildLevelBadge(), const Spacer(), _buildCoinsBadge()])),
+      TextButton.icon(onPressed: _pet.ready ? () => showModalBottomSheet(useRootNavigator: true, context: context, isScrollControlled: true, builder: (_) => const PetFamilySheet()) : null, icon: const Icon(Icons.pets_outlined), label: Text('${_pet.displayName} · ${PetModelCatalog.stageFor(_pet.level)}')),
+      Expanded(child: Padding(padding: const EdgeInsets.symmetric(horizontal: 12), child: ClipRRect(borderRadius: BorderRadius.circular(28), child: Stack(children: [
+        Positioned.fill(child: InventoryScene(loadout: InventoryService.instance.loadout)),
         _buildPetCharacter(),
-        Positioned(top: 108, right: 16, child: FilledButton.tonalIcon(
-          onPressed: () => Navigator.of(context, rootNavigator: true).push(MaterialPageRoute<void>(builder: (_) => const ShopScreen(initialScope: 'room'))),
-          icon: const Icon(Icons.chair_outlined), label: const Text('Decorar'),
-        )),
-
-        Positioned(top: 48, left: 16, right: 16, child: Center(child: Text(
-          !_pet.ready ? 'Conectando con vuestro nido…' : _pet.paired ? 'Una mascota para los dos · Cuidado compartido' : 'Tu nido · Vincula a tu pareja para cuidarlo juntos',
-          textAlign: TextAlign.center, style: const TextStyle(color: Color(0xFF345146), fontSize: 12),
-        ))),
-        // ── HUD: Level badge (top-left) ────────────────────────────────
-        Positioned(top: 8, left: 16, child: _buildLevelBadge()),
-
-        // ── HUD: Coins (top-right) ─────────────────────────────────────
-        Positioned(top: 8, right: 16, child: _buildCoinsBadge()),
-        Positioned(top:72,left:16,right:16,child:TextButton.icon(onPressed:_pet.ready?()=>showModalBottomSheet(useRootNavigator: true, context:context,isScrollControlled:true,builder:(_)=>const PetFamilySheet()):null,icon:const Icon(Icons.pets),label:Text('${_pet.displayName} · ${PetModelCatalog.stageFor(_pet.level)}'))),
-
-        // ── HUD: Bottom action icons ───────────────────────────────────
-        Positioned(bottom: 100, left: 0, right: 0, child: _buildBottomHUD()),
-
-        // ── HUD: Care meters (bottom-left icon) ───────────────────────
-        Positioned(bottom: 36, left: 16, child: _buildCareMeterIcon()),
-
-        // ── HUD: Moods icon (bottom-right) ────────────────────────────
-        Positioned(bottom: 36, right: 16, child: _buildMoodsIcon()),
-
-        // ── HUD: Evolution icon (center-bottom) ───────────────────────
-        Positioned(
-          bottom: 36,
-          left: 0,
-          right: 0,
-          child: Center(child: _buildEvolutionIcon()),
-        ),
-      ],
-    );
+        Positioned(top: 12, right: 12, child: FilledButton.tonalIcon(onPressed: () => Navigator.of(context, rootNavigator: true).push(MaterialPageRoute<void>(builder: (_) => const ShopScreen(initialScope: 'room'))), icon: const Icon(Icons.chair_outlined, size: 18), label: const Text('Decorar'))),
+      ])))),
+      Padding(padding: const EdgeInsets.fromLTRB(20, 8, 20, 4), child: Text(!_pet.ready ? 'Conectando con vuestro nido…' : _pet.paired ? 'Una mascota para los dos · Cuidado compartido' : 'Vincula a tu pareja para cuidarlo juntos', textAlign: TextAlign.center, style: const TextStyle(color: Color(0xFF716B78), fontSize: 11))),
+      Container(margin: const EdgeInsets.fromLTRB(12, 8, 12, 12), padding: const EdgeInsets.symmetric(vertical: 12), decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(24), boxShadow: const [BoxShadow(color: Color(0x0CC77685), blurRadius: 16, offset: Offset(0, 4))]), child: Column(children: [
+        _buildBottomHUD(), const SizedBox(height: 12),
+        Padding(padding: const EdgeInsets.symmetric(horizontal: 16), child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [_buildCareMeterIcon(), _buildEvolutionIcon(), _buildMoodsIcon()])),
+      ])),
+    ]);
   }
 
   // ── Pet Character ──────────────────────────────────────────────────────────
@@ -408,8 +381,8 @@ class _VirtualPetWidgetState extends State<VirtualPetWidget>
               },
               child: FractionallySizedBox(
                 alignment: Alignment.bottomCenter,
-                widthFactor: 0.78,
-                heightFactor: 0.68,
+                widthFactor: 0.82,
+                heightFactor: 0.90,
                 child: Stack(
                   fit: StackFit.expand,
                   children: [
@@ -914,14 +887,14 @@ class _HudActionButton extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Container(
-            width: 56,
-            height: 56,
+            width: 52,
+            height: 52,
             decoration: BoxDecoration(
               color: Colors.white.withAlpha(230),
               shape: BoxShape.circle,
               boxShadow: [
                 BoxShadow(
-                  color: color.withAlpha(80),
+                  color: color.withAlpha(22),
                   blurRadius: 12,
                   offset: const Offset(0, 4),
                 ),
@@ -943,10 +916,7 @@ class _HudActionButton extends StatelessWidget {
             style: GoogleFonts.dmSans(
               fontSize: 10,
               fontWeight: FontWeight.w600,
-              color: Colors.white,
-              shadows: [
-                Shadow(color: Colors.black.withAlpha(80), blurRadius: 4),
-              ],
+              color: const Color(0xFF716B78),
             ),
           ),
         ],

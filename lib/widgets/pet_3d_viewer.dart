@@ -17,6 +17,7 @@ class Pet3DViewer extends StatefulWidget {
   final String? animationName;
   final String? cameraOrbit;
   final ValueChanged<WebViewController>? onWebViewCreated;
+  final Map<String, InventoryItem>? previewLoadout;
 
   const Pet3DViewer({
     super.key,
@@ -30,6 +31,7 @@ class Pet3DViewer extends StatefulWidget {
     this.animationName,
     this.cameraOrbit,
     this.onWebViewCreated,
+    this.previewLoadout,
   });
 
   @override
@@ -58,7 +60,7 @@ class _Pet3DViewerState extends State<Pet3DViewer> {
     }
     if (PetModelCatalog.models.containsValue(widget.modelPath) && widget.onWebViewCreated == null) {
       return ListenableBuilder(listenable: InventoryService.instance, builder: (context, _) {
-        final appearance = jsonEncode({for (final entry in InventoryService.instance.loadout.entries)
+        final appearance = jsonEncode({for (final entry in (widget.previewLoadout ?? InventoryService.instance.loadout).entries)
           entry.key: entry.value.appearance});
         return ForestRunnerView(key: ValueKey('$appearance|${widget.animationName}|${widget.modelPath}|${widget.petLevel}'), petOnly: true, petLevel: widget.petLevel, petSpecies: PetModelCatalog.speciesForPath(widget.modelPath), petOrbit: widget.cameraControls,
           appearance: appearance, animationName: widget.cameraControls ? widget.animationName : 'Natural_Rest');

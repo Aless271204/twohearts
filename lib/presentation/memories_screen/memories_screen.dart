@@ -1,4 +1,5 @@
 import '../../widgets/private_memory_image.dart';
+import '../../widgets/rose_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -313,10 +314,24 @@ class _AlbumJuntosTabState extends State<_AlbumJuntosTab> {
                 .toList();
 
             return SingleChildScrollView(
-              padding: const EdgeInsets.only(bottom: 120),
+              padding: const EdgeInsets.only(bottom: 24),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  // Daily quote
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+                    child: Text(
+                      '✨ Frase del día',
+                      style: GoogleFonts.dmSans(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w700,
+                        color: const Color(0xFF1A1A1A),
+                      ),
+                    ),
+                  ),
+                  const DailyQuoteWidget(),
+
                   // Couple stats header
                   CoupleHeaderWidget(
                     myName: widget.coupleData['myName'] as String,
@@ -346,20 +361,6 @@ class _AlbumJuntosTabState extends State<_AlbumJuntosTab> {
                     realtimeEnabled: widget.realtimeDistance,
                     onRealtimeToggle: widget.onRealtimeToggle,
                   ),
-
-                  // Daily quote
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
-                    child: Text(
-                      '✨ Frase del día',
-                      style: GoogleFonts.dmSans(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w700,
-                        color: const Color(0xFF1A1A1A),
-                      ),
-                    ),
-                  ),
-                  const DailyQuoteWidget(),
 
                   // ── NUESTRO ÁLBUM JUNTOS ──────────────────────────────────
                   const SizedBox(height: 24),

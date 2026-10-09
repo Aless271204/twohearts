@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../../widgets/rose_ui.dart';
+import '../../theme/app_theme.dart';
 import '../../services/game_service.dart';
 import '../../services/inventory_service.dart';
 import '../shop_screen/shop_screen.dart';
@@ -42,42 +44,16 @@ class _GameHubScreenState extends State<GameHubScreen> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    backgroundColor: const Color(0xFFFFF7F5),
-    appBar: AppBar(
-      title: const Text('Jugar juntos'),
-      actions: [
-        TextButton.icon(
-          onPressed: () => _open(const ShopScreen()),
-          icon: const Icon(Icons.inventory_2_outlined),
-          label: Text('🪙 ${inventory.coins}'),
-        ),
-      ],
-    ),
+    backgroundColor: AppTheme.backgroundLight,
     body: RefreshIndicator(
       onRefresh: _load,
       child: ListView(
         padding: const EdgeInsets.all(20),
         children: [
-          const Text(
-            'Un ratito para ustedes',
-            style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 8),
-          const Text(
-            'Vinculen sus cuentas y abran el mismo juego desde sus celulares. Tu mascota también puede acompañarte cuando juegues a solas.',
-          ),
-          const SizedBox(height: 20),
           _featuredForest(),
           const SizedBox(height: 20),
           const Text('Todos los juegos', style: TextStyle(fontSize: 19, fontWeight: FontWeight.w700)),
           const SizedBox(height: 12),
-          _card(
-            '🐧',
-            'Corre en pareja · Bosque',
-            'Corre con tu mascota, salta y recoge monedas. Tu mochila y accesorios te acompañan.',
-            const Color(0xFFD5E7DA),
-            () => _open(const PebbleRunnerTest()),
-          ),
           _card(
             '🏓',
             'Ping pong en pareja',
@@ -124,7 +100,7 @@ class _GameHubScreenState extends State<GameHubScreen> {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Container(width: 60, height: 70, alignment: Alignment.center, decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(16)), child: Text(emoji, style: const TextStyle(fontSize: 30))),
+            ClipRRect(borderRadius: BorderRadius.circular(16), child: SizedBox(width: 86, height: 100, child: GameArt(panel: emoji == '🏓' ? 1 : 2))),
             const SizedBox(width: 12),
             Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Text(
@@ -142,12 +118,12 @@ class _GameHubScreenState extends State<GameHubScreen> {
       ),
     ),
   );
-  Widget _featuredForest() => SizedBox(height: 270, child: ClipRRect(borderRadius: BorderRadius.circular(26), child: Stack(fit: StackFit.expand, children: [
-    Image.asset('assets/runner/forest-kingdom.jpg', fit: BoxFit.cover, alignment: const Alignment(0, -.25)),
+  Widget _featuredForest() => SizedBox(height: 320, child: ClipRRect(borderRadius: BorderRadius.circular(26), child: Stack(fit: StackFit.expand, children: [
+    const GameArt(panel: 0),
     const DecoratedBox(decoration: BoxDecoration(gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [Color(0x08000000), Color(0xB5223B2E)]))),
-    Positioned(top: 16, left: 16, child: Container(padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6), decoration: BoxDecoration(color: const Color(0xFFFF407A), borderRadius: BorderRadius.circular(10)), child: const Text('DESTACADO', style: TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.w700)))),
+    Positioned(top: 16, left: 16, child: Container(padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6), decoration: BoxDecoration(color: const AppTheme.primary, borderRadius: BorderRadius.circular(10)), child: const Text('DESTACADO', style: TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.w700)))),
     Positioned(left: 20, right: 20, bottom: 20, child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      const Text('Corre en pareja', style: TextStyle(color: Colors.white, fontSize: 26, fontWeight: FontWeight.w800)),
+      const Text('Corre con tu mascota', style: TextStyle(color: Colors.white, fontSize: 26, fontWeight: FontWeight.w800)),
       const SizedBox(height: 6),
       const Text('Un bosque lleno de vida. Salta, recoge corazones y supera tu récord.', style: TextStyle(color: Colors.white, fontSize: 13, height: 1.4)),
       const SizedBox(height: 12),

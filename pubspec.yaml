@@ -1,7 +1,7 @@
 name: twohearts
 description: A new Flutter project.
 publish_to: none
-version: 1.1.4+9
+version: 1.1.5+10
 
 environment:
   sdk: ^3.9.0
@@ -50,6 +50,7 @@ flutter:
     - assets/
     - assets/images/
     - assets/images/pets/
+    - assets/images/ui/
     - assets/models/
     - assets/runner/
     - assets/runner/play-models/

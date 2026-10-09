@@ -134,11 +134,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return Scaffold(
-      backgroundColor: const Color(0xFF87CEEB),
+      backgroundColor: AppTheme.backgroundLight,
       body: Stack(
         children: [
           // ── Animated cozy room background ──────────────────────────────
-          _buildRoomBackground(size),
+
 
           // ── Main content ───────────────────────────────────────────────
           SafeArea(
@@ -439,7 +439,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 const Text('🪺', style: TextStyle(fontSize: 13)),
                 const SizedBox(width: 4),
                 Text(
-                  'Mascota',
+                  'Mi mascota',
                   style: GoogleFonts.dmSans(
                     fontSize: 12,
                     fontWeight: FontWeight.w600,

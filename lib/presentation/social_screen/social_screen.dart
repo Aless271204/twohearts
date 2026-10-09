@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../theme/app_theme.dart';
+import '../../widgets/rose_ui.dart';
 import '../../services/supabase_service.dart';
 
 class SocialScreen extends StatefulWidget {
@@ -261,71 +262,15 @@ class _SocialScreenState extends State<SocialScreen>
           ],
         ),
       ),
-      floatingActionButton: _buildFAB(),
+
     );
   }
 
-  Widget _buildHeader() {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
-      child: Row(
-        children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Social',
-                style: GoogleFonts.dmSans(
-                  fontSize: 22,
-                  fontWeight: FontWeight.w700,
-                  color: const Color(0xFF1A1A1A),
-                ),
-              ),
-              Text(
-                'Comparte recuerdos 🌍',
-                style: GoogleFonts.dmSans(
-                  fontSize: 13,
-                  color: AppTheme.primary,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ],
-          ),
-          const Spacer(),
-          GestureDetector(
-            onTap: _loadData,
-            child: Container(
-              width: 40,
-              height: 40,
-              decoration: BoxDecoration(
-                color: AppTheme.primaryContainer,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: const Icon(
-                Icons.refresh_rounded,
-                color: AppTheme.primary,
-                size: 20,
-              ),
-            ),
-          ),
-          const SizedBox(width: 8),
-          Container(
-            width: 40,
-            height: 40,
-            decoration: BoxDecoration(
-              color: AppTheme.primaryContainer,
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: const Icon(
-              Icons.notifications_outlined,
-              color: AppTheme.primary,
-              size: 20,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+  Widget _buildHeader() => Padding(padding: const EdgeInsets.fromLTRB(20, 16, 20, 0), child: Row(children: [
+    Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Text('Social', style: GoogleFonts.dmSans(fontSize: 26, fontWeight: FontWeight.w700)), Text('Comparte recuerdos', style: GoogleFonts.dmSans(fontSize: 12, color: AppTheme.primary))])),
+    FilledButton.icon(onPressed: _showCreatePostSheet, icon: const Icon(Icons.add, size: 16), label: const Text('Publicar')),
+    IconButton(tooltip: 'Actualizar publicaciones', onPressed: _loadData, icon: const Icon(Icons.refresh_rounded, color: AppTheme.primary)),
+  ]));
 
   Widget _buildTabBar() {
     return Padding(
@@ -365,7 +310,7 @@ class _SocialScreenState extends State<SocialScreen>
 
   Widget _buildRecentFeed() {
     if (_loadingRecent) {
-      return const Center(child: CircularProgressIndicator());
+      return const RoseLoading(label: 'Preparamos sus recuerdos…');
     }
     if (_recentPosts.isEmpty) {
       return Center(
@@ -397,7 +342,7 @@ class _SocialScreenState extends State<SocialScreen>
     return RefreshIndicator(
       onRefresh: _loadData,
       child: ListView.builder(
-        padding: const EdgeInsets.fromLTRB(20, 16, 20, 120),
+        padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
         itemCount: _recentPosts.length,
         itemBuilder: (context, index) => _buildPostCard(_recentPosts[index]),
       ),
@@ -406,7 +351,7 @@ class _SocialScreenState extends State<SocialScreen>
 
   Widget _buildDiscoverFeed() {
     if (_loadingDiscover) {
-      return const Center(child: CircularProgressIndicator());
+      return const RoseLoading(label: 'Preparamos sus recuerdos…');
     }
     if (_discoverPosts.isEmpty) {
       return Center(
@@ -437,7 +382,7 @@ class _SocialScreenState extends State<SocialScreen>
     return RefreshIndicator(
       onRefresh: _loadDiscoverPosts,
       child: ListView.builder(
-        padding: const EdgeInsets.fromLTRB(20, 16, 20, 120),
+        padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
         itemCount: _discoverPosts.length,
         itemBuilder: (context, index) => _buildPostCard(_discoverPosts[index]),
       ),

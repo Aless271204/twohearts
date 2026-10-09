@@ -6,10 +6,10 @@ import 'package:google_fonts/google_fonts.dart';
 
 class AppTheme {
   // Primary palette
-  static const Color primary = Color(0xFFFF407A);
-  static const Color primaryContainer = Color(0xFFFFD6E0);
+  static const Color primary = Color(0xFFF05280);
+  static const Color primaryContainer = Color(0xFFFBE5EC);
   static const Color secondary = Color(0xFF3D7A5E);
-  static const Color secondaryContainer = Color(0xFFB8E0CE);
+  static const Color secondaryContainer = Color(0xFFB8DCCB);
 
   // Semantic colors
   static const Color success = Color(0xFF2D7A4F);
@@ -19,7 +19,7 @@ class AppTheme {
   // Light surfaces
   static const Color surfaceLight = Color(0xFFFFFFFF);
   static const Color surfaceVariantLight = Color(0xFFFFF5F7);
-  static const Color backgroundLight = Color(0xFFFFF6F3);
+  static const Color backgroundLight = Color(0xFFFFF9FA);
 
   // Dark surfaces
   static const Color surfaceDark = Color(0xFF1E1A1B);

@@ -106,6 +106,7 @@ class _DailyQuoteWidgetState extends State<DailyQuoteWidget>
 
   void _nextQuote() {
     _controller.reverse().then((_) {
+      if (!mounted) return;
       setState(() {
         _quoteIndex = (_quoteIndex + 1) % _quotes.length;
       });
@@ -155,7 +156,7 @@ class _DailyQuoteWidgetState extends State<DailyQuoteWidget>
         child: Container(
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
-            color: Colors.white,
+            gradient: const LinearGradient(begin: Alignment.topLeft, end: Alignment.bottomRight, colors: [Color(0xFFFFE7EE), Color(0xFFFFF5ED)]),
             borderRadius: BorderRadius.circular(24),
             boxShadow: [
               BoxShadow(
@@ -204,12 +205,13 @@ class _DailyQuoteWidgetState extends State<DailyQuoteWidget>
               FadeTransition(
                 opacity: _fadeAnim,
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text(
                       '"${quote['text']!}"',
+                      textAlign: TextAlign.center,
                       style: GoogleFonts.dmSans(
-                        fontSize: 14,
+                        fontSize: 18,
                         fontWeight: FontWeight.w500,
                         color: const Color(0xFF1A1A1A),
                         height: 1.6,
