@@ -16,5 +16,5 @@ class PetModelCatalog {
   static String modelPathFor(String? species) => models[speciesFor(species)]!;
   static String speciesForPath(String path) => models.entries.firstWhere((e)=>e.value==path,orElse:()=>models.entries.first).key;
   static String stageFor(int level) => level>=10?'Adulta':level>=5?'Juvenil':'Cría';
-  static double growthFor(int level) => level>=10?1:level>=5?.88:.74;
+  static double growthFor(int level) => level >= 10 ? 1.0 : level >= 5 ? 0.88 : 0.74;
 }
