@@ -801,7 +801,7 @@ class _SocialScreenState extends State<SocialScreen>
   }
 
   void _showCreatePostSheet() {
-    showModalBottomSheet(
+    showModalBottomSheet(useRootNavigator: true,
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,

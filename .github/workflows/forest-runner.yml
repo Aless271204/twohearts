@@ -27,7 +27,7 @@ jobs:
           cache: true
       - run: flutter pub get
       - run: flutter analyze --no-fatal-infos --no-fatal-warnings
-      - run: flutter test test/local_asset_path_test.dart test/asset_byte_range_test.dart test/inventory_test.dart test/memory_album_test.dart test/private_memory_image_test.dart
+      - run: flutter test test/local_asset_path_test.dart test/asset_byte_range_test.dart test/inventory_test.dart test/memory_album_test.dart test/private_memory_image_test.dart test/scene_navigation_test.dart
       - name: Prepare public build configuration
         run: |
           python3 -c "import json; d=json.load(open('env.json')); json.dump({k:d[k] for k in ['SUPABASE_URL','SUPABASE_ANON_KEY','GOOGLE_WEB_CLIENT_ID'] if k in d},open('build-env.json','w'))"

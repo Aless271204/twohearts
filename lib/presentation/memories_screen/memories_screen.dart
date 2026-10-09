@@ -265,7 +265,7 @@ class _AlbumJuntosTabState extends State<_AlbumJuntosTab> {
   }
 
   void _showCreateAlbumSheet(BuildContext context) {
-    showModalBottomSheet(
+    showModalBottomSheet(useRootNavigator: true,
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
@@ -1229,7 +1229,7 @@ class _AlbumCarouselCardState extends State<_AlbumCarouselCard> {
   }
 
   void _showAlbumDetail(BuildContext context, MemoryAlbum album) {
-    showModalBottomSheet(
+    showModalBottomSheet(useRootNavigator: true,
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,

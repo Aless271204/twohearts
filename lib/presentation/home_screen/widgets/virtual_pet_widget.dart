@@ -327,7 +327,7 @@ class _VirtualPetWidgetState extends State<VirtualPetWidget>
         ),
         _buildPetCharacter(),
         Positioned(top: 108, right: 16, child: FilledButton.tonalIcon(
-          onPressed: () => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => const ShopScreen(initialScope: 'room'))),
+          onPressed: () => Navigator.of(context, rootNavigator: true).push(MaterialPageRoute<void>(builder: (_) => const ShopScreen(initialScope: 'room'))),
           icon: const Icon(Icons.chair_outlined), label: const Text('Decorar'),
         )),
 
@@ -340,7 +340,7 @@ class _VirtualPetWidgetState extends State<VirtualPetWidget>
 
         // ── HUD: Coins (top-right) ─────────────────────────────────────
         Positioned(top: 8, right: 16, child: _buildCoinsBadge()),
-        Positioned(top:72,left:16,right:16,child:TextButton.icon(onPressed:_pet.ready?()=>showModalBottomSheet(context:context,isScrollControlled:true,builder:(_)=>const PetFamilySheet()):null,icon:const Icon(Icons.pets),label:Text('${_pet.displayName} · ${PetModelCatalog.stageFor(_pet.level)}'))),
+        Positioned(top:72,left:16,right:16,child:TextButton.icon(onPressed:_pet.ready?()=>showModalBottomSheet(useRootNavigator: true, context:context,isScrollControlled:true,builder:(_)=>const PetFamilySheet()):null,icon:const Icon(Icons.pets),label:Text('${_pet.displayName} · ${PetModelCatalog.stageFor(_pet.level)}'))),
 
         // ── HUD: Bottom action icons ───────────────────────────────────
         Positioned(bottom: 100, left: 0, right: 0, child: _buildBottomHUD()),
@@ -608,7 +608,7 @@ class _VirtualPetWidgetState extends State<VirtualPetWidget>
             color: const Color(0xFF6BDDFF),
             onTap: () {
               HapticFeedback.lightImpact();
-              showModalBottomSheet(context: context, isScrollControlled: true, builder: (_) => const PetMessagesSheet());
+              showModalBottomSheet(useRootNavigator: true, context: context, isScrollControlled: true, builder: (_) => const PetMessagesSheet());
             },
           ),
           _HudActionButton(
@@ -754,7 +754,7 @@ class _VirtualPetWidgetState extends State<VirtualPetWidget>
 
   void _showCareMeterSheet() {
     HapticFeedback.lightImpact();
-    showModalBottomSheet(
+    showModalBottomSheet(useRootNavigator: true,
       context: context,
       backgroundColor: Colors.transparent,
       builder: (_) => _CareMeterSheet(
@@ -777,7 +777,7 @@ class _VirtualPetWidgetState extends State<VirtualPetWidget>
 
   void _showMoodSelector() {
     HapticFeedback.lightImpact();
-    showModalBottomSheet(
+    showModalBottomSheet(useRootNavigator: true,
       context: context,
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
@@ -798,7 +798,7 @@ class _VirtualPetWidgetState extends State<VirtualPetWidget>
 
   void _showEvolutionSheet() {
     HapticFeedback.lightImpact();
-    showModalBottomSheet(
+    showModalBottomSheet(useRootNavigator: true,
       context: context,
       backgroundColor: Colors.transparent,
       isScrollControlled: true,

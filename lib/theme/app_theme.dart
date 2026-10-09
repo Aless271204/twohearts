@@ -6,7 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 class AppTheme {
   // Primary palette
-  static const Color primary = Color(0xFFE8547A);
+  static const Color primary = Color(0xFFFF407A);
   static const Color primaryContainer = Color(0xFFFFD6E0);
   static const Color secondary = Color(0xFF3D7A5E);
   static const Color secondaryContainer = Color(0xFFB8E0CE);
@@ -19,7 +19,7 @@ class AppTheme {
   // Light surfaces
   static const Color surfaceLight = Color(0xFFFFFFFF);
   static const Color surfaceVariantLight = Color(0xFFFFF5F7);
-  static const Color backgroundLight = Color(0xFFFDF8F9);
+  static const Color backgroundLight = Color(0xFFFFF6F3);
 
   // Dark surfaces
   static const Color surfaceDark = Color(0xFF1E1A1B);
@@ -37,7 +37,14 @@ class AppTheme {
     useMaterial3: true,
     snackBarTheme: SnackBarThemeData(behavior: SnackBarBehavior.floating, backgroundColor: const Color(0xFF294737), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)), elevation: 4, insetPadding: const EdgeInsets.all(16)),
     dialogTheme: DialogThemeData(backgroundColor: const Color(0xFFFFF8F1), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28))),
-    pageTransitionsTheme: const PageTransitionsTheme(builders: {TargetPlatform.android: FadeForwardsPageTransitionsBuilder(), TargetPlatform.iOS: CupertinoPageTransitionsBuilder()}),
+    pageTransitionsTheme: const PageTransitionsTheme(builders: {TargetPlatform.android: FadeForwardsPageTransitionsBuilder()}),
+    filledButtonTheme: FilledButtonThemeData(style: FilledButton.styleFrom(shape: const StadiumBorder(), padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 12))),
+    segmentedButtonTheme: SegmentedButtonThemeData(style: ButtonStyle(
+      backgroundColor: WidgetStateProperty.resolveWith((states) => states.contains(WidgetState.selected) ? primary : const Color(0xFFFBE9E9)),
+      foregroundColor: WidgetStateProperty.resolveWith((states) => states.contains(WidgetState.selected) ? Colors.white : const Color(0xFF6B6066)),
+      side: const WidgetStatePropertyAll(BorderSide.none),
+      shape: const WidgetStatePropertyAll(StadiumBorder()),
+    )),
     colorScheme: ColorScheme.light(
       primary: primary,
       onPrimary: Colors.white,
@@ -89,6 +96,8 @@ class AppTheme {
     appBarTheme: AppBarTheme(
       backgroundColor: backgroundLight,
       elevation: 0,
+      shadowColor: const Color(0x22C77685),
+      surfaceTintColor: Colors.transparent,
       scrolledUnderElevation: 0,
       centerTitle: false,
       titleTextStyle: GoogleFonts.dmSans(
@@ -99,7 +108,9 @@ class AppTheme {
     ),
     cardTheme: CardThemeData(
       color: surfaceLight,
-      elevation: 0,
+      elevation: 1,
+      shadowColor: const Color(0x22C77685),
+      surfaceTintColor: Colors.transparent,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       margin: EdgeInsets.zero,
     ),
@@ -128,8 +139,8 @@ class AppTheme {
     ),
     chipTheme: ChipThemeData(
       backgroundColor: surfaceVariantLight,
-      selectedColor: primaryContainer,
-      labelStyle: GoogleFonts.dmSans(fontSize: 12, fontWeight: FontWeight.w500),
+      selectedColor: primary,
+      labelStyle: WidgetStateTextStyle.resolveWith((states) => GoogleFonts.dmSans(fontSize: 12, fontWeight: FontWeight.w500, color: states.contains(WidgetState.selected) ? Colors.white : const Color(0xFF605865))),
       padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(999)),
       side: BorderSide.none,

@@ -36,7 +36,7 @@ class _GameHubScreenState extends State<GameHubScreen> {
   }
 
   Future<void> _open(Widget page) async {
-    await Navigator.push(context, MaterialPageRoute(builder: (_) => page));
+    await Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(builder: (_) => page));
     if (mounted) await _load();
   }
 
@@ -67,6 +67,10 @@ class _GameHubScreenState extends State<GameHubScreen> {
             'Vinculen sus cuentas y abran el mismo juego desde sus celulares. Tu mascota también puede acompañarte cuando juegues a solas.',
           ),
           const SizedBox(height: 20),
+          _featuredForest(),
+          const SizedBox(height: 20),
+          const Text('Todos los juegos', style: TextStyle(fontSize: 19, fontWeight: FontWeight.w700)),
+          const SizedBox(height: 12),
           _card(
             '🐧',
             'Corre en pareja · Bosque',
@@ -110,35 +114,44 @@ class _GameHubScreenState extends State<GameHubScreen> {
     Color color,
     VoidCallback action,
   ) => Card(
-    color: color,
-    margin: const EdgeInsets.only(bottom: 16),
+    color: Colors.white,
+    margin: const EdgeInsets.only(bottom: 10),
     child: InkWell(
       onTap: action,
-      borderRadius: BorderRadius.circular(12),
+      borderRadius: BorderRadius.circular(20),
       child: Padding(
-        padding: const EdgeInsets.all(22),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        padding: const EdgeInsets.all(14),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Text(emoji, style: const TextStyle(fontSize: 40)),
-            const SizedBox(height: 10),
+            Container(width: 60, height: 70, alignment: Alignment.center, decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(16)), child: Text(emoji, style: const TextStyle(fontSize: 30))),
+            const SizedBox(width: 12),
+            Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Text(
               title,
-              style: const TextStyle(fontSize: 21, fontWeight: FontWeight.bold),
+              style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
-            Text(description),
-            const SizedBox(height: 14),
-            const Row(
-              children: [
-                Text('Jugar', style: TextStyle(fontWeight: FontWeight.bold)),
-                SizedBox(width: 8),
-                Icon(Icons.arrow_forward, size: 18),
-              ],
-            ),
+            Text(description, maxLines: 2, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 12, color: Color(0xFF786C74), height: 1.4)),
+            const SizedBox(height: 8),
+            FilledButton(onPressed: action, child: const Text('Jugar')),
+            ])),
+            const Icon(Icons.chevron_right, color: Color(0xFF9C8991)),
           ],
         ),
       ),
     ),
   );
+  Widget _featuredForest() => SizedBox(height: 270, child: ClipRRect(borderRadius: BorderRadius.circular(26), child: Stack(fit: StackFit.expand, children: [
+    Image.asset('assets/runner/forest-kingdom.jpg', fit: BoxFit.cover, alignment: const Alignment(0, -.25)),
+    const DecoratedBox(decoration: BoxDecoration(gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [Color(0x08000000), Color(0xB5223B2E)]))),
+    Positioned(top: 16, left: 16, child: Container(padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6), decoration: BoxDecoration(color: const Color(0xFFFF407A), borderRadius: BorderRadius.circular(10)), child: const Text('DESTACADO', style: TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.w700)))),
+    Positioned(left: 20, right: 20, bottom: 20, child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      const Text('Corre en pareja', style: TextStyle(color: Colors.white, fontSize: 26, fontWeight: FontWeight.w800)),
+      const SizedBox(height: 6),
+      const Text('Un bosque lleno de vida. Salta, recoge corazones y supera tu récord.', style: TextStyle(color: Colors.white, fontSize: 13, height: 1.4)),
+      const SizedBox(height: 12),
+      FilledButton(onPressed: () => _open(const PebbleRunnerTest()), child: const Text('Jugar ahora')),
+    ])),
+  ])));
 }

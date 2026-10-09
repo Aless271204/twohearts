@@ -5,6 +5,7 @@ import '../../widgets/inventory_scene.dart';
 import '../../widgets/pet_3d_viewer.dart';
 import '../../core/pet_model_catalog.dart';
 import '../../services/shared_pet_service.dart';
+import '../../widgets/scene_status.dart';
 
 class ShopScreen extends StatefulWidget {
   final String initialScope;
@@ -20,6 +21,7 @@ class _ShopScreenState extends State<ShopScreen> {
   String? error;
   String? slot;
   InventoryItem? preview;
+  bool showPreview = false;
   @override
   void initState() {
     super.initState();
@@ -123,7 +125,7 @@ class _ShopScreenState extends State<ShopScreen> {
         )
         .toList();
     return Scaffold(
-      backgroundColor: const Color(0xFFFFF8F5),
+      backgroundColor: const Color(0xFFFFF6F3),
       appBar: AppBar(
         title: const Text('Tienda e inventario'),
         actions: [
@@ -139,7 +141,7 @@ class _ShopScreenState extends State<ShopScreen> {
         ],
       ),
       body: loading
-          ? const Center(child: CircularProgressIndicator())
+          ? const SceneStatus(title: 'Tu colección', message: 'Preparamos tus objetos y la tienda…')
           : error != null
           ? Center(
               child: Column(
@@ -162,6 +164,7 @@ class _ShopScreenState extends State<ShopScreen> {
                 padding: const EdgeInsets.all(16),
                 children: [
                   SegmentedButton<bool>(
+                    showSelectedIcon: false,
                     segments: const [
                       ButtonSegment(value: false, label: Text('Catálogo')),
                       ButtonSegment(value: true, label: Text('Mis objetos')),
@@ -193,7 +196,8 @@ class _ShopScreenState extends State<ShopScreen> {
                     for (final entry in InventoryItem.slots.entries.where((e) => e.key.startsWith('${scope}_')))
                       ChoiceChip(label: Text(entry.value), selected: slot == entry.key, onSelected: (_) => setState(() => slot = entry.key)),
                   ]),
-                  InventoryPreview(scope: scope, loadout: {...inventory.loadout, if (preview != null) preview!.slot: preview!}),
+                  Align(alignment: Alignment.centerRight, child: TextButton.icon(onPressed: () => setState(() => showPreview = !showPreview), icon: Icon(showPreview ? Icons.expand_less : Icons.visibility_outlined), label: Text(showPreview ? 'Ocultar vista' : 'Ver en mi mascota o habitación'))),
+                  AnimatedSize(duration: const Duration(milliseconds: 250), curve: Curves.easeOutCubic, child: showPreview ? InventoryPreview(scope: scope, loadout: {...inventory.loadout, if (preview != null) preview!.slot: preview!}) : const SizedBox.shrink()),
                   if (preview != null) Row(children: [Expanded(child: Text('Vista previa: ${preview!.name} · Sin guardar')), TextButton(onPressed: () => setState(() => preview = null), child: const Text('Cancelar vista'))]),
                   const SizedBox(height: 12),
                   TextField(
@@ -297,7 +301,7 @@ class _ShopScreenState extends State<ShopScreen> {
                                         : 'Comprar',
                                   ),
                                 ),
-                                if (scope == 'room') IconButton(tooltip: 'Ver en la habitación', onPressed: () => setState(() => preview = item), icon: const Icon(Icons.visibility_outlined)),
+                                if (scope == 'room') IconButton(tooltip: 'Ver en la habitación', onPressed: () => setState(() { preview = item; showPreview = true; }), icon: const Icon(Icons.visibility_outlined)),
                               ],
                             ),
                           ],

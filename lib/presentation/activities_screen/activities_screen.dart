@@ -898,7 +898,7 @@ class _ActivitiesScreenState extends State<ActivitiesScreen>
   }
 
   void _showSpotifySheet() {
-    showModalBottomSheet(
+    showModalBottomSheet(useRootNavigator: true,
       context: context,
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
@@ -1004,7 +1004,7 @@ class _ActivitiesScreenState extends State<ActivitiesScreen>
   }
 
   void _showNetflixSheet() {
-    showModalBottomSheet(
+    showModalBottomSheet(useRootNavigator: true,
       context: context,
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
@@ -1019,7 +1019,7 @@ class _ActivitiesScreenState extends State<ActivitiesScreen>
   }
 
   void _showAddTripSheet() {
-    showModalBottomSheet(
+    showModalBottomSheet(useRootNavigator: true,
       context: context,
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
