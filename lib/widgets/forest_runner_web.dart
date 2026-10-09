@@ -6,13 +6,14 @@ import 'package:web/web.dart' as web;
 import 'runner_bridge.dart';
 
 class ForestRunnerView extends StatefulWidget {
+  final VoidCallback? onExit;
   final bool petOnly;
   final String petSpecies;
   final int petLevel;
   final bool petOrbit;
   final String? appearance;
   final String? animationName;
-  const ForestRunnerView({super.key, this.petOnly = false, this.petSpecies = 'penguin', this.petLevel = 10, this.petOrbit = false, this.appearance, this.animationName});
+  const ForestRunnerView({super.key, this.onExit, this.petOnly = false, this.petSpecies = 'penguin', this.petLevel = 10, this.petOrbit = false, this.appearance, this.animationName});
   @override
   State<ForestRunnerView> createState() => _ForestRunnerViewState();
 }
@@ -50,6 +51,10 @@ class _ForestRunnerViewState extends State<ForestRunnerView> with WidgetsBinding
 
   Future<void> _handleMessage(String raw) async {
     try {
+      if (!widget.petOnly && jsonDecode(raw)['type'] == 'runner-exit') {
+        widget.onExit?.call();
+        return;
+      }
       final response = await _bridge.handle(raw);
       if (mounted)
         _frame.contentWindow?.postMessage(

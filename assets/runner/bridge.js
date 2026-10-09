@@ -20,3 +20,10 @@ export function requestHost(action,payload={}){
     if(window.RunnerBridge)window.RunnerBridge.postMessage(message);else window.parent.postMessage(message,location.origin);
   });
 }
+
+export function exitGame(){
+ const message=JSON.stringify({type:"runner-exit"});
+ if(window.RunnerBridge)window.RunnerBridge.postMessage(message);
+ else if(window.parent!==window)window.parent.postMessage(message,location.origin);
+ else history.back();
+}

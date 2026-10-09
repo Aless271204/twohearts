@@ -10,6 +10,7 @@ import '../core/local_asset_path.dart';
 import '../core/asset_byte_range.dart';
 
 class ForestRunnerView extends StatefulWidget {
+  final VoidCallback? onExit;
   final bool petOnly;
   final String petSpecies;
   final int petLevel;
@@ -17,7 +18,7 @@ class ForestRunnerView extends StatefulWidget {
   final String? appearance;
   final String? animationName;
   final ValueChanged<WebViewController>? onWebViewCreated;
-  const ForestRunnerView({super.key, this.onWebViewCreated, this.petOnly = false, this.petSpecies = 'penguin', this.petLevel = 10, this.petOrbit = false, this.appearance, this.animationName});
+  const ForestRunnerView({super.key, this.onExit, this.onWebViewCreated, this.petOnly = false, this.petSpecies = 'penguin', this.petLevel = 10, this.petOrbit = false, this.appearance, this.animationName});
   @override
   State<ForestRunnerView> createState() => _ForestRunnerViewState();
 }
@@ -131,6 +132,10 @@ class _ForestRunnerViewState extends State<ForestRunnerView> with WidgetsBinding
         'RunnerBridge',
         onMessageReceived: (message) async {
           try {
+            if (!widget.petOnly && jsonDecode(message.message)['type'] == 'runner-exit') {
+              widget.onExit?.call();
+              return;
+            }
             final response = await _bridge.handle(message.message);
             if (mounted)
               await controller.runJavaScript(

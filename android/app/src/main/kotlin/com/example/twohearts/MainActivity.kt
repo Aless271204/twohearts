@@ -14,6 +14,9 @@ import android.speech.SpeechRecognizer
 import android.speech.tts.TextToSpeech
 import android.speech.tts.UtteranceProgressListener
 import java.util.Locale
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 
 class MainActivity : FlutterFragmentActivity() {
     private var tts: TextToSpeech? = null
@@ -26,6 +29,15 @@ class MainActivity : FlutterFragmentActivity() {
 
     override fun configureFlutterEngine(engine: FlutterEngine) {
         super.configureFlutterEngine(engine)
+        MethodChannel(engine.dartExecutor.binaryMessenger, "nido/game_display").setMethodCallHandler { call, result ->
+            if (call.method == "fullscreen") {
+                val controller = WindowCompat.getInsetsController(window, window.decorView)
+                controller.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+                if (call.arguments == true) controller.hide(WindowInsetsCompat.Type.systemBars())
+                else controller.show(WindowInsetsCompat.Type.systemBars())
+                result.success(null)
+            } else result.notImplemented()
+        }
         tts = TextToSpeech(this) { status -> runOnUiThread {
             val voice = tts?.voices?.filter { it.locale.language == "es" && !it.isNetworkConnectionRequired }
                 ?.sortedWith(compareBy({ if (it.name == "es-es-x-eef-local") 0 else 1 }, { it.name }))?.firstOrNull()

@@ -4,6 +4,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../services/supabase_service.dart';
 import '../../services/inventory_service.dart';
 import '../../core/duo_pong.dart';
+import '../../widgets/immersive_game.dart';
 
 class DuoGameScreen extends StatefulWidget {
   final String game;
@@ -200,7 +201,7 @@ class _DuoGameScreenState extends State<DuoGameScreen>
     final other = sideB ? 'a' : 'b';
     final status = match?['status'];
     final dark = widget.game == 'pong';
-    return PopScope(
+    return ImmersiveGame(child: PopScope(
       canPop: match == null || ['finished', 'cancelled'].contains(status),
       onPopInvokedWithResult: (popped, result) async {
         if (!popped && await _leave() && context.mounted)
@@ -211,7 +212,7 @@ class _DuoGameScreenState extends State<DuoGameScreen>
             ? const Color(0xFF090E1A)
             : inventory.at('quiz_table')?.color.withAlpha(80) ??
                   const Color(0xFFFFF4F7),
-        appBar: AppBar(
+        appBar: status == 'playing' ? null : AppBar(
           title: Text(
             dark ? 'Ping pong en pareja' : '¿Quién conoce mejor al otro?',
           ),
@@ -283,13 +284,14 @@ class _DuoGameScreenState extends State<DuoGameScreen>
                                 ),
                               ),
                             const SizedBox(height: 16),
+                            TextButton(onPressed: () => Navigator.pop(context), child: const Text('Salir')),
                             FilledButton(
                               onPressed: () {
                                 match = null;
                                 _join();
                                 setState(() {});
                               },
-                              child: const Text('Otra partida'),
+                              child: const Text('Continuar'),
                             ),
                           ],
                         ),
@@ -378,7 +380,7 @@ class _DuoGameScreenState extends State<DuoGameScreen>
                 ],
               ),
       ),
-    );
+    ));
   }
 
   Widget _quiz(Map<String, dynamic> s, String mine, String other) {
