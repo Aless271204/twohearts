@@ -8,6 +8,7 @@ import 'package:webview_flutter/webview_flutter.dart';
 
 class Pet3DViewer extends StatefulWidget {
   final String modelPath;
+  final int petLevel;
   final String altText;
   final bool cameraControls;
   final bool disableZoom;
@@ -20,6 +21,7 @@ class Pet3DViewer extends StatefulWidget {
   const Pet3DViewer({
     super.key,
     required this.modelPath,
+    this.petLevel = 10,
     this.altText = 'Mascota 3D de TwoHearts',
     this.cameraControls = true,
     this.disableZoom = false,
@@ -54,11 +56,11 @@ class _Pet3DViewerState extends State<Pet3DViewer> {
         ),
       );
     }
-    if (widget.modelPath == PetModelCatalog.penguinModelPath && widget.onWebViewCreated == null) {
+    if (PetModelCatalog.models.containsValue(widget.modelPath) && widget.onWebViewCreated == null) {
       return ListenableBuilder(listenable: InventoryService.instance, builder: (context, _) {
         final appearance = jsonEncode({for (final entry in InventoryService.instance.loadout.entries)
           entry.key: entry.value.appearance});
-        return ForestRunnerView(key: ValueKey('$appearance|${widget.animationName}'), petOnly: true, petOrbit: widget.cameraControls,
+        return ForestRunnerView(key: ValueKey('$appearance|${widget.animationName}|${widget.modelPath}|${widget.petLevel}'), petOnly: true, petLevel: widget.petLevel, petSpecies: PetModelCatalog.speciesForPath(widget.modelPath), petOrbit: widget.cameraControls,
           appearance: appearance, animationName: widget.cameraControls ? widget.animationName : 'Natural_Rest');
       });
     }

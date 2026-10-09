@@ -26,7 +26,7 @@ class InventoryItem {
   }
 
   static const destinations = {
-    'pet': 'Pip',
+    'pet': 'Mascota',
     'room': 'Habitación',
     'pong': 'Ping pong',
     'quiz': 'Preguntas',

@@ -26,15 +26,15 @@ class _PetMessagesSheetState extends State<PetMessagesSheet> {
   @override Widget build(BuildContext context) => SafeArea(child: Padding(
     padding: EdgeInsets.fromLTRB(20, 20, 20, 20 + MediaQuery.viewInsetsOf(context).bottom),
     child: SingleChildScrollView(child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-      const Text('Pip tiene algo que decir', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+      const Text('Tu mascota tiene algo que decir', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
       const SizedBox(height: 8),
-      const Text('Escribe o dicta y revisa el mensaje. Pip lo dirá con su voz. Tu pareja podrá escucharlo hasta 5 veces; después se elimina.'),
+      const Text('Escribe o dicta y revisa el mensaje. Tu mascota lo dirá con su voz. Tu pareja podrá escucharlo hasta 5 veces; después se elimina.'),
       const SizedBox(height: 12),
       TextField(controller: _text, maxLength: 500, maxLines: 3, enabled: !_busy, decoration: const InputDecoration(labelText: 'Mensaje para tu pareja', border: OutlineInputBorder())),
       Wrap(spacing: 8, children: [
         TextButton.icon(onPressed: _busy ? null : () => _action(() async { final text = await PetVoiceService.instance.dictate(); if (mounted) _text.text = text; }), icon: const Icon(Icons.mic), label: const Text('Dictar')),
         TextButton.icon(onPressed: _busy ? null : () => _action(() async { if (_text.text.trim().isEmpty) return; await PetVoiceService.instance.prepare(); await PetVoiceService.instance.speak(_text.text.trim()); }), icon: const Icon(Icons.volume_up), label: const Text('Probar voz')),
-        FilledButton(onPressed: _busy ? null : () => _action(() async { if (_text.text.trim().isEmpty) return; await PetVoiceService.instance.send(_text.text); if (mounted) { _text.clear(); setState(() => _notice = 'Pip entregará tu mensaje a tu pareja.'); } }), child: const Text('Enviar')),
+        FilledButton(onPressed: _busy ? null : () => _action(() async { if (_text.text.trim().isEmpty) return; await PetVoiceService.instance.send(_text.text); if (mounted) { _text.clear(); setState(() => _notice = 'Tu mascota entregará tu mensaje a tu pareja.'); } }), child: const Text('Enviar')),
       ]),
       if (_busy) const LinearProgressIndicator(),
       if (_notice != null) Padding(padding: const EdgeInsets.symmetric(vertical: 8), child: Text(_notice!)),
@@ -43,7 +43,7 @@ class _PetMessagesSheetState extends State<PetMessagesSheet> {
       if (_messages.isEmpty) const Text('Todavía no tienes mensajes pendientes.'),
       for (final message in _messages) ListTile(leading: const Icon(Icons.pets), title: const Text('Un mensaje de tu pareja'), subtitle: Text('${message['remaining']} escuchas disponibles'), trailing: IconButton(icon: const Icon(Icons.play_arrow), onPressed: _busy ? null : () => _action(() async { await PetVoiceService.instance.play(message['id'] as String); await _load(); }))),
       const SizedBox(height: 8),
-      const Text('Prueba de voz de Pip: el timbre depende de la voz española instalada en Android. El dictado requiere reconocimiento local compatible.', style: TextStyle(fontSize: 12)),
+      const Text('Prueba de voz de la mascota: el timbre depende de la voz española instalada en Android. El dictado requiere reconocimiento local compatible.', style: TextStyle(fontSize: 12)),
     ])),
   ));
 }

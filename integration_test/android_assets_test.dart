@@ -171,6 +171,7 @@ void main() {
     );
     await controller.runJavaScript('''
       document.getElementById('start').click();
+      document.getElementById('right').click(); // Return from the lane-change check to the opening coin lane.
       window.runnerResumeValid = true &&
         document.getElementById('panel').hidden;
     ''');

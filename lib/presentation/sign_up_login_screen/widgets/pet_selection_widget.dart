@@ -1,151 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import '../../../theme/app_theme.dart';
 import '../../../core/pet_model_catalog.dart';
-import '../../../widgets/pet_3d_viewer.dart';
 
 class PetSelectionWidget extends StatelessWidget {
   final String? selectedPet;
   final ValueChanged<String> onPetSelected;
+  final ValueChanged<String> onNameChanged;
   final VoidCallback onConfirm;
   final bool isLoading;
-
-  const PetSelectionWidget({
-    super.key,
-    required this.selectedPet,
-    required this.onPetSelected,
-    required this.onConfirm,
-    required this.isLoading,
-  });
-
-  static const List<Map<String, String>> pets = [
-    {'name': 'Pollito', 'emoji': '🐣', 'desc': 'Chick'},
-    {'name': 'Pingüino', 'emoji': '🐧', 'desc': 'Penguin'},
-    {'name': 'Oso', 'emoji': '🐻', 'desc': 'Bear'},
-    {'name': 'Gato', 'emoji': '🐱', 'desc': 'Cat'},
-    {'name': 'Perrito', 'emoji': '🐶', 'desc': 'Dog'},
-    {'name': 'Loro', 'emoji': '🦜', 'desc': 'Parrot'},
-    {'name': 'Mono', 'emoji': '🐵', 'desc': 'Monkey'},
-    {'name': 'Sushi', 'emoji': '🍣', 'desc': 'Sushi'},
-    {'name': 'Pasta', 'emoji': '🍝', 'desc': 'Pasta'},
-    {'name': 'Bolón', 'emoji': '🫓', 'desc': 'Bolón'},
-  ];
-
+  const PetSelectionWidget({super.key,required this.selectedPet,required this.onPetSelected,required this.onNameChanged,required this.onConfirm,required this.isLoading});
   @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Choose your couple mascot',
-          style: GoogleFonts.dmSans(fontSize: 16, fontWeight: FontWeight.w600),
-        ),
-        const SizedBox(height: 4),
-        Text(
-          'This little companion will grow with your relationship!',
-          style: GoogleFonts.dmSans(
-            fontSize: 12,
-            color: const Color(0xFF6B6B6B),
-          ),
-        ),
-        const SizedBox(height: 16),
-        SizedBox(
-          height: 200,
-          child: GridView.builder(
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 5,
-              mainAxisSpacing: 8,
-              crossAxisSpacing: 8,
-              childAspectRatio: 0.85,
-            ),
-            itemCount: pets.length,
-            itemBuilder: (context, i) {
-              final pet = pets[i];
-              final isSelected = selectedPet == pet['name'];
-              return GestureDetector(
-                onTap: () => onPetSelected(pet['name']!),
-                child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 200),
-                  curve: Curves.easeOutCubic,
-                  decoration: BoxDecoration(
-                    color: isSelected
-                        ? AppTheme.primaryContainer
-                        : AppTheme.surfaceVariantLight,
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(
-                      color: isSelected ? AppTheme.primary : Colors.transparent,
-                      width: 2,
-                    ),
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      if (pet['name'] == 'Pingüino')
-                        const Expanded(
-                          child: IgnorePointer(
-                            child: Pet3DViewer(
-                              modelPath: PetModelCatalog.penguinModelPath,
-                              altText: 'Pip, pingüino',
-                              cameraControls: false,
-                              disableZoom: true,
-                              autoPlay: true,
-                              animationName: 'Idle_9',
-                              cameraOrbit: '0deg 75deg 105%',
-                            ),
-                          ),
-                        )
-                      else
-                        Text(
-                          pet['emoji']!,
-                          style: const TextStyle(fontSize: 24),
-                        ),
-                      const SizedBox(height: 2),
-                      Text(
-                        pet['desc']!,
-                        style: GoogleFonts.dmSans(
-                          fontSize: 9,
-                          fontWeight: FontWeight.w500,
-                          color: isSelected
-                              ? AppTheme.primary
-                              : const Color(0xFF6B6B6B),
-                        ),
-                        textAlign: TextAlign.center,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ],
-                  ),
-                ),
-              );
-            },
-          ),
-        ),
-        const SizedBox(height: 16),
-        SizedBox(
-          width: double.infinity,
-          height: 52,
-          child: ElevatedButton(
-            onPressed: selectedPet != null && !isLoading ? onConfirm : null,
-            child: isLoading
-                ? const SizedBox(
-                    width: 20,
-                    height: 20,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                      color: Colors.white,
-                    ),
-                  )
-                : Text(
-                    selectedPet != null
-                        ? 'Start with $selectedPet!'
-                        : 'Select a mascot',
-                    style: GoogleFonts.dmSans(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-          ),
-        ),
-      ],
-    );
-  }
+  Widget build(BuildContext context)=>Column(crossAxisAlignment:CrossAxisAlignment.stretch,children:[
+    const Text('Elijan su primera mascota',style:TextStyle(fontSize:18,fontWeight:FontWeight.bold)),
+    const Text('Será su compañera en la habitación y en los juegos. Más adelante podrán adoptar otras.'),
+    const SizedBox(height:12),
+    SizedBox(height:220,child:GridView.count(crossAxisCount:2,childAspectRatio:1.3,mainAxisSpacing:8,crossAxisSpacing:8,children:PetModelCatalog.models.keys.map((s)=>InkWell(onTap:isLoading?null:()=>onPetSelected(s),child:Container(decoration:BoxDecoration(borderRadius:BorderRadius.circular(14),border:Border.all(color:selectedPet==s?Colors.green:Colors.black12,width:2)),child:Column(children:[Expanded(child:Image.asset('assets/images/pets/$s.png',fit:BoxFit.contain)),Text(PetModelCatalog.labels[s]!)])))).toList())),
+    TextFormField(maxLength:24,onChanged:onNameChanged,decoration:const InputDecoration(labelText:'Nombre elegido por ustedes',hintText:'Pueden ponerlo después')),
+    FilledButton(onPressed:selectedPet==null||isLoading?null:onConfirm,child:Text(isLoading?'Preparando su mascota…':'Elegir mascota')),
+  ]);
 }

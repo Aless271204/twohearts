@@ -49,6 +49,7 @@ flutter:
   assets:
     - assets/
     - assets/images/
+    - assets/images/pets/
     - assets/models/
     - assets/runner/
     - assets/runner/play-models/

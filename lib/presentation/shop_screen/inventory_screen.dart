@@ -4,9 +4,11 @@ import '../../services/inventory_service.dart';
 import '../../widgets/inventory_scene.dart';
 import '../../widgets/pet_3d_viewer.dart';
 import '../../core/pet_model_catalog.dart';
+import '../../services/shared_pet_service.dart';
 
 class ShopScreen extends StatefulWidget {
-  const ShopScreen({super.key});
+  final String initialScope;
+  const ShopScreen({super.key, this.initialScope = 'pet'});
   @override
   State<ShopScreen> createState() => _ShopScreenState();
 }
@@ -16,9 +18,12 @@ class _ShopScreenState extends State<ShopScreen> {
   bool loading = true, busy = false, onlyOwned = false;
   String scope = 'pet', query = '';
   String? error;
+  String? slot;
+  InventoryItem? preview;
   @override
   void initState() {
     super.initState();
+    scope = widget.initialScope;
     inventory.addListener(_changed);
     _load();
   }
@@ -109,6 +114,7 @@ class _ShopScreenState extends State<ShopScreen> {
         .where(
           (i) =>
               i.scope == scope &&
+              (slot == null || i.slot == slot) &&
               (!onlyOwned || inventory.owns(i.key)) &&
               (query.isEmpty ||
                   '${i.name} ${i.collection} ${i.description}'
@@ -175,14 +181,20 @@ class _ShopScreenState extends State<ShopScreen> {
                             child: ChoiceChip(
                               label: Text(e.value),
                               selected: scope == e.key,
-                              onSelected: (_) => setState(() => scope = e.key),
+                              onSelected: (_) => setState(() { scope = e.key; slot = null; preview = null; }),
                             ),
                           ),
                       ],
                     ),
                   ),
                   const SizedBox(height: 12),
-                  InventoryPreview(scope: scope, loadout: inventory.loadout),
+                  Wrap(spacing: 6, children: [
+                    ChoiceChip(label: const Text('Todo'), selected: slot == null, onSelected: (_) => setState(() => slot = null)),
+                    for (final entry in InventoryItem.slots.entries.where((e) => e.key.startsWith('${scope}_')))
+                      ChoiceChip(label: Text(entry.value), selected: slot == entry.key, onSelected: (_) => setState(() => slot = entry.key)),
+                  ]),
+                  InventoryPreview(scope: scope, loadout: {...inventory.loadout, if (preview != null) preview!.slot: preview!}),
+                  if (preview != null) Row(children: [Expanded(child: Text('Vista previa: ${preview!.name} · Sin guardar')), TextButton(onPressed: () => setState(() => preview = null), child: const Text('Cancelar vista'))]),
                   const SizedBox(height: 12),
                   TextField(
                     onChanged: (s) => setState(() => query = s),
@@ -285,6 +297,7 @@ class _ShopScreenState extends State<ShopScreen> {
                                         : 'Comprar',
                                   ),
                                 ),
+                                if (scope == 'room') IconButton(tooltip: 'Ver en la habitación', onPressed: () => setState(() => preview = item), icon: const Icon(Icons.visibility_outlined)),
                               ],
                             ),
                           ],
@@ -320,10 +333,11 @@ class InventoryPreview extends StatelessWidget {
         child: Stack(
           children: [
             Positioned.fill(child: InventoryScene(loadout: loadout)),
-            const Positioned.fill(
+            Positioned.fill(
               child: Pet3DViewer(
-                modelPath: PetModelCatalog.penguinModelPath,
-                animationName: 'Idle_9',
+                modelPath: PetModelCatalog.modelPathFor(SharedPetService.instance.species),
+                petLevel: SharedPetService.instance.level,
+                animationName: 'Natural_Rest',
                 autoPlay: true,
                 cameraControls: false,
                 cameraOrbit: '0deg 75deg 105%',

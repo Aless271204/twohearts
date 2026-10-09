@@ -19,6 +19,8 @@ import { refinePip } from './pip-delicate.js';
 clearTimeout(window.runnerBootTimer);
 
 const params=new URLSearchParams(location.search),petOnly=params.get('pet')==='1',petOrbit=params.get('orbit')==='1';
+const species=['penguin','bear','pig','chick'].includes(params.get('species'))?params.get('species'):'penguin';
+const petLevel=Math.max(1,Math.min(10000,Number(params.get('level'))||10)),growth=petLevel>=10?1:petLevel>=5?.88:.74;
 const $ = id => document.getElementById(id);
 const panel=$('panel'), start=$('start'), pause=$('pause');
 const scene=new THREE.Scene();
@@ -222,10 +224,10 @@ function frame(now){
   if(penguin){
     landingPulse=Math.max(0,landingPulse-dt*5);
     penguin.position.set(x,floorY+height,0);
-    penguin.scale.set(1+landingPulse*.07,1-landingPulse*.09,1+landingPulse*.07);
+    penguin.scale.set(growth*(1+landingPulse*.07),growth*(1-landingPulse*.09),growth*(1+landingPulse*.07));
     penguin.rotation.x=THREE.MathUtils.lerp(penguin.rotation.x,height>0?-.08:0,1-Math.exp(-dt*8));
     penguin.rotation.z=THREE.MathUtils.lerp(penguin.rotation.z,(LANES[lane]-x)*-.08,1-Math.exp(-dt*8));
-    const name=petOnly?(!petOrbit?'Natural_Rest':params.get('animation')??'Natural_Rest'):running?(height>.01?'Regular_Jump':'Running'):'Idle_9';
+    const name=petOnly?(!petOrbit?'Natural_Rest':params.get('animation')??'Natural_Rest'):running?(height>.01?'Regular_Jump':'Running'):'Natural_Rest';
     if(activeAction!==name&&actions[name]){
       const next=actions[name];next.reset().fadeIn(.16).play();
       if(activeAction)actions[activeAction].fadeOut(.16);activeAction=name;
@@ -241,7 +243,7 @@ function frame(now){
   }
   shadow.position.x=x;shadow.material.opacity=.22/(1+height);shadow.scale.set(petOnly?.7:1+height*.18,petOnly?.45:.65+height*.1,1);
   cameraX=THREE.MathUtils.lerp(cameraX,petOnly?0:x*.72,1-Math.exp(-dt*9));
-  camera.position.set(cameraX,petOnly?.75:2.35,petOnly?2.2:5.8);
+  camera.position.set(cameraX,petOnly?.75:2.35,petOnly?(species==='pig'?2.8:2.2):5.8);
   camera.lookAt(cameraX,petOnly?.62:.95,petOnly?0:-10);
   backdrop.update(paused?0:dt,camera.aspect,cameraX,distance);
   if(!paused){
@@ -259,7 +261,7 @@ async function boot(){
     const entries=Object.entries(manifest).filter(([key])=>(petOnly?['pip']:['pip','crate','fence','rock']).includes(key));
     for(let i=0;i<entries.length;i++){
       const [key,file]=entries[i];$('message').textContent=`Cargando bosque ${i+1}/${entries.length}…`;
-      const gltf=await loader.loadAsync(`play-models/${file}`);templates[key]=gltf.scene;
+      const gltf=await loader.loadAsync(`play-models/${key==='pip'&&species!=='penguin'?manifest[species]:file}`);templates[key]=gltf.scene;
       limitTextureMemory(gltf.scene,petOnly?1024:512);
       // The supplied maps carry the artwork. Keep them, but make natural props
       // non-metallic and soften exaggerated normal-map relief under sunlight.
@@ -272,17 +274,20 @@ async function boot(){
         penguin=fitModel(gltf.scene,1.15);penguin.rotation.y=petOnly?Number(params.get('angle')??0):Math.PI;scene.add(penguin);
 
         mixer=new THREE.AnimationMixer(penguin);
+        actions.Natural_Rest=mixer.clipAction(createNaturalRest(penguin));
+        actions.Natural_Rest.play();activeAction='Natural_Rest';
         for(const clip of gltf.animations){if(petOnly&&!petOrbit&&clip.name==='Idle_9')continue;actions[clip.name]=mixer.clipAction(clip);}
         if(actions.Regular_Jump){actions.Regular_Jump.setLoop(THREE.LoopOnce,1);actions.Regular_Jump.clampWhenFinished=true;}
-        if(actions.Idle_9){actions.Idle_9.play();activeAction='Idle_9';if(petOnly&&!petOrbit&&(params.get('animation')??'Idle_9')==='Idle_9'){actions.Idle_9.time=0;actions.Idle_9.paused=true;}mixer.update(0);}
-        if(petOnly&&!petOrbit){mixer.stopAllAction();actions.Natural_Rest=mixer.clipAction(createNaturalRest(penguin));actions.Natural_Rest.play();activeAction='Natural_Rest';mixer.update(0);refinePip(penguin);restSole=measurePetSoles(penguin);document.body.dataset.petPose='standing';document.body.dataset.petShape='delicate';}
+        mixer.update(0);
+        if(petOnly&&!petOrbit){mixer.stopAllAction();actions.Natural_Rest=mixer.clipAction(createNaturalRest(penguin));actions.Natural_Rest.play();activeAction='Natural_Rest';mixer.update(0);if(species==='penguin')refinePip(penguin);penguin.scale.setScalar(growth);restSole=measurePetSoles(penguin);document.body.dataset.petPose='standing';document.body.dataset.petShape=species==='penguin'?'delicate':'original';}
+        document.body.dataset.petSpecies=species;
         (petOnly?Promise.resolve(JSON.parse(params.get('appearance')??'{}')):requestHost('cosmetics')).then(loadout=>{const equipped=equipRunnerCosmetics(penguin,loadout);if(petOnly)document.body.dataset.petAnchors=equipped.userData.slots.map(slot=>slot.parent.name).join(',');needsRender=true;}).catch(()=>{});
       }
     }
     if(!petOnly)boardwalk();
     penguin.traverse(o=>{if(o.isMesh)o.castShadow=true;});
     clearTimeout(window.runnerBootTimer);ready=true;start.disabled=false;
-    showPanel('Un paseo con Pip','Un bosque lleno de vida. Recoge corazones y salta los obstáculos. El ritmo aumenta a medida que avanzas. Usa ← → o desliza para cambiar de carril; toca o pulsa espacio para saltar.','Correr con Pip');
+    showPanel('Un paseo con tu mascota','Un bosque lleno de vida. Recoge corazones y salta los obstáculos. El ritmo aumenta a medida que avanzas. Usa ← → o desliza para cambiar de carril; toca o pulsa espacio para saltar.','Correr con tu mascota');
     if(petOnly){document.body.classList.add('pet-only');scene.background=null;scene.fog=null;renderer.setClearColor(0,0);for(const child of scene.children)if(child!==penguin&&child!==shadow&&!child.isLight)child.visible=false;}
     last=performance.now();animationId=requestAnimationFrame(frame);
   }catch(error){
@@ -298,3 +303,5 @@ addEventListener('pagehide',()=>{
   for(const g of geometries)g.dispose();for(const t of textures)t.dispose();for(const m of materials)m.dispose();renderer.dispose();
 },{once:true});
 boot();
+
+

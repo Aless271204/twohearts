@@ -10,5 +10,8 @@
   "bridgeA": "Meshy_AI_Tropical_Timber_Bridg_1005032828_texture.glb",
   "bridgeB": "Meshy_AI_Tropical_Timber_Bridg_1005032836_texture.glb",
   "guardian": "Meshy_AI_Verdant_Guardian_1005034111_texture.glb",
-  "pip": "Meshy_AI_Pip_the_Penguin_All_Animations.glb"
+  "pip": "Meshy_AI_Pip_the_Penguin_All_Animations.glb",
+  "bear": "bear.glb",
+  "pig": "pig.glb",
+  "chick": "chick.glb"
 }

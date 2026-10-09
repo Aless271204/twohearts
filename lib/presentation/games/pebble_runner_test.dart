@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../widgets/forest_runner_view.dart';
 import '../../services/audio_service.dart';
+import '../../services/shared_pet_service.dart';
 
 class PebbleRunnerTest extends StatefulWidget {
   final String? modelPath;
@@ -9,8 +10,9 @@ class PebbleRunnerTest extends StatefulWidget {
   State<PebbleRunnerTest> createState() => _PebbleRunnerTestState();
 }
 class _PebbleRunnerTestState extends State<PebbleRunnerTest> {
+  late final Future<void> _petReady;
   @override
-  void initState(){super.initState();AudioService.instance.pause();}
+  void initState(){super.initState();AudioService.instance.pause();_petReady=SharedPetService.instance.refresh();}
   @override
   Widget build(BuildContext context) => Scaffold(
     backgroundColor: const Color(0xFF17392B),
@@ -19,6 +21,10 @@ class _PebbleRunnerTestState extends State<PebbleRunnerTest> {
       backgroundColor: const Color(0xFF17392B),
       foregroundColor: Colors.white,
     ),
-    body: const ForestRunnerView(),
+    body: FutureBuilder<void>(future: _petReady, builder: (context, snapshot) {
+      if (snapshot.connectionState != ConnectionState.done) return const Center(child: CircularProgressIndicator());
+      if (snapshot.hasError) return Center(child: TextButton(onPressed: () => Navigator.pop(context), child: const Text('No pudimos cargar vuestra mascota. Volver')));
+      return ForestRunnerView(petSpecies: SharedPetService.instance.species,petLevel: SharedPetService.instance.level);
+    }),
   );
 }

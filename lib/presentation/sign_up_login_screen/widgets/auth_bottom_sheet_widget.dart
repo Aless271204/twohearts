@@ -1,3 +1,4 @@
+import '../../../services/shared_pet_service.dart';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
@@ -35,6 +36,7 @@ class _AuthBottomSheetWidgetState extends State<AuthBottomSheetWidget>
 
   String _connectionType = 'pareja'; // pareja | amigo | grupo
   String? _selectedPet;
+  String _petName='';
   DateTime? _relationshipStart;
 
   @override
@@ -138,6 +140,10 @@ class _AuthBottomSheetWidgetState extends State<AuthBottomSheetWidget>
         }
       }
 
+      if (_selectedPet != null && SupabaseService.instance.currentUser != null) {
+        try {await SharedPetService.instance.change('choose',_selectedPet!,_petName);}
+        catch(_) {if(mounted)ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content:Text('La cuenta está creada. Podrán confirmar su mascota desde la habitación.')));}
+      }
       if (mounted) {
         widget.onAuthSuccess();
         // If no partner code was entered, navigate to pairing screen after a short delay
@@ -398,6 +404,7 @@ class _AuthBottomSheetWidgetState extends State<AuthBottomSheetWidget>
       return PetSelectionWidget(
         selectedPet: _selectedPet,
         onPetSelected: (pet) => setState(() => _selectedPet = pet),
+        onNameChanged: (name) => _petName=name,
         onConfirm: _finishSignup,
         isLoading: _isLoading,
       );

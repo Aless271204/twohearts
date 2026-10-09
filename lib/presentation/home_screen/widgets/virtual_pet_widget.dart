@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import '../../../services/shared_pet_service.dart';
 import '../../../widgets/pet_messages_sheet.dart';
+import '../../../widgets/pet_family_sheet.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -9,6 +10,7 @@ import '../../../core/pet_model_catalog.dart';
 import '../../../widgets/pet_3d_viewer.dart';
 import '../../../services/inventory_service.dart';
 import '../../../widgets/inventory_scene.dart';
+import '../../shop_screen/inventory_screen.dart';
 
 // ─── Data Models ─────────────────────────────────────────────────────────────
 
@@ -61,55 +63,9 @@ class CollectibleMood {
 // ─── Constants ────────────────────────────────────────────────────────────────
 
 const List<PetEvolutionStage> kEvolutionStages = [
-  PetEvolutionStage(
-    name: 'Huevo',
-    emoji: '🥚',
-    description: 'Todo gran vínculo comienza con un pequeño huevo de amor.',
-    requiredLevel: 1,
-    accentColor: Color(0xFFE0D0C0),
-  ),
-  PetEvolutionStage(
-    name: 'Bebé',
-    emoji: '🐣',
-    description: 'Aún pequeño, pero ya siente tu amor.',
-    requiredLevel: 5,
-    accentColor: Color(0xFFFFD6A5),
-  ),
-  PetEvolutionStage(
-    name: 'Juvenil',
-    emoji: '🐥',
-    description: 'Empieza a descubrir el mundo... contigo.',
-    requiredLevel: 10,
-    accentColor: Color(0xFFFFE066),
-  ),
-  PetEvolutionStage(
-    name: 'Adulto',
-    emoji: '🐧',
-    description: 'Más fuerte, más feliz, siempre a tu lado.',
-    requiredLevel: 20,
-    accentColor: Color(0xFF90CAF9),
-  ),
-  PetEvolutionStage(
-    name: 'Fit',
-    emoji: '💪',
-    description: 'Juntos en cada meta. Más fuertes, más unidos.',
-    requiredLevel: 30,
-    accentColor: Color(0xFFA5D6A7),
-  ),
-  PetEvolutionStage(
-    name: 'Pintor',
-    emoji: '🎨',
-    description: 'Tu amor también inspira su creatividad.',
-    requiredLevel: 40,
-    accentColor: Color(0xFFCE93D8),
-  ),
-  PetEvolutionStage(
-    name: 'Aventurero',
-    emoji: '🗺️',
-    description: 'Nuevos lugares, misma misión: juntos.',
-    requiredLevel: 50,
-    accentColor: Color(0xFF80DEEA),
-  ),
+  PetEvolutionStage(name:'Cría',emoji:'🌱',description:'Pequeña y acompañada por sus cuidados.',requiredLevel:1,accentColor:Color(0xFFFFD6A5)),
+  PetEvolutionStage(name:'Juvenil',emoji:'🌿',description:'Crece con el cuidado de los dos.',requiredLevel:5,accentColor:Color(0xFFFFE066)),
+  PetEvolutionStage(name:'Adulta',emoji:'🌳',description:'Una compañera que han criado juntos.',requiredLevel:10,accentColor:Color(0xFF90CAF9)),
 ];
 
 const List<CollectibleMood> kDefaultMoods = [
@@ -370,6 +326,10 @@ class _VirtualPetWidgetState extends State<VirtualPetWidget>
           child: InventoryScene(loadout: InventoryService.instance.loadout),
         ),
         _buildPetCharacter(),
+        Positioned(top: 108, right: 16, child: FilledButton.tonalIcon(
+          onPressed: () => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => const ShopScreen(initialScope: 'room'))),
+          icon: const Icon(Icons.chair_outlined), label: const Text('Decorar'),
+        )),
 
         Positioned(top: 48, left: 16, right: 16, child: Center(child: Text(
           !_pet.ready ? 'Conectando con vuestro nido…' : _pet.paired ? 'Una mascota para los dos · Cuidado compartido' : 'Tu nido · Vincula a tu pareja para cuidarlo juntos',
@@ -380,6 +340,7 @@ class _VirtualPetWidgetState extends State<VirtualPetWidget>
 
         // ── HUD: Coins (top-right) ─────────────────────────────────────
         Positioned(top: 8, right: 16, child: _buildCoinsBadge()),
+        Positioned(top:72,left:16,right:16,child:TextButton.icon(onPressed:_pet.ready?()=>showModalBottomSheet(context:context,isScrollControlled:true,builder:(_)=>const PetFamilySheet()):null,icon:const Icon(Icons.pets),label:Text('${_pet.displayName} · ${PetModelCatalog.stageFor(_pet.level)}'))),
 
         // ── HUD: Bottom action icons ───────────────────────────────────
         Positioned(bottom: 100, left: 0, right: 0, child: _buildBottomHUD()),
@@ -453,8 +414,9 @@ class _VirtualPetWidgetState extends State<VirtualPetWidget>
                   fit: StackFit.expand,
                   children: [
                     Pet3DViewer(
-                      modelPath: widget.petModelPath,
-                      altText: '${widget.petName}, mascota 3D de TwoHearts',
+                      modelPath: PetModelCatalog.modelPathFor(_pet.species),
+                      petLevel: _pet.level,
+                      altText: '${_pet.displayName}, mascota 3D compartida',
                       autoPlay: true,
                       cameraControls: false,
                       cameraOrbit:

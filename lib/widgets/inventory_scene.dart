@@ -53,15 +53,32 @@ class _ScenePainter extends CustomPainter {
 
     if (!accessories) {
       final wall = items['room_wall'];
+      final wallColor = wall?.color ?? const Color(0xFFE9DCCB);
+      final wallRect = const Rect.fromLTWH(0, 0, 300, 260);
+      canvas.drawRect(wallRect, Paint()..shader = LinearGradient(
+        begin: Alignment.topCenter, end: Alignment.bottomCenter,
+        colors: [Color.lerp(wallColor, Colors.white, .65)!, wallColor],
+      ).createShader(wallRect));
+      // Architecture and furniture stay behind the fixed central pet area.
+      rect(const Rect.fromLTWH(0, 250, 300, 10), const Color(0xFFFAF1E3), 0);
+      rect(const Rect.fromLTWH(24, 125, 67, 84), const Color(0xFFAD8E6B), 14);
+      rect(const Rect.fromLTWH(29, 130, 57, 74), const Color(0xFFD6F1F5), 10);
+      final night = wall?.key.endsWith('_night') ?? false;
+      if (night) rect(const Rect.fromLTWH(29, 130, 57, 74), const Color(0xFF384D75), 10);
+      oval(const Rect.fromLTWH(64, 140, 13, 13), night ? const Color(0xFFFFF1BF) : const Color(0xFFFFD880));
+      final hills = Path()..moveTo(29, 192)..quadraticBezierTo(47, 165, 62, 190)..quadraticBezierTo(74, 174, 86, 188)..lineTo(86, 204)..lineTo(29, 204)..close();
+      canvas.drawPath(hills, Paint()..color = const Color(0xFF8EBB9B));
+      line(const Offset(57, 130), const Offset(57, 204), const Color(0xFFFAF1E3), 4);
+      line(const Offset(29, 165), const Offset(86, 165), const Color(0xFFFAF1E3), 4);
       if (wall != null) {
-        rect(const Rect.fromLTWH(0, 0, 300, 260), wall.color.withAlpha(100));
         for (var x = 20; x < 300; x += 45) {
           oval(Rect.fromLTWH(x.toDouble(), 45, 7, 7), Colors.white54);
         }
       }
       final floor = items['room_floor'];
-      if (floor != null) {
-        rect(const Rect.fromLTWH(0, 258, 300, 92), floor.color.withAlpha(180));
+      {
+        final floorColor = floor?.color ?? const Color(0xFFD2AC7E);
+        rect(const Rect.fromLTWH(0, 260, 300, 90), Color.lerp(floorColor, const Color(0xFFAA8058), .35)!, 0);
         for (var y = 265; y < 350; y += 20) {
           line(
             Offset(0, y.toDouble()),
@@ -69,14 +86,21 @@ class _ScenePainter extends CustomPainter {
             Colors.white38,
           );
         }
+        for (var x = -150; x < 500; x += 50) {
+          line(Offset(150 + (x - 150) * .35, 260), Offset(x.toDouble(), 350), const Color(0x44946C48));
+        }
       }
+      oval(const Rect.fromLTWH(82, 278, 136, 46), wallColor.withAlpha(145));
+      oval(const Rect.fromLTWH(90, 282, 120, 35), const Color(0x55FFFFFF));
       final bed = items['room_bed'];
       if (bed != null) {
-        oval(const Rect.fromLTWH(75, 258, 150, 42), bed.color);
+        oval(const Rect.fromLTWH(8, 271, 77, 23), const Color(0x22000000));
+        oval(const Rect.fromLTWH(8, 258, 77, 30), bed.color);
         oval(
-          const Rect.fromLTWH(87, 264, 126, 27),
+          const Rect.fromLTWH(16, 262, 61, 19),
           Color.lerp(bed.color, Colors.white, .45)!,
         );
+        oval(const Rect.fromLTWH(22, 260, 27, 11), const Color(0xFFFFF6E6));
       }
       final plant = items['room_plant'];
       if (plant != null) {
@@ -107,9 +131,10 @@ class _ScenePainter extends CustomPainter {
       }
       final decor = items['room_decor'];
       if (decor != null) {
-        rect(const Rect.fromLTWH(111, 56, 78, 62), decor.color);
-        rect(const Rect.fromLTWH(117, 62, 66, 50), const Color(0xFFFFF6E6), 3);
-        emoji(decor.emoji, 133, 68, 30);
+        rect(const Rect.fromLTWH(191, 177, 46, 41), const Color(0x22000000));
+        rect(const Rect.fromLTWH(188, 174, 46, 41), decor.color);
+        rect(const Rect.fromLTWH(193, 179, 36, 31), const Color(0xFFFFF6E6), 3);
+        emoji(decor.emoji, 198, 181, 23);
       }
     } else {
       final head = items['pet_head'];

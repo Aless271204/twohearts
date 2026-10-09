@@ -28,13 +28,15 @@ test('backdrop uses two triangles and its animation freezes at zero delta',async
   backdrop.update(0,.56,0);assert.equal(mesh.material.uniforms.time.value,before);
   assert.equal(mesh.material.uniforms.aspect.value,.56);assert.equal(mesh.material.depthWrite,false);backdrop.dispose();
 });
-test('packaged runner contains only its four gameplay models and compact local art',()=>{
+test('packaged runner contains compact local art and the four selectable pet models',()=>{
   const manifest=JSON.parse(readFileSync(new URL('../assets/runner/models.json',import.meta.url),'utf8'));
   let bytes=0;for(const key of ['pip','crate','fence','rock']){
     const file=new URL(`../assets/runner/play-models/${manifest[key]}`,import.meta.url);bytes+=statSync(file).size;
     assert.deepEqual(readFileSync(file),readFileSync(new URL(`../assets/runner/models/${manifest[key]}`,import.meta.url)));
   }
   assert.ok(bytes<25_000_000);
+  let pets=0;for(const key of ['bear','pig','chick'])pets+=statSync(new URL(`../assets/runner/play-models/${manifest[key]}`,import.meta.url)).size;
+  assert.ok(pets<23_000_000,'Additional pets must stay within the mobile package budget');
   const pubspec=readFileSync(new URL('../pubspec.yaml',import.meta.url),'utf8');
   assert.ok(pubspec.includes('- assets/runner/play-models/'));assert.ok(!pubspec.includes('- assets/runner/models/'));
   const art=readFileSync(new URL('../assets/runner/forest-kingdom.jpg',import.meta.url));assert.ok(art.length<400_000);assert.equal(art.readUInt16BE(0),0xffd8);

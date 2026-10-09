@@ -22,7 +22,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     'startDate': DateTime.now().subtract(const Duration(days: 1)),
     'myCity': '',
     'partnerCity': '',
-    'petName': 'Pollito',
+    'petName': 'Nuestra mascota',
     'petModelPath': PetModelCatalog.penguinModelPath,
     'petHappiness': 78,
     'petLevel': 3,
@@ -95,7 +95,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             'myCity': data['myCity'],
             'partnerCity': data['partnerCity'],
             'partnerId': data['partnerId'],
-            'petName': 'Pip',
+            'petName': 'Nuestra mascota',
             'petModelPath': PetModelCatalog.penguinModelPath,
           };
           _loadingProfile = false;

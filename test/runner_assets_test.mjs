@@ -14,9 +14,9 @@ test('Android permits the two local viewer hosts while public HTTP stays blocked
 });
 test('all supplied models are complete, self-contained GLBs with valid buffers',async()=>{
   const manifest=JSON.parse(await readFile(new URL('models.json',root),'utf8'));
-  assert.equal(Object.keys(manifest).length,12);
+  assert.equal(Object.keys(manifest).length,15);
   for(const [name,file] of Object.entries(manifest)){
-    const bytes=await readFile(new URL(`models/${file}`,root));
+    const bytes=await readFile(new URL(`${['bear','pig','chick'].includes(name)?'play-models':'models'}/${file}`,root));
     assert.equal(bytes.toString('ascii',0,4),'glTF',name);
     assert.equal(bytes.readUInt32LE(4),2,name);
     assert.equal(bytes.readUInt32LE(8),bytes.length,name);

@@ -64,13 +64,13 @@ class _GameHubScreenState extends State<GameHubScreen> {
           ),
           const SizedBox(height: 8),
           const Text(
-            'Vinculen sus cuentas y abran el mismo juego desde sus celulares. Pip también puede acompañarte cuando juegues a solas.',
+            'Vinculen sus cuentas y abran el mismo juego desde sus celulares. Tu mascota también puede acompañarte cuando juegues a solas.',
           ),
           const SizedBox(height: 20),
           _card(
             '🐧',
             'Corre en pareja · Bosque',
-            'Corre con Pip, salta y recoge monedas. Tu mochila y accesorios te acompañan.',
+            'Corre con tu mascota, salta y recoge monedas. Tu mochila y accesorios te acompañan.',
             const Color(0xFFD5E7DA),
             () => _open(const PebbleRunnerTest()),
           ),
