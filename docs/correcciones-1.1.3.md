@@ -6,6 +6,8 @@ La referencia del usuario se implementa con una variante procedural de la habita
 
 La variante se inspeccionó de frente, a tres cuartos y desde atrás. La prueba de un ciclo completo de respiración y arrastre mantuvo los ejes fijos y no mostró errores de carga. El parecido con la referencia es una adaptación del modelo existente, no una reproducción idéntica de la ilustración.
 
+El ajuste posterior acorta las alas aproximadamente un 23 %, conservando la altura de los hombros. Las patas quedan más cerca del centro y debajo del cuerpo, con un pequeño tobillo del mismo material del plumaje que solapa el talón y el torso. Se comprobó de nuevo la unión desde tres ángulos y la posición fija durante la respiración.
+
 El recorrido utiliza un bosque dentro del mismo renderizador Three.js del puente: árboles, helechos, flores, rocas, río y cascada animados, con un reino sobre una plataforma de roca. El puente continúa fuera de la distancia visible. La cámara conserva al personaje dentro de la pantalla en los dos carriles exteriores, también en formato vertical estrecho.
 
 La carrera nueva no termina a los 600 metros. Guarda progreso por tramos, conserva los récords y aumenta la dificultad. Los límites de recompensa por partida y por día siguen vigentes. El servidor valida los tramos y los reintentos; guardar un tramo no entrega monedas anticipadas.

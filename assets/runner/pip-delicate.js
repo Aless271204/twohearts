@@ -44,9 +44,9 @@ export function refinePip(model) {
   attach(lining,bones.Spine2,[0,.29,-.025]);
   for(const [side,sign] of [['Left',1],['Right',-1]]){
     const wingGeometry=new THREE.SphereGeometry(1,20,14);
-    wingGeometry.scale(.09,.205,.07);wingGeometry.rotateZ(sign*.35);
+    wingGeometry.scale(.08,.158,.068);wingGeometry.rotateZ(sign*.32);
     const wing=new THREE.Mesh(wingGeometry,dark);wing.name=side+'RoundedWing';
-    attach(wing,bones.Spine2,[sign*.27,.345,.03]);
+    attach(wing,bones.Spine2,[sign*.257,.387,.025]);
     const parts=[];
     const heel=new THREE.SphereGeometry(1,16,10);heel.scale(.073,.06,.065);heel.translate(0,.06,.02);parts.push(heel);
     for(let toe=-1;toe<=1;toe++){
@@ -55,7 +55,11 @@ export function refinePip(model) {
     }
     const foot=new THREE.Mesh(mergeGeometries(parts),orange);foot.name=side+'RoundedFoot';
     for(const part of parts)part.dispose();
-    attach(foot,bones[side+'Foot'],[sign*.135,0,.035]);
+    attach(foot,bones[side+'Foot'],[sign*.11,0,-.015]);
+    // A short feathered ankle overlaps the heel and the body, closing the join.
+    const ankleGeometry=new THREE.SphereGeometry(1,16,12);ankleGeometry.scale(.059,.064,.065);
+    const ankle=new THREE.Mesh(ankleGeometry,dark);ankle.name=side+'FeatheredAnkle';
+    attach(ankle,bones[side+'Foot'],[sign*.11,.125,.005]);
   }
   model.userData.delicatePip=true;model.updateMatrixWorld(true);
 }
