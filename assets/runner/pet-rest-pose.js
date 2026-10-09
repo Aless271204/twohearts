@@ -1,26 +1,8 @@
 import * as THREE from 'three';
 
-// Pose the existing rig; keep the same mesh and accessory anchors.
-export function seatPet(model) {
-  const bones={};model.traverse(node=>{if(node.isBone)bones[node.name.replace(/^mixamorig:?/,'')]=node;});
-  const point=bone=>bone.getWorldPosition(new THREE.Vector3());
-  function aim(name,childName,direction){
-    const bone=bones[name],child=bones[childName];if(!bone||!child)return;
-    model.updateMatrixWorld(true);
-    const from=point(child).sub(point(bone)).normalize();
-    const delta=new THREE.Quaternion().setFromUnitVectors(from,new THREE.Vector3(...direction).normalize());
-    const world=delta.multiply(bone.getWorldQuaternion(new THREE.Quaternion()));
-    bone.quaternion.copy(bone.parent.getWorldQuaternion(new THREE.Quaternion()).invert().multiply(world));
-    model.updateMatrixWorld(true);
-  }
-  for(const [side,sign] of [['Left',1],['Right',-1]]){
-    // Pip has very short legs: a deep human knee bend distorts his belly.
-    // Tuck the legs beneath the body while preserving their original rotations.
-    if(bones[side+'UpLeg'])bones[side+'UpLeg'].scale.y=.7;
-    if(bones[side+'Leg'])bones[side+'Leg'].scale.y=.7;
-    aim(side+'Foot',side+'ToeBase',[sign*.3,-.65,.7]);
-    aim(side+'ToeBase',side+'Toe_End',[sign*.3,-.3,.95]);
-  }
+// Measure the supplied pose without changing any bone or body proportions.
+export function measurePetSoles(model) {
+  model.updateMatrixWorld(true);
   // Measure the actual skinned soles rather than guessing from a joint pivot.
   let sole=Infinity;
   model.traverse(mesh=>{
