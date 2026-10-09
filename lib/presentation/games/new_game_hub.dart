@@ -121,7 +121,7 @@ class _GameHubScreenState extends State<GameHubScreen> {
   Widget _featuredForest() => SizedBox(height: 320, child: ClipRRect(borderRadius: BorderRadius.circular(26), child: Stack(fit: StackFit.expand, children: [
     const GameArt(panel: 0),
     const DecoratedBox(decoration: BoxDecoration(gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [Color(0x08000000), Color(0xB5223B2E)]))),
-    Positioned(top: 16, left: 16, child: Container(padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6), decoration: BoxDecoration(color: const AppTheme.primary, borderRadius: BorderRadius.circular(10)), child: const Text('DESTACADO', style: TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.w700)))),
+    Positioned(top: 16, left: 16, child: Container(padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6), decoration: BoxDecoration(color: AppTheme.primary, borderRadius: BorderRadius.circular(10)), child: const Text('DESTACADO', style: TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.w700)))),
     Positioned(left: 20, right: 20, bottom: 20, child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       const Text('Corre con tu mascota', style: TextStyle(color: Colors.white, fontSize: 26, fontWeight: FontWeight.w800)),
       const SizedBox(height: 6),

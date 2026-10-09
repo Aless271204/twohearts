@@ -368,7 +368,7 @@ class _AlbumJuntosTabState extends State<_AlbumJuntosTab> {
                   const SizedBox(height: 16),
                   _buildViewFilterChips(),
                   const SizedBox(height: 16),
-                  _buildAlbumContent(context, albums, trips),
+                  if (albumSnap.connectionState == ConnectionState.waiting && !albumSnap.hasData) const Padding(padding: EdgeInsets.all(20), child: RoseLoading(label: 'Preparamos su álbum…')) else _buildAlbumContent(context, albums, trips),
                   if (_viewMode == _AlbumViewMode.todos) _legacyPhotos(),
                 ],
               ),
@@ -960,18 +960,12 @@ class _AlbumJuntosTabState extends State<_AlbumJuntosTab> {
 
   // ── Albums horizontal carousel ─────────────────────────────────────────────
 
-  Widget _buildAlbumsCarousel(BuildContext context, List<MemoryAlbum> albums) {
-    return SizedBox(
-      height: 200,
-      child: ListView.separated(
-        scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: 20),
-        itemCount: albums.length,
-        separatorBuilder: (_, __) => const SizedBox(width: 12),
-        itemBuilder: (context, i) => _AlbumCarouselCard(album: albums[i]),
-      ),
-    );
-  }
+  Widget _buildAlbumsCarousel(BuildContext context, List<MemoryAlbum> albums) => Padding(
+    padding: const EdgeInsets.symmetric(horizontal: 20),
+    child: LayoutBuilder(builder: (context, constraints) => Wrap(spacing: 12, runSpacing: 12, children: [
+      for (final album in albums) SizedBox(width: (constraints.maxWidth - 12) / 2, child: _AlbumCarouselCard(album: album)),
+    ])),
+  );
 
   // ── Trips horizontal carousel ──────────────────────────────────────────────
 
@@ -1139,7 +1133,7 @@ class _AlbumCarouselCardState extends State<_AlbumCarouselCard> {
     return GestureDetector(
       onTap: () => _showAlbumDetail(context, album),
       child: Container(
-        width: 160,
+        width: double.infinity,
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(20),
@@ -1162,12 +1156,12 @@ class _AlbumCarouselCardState extends State<_AlbumCarouselCard> {
               child: hasPhotos
                   ? PrivateMemoryImage(
                       album.photoUrls.first,
-                      width: 160,
-                      height: 110,
+                      width: double.infinity,
+                      height: 140,
                       fit: BoxFit.cover,
                       errorBuilder: (_, __, ___) => Container(
-                        width: 160,
-                        height: 110,
+                        width: double.infinity,
+                        height: 140,
                         color: AppTheme.primaryContainer,
                         child: const Center(
                           child: Text('📸', style: TextStyle(fontSize: 32)),
@@ -1175,8 +1169,8 @@ class _AlbumCarouselCardState extends State<_AlbumCarouselCard> {
                       ),
                     )
                   : Container(
-                      width: 160,
-                      height: 110,
+                      width: double.infinity,
+                      height: 140,
                       color: AppTheme.primaryContainer,
                       child: const Center(
                         child: Text('📸', style: TextStyle(fontSize: 32)),

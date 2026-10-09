@@ -74,7 +74,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     _bgController = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 8),
-    )..repeat(reverse: true);
+    );
     _bgAnim = Tween<double>(
       begin: 0,
       end: 1,
