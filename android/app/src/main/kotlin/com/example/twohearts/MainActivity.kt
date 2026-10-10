@@ -39,7 +39,7 @@ class MainActivity : FlutterFragmentActivity() {
             } else result.notImplemented()
         }
         tts = TextToSpeech(this) { status -> runOnUiThread {
-            val voice = tts?.voices?.filter { it.locale.language == "es" && !it.isNetworkConnectionRequired }
+            val voice = tts?.voices?.filter { it.locale.language == "es" && !it.isNetworkConnectionRequired && !it.features.contains(TextToSpeech.Engine.KEY_FEATURE_NOT_INSTALLED) }
                 ?.sortedWith(compareBy({ if (it.name == "es-es-x-eef-local") 0 else 1 }, { it.name }))?.firstOrNull()
             ready = status == TextToSpeech.SUCCESS && voice != null
             if (ready) { tts?.voice = voice; tts?.setPitch(1.35f); tts?.setSpeechRate(.9f) }
