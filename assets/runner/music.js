@@ -1,13 +1,13 @@
 // Original tropical loop: marimba-like plucks, flute, bass and soft hand drums.
 export class AdventureMusic {
-  constructor(){this.context=null;this.timer=null;this.muted=false;this.step=0;this.endTimer=null;this.generation=0;this.intensity=0;}
+  constructor(){this.context=null;this.timer=null;this.muted=false;this.step=0;this.endTimer=null;this.generation=0;this.intensity=0;this.wantsPlayback=false;}
   async start(){
-    const generation=++this.generation;
+    const generation=++this.generation;this.wantsPlayback=true;
     try{
       clearTimeout(this.endTimer);
       if(!this.context)this.create();
       await this.context.resume();
-      if(generation!==this.generation){if(this.context.state==='running')await this.context.suspend();return;}
+      if(generation!==this.generation){if(!this.wantsPlayback&&this.context.state==='running')await this.context.suspend();return;}
       if(this.timer)return;
       this.next=this.context.currentTime+.08;
       this.timer=setInterval(()=>this.schedule(),80);this.schedule();
@@ -86,6 +86,6 @@ export class AdventureMusic {
     this.endTimer=setTimeout(()=>this.pause(),500);
   }
   toggleMute(){this.muted=!this.muted;if(this.master)this.master.gain.setTargetAtTime(this.muted?0:.24,this.context.currentTime,.12);return this.muted;}
-  async pause(){this.generation++;clearTimeout(this.endTimer);if(this.timer){clearInterval(this.timer);this.timer=null;}if(this.context?.state==='running')await this.context.suspend();}
-  dispose(){this.generation++;clearTimeout(this.endTimer);if(this.timer)clearInterval(this.timer);this.context?.close();this.timer=null;}
+  async pause(){this.wantsPlayback=false;this.generation++;clearTimeout(this.endTimer);if(this.timer){clearInterval(this.timer);this.timer=null;}if(this.context?.state==='running')await this.context.suspend();}
+  dispose(){this.wantsPlayback=false;this.generation++;clearTimeout(this.endTimer);if(this.timer)clearInterval(this.timer);this.context?.close();this.timer=null;}
 }

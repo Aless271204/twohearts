@@ -56,3 +56,20 @@ test('version 3 offers a safe starting coin lane and preserves historical patter
   assert.notEqual(runnerDifficulty(300,3).speed,runnerDifficulty(300,2).speed);
   assert.throws(()=>replayRun([[16667,[]]],3),/terminal collision/);
 });
+
+
+test('an older audio start cannot suspend a newer start, while leaving still cancels pending audio',async()=>{
+  const music=new AdventureMusic();
+  const resumes=[];let suspends=0;
+  music.context={state:'suspended',currentTime:0,resume(){return new Promise(resolve=>resumes.push(()=>{this.state='running';resolve();}));},async suspend(){suspends++;this.state='suspended';}};
+  music.schedule=()=>{};
+  const first=music.start(),second=music.start();
+  resumes.shift()();await first;
+  assert.equal(suspends,0);assert.equal(music.context.state,'running');
+  resumes.shift()();await second;
+  assert.ok(music.timer);
+  await music.pause();assert.equal(music.context.state,'suspended');assert.equal(music.timer,null);
+  const pending=music.start();await music.pause();
+  resumes.shift()();await pending;
+  assert.equal(music.context.state,'suspended');assert.equal(music.timer,null);
+});
