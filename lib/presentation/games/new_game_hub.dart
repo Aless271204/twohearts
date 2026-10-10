@@ -69,7 +69,7 @@ class _GameHubScreenState extends State<GameHubScreen> {
             label: const Text('Personalizar · Tienda e inventario'),
           ),
           const SizedBox(height: 12),
-          TextButton.icon(onPressed:()=>showDialog(context:context,builder:(_)=>const AlertDialog(title:Text('Recompensas'),content:Text('En los juegos en pareja, quien gana recibe 20 LoveCoins y su pareja 8, hasta 300 al día. En el bosque, las monedas se guardan al terminar una carrera validada.'))),icon:const Icon(Icons.info_outline,size:16),label:const Text('Cómo se ganan monedas')),
+          TextButton.icon(onPressed:()=>showDialog(context:context,builder:(_)=>const AlertDialog(title:Text('Recompensas'),content:Text('En los juegos en pareja, quien gana recibe 20 LoveCoins y su pareja 8, hasta 300 al día. En el bosque, cada 20 puntos recogidos se convierten en 1 moneda al terminar una carrera validada.'))),icon:const Icon(Icons.info_outline,size:16),label:const Text('Cómo se ganan monedas')),
 
         ],
       ),

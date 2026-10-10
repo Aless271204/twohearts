@@ -1,3 +1,4 @@
+import '../core/feature_flags.dart';
 import 'dart:io';
 import 'dart:convert';
 import 'package:flutter/material.dart';
@@ -20,12 +21,25 @@ class ForestRunnerView extends StatefulWidget {
   final String? appearance;
   final String? animationName;
   final ValueChanged<WebViewController>? onWebViewCreated;
-  const ForestRunnerView({super.key, this.onExit, this.onPetStroke, this.onWebViewCreated, this.petOnly = false, this.petReaction = 0, this.petSpecies = 'penguin', this.petLevel = 10, this.petOrbit = false, this.appearance, this.animationName});
+  const ForestRunnerView({
+    super.key,
+    this.onExit,
+    this.onPetStroke,
+    this.onWebViewCreated,
+    this.petOnly = false,
+    this.petReaction = 0,
+    this.petSpecies = 'penguin',
+    this.petLevel = 10,
+    this.petOrbit = false,
+    this.appearance,
+    this.animationName,
+  });
   @override
   State<ForestRunnerView> createState() => _ForestRunnerViewState();
 }
 
-class _ForestRunnerViewState extends State<ForestRunnerView> with WidgetsBindingObserver {
+class _ForestRunnerViewState extends State<ForestRunnerView>
+    with WidgetsBindingObserver {
   HttpServer? _server;
   WebViewController? _controller;
   String? _error;
@@ -85,9 +99,13 @@ class _ForestRunnerViewState extends State<ForestRunnerView> with WidgetsBinding
               start = range.start;
               end = range.end;
               request.response.statusCode = HttpStatus.partialContent;
-              request.response.headers.set('Content-Range', 'bytes $start-$end/$length');
+              request.response.headers.set(
+                'Content-Range',
+                'bytes $start-$end/$length',
+              );
             } on FormatException {
-              request.response.statusCode = HttpStatus.requestedRangeNotSatisfiable;
+              request.response.statusCode =
+                  HttpStatus.requestedRangeNotSatisfiable;
               request.response.headers.set('Content-Range', 'bytes */$length');
               await request.response.close();
               return;
@@ -95,7 +113,12 @@ class _ForestRunnerViewState extends State<ForestRunnerView> with WidgetsBinding
           }
           request.response.contentLength = end - start + 1;
           if (request.method != 'HEAD') {
-            request.response.add(data.buffer.asUint8List(data.offsetInBytes + start, end - start + 1));
+            request.response.add(
+              data.buffer.asUint8List(
+                data.offsetInBytes + start,
+                end - start + 1,
+              ),
+            );
           }
         } catch (error) {
           debugPrint('Forest asset load failed ($path): $error');
@@ -105,16 +128,22 @@ class _ForestRunnerViewState extends State<ForestRunnerView> with WidgetsBinding
       });
       final controller = WebViewController()
         ..setJavaScriptMode(JavaScriptMode.unrestricted)
-        ..setBackgroundColor(widget.petOnly ? Colors.transparent : const Color(0xFF17392B));
+        ..setBackgroundColor(
+          widget.petOnly ? Colors.transparent : const Color(0xFF17392B),
+        );
       await controller.setNavigationDelegate(
         NavigationDelegate(
           onNavigationRequest: (request) {
             final target = Uri.tryParse(request.url);
-            final local = target != null && target.scheme == 'http' &&
+            final local =
+                target != null &&
+                target.scheme == 'http' &&
                 (target.host == 'localhost' || target.host == '127.0.0.1') &&
-                target.port == server.port && target.path.startsWith('/assets/runner/');
+                target.port == server.port &&
+                target.path.startsWith('/assets/runner/');
             return local || request.url == 'about:blank'
-                ? NavigationDecision.navigate : NavigationDecision.prevent;
+                ? NavigationDecision.navigate
+                : NavigationDecision.prevent;
           },
           onWebResourceError: (error) {
             if (error.isForMainFrame != false && mounted) {
@@ -134,8 +163,13 @@ class _ForestRunnerViewState extends State<ForestRunnerView> with WidgetsBinding
         'RunnerBridge',
         onMessageReceived: (message) async {
           try {
-            if(widget.petOnly && jsonDecode(message.message)['type']=='pet-stroke'){widget.onPetStroke?.call();return;}
-            if (!widget.petOnly && jsonDecode(message.message)['type'] == 'runner-exit') {
+            if (widget.petOnly &&
+                jsonDecode(message.message)['type'] == 'pet-stroke') {
+              widget.onPetStroke?.call();
+              return;
+            }
+            if (!widget.petOnly &&
+                jsonDecode(message.message)['type'] == 'runner-exit') {
               widget.onExit?.call();
               return;
             }
@@ -150,7 +184,25 @@ class _ForestRunnerViewState extends State<ForestRunnerView> with WidgetsBinding
         },
       );
       await controller.loadRequest(
-        Uri.parse('http://localhost:${server.port}/assets/runner/index.html').replace(queryParameters: widget.petOnly ? {'pet':'1','species':widget.petSpecies,'level':widget.petLevel.toString(),'orbit':widget.petOrbit?'1':'0', 'appearance':widget.appearance ?? '{}', 'animation':widget.animationName ?? 'Idle_9'} : {'species':widget.petSpecies,'level':widget.petLevel.toString()}),
+        Uri.parse(
+          'http://localhost:${server.port}/assets/runner/index.html',
+        ).replace(
+          queryParameters: widget.petOnly
+              ? {
+                  'pet': '1',
+                  'species': widget.petSpecies,
+                  'level': (FeatureFlags.petGrowth ? widget.petLevel : 10)
+                      .toString(),
+                  'orbit': widget.petOrbit ? '1' : '0',
+                  'appearance': widget.appearance ?? '{}',
+                  'animation': widget.animationName ?? 'Idle_9',
+                }
+              : {
+                  'species': widget.petSpecies,
+                  'level': (FeatureFlags.petGrowth ? widget.petLevel : 10)
+                      .toString(),
+                },
+        ),
       );
       if (mounted) setState(() => _controller = controller);
       if (mounted) widget.onWebViewCreated?.call(controller);
@@ -165,18 +217,29 @@ class _ForestRunnerViewState extends State<ForestRunnerView> with WidgetsBinding
   @override
   void didUpdateWidget(covariant ForestRunnerView oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if(widget.petOnly && widget.petReaction != oldWidget.petReaction) _controller?.runJavaScript('window.petStroke?.();').catchError((Object _) {});
+    if (widget.petOnly && widget.petReaction != oldWidget.petReaction)
+      _controller
+          ?.runJavaScript('window.petStroke?.();')
+          .catchError((Object _) {});
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    _controller?.runJavaScript(state == AppLifecycleState.resumed ? 'window.petResume?.();' : 'window.runnerSuspend?.();').catchError((Object _) {});
+    _controller
+        ?.runJavaScript(
+          state == AppLifecycleState.resumed
+              ? 'window.petResume?.();'
+              : 'window.runnerSuspend?.();',
+        )
+        .catchError((Object _) {});
   }
 
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
-    _controller?.runJavaScript('window.runnerSuspend?.();').catchError((Object _) {});
+    _controller
+        ?.runJavaScript('window.runnerSuspend?.();')
+        .catchError((Object _) {});
     _controller?.loadRequest(Uri.parse('about:blank'));
     _server?.close(force: true);
     super.dispose();
@@ -185,11 +248,28 @@ class _ForestRunnerViewState extends State<ForestRunnerView> with WidgetsBinding
   @override
   Widget build(BuildContext context) {
     if (_error != null)
-      return SceneStatus(title: 'No pudimos abrir el bosque', message: _error!, loading: false, onRetry: () => Navigator.maybePop(context));
-    if (_controller == null && widget.petOnly) return const Center(child: SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2, color: Color(0xFFF05280))));
+      return SceneStatus(
+        title: 'No pudimos abrir el bosque',
+        message: _error!,
+        loading: false,
+        onRetry: () => Navigator.maybePop(context),
+      );
+    if (_controller == null && widget.petOnly)
+      return const Center(
+        child: SizedBox(
+          width: 20,
+          height: 20,
+          child: CircularProgressIndicator(
+            strokeWidth: 2,
+            color: Color(0xFFF05280),
+          ),
+        ),
+      );
     if (_controller == null)
-      return const SceneStatus(title: 'Preparando tu aventura', message: 'Abrimos el bosque y preparamos a tu mascota…');
+      return const SceneStatus(
+        title: 'Preparando tu aventura',
+        message: 'Abrimos el bosque y preparamos a tu mascota…',
+      );
     return WebViewWidget(controller: _controller!);
   }
 }
-

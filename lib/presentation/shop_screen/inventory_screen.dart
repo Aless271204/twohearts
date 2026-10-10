@@ -1,20 +1,23 @@
+import '../../core/store_packages.dart';
 import '../../widgets/twohearts_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../services/inventory_service.dart';
-import '../../widgets/inventory_scene.dart';
 import '../../widgets/pet_3d_viewer.dart';
 import '../../core/pet_model_catalog.dart';
 import '../../services/shared_pet_service.dart';
 import '../../widgets/scene_status.dart';
 import '../../widgets/rose_ui.dart';
-import '../../theme/app_theme.dart';
 import '../../core/room_catalog.dart';
 
 class ShopScreen extends StatefulWidget {
   final String initialScope;
   final bool previewMode;
-  const ShopScreen({super.key, this.initialScope = 'pet',this.previewMode=false});
+  const ShopScreen({
+    super.key,
+    this.initialScope = 'pet',
+    this.previewMode = false,
+  });
   @override
   State<ShopScreen> createState() => _ShopScreenState();
 }
@@ -48,7 +51,10 @@ class _ShopScreenState extends State<ShopScreen> {
   }
 
   Future<void> _load() async {
-    if(widget.previewMode){setState(()=>loading=false);return;}
+    if (widget.previewMode) {
+      setState(() => loading = false);
+      return;
+    }
     try {
       await inventory.refresh();
       if (mounted) {
@@ -69,8 +75,15 @@ class _ShopScreenState extends State<ShopScreen> {
   }
 
   Future<void> _action(InventoryItem item) async {
-    if(item.previewOnly)return;
-    if(widget.previewMode){ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content:Text("Vista de diseño · Las compras están desactivadas")));return;}
+    if (item.previewOnly) return;
+    if (widget.previewMode) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Vista de diseño · Las compras están desactivadas"),
+        ),
+      );
+      return;
+    }
     if (busy) return;
     if (!inventory.owns(item.key)) {
       final confirmed = await showDialog<bool>(
@@ -121,84 +134,496 @@ class _ShopScreenState extends State<ShopScreen> {
   }
 
   Future<void> _viewItem(InventoryItem item) async {
-    await showModalBottomSheet<void>(context: context, useRootNavigator: true, isScrollControlled: true, showDragHandle: true, builder: (context) => SafeArea(child: SingleChildScrollView(
-      padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
-      child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Text(item.name, style: Theme.of(context).textTheme.headlineSmall),
-        const SizedBox(height: 12),
-        InventoryPreview(scope: item.scope, loadout: {...inventory.loadout, item.slot: item}),
-        const SizedBox(height: 12), Text(item.description),
-        const SizedBox(height: 8), Text('Vista real del objeto · ${InventoryItem.slots[item.slot] ?? item.slot}'),
-        const SizedBox(height: 16),
-        if(item.previewOnly && item.scope=='room') HeartButton(label:'Probar en mi habitación',icon:Icons.home_outlined,onPressed:(){inventory.previewRoomItem(item);Navigator.pop(context);}),
-        if(item.previewOnly && item.scope=='room') const Padding(padding:EdgeInsets.only(top:8),child:Text('Prueba temporal en este dispositivo. No compra el objeto ni modifica la habitación compartida.',style:TextStyle(fontSize:12,color:Color(0xFF716B78)))),
-        if(!(item.previewOnly && item.scope=='room'))
-        FilledButton(onPressed: busy || item.previewOnly ? null : () { Navigator.pop(context); _action(item); }, child: Text(item.previewOnly ? 'En preparación' : inventory.equipped(item.key) ? 'Quitar' : inventory.owns(item.key) ? 'Equipar' : 'Comprar por ${item.price} LoveCoins')),
-      ]),
-    )));
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final items = inventory.catalog.where((i) => i.scope == scope && (scope!='room'||roomCategory==null||i.roomCategory==roomCategory) && (slot == null || i.slot == slot) && (!onlyOwned || inventory.owns(i.key)) && (query.isEmpty || '${i.name} ${i.collection} ${i.description}'.toLowerCase().contains(query.toLowerCase()))).toList();
-    if(scope=='room')items.sort((a,b){final priority=(a.collection=='Nuestro rincón'?0:1).compareTo(b.collection=='Nuestro rincón'?0:1);return priority!=0?priority:inventory.catalog.indexOf(a).compareTo(inventory.catalog.indexOf(b));});
-    return Scaffold(
-      backgroundColor: Colors.transparent,
-      appBar: AppBar(toolbarHeight:76,titleSpacing:20,title:const Text('Tienda e inventario',style:TextStyle(fontSize:23,fontWeight:FontWeight.w800,letterSpacing:-.7)),actions:[Padding(padding:const EdgeInsets.only(right:16),child:HeartButton(label:'${inventory.coins}',icon:Icons.monetization_on_rounded,outlined:true,onPressed:()=>setState(()=>showCoins=true)))]),
-      body: AnimatedSwitcher(duration: const Duration(milliseconds: 220), child: loading
-        ? const RoseLoading(key: ValueKey('loading'), label: 'Preparamos tu colección…')
-        : error != null
-          ? SceneStatus(key: const ValueKey('error'), title: 'Tu colección', message: error!, loading: false, onRetry: _load)
-          : RefreshIndicator(key: const ValueKey('catalog'), onRefresh: _load, child: ListView(padding: const EdgeInsets.all(20), children: [
-            SegmentedButton<bool>(style:const ButtonStyle(foregroundColor:WidgetStatePropertyAll(Color(0xFF202027))),showSelectedIcon: false, segments: const [ButtonSegment(value: false, label: Text('Catálogo')), ButtonSegment(value: true, label: Text('Mis objetos'))], selected: {onlyOwned}, onSelectionChanged: (v) => setState(() { onlyOwned = v.first; showCoins = false; })),
-            const SizedBox(height: 12),
-            SingleChildScrollView(scrollDirection: Axis.horizontal, child: Row(children: [
-              for (final e in InventoryItem.destinations.entries) Padding(padding: const EdgeInsets.only(right: 6), child: ChoiceChip(labelStyle:const TextStyle(color:Color(0xFF202027)),showCheckmark: false, label: Text(e.value), selected: !showCoins && scope == e.key, onSelected: (_) => setState(() { scope = e.key; slot = null; showCoins = false; preview = null; }))),
-              ChoiceChip(labelStyle:const TextStyle(color:Color(0xFF202027)),showCheckmark: false, label: const Text('Comprar monedas'), selected: showCoins, onSelected: (_) => setState(() => showCoins = true)),
-            ])),
-            const SizedBox(height: 16),
-            if (showCoins) _coinsPanel() else ...[
-              if(scope=='room') ...[
-                SingleChildScrollView(scrollDirection:Axis.horizontal,child:Row(children:[for(final category in ['Todo',...roomCategories])Padding(padding:const EdgeInsets.only(right:4),child:ChoiceChip(showCheckmark:false,label:Text(category),labelStyle:const TextStyle(fontSize:12,color:Color(0xFF202027)),selected:(roomCategory??'Todo')==category,onSelected:(_)=>setState((){roomCategory=category=='Todo'?null:category;slot=null;})))])),
-                const SizedBox(height:12),
-                if(inventory.roomDraft.isNotEmpty) ...[
-                  ClipRRect(borderRadius:BorderRadius.circular(20),child:InventoryPreview(scope:'room',loadout:inventory.loadout)),
-                  TextButton.icon(onPressed:inventory.clearRoomDraft,icon:const Icon(Icons.undo_rounded),label:const Text('Restaurar mi habitación')),
-                ],
-              ],
-              TextField(style:const TextStyle(color:Color(0xFF202027)),onChanged: (v) => setState(() => query = v), decoration: const InputDecoration(prefixIcon: Icon(Icons.search_rounded), hintText: 'Buscar objeto o colección')),
+    await showModalBottomSheet<void>(
+      context: context,
+      useRootNavigator: true,
+      isScrollControlled: true,
+      showDragHandle: true,
+      builder: (context) => SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(item.name, style: Theme.of(context).textTheme.headlineSmall),
               const SizedBox(height: 12),
-              Align(alignment:Alignment.centerRight,child:PopupMenuButton<String>(tooltip:'Filtrar objetos',initialValue:slot??'all',onSelected:(v)=>setState(()=>slot=v=='all'?null:v),itemBuilder:(_)=>[const PopupMenuItem(value:'all',child:Text('Todos los objetos')),for(final e in InventoryItem.slots.entries.where((e)=>e.key.startsWith('${scope}_')))PopupMenuItem(value:e.key,child:Text(e.value))],child:Padding(padding:const EdgeInsets.symmetric(vertical:4),child:Row(mainAxisSize:MainAxisSize.min,children:[Text(slot==null?'Todos los objetos':InventoryItem.slots[slot]??'Filtro',style:const TextStyle(fontSize:12,color:Color(0xFF746874))),const SizedBox(width:5),const Icon(Icons.tune_rounded,size:16)])))),
+              InventoryPreview(
+                scope: item.scope,
+                loadout: {...inventory.loadout, item.slot: item},
+              ),
+              const SizedBox(height: 12),
+              Text(item.description),
+              const SizedBox(height: 8),
+              Text(
+                'Vista real del objeto · ${InventoryItem.slots[item.slot] ?? item.slot}',
+              ),
               const SizedBox(height: 16),
-              if (busy) const Padding(padding: EdgeInsets.only(bottom: 12), child: LinearProgressIndicator()),
-              if (items.isEmpty) const SceneStatus(title: 'Un lugar para tus favoritos', message: 'No hay objetos con estos filtros. Prueba otra categoría.', loading: false),
-              LayoutBuilder(builder: (context, constraints) => Wrap(spacing: 12, runSpacing: 12, children: [for (final item in items) SizedBox(width: (constraints.maxWidth - 12) / 2, child: _productCard(item))])),
-              const SizedBox(height: 20),
-              const Text('Cada objeto se prueba sobre tu mascota o habitación antes de comprarlo. Las compras con LoveCoins se conservan en tu inventario.', style: TextStyle(fontSize: 12, color: Color(0xFF716B78))),
+              if (item.previewOnly && item.scope == 'room')
+                HeartButton(
+                  label: 'Probar en mi habitación',
+                  icon: Icons.home_outlined,
+                  onPressed: () {
+                    inventory.previewRoomItem(item);
+                    Navigator.pop(context);
+                  },
+                ),
+              if (item.previewOnly && item.scope == 'room')
+                const Padding(
+                  padding: EdgeInsets.only(top: 8),
+                  child: Text(
+                    'Prueba temporal en este dispositivo. No compra el objeto ni modifica la habitación compartida.',
+                    style: TextStyle(fontSize: 12, color: Color(0xFF716B78)),
+                  ),
+                ),
+              if (!(item.previewOnly && item.scope == 'room'))
+                FilledButton(
+                  onPressed: busy || item.previewOnly
+                      ? null
+                      : () {
+                          Navigator.pop(context);
+                          _action(item);
+                        },
+                  child: Text(
+                    item.previewOnly
+                        ? (item.price > 0
+                              ? '${item.price} monedas · Próximamente'
+                              : 'En preparación')
+                        : inventory.equipped(item.key)
+                        ? 'Quitar'
+                        : inventory.owns(item.key)
+                        ? 'Equipar'
+                        : 'Comprar por ${item.price} LoveCoins',
+                  ),
+                ),
             ],
-            const SizedBox(height: 20),
-          ])),
+          ),
+        ),
       ),
     );
   }
 
-  Widget _coinsPanel() => RoseEntrance(child: Card(child: Padding(padding: const EdgeInsets.all(24), child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-    const Icon(Icons.monetization_on_rounded, size: 54, color: Color(0xFFD49B23)),
-    const SizedBox(height: 16), const Text('Comprar LoveCoins', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700)),
-    const SizedBox(height: 8), Text('Tu saldo: ${inventory.coins} LoveCoins'),
-    const SizedBox(height: 12), const Text('Aquí podrás elegir paquetes de monedas para personalizar tu mascota y su habitación. Estamos preparando los paquetes y precios.'),
-    const SizedBox(height: 20), const FilledButton(onPressed: null, child: Text('Próximamente')),
-    const SizedBox(height: 12), const Text('Por ahora puedes ganar monedas jugando.', style: TextStyle(color: Color(0xFF716B78))),
-  ]))));
+  @override
+  Widget build(BuildContext context) {
+    final items = inventory.catalog
+        .where(
+          (i) =>
+              i.scope == scope &&
+              (scope != 'room' ||
+                  roomCategory == null ||
+                  i.roomCategory == roomCategory) &&
+              (slot == null || i.slot == slot) &&
+              (!onlyOwned || inventory.owns(i.key)) &&
+              (query.isEmpty ||
+                  '${i.name} ${i.collection} ${i.description}'
+                      .toLowerCase()
+                      .contains(query.toLowerCase())),
+        )
+        .toList();
+    if (scope == 'room')
+      items.sort((a, b) {
+        final priority = (a.collection == 'Nuestro rincón' ? 0 : 1).compareTo(
+          b.collection == 'Nuestro rincón' ? 0 : 1,
+        );
+        return priority != 0
+            ? priority
+            : inventory.catalog
+                  .indexOf(a)
+                  .compareTo(inventory.catalog.indexOf(b));
+      });
+    return Scaffold(
+      backgroundColor: Colors.transparent,
+      appBar: AppBar(
+        toolbarHeight: 76,
+        titleSpacing: 20,
+        title: const Text(
+          'Tienda e inventario',
+          style: TextStyle(
+            fontSize: 23,
+            fontWeight: FontWeight.w800,
+            letterSpacing: -.7,
+          ),
+        ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 16),
+            child: HeartButton(
+              label: '${inventory.coins}',
+              icon: Icons.monetization_on_rounded,
+              outlined: true,
+              onPressed: () => setState(() => showCoins = true),
+            ),
+          ),
+        ],
+      ),
+      body: AnimatedSwitcher(
+        duration: const Duration(milliseconds: 220),
+        child: loading
+            ? const RoseLoading(
+                key: ValueKey('loading'),
+                label: 'Preparamos tu colección…',
+              )
+            : error != null
+            ? SceneStatus(
+                key: const ValueKey('error'),
+                title: 'Tu colección',
+                message: error!,
+                loading: false,
+                onRetry: _load,
+              )
+            : RefreshIndicator(
+                key: const ValueKey('catalog'),
+                onRefresh: _load,
+                child: ListView(
+                  padding: const EdgeInsets.all(20),
+                  children: [
+                    SegmentedButton<bool>(
+                      style: const ButtonStyle(
+                        foregroundColor: WidgetStatePropertyAll(
+                          Color(0xFF202027),
+                        ),
+                      ),
+                      showSelectedIcon: false,
+                      segments: const [
+                        ButtonSegment(value: false, label: Text('Catálogo')),
+                        ButtonSegment(value: true, label: Text('Mis objetos')),
+                      ],
+                      selected: {onlyOwned},
+                      onSelectionChanged: (v) => setState(() {
+                        onlyOwned = v.first;
+                        showCoins = false;
+                      }),
+                    ),
+                    const SizedBox(height: 12),
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        children: [
+                          for (final e in InventoryItem.destinations.entries)
+                            Padding(
+                              padding: const EdgeInsets.only(right: 6),
+                              child: ChoiceChip(
+                                labelStyle: const TextStyle(
+                                  color: Color(0xFF202027),
+                                ),
+                                showCheckmark: false,
+                                label: Text(e.value),
+                                selected: !showCoins && scope == e.key,
+                                onSelected: (_) => setState(() {
+                                  scope = e.key;
+                                  slot = null;
+                                  showCoins = false;
+                                  preview = null;
+                                }),
+                              ),
+                            ),
+                          ChoiceChip(
+                            labelStyle: const TextStyle(
+                              color: Color(0xFF202027),
+                            ),
+                            showCheckmark: false,
+                            label: const Text('Comprar monedas'),
+                            selected: showCoins,
+                            onSelected: (_) => setState(() => showCoins = true),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    if (showCoins)
+                      _coinsPanel()
+                    else ...[
+                      if (scope == 'room') ...[
+                        SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Row(
+                            children: [
+                              for (final category in [
+                                'Todo',
+                                ...roomCategories,
+                              ])
+                                Padding(
+                                  padding: const EdgeInsets.only(right: 4),
+                                  child: ChoiceChip(
+                                    showCheckmark: false,
+                                    label: Text(category),
+                                    labelStyle: const TextStyle(
+                                      fontSize: 12,
+                                      color: Color(0xFF202027),
+                                    ),
+                                    selected:
+                                        (roomCategory ?? 'Todo') == category,
+                                    onSelected: (_) => setState(() {
+                                      roomCategory = category == 'Todo'
+                                          ? null
+                                          : category;
+                                      slot = null;
+                                    }),
+                                  ),
+                                ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        if (inventory.roomDraft.isNotEmpty) ...[
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(20),
+                            child: InventoryPreview(
+                              scope: 'room',
+                              loadout: inventory.loadout,
+                            ),
+                          ),
+                          TextButton.icon(
+                            onPressed: inventory.clearRoomDraft,
+                            icon: const Icon(Icons.undo_rounded),
+                            label: const Text('Restaurar mi habitación'),
+                          ),
+                        ],
+                      ],
+                      TextField(
+                        style: const TextStyle(color: Color(0xFF202027)),
+                        onChanged: (v) => setState(() => query = v),
+                        decoration: const InputDecoration(
+                          prefixIcon: Icon(Icons.search_rounded),
+                          hintText: 'Buscar objeto o colección',
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: PopupMenuButton<String>(
+                          tooltip: 'Filtrar objetos',
+                          initialValue: slot ?? 'all',
+                          onSelected: (v) =>
+                              setState(() => slot = v == 'all' ? null : v),
+                          itemBuilder: (_) => [
+                            const PopupMenuItem(
+                              value: 'all',
+                              child: Text('Todos los objetos'),
+                            ),
+                            for (final e in InventoryItem.slots.entries.where(
+                              (e) => e.key.startsWith('${scope}_'),
+                            ))
+                              PopupMenuItem(value: e.key, child: Text(e.value)),
+                          ],
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 4),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  slot == null
+                                      ? 'Todos los objetos'
+                                      : InventoryItem.slots[slot] ?? 'Filtro',
+                                  style: const TextStyle(
+                                    fontSize: 12,
+                                    color: Color(0xFF746874),
+                                  ),
+                                ),
+                                const SizedBox(width: 5),
+                                const Icon(Icons.tune_rounded, size: 16),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      if (busy)
+                        const Padding(
+                          padding: EdgeInsets.only(bottom: 12),
+                          child: LinearProgressIndicator(),
+                        ),
+                      if (items.isEmpty)
+                        const SceneStatus(
+                          title: 'Un lugar para tus favoritos',
+                          message:
+                              'No hay objetos con estos filtros. Prueba otra categoría.',
+                          loading: false,
+                        ),
+                      LayoutBuilder(
+                        builder: (context, constraints) => Wrap(
+                          spacing: 12,
+                          runSpacing: 12,
+                          children: [
+                            for (final item in items)
+                              SizedBox(
+                                width: (constraints.maxWidth - 12) / 2,
+                                child: _productCard(item),
+                              ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      const Text(
+                        'Cada objeto se prueba sobre tu mascota o habitación antes de comprarlo. Las compras con LoveCoins se conservan en tu inventario.',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Color(0xFF716B78),
+                        ),
+                      ),
+                    ],
+                    const SizedBox(height: 20),
+                  ],
+                ),
+              ),
+      ),
+    );
+  }
+
+  Widget _coinsPanel() => Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Text('Oro para su nido', style: Theme.of(context).textTheme.titleLarge),
+      const SizedBox(height: 8),
+      const Text(
+        'Cada 20 puntos del bosque se convierten en 1 moneda de la tienda.',
+      ),
+      const SizedBox(height: 12),
+      Card(
+        child: Padding(
+          padding: const EdgeInsets.all(18),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Row(
+                children: [
+                  Icon(Icons.ondemand_video_rounded, color: Color(0xFFDB245A)),
+                  SizedBox(width: 8),
+                  Text(
+                    'Ver anuncios',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              const Text(
+                '$rewardedAdGold monedas por video completado · Hasta $rewardedAdsDailyLimit al día por persona.',
+              ),
+              const SizedBox(height: 8),
+              const Text(
+                'Opcional: tú decides cuándo verlo. Estamos preparando esta opción.',
+                style: TextStyle(color: Color(0xFF716B78)),
+              ),
+              const SizedBox(height: 12),
+              const HeartButton(
+                label: 'Próximamente',
+                icon: Icons.play_arrow_rounded,
+              ),
+            ],
+          ),
+        ),
+      ),
+      for (final pack in storePackages)
+        Card(
+          child: Padding(
+            padding: const EdgeInsets.all(18),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    const Icon(
+                      Icons.monetization_on_rounded,
+                      color: Color(0xFFD49B23),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        pack.name,
+                        style: const TextStyle(fontWeight: FontWeight.w700),
+                      ),
+                    ),
+                    Text(
+                      pack.price,
+                      style: const TextStyle(fontWeight: FontWeight.w700),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  '${pack.gold} monedas de oro',
+                  style: const TextStyle(
+                    fontSize: 21,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(pack.description),
+                const SizedBox(height: 12),
+                const HeartButton(label: 'Disponible cuando activemos pagos'),
+              ],
+            ),
+          ),
+        ),
+      const Padding(
+        padding: EdgeInsets.all(8),
+        child: Text(
+          'Precios de referencia en USD. Crecimiento pendiente de los modelos por etapas. No se realizan cobros todavía.',
+          style: TextStyle(fontSize: 12, color: Color(0xFF716B78)),
+        ),
+      ),
+    ],
+  );
 
   Widget _productCard(InventoryItem item) {
-    return Card(clipBehavior: Clip.antiAlias, child: Padding(padding: const EdgeInsets.all(12), child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      ClipRRect(borderRadius: BorderRadius.circular(16), child: SizedBox(height: 120, width: double.infinity, child: ProductThumbnail(item: item))),
-      const SizedBox(height: 12), Text(item.name, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700,color:Color(0xFF202027))),
-      const SizedBox(height: 4), Text(item.description, style: const TextStyle(fontSize: 12, height: 1.4, color: Color(0xFF716B78))),
-      const SizedBox(height: 8), Text(item.previewOnly ? 'En preparación' : inventory.equipped(item.key) ? '✓ Equipado' : inventory.owns(item.key) ? '✓ En tu inventario' : '🪙 ${item.price}', style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600)),
-      const SizedBox(height: 8), SizedBox(width: double.infinity, child: HeartButton(onPressed: busy ? null : () => _viewItem(item), label: 'Ver')),
-    ])));
+    return Card(
+      clipBehavior: Clip.antiAlias,
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(16),
+              child: SizedBox(
+                height: 120,
+                width: double.infinity,
+                child: ProductThumbnail(item: item),
+              ),
+            ),
+            const SizedBox(height: 12),
+            Text(
+              item.name,
+              style: const TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.w700,
+                color: Color(0xFF202027),
+              ),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              item.description,
+              style: const TextStyle(
+                fontSize: 12,
+                height: 1.4,
+                color: Color(0xFF716B78),
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              item.previewOnly
+                  ? (item.price > 0
+                        ? '${item.price} monedas · Próximamente'
+                        : 'En preparación')
+                  : inventory.equipped(item.key)
+                  ? '✓ Equipado'
+                  : inventory.owns(item.key)
+                  ? '✓ En tu inventario'
+                  : '🪙 ${item.price}',
+              style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+            ),
+            const SizedBox(height: 8),
+            SizedBox(
+              width: double.infinity,
+              child: HeartButton(
+                onPressed: busy ? null : () => _viewItem(item),
+                label: 'Ver',
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
 
@@ -215,7 +640,7 @@ class InventoryPreview extends StatelessWidget {
     if (scope == 'pet' || scope == 'room') {
       return Container(
         width: 360,
-        height: scope=='room'?360:310,
+        height: scope == 'room' ? 360 : 310,
         decoration: BoxDecoration(
           color: const Color(0xFFF3EBDD),
           borderRadius: BorderRadius.circular(20),
@@ -224,22 +649,27 @@ class InventoryPreview extends StatelessWidget {
         child: Stack(
           children: [
             Positioned.fill(
-              child: PetRoomStage(loadout:loadout,pet: Pet3DViewer(
-                previewLoadout: loadout,
-                modelPath: PetModelCatalog.modelPathFor(SharedPetService.instance.species),
-                petLevel: SharedPetService.instance.level,
-                animationName: 'Natural_Rest',
-                autoPlay: true,
-                cameraControls: false,
-                cameraOrbit: '0deg 75deg 105%',
-              )),
+              child: PetRoomStage(
+                loadout: loadout,
+                pet: Pet3DViewer(
+                  previewLoadout: loadout,
+                  modelPath: PetModelCatalog.modelPathFor(
+                    SharedPetService.instance.species,
+                  ),
+                  petLevel: SharedPetService.instance.level,
+                  animationName: 'Natural_Rest',
+                  autoPlay: true,
+                  cameraControls: false,
+                  cameraOrbit: '0deg 75deg 105%',
+                ),
+              ),
             ),
             const Positioned(
               bottom: 8,
               left: 12,
               child: Text(
                 'Vista previa · Sin guardar',
-                style: TextStyle(fontSize: 11,color:Color(0xFF202027)),
+                style: TextStyle(fontSize: 11, color: Color(0xFF202027)),
               ),
             ),
           ],
@@ -313,7 +743,10 @@ class InventoryPreview extends StatelessWidget {
                 ),
                 borderRadius: BorderRadius.circular(9),
               ),
-              child: Text(answer,style:const TextStyle(color:Color(0xFF202027))),
+              child: Text(
+                answer,
+                style: const TextStyle(color: Color(0xFF202027)),
+              ),
             ),
         ],
       ),

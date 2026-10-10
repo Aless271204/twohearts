@@ -1,7 +1,18 @@
 import * as THREE from 'three';
+import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
+const accessoryAssets=new Map();
+export async function prepareAccessoryAssets(loadout){
+ const loader=new GLTFLoader();
+ await Promise.all(Object.values(loadout).map(async item=>{
+  const path=item?.model_asset;if(!path||!/^assets\/runner\/accessories\/[a-z0-9_-]+\.glb$/.test(path)||accessoryAssets.has(path))return;
+  try{const gltf=await loader.loadAsync('./accessories/'+path.split('/').pop());accessoryAssets.set(path,gltf.scene);}catch(error){console.warn('Accessory uses editable fallback',path);}
+ }));
+}
+
 
 // Small editable meshes, shared by equipment and product photography.
 export function createAccessory(item, slotName) {
+  if(accessoryAssets.has(item?.model_asset)){const model=accessoryAssets.get(item.model_asset).clone(true);model.traverse(o=>{if(o.isMesh){o.geometry=o.geometry.clone();o.material=Array.isArray(o.material)?o.material.map(m=>m.clone()):o.material.clone();}});model.userData.cosmetic=true;return model;}
   const root = new THREE.Group();
   root.userData.cosmetic = true;
   const color = /^#[0-9a-f]{6}$/i.test(item?.color) ? item.color : '#91bda7';
@@ -9,7 +20,7 @@ export function createAccessory(item, slotName) {
   const cream = '#fff2df', pink = '#f05280', gold = '#e2b957';
   const materials = new Map();
   const material = c => {
-    if (!materials.has(c)) materials.set(c, new THREE.MeshStandardMaterial({color:c, roughness:.75, metalness:c===gold?.3:0, side:THREE.DoubleSide}));
+    if (!materials.has(c)) materials.set(c, new THREE.MeshStandardMaterial({color:c, roughness:c===gold?.32:.58, metalness:c===gold?.55:0, side:THREE.DoubleSide}));
     return materials.get(c);
   };
   function mesh(geometry,c=color,x=0,y=0,z=0) {
@@ -30,8 +41,11 @@ export function createAccessory(item, slotName) {
     const m=mesh(new THREE.ExtrudeGeometry(s,{depth:.012,bevelEnabled:true,bevelSize:.025,bevelThickness:.008,bevelSegments:2,curveSegments:8}),c,x,y,z);m.scale.set(size,size,size);return m;
   }
   function bow(y,z,size=1) {
-    for(const sign of [-1,1]){const m=ball(sign*.085*size,y,z,.095*size,.065*size,.035*size);m.rotation.z=sign*.22;}
-    ball(0,y,z+.02*size,.032*size,.04*size,.03*size);
+    for(const sign of [-1,1]){
+      const loop=new THREE.Shape();loop.moveTo(0,0);loop.bezierCurveTo(.04,.045,.15,.085,.18,.055);loop.bezierCurveTo(.195,.015,.19,-.055,.16,-.065);loop.bezierCurveTo(.11,-.08,.04,-.02,0,0);
+      const wing=mesh(new THREE.ExtrudeGeometry(loop,{depth:.015,bevelEnabled:true,bevelSize:.012,bevelThickness:.008,bevelSegments:2,curveSegments:10}),color,0,y,z);wing.scale.set(sign*size,size,size);
+    }
+    ball(0,y,z+.017*size,.026*size,.036*size,.026*size);
   }
   function shell(radius,thetaStart,thetaLength,c=color) {return mesh(new THREE.SphereGeometry(radius,24,16,0,Math.PI*2,thetaStart,thetaLength),c);}
 
@@ -64,6 +78,8 @@ export function createAccessory(item, slotName) {
   } else if(slotName==='pet_body') {
     // An open shell rather than a solid sphere: head, wings and feet remain free.
     const garment=shell(.285,.42,2.0);garment.scale.set(1,.9,.8);
+    const hem=ring(0,-.192,0,.257,.005,cream);hem.scale.y=.8;
+    for(const sign of [-1,1])tube([[sign*.14,.15,.18],[sign*.22,.02,.145],[sign*.18,-.16,.15]],.004,cream);
     ring(0,.233,0,.115,.012,cream).scale.y=.75;
     if(style==='dress'){const skirt=mesh(new THREE.CylinderGeometry(.23,.34,.16,32,1,true),color,0,-.20,0);skirt.scale.z=.8;ring(0,-.12,0,.255,.011,cream).scale.y=.8;bow(.04,.24,.55);}
     else if(style==='coat'){ring(0,.205,0,.145,.025,cream);for(const y of [.10,0,-.10])ball(0,y,.232,.013,.013,.012,gold);}

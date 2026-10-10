@@ -1,3 +1,4 @@
+import {freshPowers,tickPowers,activatePower,powerForRow,canJump,registerJump,coinMultiplier,speedMultiplier,protectsCollision,magnetCollects} from './power-ups.js';
 import {LANES,jumpStep,crossesPlayer,hitsObstacle,collectsCoin} from './physics.js';
 
 import {runnerDifficulty} from './difficulty.js';
@@ -44,34 +45,38 @@ export function replayRun(frames, version = 1) {
 // Version 4 keeps only a short input chunk in the client. Initial state comes
 // exclusively from the server's previous validated checkpoint, never the body.
 export function replayChunk(frames, initial=null, version=4) {
-  if (![4,5].includes(version) || (initial?.version != null && initial.version !== version)) throw Error('Invalid checkpoint version');
+  if (![4,5,6].includes(version) || (initial?.version != null && initial.version !== version)) throw Error('Invalid checkpoint version');
   if(!Array.isArray(frames)||frames.length<1||frames.length>10000)throw Error('Invalid replay length');
   let {lane=1,x=0,height=0,velocity=0,distance=0,coins=0,row=0,untilRow=0,elapsed=0}=initial??{};
   const objects=(initial?.objects??[]).map(item=>({...item}));
+  const powers={...freshPowers(),...(initial?.powers??{})};
   let ended=false,chunkElapsed=0;
   for(const frame of frames){
     if(ended)throw Error('Inputs after game over');
     if(!Array.isArray(frame)||frame.length!==2||!Number.isInteger(frame[0])||frame[0]<1||frame[0]>40000||!Array.isArray(frame[1])||frame[1].length>8)throw Error('Invalid replay frame');
     for(const input of frame[1]){
       if(![-1,0,1].includes(input))throw Error('Invalid input');
-      if(input===0){if(height===0)velocity=8;}else lane=Math.max(0,Math.min(2,lane+input));
+      if(input===0){if(version>=6 ? canJump(powers,height) : height===0){if(version>=6)registerJump(powers,height);velocity=8;}}else lane=Math.max(0,Math.min(2,lane+input));
     }
     const dt=frame[0]/1000000;elapsed+=dt;chunkElapsed+=dt;if(chunkElapsed>180)throw Error('Checkpoint is too long');
-    const travel=runnerDifficulty(distance,version).speed*dt;distance+=travel;
-    [height,velocity]=jumpStep(height,velocity,dt);x+=(LANES[lane]-x)*(1-Math.exp(-dt*10));untilRow-=travel;
+    if(version>=6)tickPowers(powers,dt);
+    const travel=runnerDifficulty(distance,version).speed*(version>=6?speedMultiplier(powers):1)*dt;distance+=travel;
+    [height,velocity]=jumpStep(height,velocity,dt);if(height===0)powers.jumps=0;x+=(LANES[lane]-x)*(1-Math.exp(-dt*10));untilRow-=travel;
     if(untilRow<=0){
       const pattern=runnerRow(row,distance,4);objects.push({kind:'obstacle',x:LANES[pattern.obstacleLane],z:-68});
       for(let i=0;i<5;i++)objects.push({kind:'coin',x:LANES[pattern.coinLane],z:-60-i*4,y:i===2?1.8:.7});
-      objects.push({kind:'coin',x:LANES[pattern.alternateLane],z:-68,y:.7});row++;untilRow+=runnerDifficulty(distance,version).spacing;
+      objects.push({kind:'coin',x:LANES[pattern.alternateLane],z:-68,y:.7});const pickup=version>=6?powerForRow(row,distance,pattern.obstacleLane):null;if(pickup)objects.push({...pickup,x:LANES[pickup.lane]});row++;untilRow+=runnerDifficulty(distance,version).spacing;
     }
     for(let i=objects.length-1;i>=0;i--){
       const item=objects[i],previous=item.z;item.z+=travel;
+      if(item.kind==='coin'&&version>=6&&magnetCollects(powers,previous,item.z)){coins+=coinMultiplier(powers);objects.splice(i,1);continue;}
       if(crossesPlayer(previous,item.z)){
-        if(item.kind==='obstacle'&&hitsObstacle(x,item.x,height)){ended=true;break;}
-        if(item.kind==='coin'&&collectsCoin(x,item.x,height,item.y)){coins++;objects.splice(i,1);continue;}
+        if(item.kind==='power'&&collectsCoin(x,item.x,height,item.y)){activatePower(powers,item.power);objects.splice(i,1);continue;}
+        if(item.kind==='obstacle'&&hitsObstacle(x,item.x,height)){if(version>=6&&protectsCollision(powers)){objects.splice(i,1);continue;}ended=true;break;}
+        if(item.kind==='coin'&&collectsCoin(x,item.x,height,item.y)){coins+=version>=6?coinMultiplier(powers):1;objects.splice(i,1);continue;}
       }
       if(item.z>6){objects.splice(i,1);}
     }
   }
-  return {ended,state:{lane,x,height,velocity,distance,coins,row,untilRow,elapsed,objects,...(version>=5?{version}: {})}};
+  return {ended,state:{lane,x,height,velocity,distance,coins,row,untilRow,elapsed,objects,...(version>=5?{version}: {}),...(version>=6?{powers}: {})}};
 }

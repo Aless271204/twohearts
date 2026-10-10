@@ -121,6 +121,7 @@ class InventoryService extends ChangeNotifier {
   }
 
   Future<void> refresh() async {
+    await loadPetAccessoryCatalog();
     final uid = _uid;
     if (uid == null) {
       _clear();
@@ -154,8 +155,8 @@ class InventoryService extends ChangeNotifier {
   }
 
   static List<InventoryItem> mergeAccessoryConcepts(List<InventoryItem> published)=>[
-    ...published,
-    for(final data in [...petAccessoryConcepts,...roomConcepts])if(!published.any((i)=>i.key==data['item_key']))InventoryItem(data),
+    ...published.where((item)=>!petAccessoryConcepts.any((local)=>local['item_key']==item.key&&local['visible']==false)),
+    for(final data in [...petAccessoryConcepts,...roomConcepts])if(data['visible']!=false&&!published.any((i)=>i.key==data['item_key']))InventoryItem(data),
   ];
 
   Future<void> purchase(InventoryItem item) async {

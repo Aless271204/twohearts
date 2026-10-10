@@ -6,12 +6,16 @@
     "equip_slot": "pet_head",
     "appearance": {
       "style": "cap",
-      "color": "#f05280"
+      "color": "#f05280",
+      "model_asset": "assets/runner/accessories/cap_pink.glb"
     },
     "collection": "Dulce",
     "rarity": "Com\u00fan",
     "description": "Adaptado a las cuatro mascotas.",
-    "preview_only": true
+    "preview_only": true,
+    "visible": true,
+    "price_coins": 110,
+    "complexity": "Esencial"
   },
   {
     "item_key": "beanie_cloud",
@@ -20,12 +24,16 @@
     "equip_slot": "pet_head",
     "appearance": {
       "style": "beanie",
-      "color": "#fff2df"
+      "color": "#fff2df",
+      "model_asset": "assets/runner/accessories/beanie_cloud.glb"
     },
     "collection": "Dulce",
     "rarity": "Com\u00fan",
     "description": "Adaptado a las cuatro mascotas.",
-    "preview_only": true
+    "preview_only": true,
+    "visible": true,
+    "price_coins": 140,
+    "complexity": "Esencial"
   },
   {
     "item_key": "hat_garden",
@@ -34,12 +42,16 @@
     "equip_slot": "pet_head",
     "appearance": {
       "style": "garden_hat",
-      "color": "#b8dccb"
+      "color": "#b8dccb",
+      "model_asset": "assets/runner/accessories/hat_garden.glb"
     },
     "collection": "Dulce",
     "rarity": "Com\u00fan",
     "description": "Adaptado a las cuatro mascotas.",
-    "preview_only": true
+    "preview_only": true,
+    "visible": true,
+    "price_coins": 190,
+    "complexity": "Detallado"
   },
   {
     "item_key": "beret_chic",
@@ -48,12 +60,16 @@
     "equip_slot": "pet_head",
     "appearance": {
       "style": "beret",
-      "color": "#baa2db"
+      "color": "#baa2db",
+      "model_asset": "assets/runner/accessories/beret_chic.glb"
     },
     "collection": "Dulce",
     "rarity": "Com\u00fan",
     "description": "Adaptado a las cuatro mascotas.",
-    "preview_only": true
+    "preview_only": true,
+    "visible": true,
+    "price_coins": 170,
+    "complexity": "Detallado"
   },
   {
     "item_key": "wig_pastel",
@@ -62,12 +78,16 @@
     "equip_slot": "pet_head",
     "appearance": {
       "style": "wig",
-      "color": "#efa0ab"
+      "color": "#efa0ab",
+      "model_asset": "assets/runner/accessories/wig_pastel.glb"
     },
     "collection": "Dulce",
     "rarity": "Com\u00fan",
     "description": "Adaptado a las cuatro mascotas.",
-    "preview_only": true
+    "preview_only": true,
+    "visible": true,
+    "price_coins": 260,
+    "complexity": "Elaborado"
   },
   {
     "item_key": "glasses_heart",
@@ -76,12 +96,16 @@
     "equip_slot": "pet_eyes",
     "appearance": {
       "style": "heart_glasses",
-      "color": "#f05280"
+      "color": "#f05280",
+      "model_asset": "assets/runner/accessories/glasses_heart.glb"
     },
     "collection": "Dulce",
     "rarity": "Com\u00fan",
     "description": "Adaptado a las cuatro mascotas.",
-    "preview_only": true
+    "preview_only": true,
+    "visible": true,
+    "price_coins": 180,
+    "complexity": "Detallado"
   },
   {
     "item_key": "glasses_round",
@@ -90,12 +114,16 @@
     "equip_slot": "pet_eyes",
     "appearance": {
       "style": "round_glasses",
-      "color": "#e2b957"
+      "color": "#e2b957",
+      "model_asset": "assets/runner/accessories/glasses_round.glb"
     },
     "collection": "Dulce",
     "rarity": "Com\u00fan",
     "description": "Adaptado a las cuatro mascotas.",
-    "preview_only": true
+    "preview_only": true,
+    "visible": true,
+    "price_coins": 200,
+    "complexity": "Detallado"
   },
   {
     "item_key": "glasses_star",
@@ -104,12 +132,16 @@
     "equip_slot": "pet_eyes",
     "appearance": {
       "style": "star_glasses",
-      "color": "#baa2db"
+      "color": "#baa2db",
+      "model_asset": "assets/runner/accessories/glasses_star.glb"
     },
     "collection": "Dulce",
     "rarity": "Com\u00fan",
     "description": "Adaptado a las cuatro mascotas.",
-    "preview_only": true
+    "preview_only": true,
+    "visible": true,
+    "price_coins": 220,
+    "complexity": "Detallado"
   },
   {
     "item_key": "patch_pirate",
@@ -118,12 +150,16 @@
     "equip_slot": "pet_eyes",
     "appearance": {
       "style": "eyepatch",
-      "color": "#30303d"
+      "color": "#30303d",
+      "model_asset": "assets/runner/accessories/patch_pirate.glb"
     },
     "collection": "Dulce",
     "rarity": "Com\u00fan",
     "description": "Adaptado a las cuatro mascotas.",
-    "preview_only": true
+    "preview_only": true,
+    "visible": true,
+    "price_coins": 120,
+    "complexity": "Esencial"
   },
   {
     "item_key": "mask_sleep",
@@ -132,12 +168,16 @@
     "equip_slot": "pet_eyes",
     "appearance": {
       "style": "sleep_mask",
-      "color": "#efa0ab"
+      "color": "#efa0ab",
+      "model_asset": "assets/runner/accessories/mask_sleep.glb"
     },
     "collection": "Dulce",
     "rarity": "Com\u00fan",
     "description": "Adaptado a las cuatro mascotas.",
-    "preview_only": true
+    "preview_only": true,
+    "visible": true,
+    "price_coins": 110,
+    "complexity": "Esencial"
   },
   {
     "item_key": "scarf_hearts",
@@ -146,12 +186,16 @@
     "equip_slot": "pet_neck",
     "appearance": {
       "style": "scarf",
-      "color": "#efa0ab"
+      "color": "#efa0ab",
+      "model_asset": "assets/runner/accessories/scarf_hearts.glb"
     },
     "collection": "Dulce",
     "rarity": "Com\u00fan",
     "description": "Adaptado a las cuatro mascotas.",
-    "preview_only": true
+    "preview_only": true,
+    "visible": true,
+    "price_coins": 150,
+    "complexity": "Esencial"
   },
   {
     "item_key": "bandana_sage",
@@ -160,12 +204,16 @@
     "equip_slot": "pet_neck",
     "appearance": {
       "style": "bandana",
-      "color": "#b8dccb"
+      "color": "#b8dccb",
+      "model_asset": "assets/runner/accessories/bandana_sage.glb"
     },
     "collection": "Dulce",
     "rarity": "Com\u00fan",
     "description": "Adaptado a las cuatro mascotas.",
-    "preview_only": true
+    "preview_only": true,
+    "visible": true,
+    "price_coins": 110,
+    "complexity": "Esencial"
   },
   {
     "item_key": "necklace_heart",
@@ -174,12 +222,16 @@
     "equip_slot": "pet_neck",
     "appearance": {
       "style": "bead_necklace",
-      "color": "#efa0ab"
+      "color": "#efa0ab",
+      "model_asset": "assets/runner/accessories/necklace_heart.glb"
     },
     "collection": "Dulce",
     "rarity": "Com\u00fan",
     "description": "Adaptado a las cuatro mascotas.",
-    "preview_only": true
+    "preview_only": true,
+    "visible": true,
+    "price_coins": 180,
+    "complexity": "Detallado"
   },
   {
     "item_key": "chain_gold",
@@ -188,12 +240,16 @@
     "equip_slot": "pet_neck",
     "appearance": {
       "style": "gold_chain",
-      "color": "#e2b957"
+      "color": "#e2b957",
+      "model_asset": "assets/runner/accessories/chain_gold.glb"
     },
     "collection": "Dulce",
     "rarity": "Com\u00fan",
     "description": "Adaptado a las cuatro mascotas.",
-    "preview_only": true
+    "preview_only": true,
+    "visible": true,
+    "price_coins": 220,
+    "complexity": "Detallado"
   },
   {
     "item_key": "bow_neck",
@@ -202,12 +258,16 @@
     "equip_slot": "pet_neck",
     "appearance": {
       "style": "bow_tie",
-      "color": "#f05280"
+      "color": "#f05280",
+      "model_asset": "assets/runner/accessories/bow_neck.glb"
     },
     "collection": "Dulce",
     "rarity": "Com\u00fan",
     "description": "Adaptado a las cuatro mascotas.",
-    "preview_only": true
+    "preview_only": true,
+    "visible": true,
+    "price_coins": 160,
+    "complexity": "Esencial"
   },
   {
     "item_key": "shirt_love",
@@ -216,12 +276,16 @@
     "equip_slot": "pet_body",
     "appearance": {
       "style": "shirt",
-      "color": "#fff2df"
+      "color": "#fff2df",
+      "model_asset": "assets/runner/accessories/shirt_love.glb"
     },
     "collection": "Dulce",
     "rarity": "Com\u00fan",
     "description": "Adaptado a las cuatro mascotas.",
-    "preview_only": true
+    "preview_only": true,
+    "visible": true,
+    "price_coins": 210,
+    "complexity": "Detallado"
   },
   {
     "item_key": "jacket_denim",
@@ -230,12 +294,16 @@
     "equip_slot": "pet_body",
     "appearance": {
       "style": "denim_jacket",
-      "color": "#91b6d6"
+      "color": "#91b6d6",
+      "model_asset": "assets/runner/accessories/jacket_denim.glb"
     },
     "collection": "Dulce",
     "rarity": "Com\u00fan",
     "description": "Adaptado a las cuatro mascotas.",
-    "preview_only": true
+    "preview_only": true,
+    "visible": true,
+    "price_coins": 290,
+    "complexity": "Elaborado"
   },
   {
     "item_key": "coat_cloud",
@@ -244,12 +312,16 @@
     "equip_slot": "pet_body",
     "appearance": {
       "style": "coat",
-      "color": "#b8dccb"
+      "color": "#b8dccb",
+      "model_asset": "assets/runner/accessories/coat_cloud.glb"
     },
     "collection": "Dulce",
     "rarity": "Com\u00fan",
     "description": "Adaptado a las cuatro mascotas.",
-    "preview_only": true
+    "preview_only": true,
+    "visible": true,
+    "price_coins": 320,
+    "complexity": "Elaborado"
   },
   {
     "item_key": "dress_petal",
@@ -258,12 +330,16 @@
     "equip_slot": "pet_body",
     "appearance": {
       "style": "dress",
-      "color": "#efa0ab"
+      "color": "#efa0ab",
+      "model_asset": "assets/runner/accessories/dress_petal.glb"
     },
     "collection": "Dulce",
     "rarity": "Com\u00fan",
     "description": "Adaptado a las cuatro mascotas.",
-    "preview_only": true
+    "preview_only": true,
+    "visible": true,
+    "price_coins": 360,
+    "complexity": "Elaborado"
   },
   {
     "item_key": "hoodie_nido",
@@ -272,12 +348,16 @@
     "equip_slot": "pet_body",
     "appearance": {
       "style": "hoodie",
-      "color": "#baa2db"
+      "color": "#baa2db",
+      "model_asset": "assets/runner/accessories/hoodie_nido.glb"
     },
     "collection": "Dulce",
     "rarity": "Com\u00fan",
     "description": "Adaptado a las cuatro mascotas.",
-    "preview_only": true
+    "preview_only": true,
+    "visible": true,
+    "price_coins": 260,
+    "complexity": "Elaborado"
   },
   {
     "item_key": "shoes_heart",
@@ -286,12 +366,16 @@
     "equip_slot": "pet_feet",
     "appearance": {
       "style": "sneakers",
-      "color": "#efa0ab"
+      "color": "#efa0ab",
+      "model_asset": "assets/runner/accessories/shoes_heart.glb"
     },
     "collection": "Dulce",
     "rarity": "Com\u00fan",
     "description": "Adaptado a las cuatro mascotas.",
-    "preview_only": true
+    "preview_only": true,
+    "visible": true,
+    "price_coins": 220,
+    "complexity": "Detallado"
   },
   {
     "item_key": "boots_rain",
@@ -300,12 +384,16 @@
     "equip_slot": "pet_feet",
     "appearance": {
       "style": "rain_boots",
-      "color": "#b8dccb"
+      "color": "#b8dccb",
+      "model_asset": "assets/runner/accessories/boots_rain.glb"
     },
     "collection": "Dulce",
     "rarity": "Com\u00fan",
     "description": "Adaptado a las cuatro mascotas.",
-    "preview_only": true
+    "preview_only": true,
+    "visible": true,
+    "price_coins": 200,
+    "complexity": "Detallado"
   },
   {
     "item_key": "slippers_cloud",
@@ -314,12 +402,16 @@
     "equip_slot": "pet_feet",
     "appearance": {
       "style": "slippers",
-      "color": "#fff2df"
+      "color": "#fff2df",
+      "model_asset": "assets/runner/accessories/slippers_cloud.glb"
     },
     "collection": "Dulce",
     "rarity": "Com\u00fan",
     "description": "Adaptado a las cuatro mascotas.",
-    "preview_only": true
+    "preview_only": true,
+    "visible": true,
+    "price_coins": 140,
+    "complexity": "Esencial"
   },
   {
     "item_key": "shoes_chic",
@@ -328,12 +420,16 @@
     "equip_slot": "pet_feet",
     "appearance": {
       "style": "mary_jane",
-      "color": "#f05280"
+      "color": "#f05280",
+      "model_asset": "assets/runner/accessories/shoes_chic.glb"
     },
     "collection": "Dulce",
     "rarity": "Com\u00fan",
     "description": "Adaptado a las cuatro mascotas.",
-    "preview_only": true
+    "preview_only": true,
+    "visible": true,
+    "price_coins": 230,
+    "complexity": "Detallado"
   },
   {
     "item_key": "sandals_summer",
@@ -342,11 +438,15 @@
     "equip_slot": "pet_feet",
     "appearance": {
       "style": "sandals",
-      "color": "#f2b29b"
+      "color": "#f2b29b",
+      "model_asset": "assets/runner/accessories/sandals_summer.glb"
     },
     "collection": "Dulce",
     "rarity": "Com\u00fan",
     "description": "Adaptado a las cuatro mascotas.",
-    "preview_only": true
+    "preview_only": true,
+    "visible": true,
+    "price_coins": 150,
+    "complexity": "Esencial"
   }
 ]

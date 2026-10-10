@@ -1,0 +1,127 @@
+[
+  {
+    "key": "cap_pink",
+    "triangles": 1220,
+    "bytes": 45656
+  },
+  {
+    "key": "beanie_cloud",
+    "triangles": 4872,
+    "bytes": 142496
+  },
+  {
+    "key": "hat_garden",
+    "triangles": 2336,
+    "bytes": 76448
+  },
+  {
+    "key": "beret_chic",
+    "triangles": 1148,
+    "bytes": 45500
+  },
+  {
+    "key": "wig_pastel",
+    "triangles": 3912,
+    "bytes": 116308
+  },
+  {
+    "key": "glasses_heart",
+    "triangles": 3160,
+    "bytes": 222420
+  },
+  {
+    "key": "glasses_round",
+    "triangles": 1632,
+    "bytes": 47976
+  },
+  {
+    "key": "glasses_star",
+    "triangles": 1576,
+    "bytes": 89332
+  },
+  {
+    "key": "patch_pirate",
+    "triangles": 764,
+    "bytes": 34284
+  },
+  {
+    "key": "mask_sleep",
+    "triangles": 1152,
+    "bytes": 34736
+  },
+  {
+    "key": "scarf_hearts",
+    "triangles": 2592,
+    "bytes": 77068
+  },
+  {
+    "key": "bandana_sage",
+    "triangles": 604,
+    "bytes": 31488
+  },
+  {
+    "key": "necklace_heart",
+    "triangles": 6524,
+    "bytes": 209668
+  },
+  {
+    "key": "chain_gold",
+    "triangles": 500,
+    "bytes": 21912
+  },
+  {
+    "key": "bow_neck",
+    "triangles": 1384,
+    "bytes": 81640
+  },
+  {
+    "key": "shirt_love",
+    "triangles": 2300,
+    "bytes": 76372
+  },
+  {
+    "key": "jacket_denim",
+    "triangles": 3000,
+    "bytes": 88972
+  },
+  {
+    "key": "coat_cloud",
+    "triangles": 3360,
+    "bytes": 96968
+  },
+  {
+    "key": "dress_petal",
+    "triangles": 3560,
+    "bytes": 144328
+  },
+  {
+    "key": "hoodie_nido",
+    "triangles": 3884,
+    "bytes": 122008
+  },
+  {
+    "key": "shoes_heart",
+    "triangles": 1628,
+    "bytes": 59940
+  },
+  {
+    "key": "boots_rain",
+    "triangles": 996,
+    "bytes": 31024
+  },
+  {
+    "key": "slippers_cloud",
+    "triangles": 2592,
+    "bytes": 78992
+  },
+  {
+    "key": "shoes_chic",
+    "triangles": 1052,
+    "bytes": 42972
+  },
+  {
+    "key": "sandals_summer",
+    "triangles": 864,
+    "bytes": 26164
+  }
+]

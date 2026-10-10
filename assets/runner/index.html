@@ -10,6 +10,8 @@
 </style>
 <style>#music{pointer-events:auto;padding:8px 12px;border:1px solid #fff5;border-radius:13px;background:#18382bc9;backdrop-filter:blur(10px);font-size:16px}</style>
 <div id="hud"><strong id="score"><span id="distance">0 m</span><span id="coins">♥ 0</span></strong><button id="pause" aria-label="Pausar partida" disabled>Ⅱ</button></div>
+<div id="power-ups" aria-live="polite" hidden></div>
+<style>#power-ups{position:fixed;top:calc(max(12px,env(safe-area-inset-top)) + 46px);left:max(12px,env(safe-area-inset-left));right:12px;display:flex;gap:5px;flex-wrap:wrap;pointer-events:none}#power-ups span{font:600 11px system-ui;color:#fff;background:#17392be6;border:1px solid;border-radius:12px;padding:5px 7px}.pet-only #power-ups,.menu-open #power-ups{display:none!important}</style>
 <div id="toast"></div>
 <div id="panel"><div id="card"><h1 id="title">Corre en pareja</h1><p id="message">Preparando tu bosque…</p><button id="music" aria-label="Silenciar audio" style="margin-bottom:16px">Sonido: activado</button><div class="end-actions"><button id="exit">Salir</button><button id="start" disabled>Jugar</button></div><small style="display:block;margin-top:12px;opacity:.65">Versión 1.1.6</small></div></div>
 <div id="controls"><button id="left" aria-label="Mover a la izquierda">←</button><button id="jump">Saltar</button><button id="right" aria-label="Mover a la derecha">→</button></div>

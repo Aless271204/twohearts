@@ -1,3 +1,5 @@
+import {prepareAccessoryAssets} from './accessory-pieces.js';
+import {POWER_UPS,freshPowers,tickPowers,activatePower,powerForRow,canJump,registerJump,coinMultiplier,speedMultiplier,protectsCollision,magnetCollects} from './power-ups.js';
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { clone as cloneSkeleton } from 'three/addons/utils/SkeletonUtils.js';
@@ -72,9 +74,10 @@ let bestDistance=0;
 let sessionId=null,frames=[],pendingInputs=[],pendingSave=null,runElapsed=0;
 let lane=1,x=0,height=0,velocity=0,distance=0,coins=0,row=0,untilRow=0,last=performance.now();
 let toastUntil=0,animationId=0,needsRender=true;
-const speed=()=>runnerDifficulty(distance).speed;
+let replayVersion=6,powers=freshPowers();
+const speed=()=>runnerDifficulty(distance).speed*(replayVersion>=6?speedMultiplier(powers):1);
 // Read-only diagnostics for the standalone preview; absent in the app WebView.
-if(window.parent===window&&!window.RunnerBridge)window.runnerPreview=Object.freeze({stats:()=>({distance,height,lane,running,paused,coins,drawCalls:renderer.info.render.calls,triangles:renderer.info.render.triangles,textures:renderer.info.memory.textures,sceneryTime:visualTime,videoTime:backdrop.video?.currentTime??0,videoPaused:backdrop.video?.paused??true,fps:Math.round(measuredFps),renderScale}),rig:()=>{const bones=[];penguin?.traverse(o=>{if(o.isBone&&/(Head|Neck|Spine2|Hips|LeftUpLeg|RightUpLeg|LeftLeg|RightLeg|LeftFoot|RightFoot|LeftToeBase|RightToeBase|LeftToe_End|RightToe_End)$/.test(o.name))bones.push({name:o.name,position:penguin.worldToLocal(o.getWorldPosition(new THREE.Vector3())).toArray()});});const box=penguin?new THREE.Box3().setFromObject(penguin.children[0],true):null;return {bones,bounds:box?{min:box.min.toArray(),max:box.max.toArray()}:null};},screen:()=>{if(!penguin)return null;const b=new THREE.Box3().setFromObject(penguin,true),points=[];for(const x of [b.min.x,b.max.x])for(const y of [b.min.y,b.max.y])for(const z of [b.min.z,b.max.z])points.push(new THREE.Vector3(x,y,z).project(camera).toArray());return {points,feet:penguin.position.y,rotation:penguin.rotation.y};},replay:()=>({frames:frames.map(frame=>[frame[0],[...frame[1]]]),replay_version:5})});
+if(window.parent===window&&!window.RunnerBridge)window.runnerPreview=Object.freeze({stats:()=>({distance,height,lane,running,paused,coins,powers:{...powers},replayVersion,drawCalls:renderer.info.render.calls,triangles:renderer.info.render.triangles,textures:renderer.info.memory.textures,sceneryTime:visualTime,videoTime:backdrop.video?.currentTime??0,videoPaused:backdrop.video?.paused??true,fps:Math.round(measuredFps),renderScale}),rig:()=>{const bones=[];penguin?.traverse(o=>{if(o.isBone&&/(Head|Neck|Spine2|Hips|LeftUpLeg|RightUpLeg|LeftLeg|RightLeg|LeftFoot|RightFoot|LeftToeBase|RightToeBase|LeftToe_End|RightToe_End)$/.test(o.name))bones.push({name:o.name,position:penguin.worldToLocal(o.getWorldPosition(new THREE.Vector3())).toArray()});});const box=penguin?new THREE.Box3().setFromObject(penguin.children[0],true):null;return {bones,bounds:box?{min:box.min.toArray(),max:box.max.toArray()}:null};},screen:()=>{if(!penguin)return null;const b=new THREE.Box3().setFromObject(penguin,true),points=[];for(const x of [b.min.x,b.max.x])for(const y of [b.min.y,b.max.y])for(const z of [b.min.z,b.max.z])points.push(new THREE.Vector3(x,y,z).project(camera).toArray());return {points,feet:penguin.position.y,rotation:penguin.rotation.y};},replay:()=>({frames:frames.map(frame=>[frame[0],[...frame[1]]]),replay_version:replayVersion})});
 
 function fitModel(source,dimensions) {
   const object=source.getObjectByProperty('isSkinnedMesh',true)?cloneSkeleton(source):source.clone(true);
@@ -95,38 +98,59 @@ function addCoin(laneIndex,z,y=.7) {
   model.rotation.set(0,0,0);model.position.set(LANES[laneIndex],y+floorY,z);
   objects.push({model,kind:'coin',x:LANES[laneIndex],y,z});
 }
+const powerMaterials=new Map();
+function addPower(pickup){
+ const info=POWER_UPS[pickup.power],key='power-'+pickup.power;
+ let model=pool(key).pop();
+ if(!model){
+  let material=powerMaterials.get(key);
+  if(!material){const canvas=document.createElement('canvas');canvas.width=canvas.height=128;const ctx=canvas.getContext('2d');ctx.fillStyle=info.color;ctx.beginPath();ctx.arc(64,64,54,0,Math.PI*2);ctx.fill();ctx.strokeStyle='#ffffff';ctx.lineWidth=5;ctx.stroke();ctx.fillStyle='#17392b';ctx.font='bold 52px system-ui';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(info.icon,64,66);material=new THREE.SpriteMaterial({map:new THREE.CanvasTexture(canvas),depthWrite:false});powerMaterials.set(key,material);}
+  model=new THREE.Sprite(material);model.scale.set(1.05,1.05,1);model.userData.poolKey=key;
+ }
+ model.position.set(LANES[pickup.lane],pickup.y+floorY,pickup.z);scene.add(model);
+ objects.push({...pickup,x:LANES[pickup.lane],model});
+}
+let powerHudKey='';
+function updatePowerHud(){
+ const active=replayVersion>=6?Object.entries(POWER_UPS).filter(([key])=>powers[key]>0):[];
+ const key=active.map(([key])=>key+Math.ceil(powers[key])).join('|');if(key===powerHudKey)return;powerHudKey=key;
+ const host=$('power-ups');if(!host)return;host.replaceChildren();
+ for(const [key,info] of active){const badge=document.createElement('span');badge.textContent=info.icon+' '+Math.ceil(powers[key])+'s';badge.title=info.label;badge.setAttribute('aria-label',info.label+', '+Math.ceil(powers[key])+' segundos');badge.style.borderColor=info.color;host.append(badge);}
+ host.hidden=active.length===0;
+}
 function spawnRow() {
   const {obstacleLane,kind,coinLane,alternateLane}=runnerRow(row,distance);
   const model=place(kind,[1.15,.85,.75],LANES[obstacleLane],-68,[]);model.position.y=floorY;
   objects.push({model,kind:'obstacle',x:LANES[obstacleLane],z:-68});
   for(let i=0;i<5;i++)addCoin(coinLane,-60-i*4,i===2?1.8:.7);
-  addCoin(alternateLane,-68,.7);row++;
+  addCoin(alternateLane,-68,.7);
+  const pickup=replayVersion>=6?powerForRow(row,distance,obstacleLane):null;if(pickup)addPower(pickup);row++;
 }
 let hudKey='',lastMilestone=0,frameSample=0,frameCount=0,measuredFps=60,lastHudTime=0;
 function hud(){
  const level=runnerDifficulty(distance).level,m=Math.floor(distance),key=`${level}|${m}|${coins}|${bestDistance}`;
  if(key===hudKey)return;hudKey=key;
- $('difficulty').textContent=`Ritmo ${level}`;$('coins').textContent=`♥ ${coins}`;$('distance').textContent=`${m} m`;
+ $('difficulty').textContent=`Ritmo ${level}`;$('coins').textContent=`♥ ${coins} pts`;$('distance').textContent=`${m} m`;
  $('goal').textContent=`Siguiente hito · ${(Math.floor(distance/500)+1)*500} m`;
  $('progress').value=distance%500;$('record').textContent=`🏆 Récord: ${bestDistance} m`;
  const step=Math.floor(distance/500);
  if(step>lastMilestone){lastMilestone=step;music.effect('coin');/* Milestones stay in the HUD. */toastUntil=performance.now()+2400;}
 }
 
-function jump(){if(running&&!paused&&height===0&&pendingInputs.length<8){velocity=8;pendingInputs.push(0);music.effect('jump');}}
+function jump(){if(running&&!paused&&(replayVersion>=6?canJump(powers,height):height===0)&&pendingInputs.length<8){if(replayVersion>=6)registerJump(powers,height);velocity=8;pendingInputs.push(0);music.effect('jump');}}
 function move(delta){if(running&&!paused&&pendingInputs.length<8){lane=Math.max(0,Math.min(2,lane+delta));pendingInputs.push(delta);}}
 function showPanel(title,message,label){$('title').textContent=title;$('message').textContent=message;start.textContent=label;panel.hidden=false;document.body.classList.add('menu-open');}
 function reset(){
   for(const item of objects)releaseObject(item);objects.length=0;
   lane=1;x=height=velocity=distance=coins=row=cameraX=0;untilRow=0;paused=false;running=true;
   frames=[];pendingInputs=[];pendingSave=null;runElapsed=0;checkpointIndex=1;checkpointElapsed=0;checkpointBusy=false;checkpointFailed=terminalAfterCheckpoint=false;
-  effects.reset();landingPulse=pickupStreak=lastMilestone=0;hudKey='';backdrop.setPaused(false);
+  powers=freshPowers();powerHudKey='reset';updatePowerHud();effects.reset();landingPulse=pickupStreak=lastMilestone=0;hudKey='';backdrop.setPaused(false);
   $('toast').textContent='';panel.hidden=true;document.body.classList.remove('menu-open');pause.disabled=false;pause.textContent='Pausa';hud();
   music.start();
 }
 function togglePause(){
   if(!running)return;paused=!paused;pause.textContent=paused?'Continuar':'Pausa';
-  if(paused)showPanel('Una pausa en el bosque',`♥ ${coins} monedas · ${Math.floor(distance)} metros`,'Continuar');else panel.hidden=true;document.body.classList.remove('menu-open');
+  if(paused)showPanel('Una pausa en el bosque',`♥ ${coins} puntos · ${Math.floor(distance)} metros`,'Continuar');else panel.hidden=true;document.body.classList.remove('menu-open');
     backdrop.setPaused(paused);
     if(paused)music.pause();else music.start();
 }
@@ -135,11 +159,11 @@ start.onclick=async()=>{
   if(pendingSave){await saveRun();return;}
   if(paused){togglePause();return;}
   start.disabled=true;
-  try{const session=await requestHost('start');sessionId=session.session_id??null;bestDistance=session.best_distance??bestDistance;reset();}
+  try{const session=await requestHost('start');sessionId=session.session_id??null;replayVersion=session.guest||session.powerup_version===6?6:5;bestDistance=session.best_distance??bestDistance;reset();}
   catch(error){showPanel('No pudimos iniciar la partida',error.message,'Volver a intentar');}
   finally{start.disabled=false;}
 };
-function finishPayload(){return {session_id:sessionId,frames,replay_version:5,checkpoint_index:checkpointIndex};}
+function finishPayload(){return {session_id:sessionId,frames,replay_version:replayVersion,checkpoint_index:checkpointIndex};}
 async function saveRun(){
   start.disabled=true;const payload=pendingSave;
   try{
@@ -154,7 +178,7 @@ async function saveRun(){
       return;
     }
     const awarded=result.coins_awarded??0;
-    showPanel('¡Partida guardada!',`Recorriste ${Math.floor(distance)} metros. Se sumaron ${awarded} monedas a tu saldo. Récord: ${result.best_distance??Math.floor(distance)} m.`,'Continuar');
+    showPanel('¡Partida guardada!',`Recorriste ${Math.floor(distance)} metros. Ganaste ${awarded} monedas para la tienda (20 puntos = 1 moneda). Récord: ${result.best_distance??Math.floor(distance)} m.`,'Continuar');
   }catch(error){pendingSave=payload;checkpointFailed=payload.checkpoint===true;if(running){paused=true;music.pause();}showPanel('Tu partida está pendiente',error.message,'Reintentar guardado');}
   finally{start.disabled=false;}
 }
@@ -201,33 +225,38 @@ function frame(now){
     frames.push([stepMicroseconds,pendingInputs.splice(0)]);
     runElapsed+=dt;
     const previousHeight=height;
+    if(replayVersion>=6)tickPowers(powers,dt);
     const travel=speed()*dt;distance+=travel;[height,velocity]=jumpStep(height,velocity,dt);
+    if(height===0)powers.jumps=0;
     if(previousHeight>0&&height===0){landingPulse=1;effects.burst(x,floorY+.05,0,true);music.effect('land');}
     x+=(LANES[lane]-x)*(1-Math.exp(-dt*10));untilRow-=travel;if(untilRow<=0){spawnRow();untilRow+=runnerDifficulty(distance).spacing;}
     for(const model of paths)model.position.z=distance%12;
     for(let i=objects.length-1;i>=0;i--){
       const item=objects[i],previous=item.z;item.z+=travel;item.model.position.z=item.z;
       if(item.kind==='coin'){item.model.rotation.y+=dt*2.4;item.model.position.y=item.y+floorY+Math.sin(runElapsed*3+item.z*.2)*.055;}
-      if(crossesPlayer(previous,item.z)){
+      const attracted=item.kind==='coin'&&replayVersion>=6&&magnetCollects(powers,previous,item.z);
+      if(crossesPlayer(previous,item.z)||attracted){
+        if(item.kind==='power'&&collectsCoin(x,item.x,height,item.y)){activatePower(powers,item.power);music.effect('coin');effects.burst(item.x,item.y+floorY,0);releaseObject(item);objects.splice(i,1);updatePowerHud();continue;}
         if(item.kind==='obstacle'&&hitsObstacle(x,item.x,height)){
+          if(replayVersion>=6&&protectsCollision(powers)){effects.burst(x,floorY+.7,0);releaseObject(item);objects.splice(i,1);updatePowerHud();continue;}
           running=false;music.stopForCollision();pause.disabled=true;
-          showPanel('¡Vuelve a intentarlo!',`Recogiste ${coins} monedas y recorriste ${Math.floor(distance)} metros.`,'Continuar');
+          showPanel('¡Vuelve a intentarlo!',`Recogiste ${coins} puntos y recorriste ${Math.floor(distance)} metros.`,'Continuar');
           if(sessionId){$('message').textContent='Guardando tu partida…';if(checkpointBusy){terminalAfterCheckpoint=true;}else{pendingSave=finishPayload();saveRun();}}else{bestDistance=Math.max(bestDistance,Math.floor(distance));}
           break;
         }
-        if(item.kind==='coin'&&collectsCoin(x,item.x,height,item.y)){
-          coins++;pickupStreak++;music.effect('coin');effects.burst(item.x,item.y+floorY,0);releaseObject(item);objects.splice(i,1);
+        if(item.kind==='coin'&&(attracted||collectsCoin(x,item.x,height,item.y))){
+          coins+=replayVersion>=6?coinMultiplier(powers):1;pickupStreak++;music.effect('coin');effects.burst(item.x,item.y+floorY,0);releaseObject(item);objects.splice(i,1);
           $('coins').animate([{transform:'scale(1)'},{transform:'scale(1.2)'},{transform:'scale(1)'}],{duration:280});
-          $('toast').textContent=pickupStreak%5===0?'¡5 seguidas! ✨':'+1 ♥';toastUntil=now+650;continue;
+          $('toast').textContent=pickupStreak%5===0?'¡5 seguidas! ✨':'+'+(replayVersion>=6?coinMultiplier(powers):1)+' ♥';toastUntil=now+650;continue;
         }
       }
       if(item.kind==='coin'&&crossesPlayer(previous,item.z))pickupStreak=0;
       if(item.z>6){releaseObject(item);objects.splice(i,1);}
     }
-    if(now-lastHudTime>80){hud();lastHudTime=now;}
+    if(now-lastHudTime>80){updatePowerHud();hud();lastHudTime=now;}
   }
   if(running&&!paused&&runElapsed-checkpointElapsed>=90){
-    if(sessionId&&!checkpointBusy){checkpointBusy=true;pendingSave={session_id:sessionId,frames,replay_version:5,checkpoint_index:checkpointIndex,checkpoint:true};frames=[];checkpointElapsed=runElapsed;saveRun();}
+    if(sessionId&&!checkpointBusy){checkpointBusy=true;pendingSave={session_id:sessionId,frames,replay_version:replayVersion,checkpoint_index:checkpointIndex,checkpoint:true};frames=[];checkpointElapsed=runElapsed;saveRun();}
     else if(!sessionId){frames=[];checkpointElapsed=runElapsed;}
   }
   if(now>toastUntil)$('toast').textContent='';
@@ -301,7 +330,7 @@ async function boot(){
         if(petOnly&&!petOrbit){mixer.stopAllAction();actions.Natural_Rest=mixer.clipAction(createNaturalRest(penguin));actions.Natural_Rest.play();activeAction='Natural_Rest';mixer.update(0);if(species==='penguin')refinePip(penguin);penguin.scale.setScalar(growth);restSole=measurePetSoles(penguin);document.body.dataset.petPose='standing';document.body.dataset.petShape=species==='penguin'?'delicate':'original';}
         document.body.dataset.petSpecies=species;penguin.userData.species=species;
         if(petOnly&&!petOrbit)petMotion=createPetMotion(penguin);
-        (petOnly||params.has('appearance')&&window.parent===window&&!window.RunnerBridge?Promise.resolve(JSON.parse(params.get('appearance')??'{}')):requestHost('cosmetics')).then(loadout=>{const equipped=equipRunnerCosmetics(penguin,loadout);if(petOnly){document.body.dataset.petAnchors=equipped.userData.slots.map(slot=>slot.parent.name).join(',');restSole=measurePetSoles(penguin);petFraming=null;}needsRender=true;}).catch(()=>{});
+        (petOnly||params.has('appearance')&&window.parent===window&&!window.RunnerBridge?Promise.resolve(JSON.parse(params.get('appearance')??'{}')):requestHost('cosmetics')).then(async loadout=>{await prepareAccessoryAssets(loadout);const equipped=equipRunnerCosmetics(penguin,loadout);if(petOnly){document.body.dataset.petAnchors=equipped.userData.slots.map(slot=>slot.parent.name).join(',');restSole=measurePetSoles(penguin);petFraming=null;}needsRender=true;}).catch(()=>{});
       }
     }
     if(!petOnly)boardwalk();

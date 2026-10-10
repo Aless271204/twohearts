@@ -1,3 +1,4 @@
+import '../../../core/feature_flags.dart';
 import '../../../widgets/rose_ui.dart';
 import '../../../widgets/twohearts_ui.dart';
 import '../../../theme/app_theme.dart';
@@ -66,9 +67,27 @@ class CollectibleMood {
 // ─── Constants ────────────────────────────────────────────────────────────────
 
 const List<PetEvolutionStage> kEvolutionStages = [
-  PetEvolutionStage(name:'Cría',emoji:'🌱',description:'Pequeña y acompañada por sus cuidados.',requiredLevel:1,accentColor:Color(0xFFFFD6A5)),
-  PetEvolutionStage(name:'Juvenil',emoji:'🌿',description:'Crece con el cuidado de los dos.',requiredLevel:5,accentColor:Color(0xFFFFE066)),
-  PetEvolutionStage(name:'Adulta',emoji:'🌳',description:'Una compañera que han criado juntos.',requiredLevel:10,accentColor:Color(0xFF90CAF9)),
+  PetEvolutionStage(
+    name: 'Cría',
+    emoji: '🌱',
+    description: 'Pequeña y acompañada por sus cuidados.',
+    requiredLevel: 1,
+    accentColor: Color(0xFFFFD6A5),
+  ),
+  PetEvolutionStage(
+    name: 'Juvenil',
+    emoji: '🌿',
+    description: 'Crece con el cuidado de los dos.',
+    requiredLevel: 5,
+    accentColor: Color(0xFFFFE066),
+  ),
+  PetEvolutionStage(
+    name: 'Adulta',
+    emoji: '🌳',
+    description: 'Una compañera que han criado juntos.',
+    requiredLevel: 10,
+    accentColor: Color(0xFF90CAF9),
+  ),
 ];
 
 const List<CollectibleMood> kDefaultMoods = [
@@ -172,7 +191,7 @@ class VirtualPetWidget extends StatefulWidget {
     required this.happiness,
     required this.level,
     required this.onFeed,
-    this.previewMode=false,
+    this.previewMode = false,
   });
 
   @override
@@ -206,12 +225,15 @@ class _VirtualPetWidgetState extends State<VirtualPetWidget>
     super.initState();
     InventoryService.instance.addListener(_inventoryChanged);
     _pet.addListener(_inventoryChanged);
-    if(!widget.previewMode) _pet.refresh().catchError((Object _) {});
-    if(!widget.previewMode) _carePoll = Timer.periodic(const Duration(seconds: 20), (_) {
-      _pet.refresh().catchError((Object _) {});
-      if(!widget.previewMode) InventoryService.instance.refresh().catchError((Object _) {});
-    });
-    if(!widget.previewMode) InventoryService.instance.refresh().catchError((Object _) {});
+    if (!widget.previewMode) _pet.refresh().catchError((Object _) {});
+    if (!widget.previewMode)
+      _carePoll = Timer.periodic(const Duration(seconds: 20), (_) {
+        _pet.refresh().catchError((Object _) {});
+        if (!widget.previewMode)
+          InventoryService.instance.refresh().catchError((Object _) {});
+      });
+    if (!widget.previewMode)
+      InventoryService.instance.refresh().catchError((Object _) {});
 
     _idleController = AnimationController(
       vsync: this,
@@ -289,7 +311,7 @@ class _VirtualPetWidgetState extends State<VirtualPetWidget>
     orElse: () => _moods.first,
   );
 
-  int _petReaction=0;
+  int _petReaction = 0;
   DateTime? _lastStrokeSaved;
 
   void _handlePetTap() {
@@ -304,13 +326,19 @@ class _VirtualPetWidgetState extends State<VirtualPetWidget>
   }
 
   Future<void> _care(String action) async {
-    if(action=='stroke'){
-      setState(()=>_petReaction++);
-      if(_lastStrokeSaved!=null&&DateTime.now().difference(_lastStrokeSaved!)<const Duration(seconds:30))return;
-      _lastStrokeSaved=DateTime.now();
+    if (action == 'stroke') {
+      setState(() => _petReaction++);
+      if (_lastStrokeSaved != null &&
+          DateTime.now().difference(_lastStrokeSaved!) <
+              const Duration(seconds: 30))
+        return;
+      _lastStrokeSaved = DateTime.now();
     }
-    if(widget.previewMode){_tapController.forward(from:0);return;}
-    if (_careBusy) return;
+    if (widget.previewMode) {
+      _tapController.forward(from: 0);
+      return;
+    }
+    if (!FeatureFlags.petCare || _careBusy) return;
     _careBusy = true;
     try {
       await _pet.care(action);
@@ -318,12 +346,26 @@ class _VirtualPetWidgetState extends State<VirtualPetWidget>
       HapticFeedback.lightImpact();
       setState(() => _showFeedEffect = action == 'feed');
       _tapController.forward(from: 0);
-      Future.delayed(const Duration(seconds: 2), () { if (mounted) setState(() => _showFeedEffect = false); });
+      Future.delayed(const Duration(seconds: 2), () {
+        if (mounted) setState(() => _showFeedEffect = false);
+      });
     } catch (_) {
-      if (mounted) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('No se guardó el cuidado. Comprueba la conexión o espera 30 segundos antes de repetirlo.')));
-    } finally { _careBusy = false; }
+      if (mounted)
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+              'No se guardó el cuidado. Comprueba la conexión o espera 30 segundos antes de repetirlo.',
+            ),
+          ),
+        );
+    } finally {
+      _careBusy = false;
+    }
   }
-  void _handleFeed() { _care('feed'); }
+
+  void _handleFeed() {
+    _care('feed');
+  }
 
   Color _meterColor(int v) {
     if (v >= 70) return const Color(0xFF4CAF50);
@@ -332,19 +374,197 @@ class _VirtualPetWidgetState extends State<VirtualPetWidget>
   }
 
   @override
-  Widget build(BuildContext context) => LayoutBuilder(builder:(context,c)=>SingleChildScrollView(child:Column(children:[
-    Padding(padding:const EdgeInsets.symmetric(horizontal:12),child:ClipRRect(borderRadius:BorderRadius.circular(26),child:SizedBox(height:(c.maxWidth*1.10).clamp(310.0,470.0),child:PetRoomStage(loadout:InventoryService.instance.loadout,onTap:_handlePetTap,pet:Pet3DViewer(petReaction:_petReaction,onPetStroke:_handlePetTap,modelPath:PetModelCatalog.modelPathFor(_pet.species),petLevel:_pet.level,altText:'${_pet.displayName}, mascota compartida',autoPlay:true,cameraControls:false,animationName:'Natural_Rest'))))),
-    if(InventoryService.instance.roomDraft.isNotEmpty) TextButton.icon(onPressed:InventoryService.instance.clearRoomDraft,icon:const Icon(Icons.undo_rounded,size:16),label:const Text('Vista previa · Restaurar habitación')),
-    Padding(padding:const EdgeInsets.fromLTRB(12,8,12,0),child:Card(child:ListTile(contentPadding:const EdgeInsets.symmetric(horizontal:14),leading:const Icon(Icons.favorite_rounded,color:AppTheme.primary,size:32),title:Text(_pet.displayName,style:const TextStyle(fontWeight:FontWeight.w700)),subtitle:Row(children:[Text('Nivel ${_pet.level}',style:const TextStyle(fontSize:12)),const SizedBox(width:10),Expanded(child:ClipRRect(borderRadius:BorderRadius.circular(99),child:LinearProgressIndicator(value:(_pet.level%5)/5,minHeight:5,backgroundColor:Color(0xFFF5E5EB),color:AppTheme.primary)))]),trailing:const Icon(Icons.chevron_right_rounded),onTap:()=>showModalBottomSheet(useRootNavigator:true,context:context,isScrollControlled:true,builder:(_)=>const PetFamilySheet())))),
-    Padding(padding:const EdgeInsets.symmetric(vertical:14),child:_buildBottomHUD()),
-    Container(margin:const EdgeInsets.fromLTRB(12,0,12,16),padding:const EdgeInsets.all(12),decoration:BoxDecoration(color:Colors.white,borderRadius:BorderRadius.circular(22)),child:Column(children:[
-      Row(children:[const Text('Accesorios',style:TextStyle(fontSize:15,fontWeight:FontWeight.w700)),const Spacer(),HeartButton(label:'Decorar',icon:Icons.edit_outlined,outlined:true,onPressed:()=>Navigator.of(context,rootNavigator:true).push(MaterialPageRoute<void>(builder:(_)=>ShopScreen(initialScope:'room',previewMode:widget.previewMode))))]),
-      const SizedBox(height:8),
-      SizedBox(height:68,child:ListView.separated(scrollDirection:Axis.horizontal,itemCount:InventoryService.instance.catalog.where((i)=>i.scope=='pet').take(8).length,separatorBuilder:(_,__)=>const SizedBox(width:8),itemBuilder:(_,i){final item=InventoryService.instance.catalog.where((i)=>i.scope=='pet').take(8).elementAt(i);return InkWell(onTap:()=>Navigator.of(context,rootNavigator:true).push(MaterialPageRoute<void>(builder:(_)=>ShopScreen(previewMode:widget.previewMode))),borderRadius:BorderRadius.circular(16),child:ClipRRect(borderRadius:BorderRadius.circular(16),child:SizedBox(width:68,child:ProductThumbnail(item:item))));})),
-      const SizedBox(height:8),
-      Wrap(alignment:WrapAlignment.center,spacing:4,children:[TextButton.icon(onPressed:_showCareMeterSheet,icon:const Icon(Icons.favorite_border_rounded,size:16),label:const Text('Cuidados')),TextButton.icon(onPressed:_showEvolutionSheet,icon:const Icon(Icons.auto_awesome_outlined,size:16),label:const Text('Evolución')),TextButton.icon(onPressed:_showMoodSelector,icon:const Icon(Icons.mood_rounded,size:16),label:const Text('Ánimo'))]),
-    ])),
-  ])));
+  Widget build(BuildContext context) => LayoutBuilder(
+    builder: (context, c) => SingleChildScrollView(
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(26),
+              child: SizedBox(
+                height: (c.maxWidth * 1.10).clamp(310.0, 470.0),
+                child: PetRoomStage(
+                  loadout: InventoryService.instance.loadout,
+                  onTap: _handlePetTap,
+                  pet: Pet3DViewer(
+                    petReaction: _petReaction,
+                    onPetStroke: _handlePetTap,
+                    modelPath: PetModelCatalog.modelPathFor(_pet.species),
+                    petLevel: _pet.level,
+                    altText: '${_pet.displayName}, mascota compartida',
+                    autoPlay: true,
+                    cameraControls: false,
+                    animationName: 'Natural_Rest',
+                  ),
+                ),
+              ),
+            ),
+          ),
+          if (InventoryService.instance.roomDraft.isNotEmpty)
+            TextButton.icon(
+              onPressed: InventoryService.instance.clearRoomDraft,
+              icon: const Icon(Icons.undo_rounded, size: 16),
+              label: const Text('Vista previa · Restaurar habitación'),
+            ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(12, 8, 12, 0),
+            child: Card(
+              child: ListTile(
+                contentPadding: const EdgeInsets.symmetric(horizontal: 14),
+                leading: const Icon(
+                  Icons.favorite_rounded,
+                  color: AppTheme.primary,
+                  size: 32,
+                ),
+                title: Text(
+                  _pet.displayName,
+                  style: const TextStyle(fontWeight: FontWeight.w700),
+                ),
+                subtitle: FeatureFlags.petGrowth
+                    ? Row(
+                        children: [
+                          Text(
+                            'Nivel ${_pet.level}',
+                            style: const TextStyle(fontSize: 12),
+                          ),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(99),
+                              child: LinearProgressIndicator(
+                                value: (_pet.level % 5) / 5,
+                                minHeight: 5,
+                                backgroundColor: Color(0xFFF5E5EB),
+                                color: AppTheme.primary,
+                              ),
+                            ),
+                          ),
+                        ],
+                      )
+                    : const Text(
+                        'Su mascota compartida',
+                        style: TextStyle(fontSize: 12),
+                      ),
+                trailing: const Icon(Icons.chevron_right_rounded),
+                onTap: () => showModalBottomSheet(
+                  useRootNavigator: true,
+                  context: context,
+                  isScrollControlled: true,
+                  builder: (_) => const PetFamilySheet(),
+                ),
+              ),
+            ),
+          ),
+          if (FeatureFlags.petCare)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 14),
+              child: _buildBottomHUD(),
+            ),
+          Container(
+            margin: const EdgeInsets.fromLTRB(12, 0, 12, 16),
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(22),
+            ),
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    const Text(
+                      'Accesorios',
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    const Spacer(),
+                    HeartButton(
+                      label: 'Decorar',
+                      icon: Icons.edit_outlined,
+                      outlined: true,
+                      onPressed: () =>
+                          Navigator.of(context, rootNavigator: true).push(
+                            MaterialPageRoute<void>(
+                              builder: (_) => ShopScreen(
+                                initialScope: 'room',
+                                previewMode: widget.previewMode,
+                              ),
+                            ),
+                          ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                SizedBox(
+                  height: 68,
+                  child: ListView.separated(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: InventoryService.instance.catalog
+                        .where((i) => i.scope == 'pet')
+                        .take(8)
+                        .length,
+                    separatorBuilder: (_, __) => const SizedBox(width: 8),
+                    itemBuilder: (_, i) {
+                      final item = InventoryService.instance.catalog
+                          .where((i) => i.scope == 'pet')
+                          .take(8)
+                          .elementAt(i);
+                      return InkWell(
+                        onTap: () =>
+                            Navigator.of(context, rootNavigator: true).push(
+                              MaterialPageRoute<void>(
+                                builder: (_) =>
+                                    ShopScreen(previewMode: widget.previewMode),
+                              ),
+                            ),
+                        borderRadius: BorderRadius.circular(16),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(16),
+                          child: SizedBox(
+                            width: 68,
+                            child: ProductThumbnail(item: item),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Wrap(
+                  alignment: WrapAlignment.center,
+                  spacing: 4,
+                  children: [
+                    if (FeatureFlags.petCare)
+                      TextButton.icon(
+                        onPressed: _showCareMeterSheet,
+                        icon: const Icon(
+                          Icons.favorite_border_rounded,
+                          size: 16,
+                        ),
+                        label: const Text('Cuidados'),
+                      ),
+                    if (FeatureFlags.petGrowth)
+                      TextButton.icon(
+                        onPressed: _showEvolutionSheet,
+                        icon: const Icon(Icons.auto_awesome_outlined, size: 16),
+                        label: const Text('Evolución'),
+                      ),
+                    TextButton.icon(
+                      onPressed: _showMoodSelector,
+                      icon: const Icon(Icons.mood_rounded, size: 16),
+                      label: const Text('Ánimo'),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
 
   // ── Pet Character ──────────────────────────────────────────────────────────
 
@@ -387,7 +607,11 @@ class _VirtualPetWidgetState extends State<VirtualPetWidget>
                     : 1.0;
                 return Transform.translate(
                   offset: Offset(0, idleOffset),
-                  child: Transform.scale(scale: scale, alignment: Alignment.bottomCenter, child: child),
+                  child: Transform.scale(
+                    scale: scale,
+                    alignment: Alignment.bottomCenter,
+                    child: child,
+                  ),
                 );
               },
               child: FractionallySizedBox(
@@ -414,7 +638,6 @@ class _VirtualPetWidgetState extends State<VirtualPetWidget>
                           ? 'Idle_9'
                           : 'Idle_11',
                     ),
-
                   ],
                 ),
               ),
@@ -592,7 +815,12 @@ class _VirtualPetWidgetState extends State<VirtualPetWidget>
             color: const Color(0xFF6BDDFF),
             onTap: () {
               HapticFeedback.lightImpact();
-              showModalBottomSheet(useRootNavigator: true, context: context, isScrollControlled: true, builder: (_) => const PetMessagesSheet());
+              showModalBottomSheet(
+                useRootNavigator: true,
+                context: context,
+                isScrollControlled: true,
+                builder: (_) => const PetMessagesSheet(),
+              );
             },
           ),
           _HudActionButton(
@@ -738,7 +966,8 @@ class _VirtualPetWidgetState extends State<VirtualPetWidget>
 
   void _showCareMeterSheet() {
     HapticFeedback.lightImpact();
-    showModalBottomSheet(useRootNavigator: true,
+    showModalBottomSheet(
+      useRootNavigator: true,
       context: context,
       backgroundColor: Colors.transparent,
       builder: (_) => _CareMeterSheet(
@@ -761,7 +990,8 @@ class _VirtualPetWidgetState extends State<VirtualPetWidget>
 
   void _showMoodSelector() {
     HapticFeedback.lightImpact();
-    showModalBottomSheet(useRootNavigator: true,
+    showModalBottomSheet(
+      useRootNavigator: true,
       context: context,
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
@@ -782,7 +1012,8 @@ class _VirtualPetWidgetState extends State<VirtualPetWidget>
 
   void _showEvolutionSheet() {
     HapticFeedback.lightImpact();
-    showModalBottomSheet(useRootNavigator: true,
+    showModalBottomSheet(
+      useRootNavigator: true,
       context: context,
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
@@ -891,10 +1122,65 @@ class _HudActionButton extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context)=>Semantics(button:true,label:label,child:InkWell(onTap:onTap,borderRadius:BorderRadius.circular(40),child:Padding(padding:const EdgeInsets.symmetric(horizontal:4),child:Column(mainAxisSize:MainAxisSize.min,children:[
-    Container(width:58,height:58,decoration:BoxDecoration(color:Colors.white,shape:BoxShape.circle,boxShadow:const[BoxShadow(color:Color(0x12EA5782),blurRadius:12,offset:Offset(0,4))]),child:Center(child:Container(width:46,height:46,decoration:BoxDecoration(color:color.withAlpha(23),shape:BoxShape.circle),child:Icon(emoji=='🍎'?Icons.restaurant_rounded:emoji=='🎮'?Icons.favorite_rounded:emoji=='💌'?Icons.mail_outline_rounded:Icons.nightlight_round,color:emoji=='💤'?const Color(0xFF9A68D9):AppTheme.primary,size:27)))),
-    const SizedBox(height:5),Text(label,style:const TextStyle(fontSize:11,color:Color(0xFF504451))),
-  ]))));
+  Widget build(BuildContext context) => Semantics(
+    button: true,
+    label: label,
+    child: InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(40),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 4),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 58,
+              height: 58,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                shape: BoxShape.circle,
+                boxShadow: const [
+                  BoxShadow(
+                    color: Color(0x12EA5782),
+                    blurRadius: 12,
+                    offset: Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: Center(
+                child: Container(
+                  width: 46,
+                  height: 46,
+                  decoration: BoxDecoration(
+                    color: color.withAlpha(23),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    emoji == '🍎'
+                        ? Icons.restaurant_rounded
+                        : emoji == '🎮'
+                        ? Icons.favorite_rounded
+                        : emoji == '💌'
+                        ? Icons.mail_outline_rounded
+                        : Icons.nightlight_round,
+                    color: emoji == '💤'
+                        ? const Color(0xFF9A68D9)
+                        : AppTheme.primary,
+                    size: 27,
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 5),
+            Text(
+              label,
+              style: const TextStyle(fontSize: 11, color: Color(0xFF504451)),
+            ),
+          ],
+        ),
+      ),
+    ),
+  );
 }
 
 // ── Care Meter Sheet ───────────────────────────────────────────────────────────
@@ -915,7 +1201,7 @@ class _CareMeterSheet extends StatelessWidget {
     required this.energy,
     required this.meterColor,
     required this.onFeed,
-    this.previewMode=false,
+    this.previewMode = false,
     required this.onPlay,
     required this.onSleep,
   });
