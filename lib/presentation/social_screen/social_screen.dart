@@ -1,3 +1,4 @@
+import '../../widgets/twohearts_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -6,7 +7,8 @@ import '../../widgets/rose_ui.dart';
 import '../../services/supabase_service.dart';
 
 class SocialScreen extends StatefulWidget {
-  const SocialScreen({super.key});
+  final List<Map<String,dynamic>>? previewPosts;
+  const SocialScreen({super.key,this.previewPosts});
 
   @override
   State<SocialScreen> createState() => _SocialScreenState();
@@ -28,7 +30,7 @@ class _SocialScreenState extends State<SocialScreen>
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
-    _loadData();
+    if(widget.previewPosts != null) { _recentPosts=widget.previewPosts!;_discoverPosts=widget.previewPosts!;_loadingRecent=false;_loadingDiscover=false; } else { _loadData(); }
   }
 
   @override
@@ -38,6 +40,7 @@ class _SocialScreenState extends State<SocialScreen>
   }
 
   Future<void> _loadData() async {
+    if(widget.previewPosts != null)return;
     await Future.wait([_loadFollowing(), _loadDiscoverPosts()]);
     await _loadRecentPosts();
   }
@@ -246,7 +249,7 @@ class _SocialScreenState extends State<SocialScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppTheme.backgroundLight,
+      backgroundColor: Colors.transparent,
       body: SafeArea(
         bottom: false,
         child: Column(
@@ -266,11 +269,7 @@ class _SocialScreenState extends State<SocialScreen>
     );
   }
 
-  Widget _buildHeader() => Padding(padding: const EdgeInsets.fromLTRB(20, 16, 20, 0), child: Row(children: [
-    Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Text('Social', style: GoogleFonts.dmSans(fontSize: 26, fontWeight: FontWeight.w700)), Text('Comparte recuerdos', style: GoogleFonts.dmSans(fontSize: 12, color: AppTheme.primary))])),
-    FilledButton.icon(onPressed: _showCreatePostSheet, icon: const Icon(Icons.add, size: 16), label: const Text('Publicar')),
-    IconButton(tooltip: 'Actualizar publicaciones', onPressed: _loadData, icon: const Icon(Icons.refresh_rounded, color: AppTheme.primary)),
-  ]));
+  Widget _buildHeader() => HeartHeader(title:'Social', subtitle:'Comparte recuerdos ♡', actions:[HeartButton(label:'Publicación',icon:Icons.add,onPressed:_showCreatePostSheet)]);
 
   Widget _buildTabBar() {
     return Padding(
@@ -284,13 +283,13 @@ class _SocialScreenState extends State<SocialScreen>
         child: TabBar(
           controller: _tabController,
           indicator: BoxDecoration(
-            color: AppTheme.primary,
+            gradient: heartGradient,
             borderRadius: BorderRadius.circular(999),
           ),
           indicatorSize: TabBarIndicatorSize.tab,
           dividerColor: Colors.transparent,
           labelColor: Colors.white,
-          unselectedLabelColor: const Color(0xFF9E9E9E),
+          unselectedLabelColor: const Color(0xFF716671),
           labelStyle: GoogleFonts.dmSans(
             fontSize: 13,
             fontWeight: FontWeight.w600,
@@ -300,7 +299,7 @@ class _SocialScreenState extends State<SocialScreen>
             fontWeight: FontWeight.w500,
           ),
           tabs: const [
-            Tab(text: 'Conocidos'),
+            Tab(text: 'Amigos'),
             Tab(text: 'Descubrir'),
           ],
         ),
@@ -323,7 +322,7 @@ class _SocialScreenState extends State<SocialScreen>
               'Sigue a personas para ver sus recuerdos',
               style: GoogleFonts.dmSans(
                 fontSize: 15,
-                color: const Color(0xFF9E9E9E),
+                color: const Color(0xFF716671),
               ),
               textAlign: TextAlign.center,
             ),
@@ -332,7 +331,7 @@ class _SocialScreenState extends State<SocialScreen>
               'Las publicaciones duran 24 horas',
               style: GoogleFonts.dmSans(
                 fontSize: 12,
-                color: const Color(0xFFBBBBBB),
+                color: const Color(0xFF746874),
               ),
             ),
           ],
@@ -364,7 +363,7 @@ class _SocialScreenState extends State<SocialScreen>
               'Aún no hay publicaciones populares',
               style: GoogleFonts.dmSans(
                 fontSize: 15,
-                color: const Color(0xFF9E9E9E),
+                color: const Color(0xFF716671),
               ),
             ),
             const SizedBox(height: 4),
@@ -372,7 +371,7 @@ class _SocialScreenState extends State<SocialScreen>
               '¡Sé el primero en compartir un recuerdo!',
               style: GoogleFonts.dmSans(
                 fontSize: 12,
-                color: const Color(0xFFBBBBBB),
+                color: const Color(0xFF746874),
               ),
             ),
           ],
@@ -417,18 +416,6 @@ class _SocialScreenState extends State<SocialScreen>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // 24h expiry progress bar
-          ClipRRect(
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
-            child: LinearProgressIndicator(
-              value: 1.0 - progress,
-              backgroundColor: Colors.grey.withAlpha(30),
-              valueColor: AlwaysStoppedAnimation<Color>(
-                progress < 0.5 ? AppTheme.primary : Colors.orange,
-              ),
-              minHeight: 3,
-            ),
-          ),
           // Header
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 12, 16, 10),
@@ -453,8 +440,8 @@ class _SocialScreenState extends State<SocialScreen>
                           Text(
                             _timeAgo(createdAt),
                             style: GoogleFonts.dmSans(
-                              fontSize: 10,
-                              color: const Color(0xFF9E9E9E),
+                              fontSize: 12,
+                              color: const Color(0xFF716671),
                             ),
                           ),
                           const SizedBox(width: 6),
@@ -472,7 +459,7 @@ class _SocialScreenState extends State<SocialScreen>
                             child: Text(
                               _expiresIn(createdAt),
                               style: GoogleFonts.dmSans(
-                                fontSize: 9,
+                                fontSize: 11,
                                 fontWeight: FontWeight.w600,
                                 color: progress < 0.75
                                     ? AppTheme.primary
@@ -503,7 +490,7 @@ class _SocialScreenState extends State<SocialScreen>
                         Text(
                           '$interactionCount',
                           style: GoogleFonts.dmSans(
-                            fontSize: 10,
+                            fontSize: 12,
                             fontWeight: FontWeight.w700,
                             color: const Color(0xFFE07000),
                           ),
@@ -540,14 +527,14 @@ class _SocialScreenState extends State<SocialScreen>
                 _buildActionBtn(
                   icon: isLiked ? Icons.favorite : Icons.favorite_border,
                   label: '${isLiked ? likesCount + 1 : likesCount}',
-                  color: isLiked ? AppTheme.primary : const Color(0xFF9E9E9E),
+                  color: isLiked ? AppTheme.primary : const Color(0xFF716671),
                   onTap: () => _toggleLike(post),
                 ),
                 const SizedBox(width: 20),
                 _buildActionBtn(
                   icon: Icons.chat_bubble_outline,
                   label: '$commentsCount',
-                  color: const Color(0xFF9E9E9E),
+                  color: const Color(0xFF716671),
                   onTap: () {},
                 ),
                 const Spacer(),
@@ -631,7 +618,8 @@ class _SocialScreenState extends State<SocialScreen>
   }
 
   Widget _buildImageContent(Map<String, dynamic> post) {
-    return ClipRRect(
+    if(widget.previewPosts != null) return Padding(padding:const EdgeInsets.symmetric(horizontal:10),child:ClipRRect(borderRadius:BorderRadius.circular(13),child:SizedBox(height:165,width:double.infinity,child:StoryArt(panel:post['preview_panel'] as int? ?? 0))));
+    return Padding(padding:const EdgeInsets.symmetric(horizontal:10),child:ClipRRect(borderRadius:BorderRadius.circular(13),
       child: Image.network(
         post['content_url'] as String,
         height: 200,
@@ -641,7 +629,7 @@ class _SocialScreenState extends State<SocialScreen>
         errorBuilder: (_, __, ___) =>
             Container(height: 200, color: AppTheme.surfaceVariantLight),
       ),
-    );
+    ));
   }
 
   Widget _buildPhraseContent(Map<String, dynamic> post) {
@@ -892,7 +880,7 @@ class _CreatePostSheetState extends State<_CreatePostSheet> {
                           fontWeight: FontWeight.w600,
                           color: isSelected
                               ? Colors.white
-                              : const Color(0xFF9E9E9E),
+                              : const Color(0xFF716671),
                         ),
                       ),
                     ],
@@ -910,7 +898,7 @@ class _CreatePostSheetState extends State<_CreatePostSheet> {
               decoration: InputDecoration(
                 hintText: 'Escribe una frase, pensamiento o recuerdo... 💕',
                 hintStyle: GoogleFonts.dmSans(
-                  color: const Color(0xFFBBBBBB),
+                  color: const Color(0xFF746874),
                   fontSize: 14,
                 ),
                 filled: true,
@@ -927,7 +915,7 @@ class _CreatePostSheetState extends State<_CreatePostSheet> {
               decoration: InputDecoration(
                 hintText: 'URL de la imagen',
                 hintStyle: GoogleFonts.dmSans(
-                  color: const Color(0xFFBBBBBB),
+                  color: const Color(0xFF746874),
                   fontSize: 14,
                 ),
                 prefixIcon: const Icon(
@@ -954,7 +942,7 @@ class _CreatePostSheetState extends State<_CreatePostSheet> {
                   '🎭 Escribe el emoji o texto del GIF',
                   style: GoogleFonts.dmSans(
                     fontSize: 14,
-                    color: const Color(0xFF9E9E9E),
+                    color: const Color(0xFF716671),
                   ),
                 ),
               ),
@@ -983,7 +971,7 @@ class _CreatePostSheetState extends State<_CreatePostSheet> {
                         size: 14,
                         color: _isAnon
                             ? AppTheme.primary
-                            : const Color(0xFF9E9E9E),
+                            : const Color(0xFF716671),
                       ),
                       const SizedBox(width: 6),
                       Text(
@@ -993,7 +981,7 @@ class _CreatePostSheetState extends State<_CreatePostSheet> {
                           fontWeight: FontWeight.w600,
                           color: _isAnon
                               ? AppTheme.primary
-                              : const Color(0xFF9E9E9E),
+                              : const Color(0xFF716671),
                         ),
                       ),
                     ],

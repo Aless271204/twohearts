@@ -1,3 +1,4 @@
+import '../../widgets/twohearts_ui.dart';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -6,12 +7,14 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:just_audio/just_audio.dart';
 
 import '../../theme/app_theme.dart';
+import '../../services/scene_audio_policy.dart';
 import '../../services/supabase_service.dart';
 import '../../routes/app_routes.dart';
 import '../games/game_hub_screen.dart';
 
 class ActivitiesScreen extends StatefulWidget {
-  const ActivitiesScreen({super.key});
+  final bool previewMode;
+  const ActivitiesScreen({super.key,this.previewMode=false});
 
   @override
   State<ActivitiesScreen> createState() => _ActivitiesScreenState();
@@ -30,6 +33,8 @@ class _ActivitiesScreenState extends State<ActivitiesScreen>
   final AudioPlayer _bgMusicPlayer = AudioPlayer();
   final AudioPlayer _spinSoundPlayer = AudioPlayer();
   bool _musicPlaying = false;
+  bool _audioReady = false;
+  int _audioGeneration = 0;
 
   final List<String> _categories = ['Chill 🌿', 'Spark ✨', 'Tryhard 🔥'];
   final List<Color> _categoryColors = [
@@ -164,7 +169,7 @@ class _ActivitiesScreenState extends State<ActivitiesScreen>
       vsync: this,
       duration: const Duration(seconds: 5),
     );
-    _initAudio();
+    SceneAudioPolicy.instance.addListener(_visibilityChanged);
   }
 
   Future<void> _initAudio() async {
@@ -175,20 +180,23 @@ class _ActivitiesScreenState extends State<ActivitiesScreen>
       );
       await _bgMusicPlayer.setLoopMode(LoopMode.one);
       await _bgMusicPlayer.setVolume(0.3);
-      await _bgMusicPlayer.play();
-      if (mounted) setState(() => _musicPlaying = true);
+      _audioReady = true;
     } catch (_) {
       // Audio not critical — fail silently
     }
   }
 
   Future<void> _playSpinSound() async {
+    if (!SceneAudioPolicy.instance.activitiesVisible) return;
+    final generation = _audioGeneration;
     try {
       // Short spin/tick sound using a free sound URL
       await _spinSoundPlayer.setUrl(
         'https://www.soundjay.com/misc/sounds/magic-chime-02.mp3',
       );
+      if (!mounted || generation != _audioGeneration || !SceneAudioPolicy.instance.activitiesVisible) return;
       await _spinSoundPlayer.seek(Duration.zero);
+      if (!mounted || generation != _audioGeneration || !SceneAudioPolicy.instance.activitiesVisible) return;
       await _spinSoundPlayer.play();
     } catch (_) {
       // Fallback: haptic feedback
@@ -196,19 +204,33 @@ class _ActivitiesScreenState extends State<ActivitiesScreen>
     }
   }
 
+  void _visibilityChanged() {
+    if (SceneAudioPolicy.instance.activitiesVisible) return;
+    _audioGeneration++;
+    _bgMusicPlayer.stop();
+    _spinSoundPlayer.stop();
+    WidgetsBinding.instance.addPostFrameCallback((_) { if (mounted) setState(() => _musicPlaying = false); });
+  }
+
   Future<void> _toggleMusic() async {
-    try {
-      if (_musicPlaying) {
-        await _bgMusicPlayer.pause();
-      } else {
-        await _bgMusicPlayer.play();
-      }
-      if (mounted) setState(() => _musicPlaying = !_musicPlaying);
-    } catch (_) {}
+    if (!SceneAudioPolicy.instance.activitiesVisible) return;
+    if (_musicPlaying) {
+      _audioGeneration++;
+      await _bgMusicPlayer.stop();
+      if (mounted) setState(() => _musicPlaying = false);
+      return;
+    }
+    final generation = ++_audioGeneration;
+    if (!_audioReady) await _initAudio();
+    if (!mounted || generation != _audioGeneration || !SceneAudioPolicy.instance.activitiesVisible || !_audioReady) return;
+    setState(() => _musicPlaying = true);
+    _bgMusicPlayer.play().catchError((Object _) { if (mounted) setState(() => _musicPlaying = false); });
   }
 
   @override
   void dispose() {
+    _audioGeneration++;
+    SceneAudioPolicy.instance.removeListener(_visibilityChanged);
     _spinController.dispose();
     _countdownController.dispose();
     _bgMusicPlayer.dispose();
@@ -242,7 +264,7 @@ class _ActivitiesScreenState extends State<ActivitiesScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppTheme.backgroundLight,
+      backgroundColor: Colors.transparent,
       body: SafeArea(
         bottom: false,
         child: DefaultTabController(
@@ -261,7 +283,7 @@ class _ActivitiesScreenState extends State<ActivitiesScreen>
                   ),
                   child: TabBar(
                     indicator: BoxDecoration(
-                      color: AppTheme.primary,
+                      gradient: heartGradient,
                       borderRadius: BorderRadius.circular(999),
                     ),
                     indicatorSize: TabBarIndicatorSize.tab,
@@ -277,8 +299,8 @@ class _ActivitiesScreenState extends State<ActivitiesScreen>
                       fontWeight: FontWeight.w400,
                     ),
                     tabs: const [
-                      Tab(text: '🎮 Juegos'),
-                      Tab(text: '💑 Actividades'),
+                      Tab(child:Row(mainAxisAlignment:MainAxisAlignment.center,children:[Icon(Icons.sports_esports_outlined,size:20),SizedBox(width:7),Text('Juegos')])),
+                      Tab(child:Row(mainAxisAlignment:MainAxisAlignment.center,children:[Icon(Icons.calendar_today_outlined,size:18),SizedBox(width:7),Text('Actividades')])),
                     ],
                   ),
                 ),
@@ -288,7 +310,7 @@ class _ActivitiesScreenState extends State<ActivitiesScreen>
                 child: TabBarView(
                   children: [
                     // Tab 0: Game Hub
-                    const GameHubScreen(),
+                    GameHubScreen(previewMode:widget.previewMode),
                     // Tab 1: Original activities
                     CustomScrollView(
                       slivers: [
@@ -308,89 +330,7 @@ class _ActivitiesScreenState extends State<ActivitiesScreen>
     );
   }
 
-  Widget _buildHeader() {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
-      child: Row(
-        children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Actividades',
-                style: GoogleFonts.dmSans(
-                  fontSize: 22,
-                  fontWeight: FontWeight.w700,
-                  color: const Color(0xFF1A1A1A),
-                ),
-              ),
-              Text(
-                'Hagan cosas juntos 💑',
-                style: GoogleFonts.dmSans(
-                  fontSize: 13,
-                  color: AppTheme.primary,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ],
-          ),
-          const Spacer(),
-          // Music toggle button
-          GestureDetector(
-            onTap: _toggleMusic,
-            child: Container(
-              width: 40,
-              height: 40,
-              decoration: BoxDecoration(
-                color: _musicPlaying
-                    ? AppTheme.primaryContainer
-                    : AppTheme.surfaceVariantLight,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Icon(
-                _musicPlaying ? Icons.music_note : Icons.music_off,
-                color: _musicPlaying
-                    ? AppTheme.primary
-                    : const Color(0xFF9E9E9E),
-                size: 18,
-              ),
-            ),
-          ),
-          const SizedBox(width: 8),
-          Container(
-            width: 40,
-            height: 40,
-            decoration: BoxDecoration(
-              color: AppTheme.primaryContainer,
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: const Icon(
-              Icons.calendar_today_outlined,
-              color: AppTheme.primary,
-              size: 18,
-            ),
-          ),
-          const SizedBox(width: 8),
-          GestureDetector(
-            onTap: () => _showSignOutDialog(context),
-            child: Container(
-              width: 40,
-              height: 40,
-              decoration: BoxDecoration(
-                color: Colors.red.shade50,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Icon(
-                Icons.logout_rounded,
-                color: Colors.red.shade400,
-                size: 18,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+  Widget _buildHeader() => HeartHeader(title:'Actividades',subtitle:'Hagan cosas juntos ♡',actions:[HeartIconButton(icon:_musicPlaying?Icons.music_note_rounded:Icons.music_off_rounded,tooltip:_musicPlaying?'Apagar música':'Música de actividades',onPressed:_toggleMusic)]);
 
   void _showSignOutDialog(BuildContext context) {
     showDialog(
@@ -462,7 +402,7 @@ class _ActivitiesScreenState extends State<ActivitiesScreen>
                 child: Text(
                   '${_currentPool.length} actividades',
                   style: GoogleFonts.dmSans(
-                    fontSize: 10,
+                    fontSize: 12,
                     fontWeight: FontWeight.w600,
                     color: AppTheme.primary,
                   ),
@@ -500,7 +440,7 @@ class _ActivitiesScreenState extends State<ActivitiesScreen>
                       fontWeight: FontWeight.w600,
                       color: isSelected
                           ? Colors.white
-                          : const Color(0xFF9E9E9E),
+                          : const Color(0xFF716671),
                     ),
                   ),
                 ),
@@ -565,7 +505,7 @@ class _ActivitiesScreenState extends State<ActivitiesScreen>
                           key: const ValueKey('placeholder'),
                           style: GoogleFonts.dmSans(
                             fontSize: 15,
-                            color: const Color(0xFF9E9E9E),
+                            color: const Color(0xFF716671),
                           ),
                           textAlign: TextAlign.center,
                         ),
@@ -719,7 +659,7 @@ class _ActivitiesScreenState extends State<ActivitiesScreen>
               subtitle,
               style: GoogleFonts.dmSans(
                 fontSize: 11,
-                color: const Color(0xFF9E9E9E),
+                color: const Color(0xFF716671),
                 height: 1.3,
               ),
             ),
@@ -882,7 +822,7 @@ class _ActivitiesScreenState extends State<ActivitiesScreen>
                     child: Text(
                       isPlanned ? 'Planificado' : 'Visitado',
                       style: GoogleFonts.dmSans(
-                        fontSize: 10,
+                        fontSize: 12,
                         fontWeight: FontWeight.w700,
                         color: Colors.white,
                       ),
@@ -994,7 +934,7 @@ class _ActivitiesScreenState extends State<ActivitiesScreen>
               onPressed: () => Navigator.pop(ctx),
               child: Text(
                 'Cancelar',
-                style: GoogleFonts.dmSans(color: const Color(0xFF9E9E9E)),
+                style: GoogleFonts.dmSans(color: const Color(0xFF716671)),
               ),
             ),
           ],
@@ -1263,7 +1203,7 @@ class _NetflixSyncSheetState extends State<_NetflixSyncSheet>
               onPressed: () => Navigator.pop(context),
               child: Text(
                 'Cerrar',
-                style: GoogleFonts.dmSans(color: const Color(0xFF9E9E9E)),
+                style: GoogleFonts.dmSans(color: const Color(0xFF716671)),
               ),
             ),
         ],

@@ -1,3 +1,4 @@
+import '../../widgets/twohearts_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../services/inventory_service.dart';
@@ -11,7 +12,8 @@ import '../../theme/app_theme.dart';
 
 class ShopScreen extends StatefulWidget {
   final String initialScope;
-  const ShopScreen({super.key, this.initialScope = 'pet'});
+  final bool previewMode;
+  const ShopScreen({super.key, this.initialScope = 'pet',this.previewMode=false});
   @override
   State<ShopScreen> createState() => _ShopScreenState();
 }
@@ -44,6 +46,7 @@ class _ShopScreenState extends State<ShopScreen> {
   }
 
   Future<void> _load() async {
+    if(widget.previewMode){setState(()=>loading=false);return;}
     try {
       await inventory.refresh();
       if (mounted) {
@@ -64,6 +67,7 @@ class _ShopScreenState extends State<ShopScreen> {
   }
 
   Future<void> _action(InventoryItem item) async {
+    if(widget.previewMode){ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content:Text("Vista de diseño · Las compras están desactivadas")));return;}
     if (busy) return;
     if (!inventory.owns(item.key)) {
       final confirmed = await showDialog<bool>(
@@ -132,8 +136,8 @@ class _ShopScreenState extends State<ShopScreen> {
   Widget build(BuildContext context) {
     final items = inventory.catalog.where((i) => i.scope == scope && (slot == null || i.slot == slot) && (!onlyOwned || inventory.owns(i.key)) && (query.isEmpty || '${i.name} ${i.collection} ${i.description}'.toLowerCase().contains(query.toLowerCase()))).toList();
     return Scaffold(
-      backgroundColor: AppTheme.backgroundLight,
-      appBar: AppBar(title: const Text('Tienda e inventario'), actions: [TextButton.icon(onPressed: () => setState(() => showCoins = true), icon: const Icon(Icons.monetization_on_rounded, color: Color(0xFFD49B23)), label: Text('${inventory.coins}'))]),
+      backgroundColor: Colors.transparent,
+      appBar: AppBar(toolbarHeight:76,titleSpacing:20,title:const Text('Tienda e inventario',style:TextStyle(fontSize:23,fontWeight:FontWeight.w800,letterSpacing:-.7)),actions:[Padding(padding:const EdgeInsets.only(right:16),child:HeartButton(label:'${inventory.coins}',icon:Icons.monetization_on_rounded,outlined:true,onPressed:()=>setState(()=>showCoins=true)))]),
       body: AnimatedSwitcher(duration: const Duration(milliseconds: 220), child: loading
         ? const RoseLoading(key: ValueKey('loading'), label: 'Preparamos tu colección…')
         : error != null
@@ -149,10 +153,7 @@ class _ShopScreenState extends State<ShopScreen> {
             if (showCoins) _coinsPanel() else ...[
               TextField(onChanged: (v) => setState(() => query = v), decoration: const InputDecoration(prefixIcon: Icon(Icons.search_rounded), hintText: 'Buscar objeto o colección')),
               const SizedBox(height: 12),
-              SingleChildScrollView(scrollDirection: Axis.horizontal, child: Row(children: [
-                ChoiceChip(showCheckmark: false, label: const Text('Todo'), selected: slot == null, onSelected: (_) => setState(() => slot = null)),
-                for (final e in InventoryItem.slots.entries.where((e) => e.key.startsWith('${scope}_'))) Padding(padding: const EdgeInsets.only(left: 6), child: ChoiceChip(showCheckmark: false, label: Text(e.value), selected: slot == e.key, onSelected: (_) => setState(() => slot = e.key))),
-              ])),
+              Align(alignment:Alignment.centerRight,child:PopupMenuButton<String>(tooltip:'Filtrar objetos',initialValue:slot??'all',onSelected:(v)=>setState(()=>slot=v=='all'?null:v),itemBuilder:(_)=>[const PopupMenuItem(value:'all',child:Text('Todos los objetos')),for(final e in InventoryItem.slots.entries.where((e)=>e.key.startsWith('${scope}_')))PopupMenuItem(value:e.key,child:Text(e.value))],child:Padding(padding:const EdgeInsets.symmetric(vertical:4),child:Row(mainAxisSize:MainAxisSize.min,children:[Text(slot==null?'Todos los objetos':InventoryItem.slots[slot]??'Filtro',style:const TextStyle(fontSize:12,color:Color(0xFF746874))),const SizedBox(width:5),const Icon(Icons.tune_rounded,size:16)])))),
               const SizedBox(height: 16),
               if (busy) const Padding(padding: EdgeInsets.only(bottom: 12), child: LinearProgressIndicator()),
               if (items.isEmpty) const SceneStatus(title: 'Un lugar para tus favoritos', message: 'No hay objetos con estos filtros. Prueba otra categoría.', loading: false),
@@ -176,19 +177,12 @@ class _ShopScreenState extends State<ShopScreen> {
   ]))));
 
   Widget _productCard(InventoryItem item) {
-    int? panel;
-    if (item.slot == 'pet_head' && item.style == 'bow') panel = 0;
-    if (item.slot == 'pet_eyes') panel = 1;
-    if (item.slot == 'room_bed') panel = 2;
-    if (item.slot == 'room_plant') panel = 3;
-    if (item.slot == 'pet_head' && item.style == 'cap') panel = 4;
-    if (item.slot == 'pet_body') panel = 5;
     return Card(clipBehavior: Clip.antiAlias, child: Padding(padding: const EdgeInsets.all(12), child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      ClipRRect(borderRadius: BorderRadius.circular(16), child: SizedBox(height: 120, width: double.infinity, child: panel != null ? ProductArt(panel: panel) : ColoredBox(color: item.color.withAlpha(40), child: Center(child: Text(item.emoji, style: const TextStyle(fontSize: 44)))))),
-      const SizedBox(height: 12), Text(item.name, maxLines: 2, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700)),
-      const SizedBox(height: 4), Text(item.description, maxLines: 2, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 12, height: 1.4, color: Color(0xFF716B78))),
+      ClipRRect(borderRadius: BorderRadius.circular(16), child: SizedBox(height: 120, width: double.infinity, child: ProductThumbnail(item: item))),
+      const SizedBox(height: 12), Text(item.name, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700)),
+      const SizedBox(height: 4), Text(item.description, style: const TextStyle(fontSize: 12, height: 1.4, color: Color(0xFF716B78))),
       const SizedBox(height: 8), Text(inventory.equipped(item.key) ? '✓ Equipado' : inventory.owns(item.key) ? '✓ En tu inventario' : '🪙 ${item.price}', style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600)),
-      const SizedBox(height: 8), SizedBox(width: double.infinity, child: FilledButton(onPressed: busy ? null : () => _viewItem(item), child: const Text('Ver'))),
+      const SizedBox(height: 8), SizedBox(width: double.infinity, child: HeartButton(onPressed: busy ? null : () => _viewItem(item), label: 'Ver')),
     ])));
   }
 }

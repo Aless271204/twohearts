@@ -286,7 +286,7 @@ class _CoupleMapWidgetState extends State<CoupleMapWidget> {
               child: LayoutBuilder(
                 builder: (context, constraints) {
                   final w = constraints.maxWidth;
-                  const h = 200.0;
+                  const h = 160.0;
 
                   // Use real GPS if available, otherwise city-based
                   final Offset myPos =
@@ -306,27 +306,12 @@ class _CoupleMapWidgetState extends State<CoupleMapWidget> {
                         width: w,
                         child: CustomImageWidget(
                           imageUrl:
-                              'https://images.unsplash.com/photo-1524661135-423995f22d0b?w=800',
+                              'assets/images/ui/world-map.svg',
                           width: w,
                           height: h,
                           fit: BoxFit.cover,
                           semanticLabel:
                               'World map showing continents and oceans from above',
-                        ),
-                      ),
-                      // Dark overlay
-                      Positioned.fill(
-                        child: Container(
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              begin: Alignment.topCenter,
-                              end: Alignment.bottomCenter,
-                              colors: [
-                                Colors.black.withAlpha(26),
-                                Colors.black.withAlpha(102),
-                              ],
-                            ),
-                          ),
                         ),
                       ),
                       // Travel city pins

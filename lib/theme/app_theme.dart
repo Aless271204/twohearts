@@ -6,7 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 class AppTheme {
   // Primary palette
-  static const Color primary = Color(0xFFF05280);
+  static const Color primary = Color(0xFFFF3F78);
   static const Color primaryContainer = Color(0xFFFBE5EC);
   static const Color secondary = Color(0xFF3D7A5E);
   static const Color secondaryContainer = Color(0xFFB8DCCB);
@@ -36,14 +36,15 @@ class AppTheme {
   static ThemeData get lightTheme => ThemeData(
     useMaterial3: true,
     snackBarTheme: SnackBarThemeData(behavior: SnackBarBehavior.floating, backgroundColor: const Color(0xFF294737), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)), elevation: 4, insetPadding: const EdgeInsets.all(16)),
-    dialogTheme: DialogThemeData(backgroundColor: const Color(0xFFFFF8F1), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28))),
+    dialogTheme: DialogThemeData(backgroundColor: const Color(0xFFFFF9FA), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28))),
     pageTransitionsTheme: const PageTransitionsTheme(builders: {TargetPlatform.android: FadeForwardsPageTransitionsBuilder()}),
     filledButtonTheme: FilledButtonThemeData(style: FilledButton.styleFrom(shape: const StadiumBorder(), padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 12))),
     segmentedButtonTheme: SegmentedButtonThemeData(style: ButtonStyle(
-      backgroundColor: WidgetStateProperty.resolveWith((states) => states.contains(WidgetState.selected) ? primary : const Color(0xFFFBE9E9)),
-      foregroundColor: WidgetStateProperty.resolveWith((states) => states.contains(WidgetState.selected) ? Colors.white : const Color(0xFF6B6066)),
+      backgroundColor: WidgetStateProperty.resolveWith((s) => s.contains(WidgetState.selected) ? primary : surfaceVariantLight),
+      foregroundColor: WidgetStateProperty.resolveWith((s) => s.contains(WidgetState.selected) ? Colors.white : const Color(0xFF5F5361)),
       side: const WidgetStatePropertyAll(BorderSide.none),
       shape: const WidgetStatePropertyAll(StadiumBorder()),
+      textStyle: const WidgetStatePropertyAll(TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
     )),
     colorScheme: ColorScheme.light(
       primary: primary,
@@ -94,7 +95,7 @@ class AppTheme {
     ),
     scaffoldBackgroundColor: backgroundLight,
     appBarTheme: AppBarTheme(
-      backgroundColor: backgroundLight,
+      backgroundColor: Colors.transparent,
       elevation: 0,
       shadowColor: const Color(0x22C77685),
       surfaceTintColor: Colors.transparent,
@@ -130,7 +131,7 @@ class AppTheme {
         borderSide: BorderSide(color: error, width: 1.5),
       ),
       contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-      labelStyle: TextStyle(color: Color(0xFF9E9E9E), fontSize: 14),
+      labelStyle: TextStyle(color: Color(0xFF6D606B), fontSize: 14),
       floatingLabelStyle: TextStyle(
         color: primary,
         fontSize: 12,

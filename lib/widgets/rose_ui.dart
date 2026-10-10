@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
+import '../services/inventory_service.dart';
+import 'inventory_scene.dart';
 
 /// Shared visual tokens. These components do not change navigation or data.
 class RoseEntrance extends StatelessWidget {
@@ -19,16 +21,7 @@ class RoseLoading extends StatelessWidget {
   final String label;
   const RoseLoading({super.key, this.label = 'Preparamos tu nido…'});
   @override
-  Widget build(BuildContext context) => RoseEntrance(child: Center(child: Padding(
-    padding: const EdgeInsets.all(24),
-    child: Column(mainAxisSize: MainAxisSize.min, children: [
-      Container(width: 72, height: 72, decoration: const BoxDecoration(color: AppTheme.primaryContainer, shape: BoxShape.circle), child: const Icon(Icons.favorite_rounded, color: AppTheme.primary, size: 32)),
-      const SizedBox(height: 20),
-      Text(label, textAlign: TextAlign.center, style: Theme.of(context).textTheme.titleMedium),
-      const SizedBox(height: 16),
-      const SizedBox(width: 128, child: ClipRRect(borderRadius: BorderRadius.all(Radius.circular(8)), child: LinearProgressIndicator(minHeight: 4, color: AppTheme.primary, backgroundColor: AppTheme.primaryContainer))),
-    ]),
-  )));
+  Widget build(BuildContext context) => Center(child: Semantics(label: label, child: const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2, color: AppTheme.primary))));
 }
 
 /// Three generated illustration panels, without embedding UI text in bitmaps.
@@ -56,4 +49,27 @@ class ProductArt extends StatelessWidget {
     minHeight: constraints.maxHeight * 2, maxHeight: constraints.maxHeight * 2,
     child: Image.asset('assets/images/ui/shop-art.png', width: constraints.maxWidth * 3, height: constraints.maxHeight * 2, fit: BoxFit.fill),
   )));
+}
+
+class ProductThumbnail extends StatelessWidget {
+  final InventoryItem item;
+  const ProductThumbnail({super.key, required this.item});
+  @override
+  Widget build(BuildContext context) {
+    if (item.scope == 'room') return RoomItemThumbnail(item: item);
+    if (item.scope == 'pet') {
+      final color = (item.appearance['color'] as String? ?? '#91bda7').replaceFirst('#','').toLowerCase();
+      final file = '${item.slot}-${item.style}-$color.png';
+      return ColoredBox(color: const Color(0xFFFFF5F7), child: Image.asset('assets/images/products/$file', fit: BoxFit.contain, errorBuilder: (_, __, ___) => Center(child: Text('Vista previa disponible al abrir', textAlign: TextAlign.center, style: Theme.of(context).textTheme.bodySmall))));
+    }
+    return ColoredBox(color: item.color.withAlpha(35), child: Center(child: Icon(item.scope == 'pong' ? Icons.sports_tennis_rounded : Icons.style_outlined, size: 48, color: item.color)));
+  }
+}
+
+/// Original generated travel illustrations for the explicitly labelled review.
+class StoryArt extends StatelessWidget {
+  final int panel;
+  const StoryArt({super.key,required this.panel});
+  @override
+  Widget build(BuildContext context) => ClipRect(child:LayoutBuilder(builder:(_,c)=>OverflowBox(alignment:Alignment(0,panel==0?-1:1),minHeight:c.maxHeight*2,maxHeight:c.maxHeight*2,minWidth:c.maxWidth,maxWidth:c.maxWidth,child:Image.asset('assets/images/ui/preview-photos.png',width:c.maxWidth,height:c.maxHeight*2,fit:BoxFit.cover))));
 }

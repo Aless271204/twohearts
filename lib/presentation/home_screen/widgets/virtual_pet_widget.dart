@@ -1,3 +1,6 @@
+import '../../../widgets/rose_ui.dart';
+import '../../../widgets/twohearts_ui.dart';
+import '../../../theme/app_theme.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
 import '../../../services/shared_pet_service.dart';
@@ -160,6 +163,7 @@ class VirtualPetWidget extends StatefulWidget {
   final int happiness;
   final int level;
   final VoidCallback onFeed;
+  final bool previewMode;
 
   const VirtualPetWidget({
     super.key,
@@ -168,6 +172,7 @@ class VirtualPetWidget extends StatefulWidget {
     required this.happiness,
     required this.level,
     required this.onFeed,
+    this.previewMode=false,
   });
 
   @override
@@ -201,17 +206,17 @@ class _VirtualPetWidgetState extends State<VirtualPetWidget>
     super.initState();
     InventoryService.instance.addListener(_inventoryChanged);
     _pet.addListener(_inventoryChanged);
-    _pet.refresh().catchError((Object _) {});
-    _carePoll = Timer.periodic(const Duration(seconds: 20), (_) {
+    if(!widget.previewMode) _pet.refresh().catchError((Object _) {});
+    if(!widget.previewMode) _carePoll = Timer.periodic(const Duration(seconds: 20), (_) {
       _pet.refresh().catchError((Object _) {});
-      InventoryService.instance.refresh().catchError((Object _) {});
+      if(!widget.previewMode) InventoryService.instance.refresh().catchError((Object _) {});
     });
-    InventoryService.instance.refresh().catchError((Object _) {});
+    if(!widget.previewMode) InventoryService.instance.refresh().catchError((Object _) {});
 
     _idleController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 2000),
-    )..repeat(reverse: true);
+    );
 
     _tapController = AnimationController(
       vsync: this,
@@ -226,7 +231,7 @@ class _VirtualPetWidgetState extends State<VirtualPetWidget>
     _glowController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 3000),
-    )..repeat(reverse: true);
+    );
 
     _idleAnim = Tween<double>(begin: 0, end: 1).animate(
       CurvedAnimation(parent: _idleController, curve: Curves.easeInOut),
@@ -296,6 +301,7 @@ class _VirtualPetWidgetState extends State<VirtualPetWidget>
   }
 
   Future<void> _care(String action) async {
+    if(widget.previewMode){_tapController.forward(from:0);return;}
     if (_careBusy) return;
     _careBusy = true;
     try {
@@ -318,22 +324,18 @@ class _VirtualPetWidgetState extends State<VirtualPetWidget>
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Column(children: [
-      Padding(padding: const EdgeInsets.fromLTRB(20, 10, 20, 6), child: Row(children: [_buildLevelBadge(), const Spacer(), _buildCoinsBadge()])),
-      TextButton.icon(onPressed: _pet.ready ? () => showModalBottomSheet(useRootNavigator: true, context: context, isScrollControlled: true, builder: (_) => const PetFamilySheet()) : null, icon: const Icon(Icons.pets_outlined), label: Text('${_pet.displayName} · ${PetModelCatalog.stageFor(_pet.level)}')),
-      Expanded(child: Padding(padding: const EdgeInsets.symmetric(horizontal: 12), child: ClipRRect(borderRadius: BorderRadius.circular(28), child: Stack(children: [
-        Positioned.fill(child: InventoryScene(loadout: InventoryService.instance.loadout)),
-        _buildPetCharacter(),
-        Positioned(top: 12, right: 12, child: FilledButton.tonalIcon(onPressed: () => Navigator.of(context, rootNavigator: true).push(MaterialPageRoute<void>(builder: (_) => const ShopScreen(initialScope: 'room'))), icon: const Icon(Icons.chair_outlined, size: 18), label: const Text('Decorar'))),
-      ])))),
-      Padding(padding: const EdgeInsets.fromLTRB(20, 8, 20, 4), child: Text(!_pet.ready ? 'Conectando con vuestro nido…' : _pet.paired ? 'Una mascota para los dos · Cuidado compartido' : 'Vincula a tu pareja para cuidarlo juntos', textAlign: TextAlign.center, style: const TextStyle(color: Color(0xFF716B78), fontSize: 11))),
-      Container(margin: const EdgeInsets.fromLTRB(12, 8, 12, 12), padding: const EdgeInsets.symmetric(vertical: 12), decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(24), boxShadow: const [BoxShadow(color: Color(0x0CC77685), blurRadius: 16, offset: Offset(0, 4))]), child: Column(children: [
-        _buildBottomHUD(), const SizedBox(height: 12),
-        Padding(padding: const EdgeInsets.symmetric(horizontal: 16), child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [_buildCareMeterIcon(), _buildEvolutionIcon(), _buildMoodsIcon()])),
-      ])),
-    ]);
-  }
+  Widget build(BuildContext context) => LayoutBuilder(builder:(context,c)=>SingleChildScrollView(child:Column(children:[
+    Padding(padding:const EdgeInsets.symmetric(horizontal:12),child:ClipRRect(borderRadius:BorderRadius.circular(26),child:SizedBox(height:(c.maxWidth*1.10).clamp(310.0,470.0),child:PetRoomStage(loadout:InventoryService.instance.loadout,onTap:_handlePetTap,pet:Pet3DViewer(modelPath:PetModelCatalog.modelPathFor(_pet.species),petLevel:_pet.level,altText:'${_pet.displayName}, mascota compartida',autoPlay:true,cameraControls:false,animationName:'Natural_Rest'))))),
+    Padding(padding:const EdgeInsets.fromLTRB(12,8,12,0),child:Card(child:ListTile(contentPadding:const EdgeInsets.symmetric(horizontal:14),leading:const Icon(Icons.favorite_rounded,color:AppTheme.primary,size:32),title:Text(_pet.displayName,style:const TextStyle(fontWeight:FontWeight.w700)),subtitle:Row(children:[Text('Nivel ${_pet.level}',style:const TextStyle(fontSize:12)),const SizedBox(width:10),Expanded(child:ClipRRect(borderRadius:BorderRadius.circular(99),child:LinearProgressIndicator(value:(_pet.level%5)/5,minHeight:5,backgroundColor:Color(0xFFF5E5EB),color:AppTheme.primary)))]),trailing:const Icon(Icons.chevron_right_rounded),onTap:()=>showModalBottomSheet(useRootNavigator:true,context:context,isScrollControlled:true,builder:(_)=>const PetFamilySheet())))),
+    Padding(padding:const EdgeInsets.symmetric(vertical:14),child:_buildBottomHUD()),
+    Container(margin:const EdgeInsets.fromLTRB(12,0,12,16),padding:const EdgeInsets.all(12),decoration:BoxDecoration(color:Colors.white,borderRadius:BorderRadius.circular(22)),child:Column(children:[
+      Row(children:[const Text('Accesorios',style:TextStyle(fontSize:15,fontWeight:FontWeight.w700)),const Spacer(),HeartButton(label:'Decorar',icon:Icons.edit_outlined,outlined:true,onPressed:()=>Navigator.of(context,rootNavigator:true).push(MaterialPageRoute<void>(builder:(_)=>ShopScreen(initialScope:'room',previewMode:widget.previewMode))))]),
+      const SizedBox(height:8),
+      SizedBox(height:68,child:ListView.separated(scrollDirection:Axis.horizontal,itemCount:InventoryService.instance.catalog.where((i)=>i.scope=='pet').take(8).length,separatorBuilder:(_,__)=>const SizedBox(width:8),itemBuilder:(_,i){final item=InventoryService.instance.catalog.where((i)=>i.scope=='pet').take(8).elementAt(i);return InkWell(onTap:()=>Navigator.of(context,rootNavigator:true).push(MaterialPageRoute<void>(builder:(_)=>ShopScreen(previewMode:widget.previewMode))),borderRadius:BorderRadius.circular(16),child:ClipRRect(borderRadius:BorderRadius.circular(16),child:SizedBox(width:68,child:ProductThumbnail(item:item))));})),
+      const SizedBox(height:8),
+      Wrap(alignment:WrapAlignment.center,spacing:4,children:[TextButton.icon(onPressed:_showCareMeterSheet,icon:const Icon(Icons.favorite_border_rounded,size:16),label:const Text('Cuidados')),TextButton.icon(onPressed:_showEvolutionSheet,icon:const Icon(Icons.auto_awesome_outlined,size:16),label:const Text('Evolución')),TextButton.icon(onPressed:_showMoodSelector,icon:const Icon(Icons.mood_rounded,size:16),label:const Text('Ánimo'))]),
+    ])),
+  ])));
 
   // ── Pet Character ──────────────────────────────────────────────────────────
 
@@ -381,8 +383,8 @@ class _VirtualPetWidgetState extends State<VirtualPetWidget>
               },
               child: FractionallySizedBox(
                 alignment: Alignment.bottomCenter,
-                widthFactor: 0.82,
-                heightFactor: 0.90,
+                widthFactor: 1.0,
+                heightFactor: 1.0,
                 child: Stack(
                   fit: StackFit.expand,
                   children: [
@@ -586,7 +588,7 @@ class _VirtualPetWidgetState extends State<VirtualPetWidget>
           ),
           _HudActionButton(
             emoji: '💤',
-            label: 'Dormir',
+            label: 'Descansar',
             color: const Color(0xFFB39DDB),
             onTap: () {
               HapticFeedback.lightImpact();
@@ -715,7 +717,7 @@ class _VirtualPetWidgetState extends State<VirtualPetWidget>
             const Icon(
               Icons.keyboard_arrow_up_rounded,
               size: 14,
-              color: Color(0xFF9E9E9E),
+              color: Color(0xFF716671),
             ),
           ],
         ),
@@ -880,49 +882,10 @@ class _HudActionButton extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            width: 52,
-            height: 52,
-            decoration: BoxDecoration(
-              color: Colors.white.withAlpha(230),
-              shape: BoxShape.circle,
-              boxShadow: [
-                BoxShadow(
-                  color: color.withAlpha(22),
-                  blurRadius: 12,
-                  offset: const Offset(0, 4),
-                ),
-                BoxShadow(
-                  color: Colors.black.withAlpha(20),
-                  blurRadius: 6,
-                  offset: const Offset(0, 2),
-                ),
-              ],
-              border: Border.all(color: color.withAlpha(60), width: 2),
-            ),
-            child: Center(
-              child: Text(emoji, style: const TextStyle(fontSize: 24)),
-            ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            label,
-            style: GoogleFonts.dmSans(
-              fontSize: 10,
-              fontWeight: FontWeight.w600,
-              color: const Color(0xFF716B78),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+  Widget build(BuildContext context)=>Semantics(button:true,label:label,child:InkWell(onTap:onTap,borderRadius:BorderRadius.circular(40),child:Padding(padding:const EdgeInsets.symmetric(horizontal:4),child:Column(mainAxisSize:MainAxisSize.min,children:[
+    Container(width:58,height:58,decoration:BoxDecoration(color:Colors.white,shape:BoxShape.circle,boxShadow:const[BoxShadow(color:Color(0x12EA5782),blurRadius:12,offset:Offset(0,4))]),child:Center(child:Container(width:46,height:46,decoration:BoxDecoration(color:color.withAlpha(23),shape:BoxShape.circle),child:Icon(emoji=='🍎'?Icons.restaurant_rounded:emoji=='🎮'?Icons.favorite_rounded:emoji=='💌'?Icons.mail_outline_rounded:Icons.nightlight_round,color:emoji=='💤'?const Color(0xFF9A68D9):AppTheme.primary,size:27)))),
+    const SizedBox(height:5),Text(label,style:const TextStyle(fontSize:11,color:Color(0xFF504451))),
+  ]))));
 }
 
 // ── Care Meter Sheet ───────────────────────────────────────────────────────────
@@ -933,6 +896,7 @@ class _CareMeterSheet extends StatelessWidget {
   final int energy;
   final Color Function(int) meterColor;
   final VoidCallback onFeed;
+  final bool previewMode;
   final VoidCallback onPlay;
   final VoidCallback onSleep;
 
@@ -942,6 +906,7 @@ class _CareMeterSheet extends StatelessWidget {
     required this.energy,
     required this.meterColor,
     required this.onFeed,
+    this.previewMode=false,
     required this.onPlay,
     required this.onSleep,
   });
@@ -1012,7 +977,7 @@ class _CareMeterSheet extends StatelessWidget {
               Expanded(
                 child: _SheetActionButton(
                   emoji: '💤',
-                  label: 'Dormir',
+                  label: 'Descansar',
                   color: const Color(0xFFB39DDB),
                   onTap: onSleep,
                 ),
@@ -1091,7 +1056,7 @@ class _SheetActionButton extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 12),
+        padding: const EdgeInsets.symmetric(vertical: 8),
         decoration: BoxDecoration(
           color: color.withAlpha(25),
           borderRadius: BorderRadius.circular(14),
@@ -1171,7 +1136,7 @@ class _MoodSelectorSheet extends StatelessWidget {
             'Cada actividad desbloquea un nuevo mood',
             style: GoogleFonts.dmSans(
               fontSize: 12,
-              color: const Color(0xFF9E9E9E),
+              color: const Color(0xFF716671),
             ),
           ),
           const SizedBox(height: 16),
@@ -1236,11 +1201,11 @@ class _MoodSelectorSheet extends StatelessWidget {
                       Text(
                         mood.name,
                         style: GoogleFonts.dmSans(
-                          fontSize: 10,
+                          fontSize: 12,
                           fontWeight: FontWeight.w600,
                           color: mood.unlocked
                               ? const Color(0xFF1A1A1A)
-                              : const Color(0xFF9E9E9E),
+                              : const Color(0xFF716671),
                         ),
                         textAlign: TextAlign.center,
                         overflow: TextOverflow.ellipsis,
@@ -1306,7 +1271,7 @@ class _EvolutionSheet extends StatelessWidget {
             'Cuídalo y hagan actividades juntos para evolucionar',
             style: GoogleFonts.dmSans(
               fontSize: 12,
-              color: const Color(0xFF9E9E9E),
+              color: const Color(0xFF716671),
             ),
           ),
           const SizedBox(height: 16),
@@ -1364,7 +1329,7 @@ class _EvolutionSheet extends StatelessWidget {
                         fontWeight: FontWeight.w700,
                         color: unlocked
                             ? const Color(0xFF1A1A1A)
-                            : const Color(0xFF9E9E9E),
+                            : const Color(0xFF716671),
                       ),
                     ),
                     Container(
@@ -1381,11 +1346,11 @@ class _EvolutionSheet extends StatelessWidget {
                       child: Text(
                         'Nv. ${stage.requiredLevel}',
                         style: GoogleFonts.dmSans(
-                          fontSize: 9,
+                          fontSize: 11,
                           fontWeight: FontWeight.w600,
                           color: unlocked
                               ? const Color(0xFF3A3A3A)
-                              : const Color(0xFF9E9E9E),
+                              : const Color(0xFF716671),
                         ),
                       ),
                     ),

@@ -1,3 +1,4 @@
+import '../../widgets/twohearts_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
@@ -9,7 +10,8 @@ import '../../core/pet_model_catalog.dart';
 import './widgets/virtual_pet_widget.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  final bool previewMode;
+  const HomeScreen({super.key,this.previewMode=false});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -79,7 +81,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       begin: 0,
       end: 1,
     ).animate(CurvedAnimation(parent: _bgController, curve: Curves.easeInOut));
-    _loadCoupleData();
+    if(!widget.previewMode)_loadCoupleData();
   }
 
   Future<void> _loadCoupleData() async {
@@ -134,7 +136,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return Scaffold(
-      backgroundColor: AppTheme.backgroundLight,
+      backgroundColor: Colors.transparent,
       body: Stack(
         children: [
           // ── Animated cozy room background ──────────────────────────────
@@ -155,6 +157,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                     happiness: _coupleData['petHappiness'] as int,
                     level: _coupleData['petLevel'] as int,
                     onFeed: () {},
+                    previewMode:widget.previewMode,
                   ),
                 ),
               ],
@@ -415,117 +418,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   }
 
   // ── Top couple info bar ─────────────────────────────────────────────────────
-  Widget _buildTopInfoBar() {
-    final myName = _coupleData['myName'] as String;
-    final partnerName = _coupleData['partnerName'] as String;
-    final hasPartner =
-        (_coupleData['partnerId'] as String?) != null ||
-        partnerName.isNotEmpty && partnerName != 'Tu pareja';
+  Widget _buildTopInfoBar() => HeartHeader(title:'Mi mascota',actions:[HeartIconButton(icon:Icons.settings_outlined,tooltip:'Ajustes',onPressed:()=>context.push(AppRoutes.profileScreen)),HeartIconButton(icon:Icons.link_rounded,tooltip:'Vincular pareja',onPressed:()=>context.push(AppRoutes.pairingScreen))]);
 
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 12, 20, 0),
-      child: Row(
-        children: [
-          // Nido mascota label
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-            decoration: BoxDecoration(
-              color: Colors.white.withAlpha(200),
-              borderRadius: BorderRadius.circular(999),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Text('🪺', style: TextStyle(fontSize: 13)),
-                const SizedBox(width: 4),
-                Text(
-                  'Mi mascota',
-                  style: GoogleFonts.dmSans(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
-                    color: const Color(0xFF5D4037),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const Spacer(),
-          // Show pairing button if no partner
-          if (!hasPartner)
-            GestureDetector(
-              onTap: () => context.push(AppRoutes.pairingScreen),
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 6,
-                ),
-                decoration: BoxDecoration(
-                  color: AppTheme.primary.withAlpha(220),
-                  borderRadius: BorderRadius.circular(999),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Text('🔗', style: TextStyle(fontSize: 12)),
-                    const SizedBox(width: 4),
-                    Text(
-                      'Enlazar Nido',
-                      style: GoogleFonts.dmSans(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            )
-          else if (myName.isNotEmpty || partnerName.isNotEmpty)
-            GestureDetector(
-              onTap: _showEditProfileSheet,
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 6,
-                ),
-                decoration: BoxDecoration(
-                  color: Colors.white.withAlpha(200),
-                  borderRadius: BorderRadius.circular(999),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      myName.isNotEmpty ? myName : 'Tú',
-                      style: GoogleFonts.dmSans(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
-                        color: const Color(0xFF5D4037),
-                      ),
-                    ),
-                    if (partnerName.isNotEmpty) ...[
-                      Text(
-                        ' & $partnerName',
-                        style: GoogleFonts.dmSans(
-                          fontSize: 12,
-                          color: const Color(0xFF8D6E63),
-                        ),
-                      ),
-                    ],
-                    const SizedBox(width: 4),
-                    const Icon(
-                      Icons.edit_outlined,
-                      size: 12,
-                      color: Color(0xFF8D6E63),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-        ],
-      ),
-    );
-  }
 }
 
 // ── Edit Profile Bottom Sheet ──────────────────────────────────────────────────

@@ -4,6 +4,15 @@ export function showRunnerError(error, stage = 'carga') {
   if (reported) return;reported = true;
   clearTimeout(window.runnerBootTimer);
   const reason = String(error?.message || error || 'Error desconocido').slice(0, 600);
+  if (new URLSearchParams(location.search).get('pet') === '1') {
+    const loader = document.getElementById('pet-loader');
+    loader.style.cssText = 'display:flex;position:fixed;inset:0;align-items:center;justify-content:center;flex-direction:column;gap:12px;color:#746874;font:13px system-ui;text-align:center;padding:20px';
+    loader.textContent = 'No pudimos cargar tu mascota.';
+    const retry = document.createElement('button');retry.textContent = 'Reintentar';
+    retry.style.cssText = 'background:#fff5f7;color:#e54378;border:1px solid #ffd0df;border-radius:99px;padding:10px 18px;font-size:13px';
+    retry.addEventListener('click', () => location.reload());loader.append(retry);
+    console.error('Pet renderer failed', stage, reason);return;
+  }
   document.getElementById('title').textContent = 'No pudimos abrir el bosque';
   document.getElementById('message').textContent = 'Toca «Ver detalle» y envíanos ese texto para revisar el fallo de tu teléfono.';
   const panel = document.getElementById('panel');panel.hidden = false;

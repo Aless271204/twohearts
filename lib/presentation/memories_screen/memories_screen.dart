@@ -1,3 +1,5 @@
+import '../../services/app_language.dart';
+import '../../widgets/twohearts_ui.dart';
 import '../../widgets/private_memory_image.dart';
 import '../../widgets/rose_ui.dart';
 import 'package:flutter/material.dart';
@@ -16,7 +18,8 @@ import '../home_screen/widgets/couple_header_widget.dart';
 import './widgets/create_album_sheet.dart';
 
 class MemoriesScreen extends StatefulWidget {
-  const MemoriesScreen({super.key});
+  final List<MemoryAlbum>? previewAlbums;
+  const MemoriesScreen({super.key,this.previewAlbums});
 
   @override
   State<MemoriesScreen> createState() => _MemoriesScreenState();
@@ -45,7 +48,7 @@ class _MemoriesScreenState extends State<MemoriesScreen> {
   @override
   void initState() {
     super.initState();
-    _loadCoupleData();
+    if(widget.previewAlbums==null) _loadCoupleData(); else { _loadingProfile=false;_coupleData={..._coupleData,'myName':'Tú','partnerName':'Tu pareja','myNickname':'Tú','partnerNickname':'Tu pareja','startDate':DateTime.now().subtract(const Duration(days:365)),'myCity':'Quito','partnerCity':'Barcelona','distanceKm':9350}; }
     ProfileChangeNotifier.instance.addListener(_onProfileChanged);
   }
 
@@ -97,26 +100,7 @@ class _MemoriesScreenState extends State<MemoriesScreen> {
     }
   }
 
-  String _getDailyQuote() {
-    const quotes = [
-      'La distancia no es un obstáculo, es solo una prueba de cuánto vale su amor.',
-      'Cada kilómetro que nos separa es un paso más cerca de nuestro reencuentro.',
-      'El amor verdadero no conoce fronteras ni distancias.',
-      'Aunque estemos lejos, nuestros corazones laten al mismo ritmo.',
-      'La espera hace que cada momento juntos sea aún más especial.',
-      'El amor a distancia es para los valientes que creen en algo más grande.',
-      'Cada mensaje tuyo es un abrazo que llega a través de la pantalla.',
-      'La distancia es temporal, pero nuestro amor es eterno.',
-      'Te extraño tanto que hasta el silencio tiene tu nombre.',
-      'Somos la prueba de que el amor puede con todo.',
-      'Cada noche que dormimos bajo las mismas estrellas, no estamos tan lejos.',
-      'El amor verdadero espera, confía y nunca se rinde.',
-    ];
-    final idx =
-        DateTime.now().difference(DateTime(DateTime.now().year)).inDays %
-        quotes.length;
-    return quotes[idx];
-  }
+  String _getDailyQuote(){final quotes=AppLanguage.instance.quotes;final now=DateTime.now();return quotes[now.difference(DateTime(now.year)).inDays%quotes.length]['text']!;}
 
   @override
   void dispose() {
@@ -133,86 +117,17 @@ class _MemoriesScreenState extends State<MemoriesScreen> {
         : (myNick.isNotEmpty ? myNick : '💑 Nosotros');
 
     return Scaffold(
-      backgroundColor: AppTheme.backgroundLight,
+      backgroundColor: Colors.transparent,
       body: SafeArea(
         bottom: false,
         child: Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
-              child: Row(
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          const Text('🪺', style: TextStyle(fontSize: 18)),
-                          const SizedBox(width: 6),
-                          Text(
-                            'Nuestro Nido',
-                            style: GoogleFonts.dmSans(
-                              fontSize: 22,
-                              fontWeight: FontWeight.w700,
-                              color: const Color(0xFF1A1A1A),
-                            ),
-                          ),
-                        ],
-                      ),
-                      _loadingProfile
-                          ? Container(
-                              width: 80,
-                              height: 12,
-                              decoration: BoxDecoration(
-                                color: Colors.grey.withAlpha(60),
-                                borderRadius: BorderRadius.circular(6),
-                              ),
-                            )
-                          : Text(
-                              coupleLabel,
-                              style: GoogleFonts.dmSans(
-                                fontSize: 13,
-                                color: AppTheme.primary,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                    ],
-                  ),
-                  const Spacer(),
-                  GestureDetector(
-                    onTap: () => context.push(AppRoutes.profileScreen),
-                    child: Container(
-                      width: 44,
-                      height: 44,
-                      decoration: BoxDecoration(
-                        gradient: const LinearGradient(
-                          colors: [AppTheme.primary, Color(0xFFFF7A9A)],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                        ),
-                        borderRadius: BorderRadius.circular(14),
-                        boxShadow: [
-                          BoxShadow(
-                            color: AppTheme.primary.withAlpha(50),
-                            blurRadius: 8,
-                            offset: const Offset(0, 3),
-                          ),
-                        ],
-                      ),
-                      child: const Icon(
-                        Icons.settings_outlined,
-                        color: Colors.white,
-                        size: 20,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            HeartHeader(title:'Nuestro Nido',subtitle:coupleLabel,leading:const Icon(Icons.cottage_rounded,color:AppTheme.primary,size:30),actions:[HeartIconButton(icon:Icons.settings_outlined,tooltip:'Ajustes',onPressed:()=>context.push(AppRoutes.profileScreen))]),
             const SizedBox(height: 16),
             Expanded(
               child: _AlbumJuntosTab(
                 coupleData: _coupleData,
+                previewAlbums:widget.previewAlbums,
                 daysTogether: _daysTogether,
                 realtimeDistance: _realtimeDistance,
                 onRealtimeToggle: (val) =>
@@ -238,12 +153,14 @@ enum _AlbumViewMode { todos, lugares, fechas, especiales }
 
 class _AlbumJuntosTab extends StatefulWidget {
   final Map<String, dynamic> coupleData;
+  final List<MemoryAlbum>? previewAlbums;
   final int daysTogether;
   final bool realtimeDistance;
   final ValueChanged<bool> onRealtimeToggle;
 
   const _AlbumJuntosTab({
     required this.coupleData,
+    this.previewAlbums,
     required this.daysTogether,
     required this.realtimeDistance,
     required this.onRealtimeToggle,
@@ -261,8 +178,8 @@ class _AlbumJuntosTabState extends State<_AlbumJuntosTab> {
   @override
   void initState() {
     super.initState();
-    _albumsStream = MemoryAlbumService.instance.albumsStream();
-    _tripsStream = SupabaseService.instance.tripsStream();
+    _albumsStream = widget.previewAlbums!=null?Stream.value(widget.previewAlbums!):MemoryAlbumService.instance.albumsStream();
+    _tripsStream = widget.previewAlbums!=null?Stream.value([]):SupabaseService.instance.tripsStream();
   }
 
   void _showCreateAlbumSheet(BuildContext context) {
@@ -318,18 +235,6 @@ class _AlbumJuntosTabState extends State<_AlbumJuntosTab> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Daily quote
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
-                    child: Text(
-                      '✨ Frase del día',
-                      style: GoogleFonts.dmSans(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w700,
-                        color: const Color(0xFF1A1A1A),
-                      ),
-                    ),
-                  ),
                   const DailyQuoteWidget(),
 
                   // Couple stats header
@@ -421,87 +326,7 @@ class _AlbumJuntosTabState extends State<_AlbumJuntosTab> {
     );
   }
 
-  Widget _buildAlbumHeader(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: Row(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  AppTheme.primary.withAlpha(30),
-                  AppTheme.secondary.withAlpha(20),
-                ],
-              ),
-              borderRadius: BorderRadius.circular(14),
-            ),
-            child: const Text('📷', style: TextStyle(fontSize: 20)),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Nuestro Álbum Juntos',
-                  style: GoogleFonts.dmSans(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w700,
-                    color: const Color(0xFF1A1A1A),
-                  ),
-                ),
-                Text(
-                  'Todos sus recuerdos en un solo lugar',
-                  style: GoogleFonts.dmSans(
-                    fontSize: 12,
-                    color: const Color(0xFF9E9E9E),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          GestureDetector(
-            onTap: () => _showCreateAlbumSheet(context),
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-              decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  colors: [AppTheme.primary, Color(0xFFFF7A9A)],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-                borderRadius: BorderRadius.circular(12),
-                boxShadow: [
-                  BoxShadow(
-                    color: AppTheme.primary.withAlpha(50),
-                    blurRadius: 8,
-                    offset: const Offset(0, 3),
-                  ),
-                ],
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Icon(Icons.add_rounded, color: Colors.white, size: 16),
-                  const SizedBox(width: 4),
-                  Text(
-                    'Crear',
-                    style: GoogleFonts.dmSans(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w700,
-                      color: Colors.white,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+  Widget _buildAlbumHeader(BuildContext context)=>Padding(padding:const EdgeInsets.symmetric(horizontal:20),child:Row(children:[const Expanded(child:Text('Nuestro álbum',style:TextStyle(fontSize:18,fontWeight:FontWeight.w700))),HeartButton(label:'Crear',icon:Icons.add, onPressed:()=>_showCreateAlbumSheet(context))]));
 
   Widget _buildViewFilterChips() {
     final filters = [
@@ -1098,7 +923,7 @@ class _AlbumJuntosTabState extends State<_AlbumJuntosTab> {
               subtitle,
               style: GoogleFonts.dmSans(
                 fontSize: 12,
-                color: const Color(0xFF9E9E9E),
+                color: const Color(0xFF746874),
                 height: 1.4,
               ),
               textAlign: TextAlign.center,
@@ -1198,14 +1023,14 @@ class _AlbumCarouselCardState extends State<_AlbumCarouselCard> {
                       const Icon(
                         Icons.photo_library_outlined,
                         size: 11,
-                        color: Color(0xFF9E9E9E),
+                        color: Color(0xFF746874),
                       ),
                       const SizedBox(width: 3),
                       Text(
                         '${album.photoUrls.length} foto${album.photoUrls.length != 1 ? 's' : ''}',
                         style: GoogleFonts.dmSans(
                           fontSize: 11,
-                          color: const Color(0xFF9E9E9E),
+                          color: const Color(0xFF746874),
                         ),
                       ),
                       if (album.spotifyTrackName?.isNotEmpty == true) ...[
@@ -1412,14 +1237,14 @@ class _AlbumCardState extends State<_AlbumCard> {
                             const Icon(
                               Icons.photo_library_outlined,
                               size: 12,
-                              color: Color(0xFF9E9E9E),
+                              color: Color(0xFF746874),
                             ),
                             const SizedBox(width: 4),
                             Text(
                               '${album.photoUrls.length} foto${album.photoUrls.length != 1 ? 's' : ''}',
                               style: GoogleFonts.dmSans(
                                 fontSize: 12,
-                                color: const Color(0xFF9E9E9E),
+                                color: const Color(0xFF746874),
                               ),
                             ),
                             if (hasSpotify) ...[
@@ -1447,7 +1272,7 @@ class _AlbumCardState extends State<_AlbumCard> {
                     _expanded
                         ? Icons.keyboard_arrow_up_rounded
                         : Icons.keyboard_arrow_down_rounded,
-                    color: const Color(0xFF9E9E9E),
+                    color: const Color(0xFF746874),
                     size: 22,
                   ),
                 ],
@@ -1648,7 +1473,7 @@ class _LocationCard extends StatelessWidget {
                       date,
                       style: GoogleFonts.dmSans(
                         fontSize: 11,
-                        color: const Color(0xFF9E9E9E),
+                        color: const Color(0xFF746874),
                       ),
                     ),
                   ],
@@ -1708,7 +1533,7 @@ class _SpecialDayChip extends StatelessWidget {
             day['date'] ?? '',
             style: GoogleFonts.dmSans(
               fontSize: 9,
-              color: const Color(0xFF9E9E9E),
+              color: const Color(0xFF746874),
             ),
             textAlign: TextAlign.center,
             maxLines: 1,
@@ -1798,7 +1623,7 @@ class _AlbumDetailSheetState extends State<_AlbumDetailSheet> {
                     IconButton(
                       onPressed: () => Navigator.of(context).pop(),
                       icon: const Icon(Icons.close_rounded, size: 22),
-                      color: const Color(0xFF9E9E9E),
+                      color: const Color(0xFF746874),
                     ),
                   ],
                 ),

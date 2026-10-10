@@ -15,6 +15,9 @@
 <div id="controls"><button id="left" aria-label="Mover a la izquierda">←</button><button id="jump">Saltar</button><button id="right" aria-label="Mover a la derecha">→</button></div>
 <style>.pet-only{background:transparent}.pet-only #hud,.pet-only #panel,.pet-only #controls,.pet-only #biome,.pet-only #toast{display:none}#progress{display:block;width:100%;height:5px;margin-top:6px;accent-color:#f6ce68}#goal{display:block;margin-top:4px;color:#ffe09a}#hud span,#biome,#controls button{backdrop-filter:none}</style>
 <div id="biome">🌿 1. BOSQUE<small><span id="difficulty">Ritmo 1/5</span> · Un bosque lleno de vida</small><span id="record">🏆 Récord: 0 m</span><span id="goal">Siguiente hito · 500 m</span><progress id="progress" value="0" max="500"></progress></div>
+<div id="pet-loader" aria-label="Cargando mascota"></div>
+<style>#pet-loader{display:none}.pet-only #pet-loader{display:block;position:fixed;left:calc(50% - 10px);top:calc(50% - 10px);width:20px;height:20px;border:2px solid #f3dde4;border-top-color:#f05280;border-radius:50%;animation:spin .8s linear infinite}.pet-only canvas{opacity:0}.pet-ready canvas{opacity:1;transition:opacity .22s ease}.pet-ready #pet-loader{display:none}.pet-only #card{display:none}</style>
+<script>if(new URLSearchParams(location.search).get('pet')==='1')document.body.classList.add('pet-only');</script>
 <script type="importmap">{"imports":{"three":"./vendor/three.module.js","three/addons/":"./vendor/"}}</script>
 <script type="module" src="diagnostics.js"></script>
 <script type="module" src="game.js"></script>

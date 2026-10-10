@@ -1,7 +1,7 @@
 name: twohearts
 description: A new Flutter project.
 publish_to: none
-version: 1.1.5+10
+version: 1.1.6+11
 
 environment:
   sdk: ^3.9.0
@@ -10,6 +10,9 @@ dependencies:
   flutter:       # CRITICAL: Required for every Flutter project - DO NOT REMOVE
     sdk: flutter # CRITICAL: Required for every Flutter project - DO NOT REMOVE
   
+  flutter_localizations:
+    sdk: flutter
+
   # CRITICAL: Core UI and responsive design - DO NOT REMOVE OR MODIFY
   supabase_flutter: ^2.9.1
   sizer: ^2.0.15              # Required for responsive design system
@@ -51,6 +54,7 @@ flutter:
     - assets/images/
     - assets/images/pets/
     - assets/images/ui/
+    - assets/images/products/
     - assets/models/
     - assets/runner/
     - assets/runner/play-models/

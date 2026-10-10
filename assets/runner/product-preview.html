@@ -1,0 +1,10 @@
+<!doctype html><html><meta charset="utf-8"><style>body{margin:0;background:transparent}canvas{display:block}</style><script type="importmap">{"imports":{"three":"./vendor/three.module.js"}}</script><script type="module">
+import * as THREE from 'three';import {equipRunnerCosmetics} from './cosmetics.js';
+const input=JSON.parse(new URLSearchParams(location.search).get('item'));
+const scene=new THREE.Scene(),pet=new THREE.Group();scene.add(pet);equipRunnerCosmetics(pet,{[input.slot]:input});
+scene.add(new THREE.HemisphereLight(0xfff7f2,0xb3abc5,2));const key=new THREE.DirectionalLight(0xffffff,2.5);key.position.set(-3,5,6);scene.add(key);
+const bounds=new THREE.Box3().setFromObject(pet),size=bounds.getSize(new THREE.Vector3()),center=bounds.getCenter(new THREE.Vector3());pet.position.sub(center);
+const radius=Math.max(size.x,size.y,size.z)*.68;const camera=new THREE.OrthographicCamera(-radius*1.2,radius*1.2,radius,-radius,.01,20);
+camera.position.set(radius*.7,radius*.55,radius*3);if(input.slot==='pet_back')camera.position.z=-radius*3;camera.lookAt(0,0,0);
+const renderer=new THREE.WebGLRenderer({antialias:true,alpha:true,preserveDrawingBuffer:true});renderer.setPixelRatio(2);renderer.setSize(180,150);renderer.setClearColor(0,0);renderer.outputColorSpace=THREE.SRGBColorSpace;document.body.append(renderer.domElement);renderer.render(scene,camera);window.thumbnailReady=true;
+</script></html>

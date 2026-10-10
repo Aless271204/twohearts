@@ -177,6 +177,7 @@ class _ForestRunnerViewState extends State<ForestRunnerView> with WidgetsBinding
   Widget build(BuildContext context) {
     if (_error != null)
       return SceneStatus(title: 'No pudimos abrir el bosque', message: _error!, loading: false, onRetry: () => Navigator.maybePop(context));
+    if (_controller == null && widget.petOnly) return const Center(child: SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2, color: Color(0xFFF05280))));
     if (_controller == null)
       return const SceneStatus(title: 'Preparando tu aventura', message: 'Abrimos el bosque y preparamos a tu mascota…');
     return WebViewWidget(controller: _controller!);

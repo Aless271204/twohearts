@@ -65,7 +65,7 @@ const particlePositions=new Float32Array(45*3);
 for(let i=0;i<45;i++){particlePositions[i*3]=Math.sin(i*17)*8;particlePositions[i*3+1]=1+(i%7)*.55;particlePositions[i*3+2]=-i*2;}
 const particlesGeometry=new THREE.BufferGeometry();particlesGeometry.setAttribute('position',new THREE.BufferAttribute(particlePositions,3));
 const particles=new THREE.Points(particlesGeometry,new THREE.PointsMaterial({color:0xffe6a0,size:.05,transparent:true,opacity:.65,depthWrite:false}));scene.add(particles);
-let ready=false,running=false,paused=false;
+let ready=false,running=false,paused=false,petFraming=null;
 let checkpointIndex=1,checkpointElapsed=0,checkpointBusy=false,checkpointFailed=false,terminalAfterCheckpoint=false;
 let bestDistance=0;
 let sessionId=null,frames=[],pendingInputs=[],pendingSave=null,runElapsed=0;
@@ -248,8 +248,15 @@ function frame(now){
   }
   shadow.position.x=x;shadow.material.opacity=.22/(1+height);shadow.scale.set(petOnly?.7:1+height*.18,petOnly?.45:.65+height*.1,1);
   cameraX=THREE.MathUtils.lerp(cameraX,petOnly?0:x*.72,1-Math.exp(-dt*9));
-  camera.position.set(cameraX,petOnly?.75:2.35,petOnly?(species==='pig'?2.8:2.2):5.8);
-  camera.lookAt(cameraX,petOnly?.62:.95,petOnly?0:-10);
+  if(petOnly&&penguin){
+    if(!petFraming){const bounds=new THREE.Box3().setFromObject(penguin,true);petFraming={center:bounds.getCenter(new THREE.Vector3()),size:bounds.getSize(new THREE.Vector3())};}
+    const {center,size}=petFraming,tan=Math.tan(THREE.MathUtils.degToRad(camera.fov/2));
+    const z=Math.max(size.y/(2*tan*.78),size.x/(2*tan*camera.aspect*.72))+size.z/2;
+    camera.position.set(center.x,center.y+size.y*.035,z);
+    camera.lookAt(center.x,center.y+size.y*.035,center.z);
+  }else{
+    camera.position.set(cameraX,2.35,5.8);camera.lookAt(cameraX,.95,-10);
+  }
   backdrop.update(paused?0:dt,camera.aspect,cameraX,distance);
   if(!paused){
     visualTime+=dt;effects.update(dt);butterflies.update(dt);birds.update(dt);
@@ -257,6 +264,7 @@ function frame(now){
   }
   if(!petOnly)updateCoinBatch();
   renderer.render(scene,camera);
+  if(petOnly&&ready)document.body.classList.add('pet-ready');
 }
 function boardwalk(){const deck=createBridgeBelt();scene.add(deck);paths.push(deck);}
 async function boot(){

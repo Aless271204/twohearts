@@ -22,14 +22,27 @@ class InventoryScene extends StatelessWidget {
 class _ScenePainter extends CustomPainter {
   final Map<String, InventoryItem> items;
   final bool accessories;
-  _ScenePainter(this.items, this.accessories);
+  final String? isolatedSlot;
+  _ScenePainter(this.items, this.accessories, {this.isolatedSlot});
+  static Rect boundsFor(String slot) => switch(slot) {
+    'room_bed' => const Rect.fromLTWH(4, 240, 86, 58),
+    'room_plant' => const Rect.fromLTWH(14, 174, 53, 104),
+    'room_lamp' => const Rect.fromLTWH(220, 125, 75, 155),
+    'room_decor' => const Rect.fromLTWH(182, 169, 60, 54),
+    _ => const Rect.fromLTWH(0, 0, 300, 350),
+  };
   @override
   void paint(Canvas canvas, Size size) {
     canvas.save();
-    canvas.scale(size.width / 300, size.height / 350);
+    if (isolatedSlot != null) {
+      final bounds = boundsFor(isolatedSlot!);
+      final scale = (size.width / bounds.width).clamp(0.0, size.height / bounds.height) * .85;
+      canvas.translate((size.width - bounds.width * scale)/2, (size.height - bounds.height * scale)/2);
+      canvas.scale(scale);canvas.translate(-bounds.left, -bounds.top);
+    } else { canvas.scale(size.width / 300, size.height / 350); }
     void rect(Rect r, Color c, [double radius = 8]) => canvas.drawRRect(
       RRect.fromRectAndRadius(r, Radius.circular(radius)),
-      Paint()..color = c,
+      Paint()..shader = LinearGradient(begin: Alignment.topLeft, end: Alignment.bottomRight, colors: [Color.lerp(c, Colors.white.withAlpha((c.a * 255).round()), .08)!, c, Color.lerp(c, Colors.black.withAlpha((c.a * 255).round()), .10)!]).createShader(r),
     );
     void oval(Rect r, Color c) => canvas.drawOval(r, Paint()..color = c);
     void line(Offset a, Offset b, Color c, [double width = 2]) =>
@@ -61,8 +74,8 @@ class _ScenePainter extends CustomPainter {
       if (floor != null) {
         rect(const Rect.fromLTWH(0, 260, 300, 90), floor.color.withAlpha(55), 0);
       }
-      oval(const Rect.fromLTWH(82, 278, 136, 46), wallColor.withAlpha(145));
-      oval(const Rect.fromLTWH(90, 282, 120, 35), const Color(0x55FFFFFF));
+      if(isolatedSlot == null) oval(const Rect.fromLTWH(82, 278, 136, 46), wallColor.withAlpha(145));
+      if(isolatedSlot == null) oval(const Rect.fromLTWH(90, 282, 120, 35), const Color(0x55FFFFFF));
       final bed = items['room_bed'];
       if (bed != null) {
         oval(const Rect.fromLTWH(8, 271, 77, 23), const Color(0x22000000));
@@ -185,4 +198,14 @@ class _ScenePainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant _ScenePainter old) => true;
+}
+
+/// A room product is painted by the exact same painter as the placed object.
+class RoomItemThumbnail extends StatelessWidget {
+  final InventoryItem item;
+  const RoomItemThumbnail({super.key, required this.item});
+  @override
+  Widget build(BuildContext context) => ['room_wall','room_floor'].contains(item.slot)
+    ? InventoryScene(loadout: {item.slot:item})
+    : CustomPaint(painter: _ScenePainter({item.slot:item}, false, isolatedSlot: item.slot), size: Size.infinite);
 }

@@ -16,7 +16,8 @@ void main() {
     expect(tester.takeException(), isNull);
     await tester.pumpWidget(const MaterialApp(home: Scaffold(body: RoseLoading(label: 'Preparamos sus recuerdos…'))));
     await tester.pump(const Duration(milliseconds: 300));
-    expect(find.text('Preparamos sus recuerdos…'), findsOneWidget);
+    expect(find.text('Preparamos sus recuerdos…'), findsNothing);
+    expect(find.byType(CircularProgressIndicator), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 

@@ -12,6 +12,7 @@ import '../presentation/activities_screen/activities_screen.dart';
 import '../presentation/pairing_screen/pairing_screen.dart';
 import '../presentation/profile_screen/profile_screen.dart';
 import '../widgets/app_scaffold.dart';
+import '../services/scene_audio_policy.dart';
 
 class AppRoutes {
   static const String initial = '/';
@@ -26,6 +27,7 @@ class AppRoutes {
 }
 
 final GoRouter appRouter = GoRouter(
+  observers: [SceneAudioRouteObserver()],
   initialLocation: AppRoutes.initial,
   redirect: (context, state) {
     final session = Supabase.instance.client.auth.currentSession;

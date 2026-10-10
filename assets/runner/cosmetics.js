@@ -21,9 +21,14 @@ export function equipRunnerCosmetics(penguin, loadout) {
       ring(head,0,1.06,0,.235,.025);
       for(let i=0;i<5;i++){const angle=i*Math.PI*2/5;mesh(new THREE.ConeGeometry(.035,.105,4),head,Math.sin(angle)*.235,1.105,Math.cos(angle)*.235);}
     }else if(head.style==='bow'){
-      const a=mesh(new THREE.SphereGeometry(.1,10,8),head,-.085,1.08,.10);a.scale.set(1,.65,.5);
-      const b=mesh(new THREE.SphereGeometry(.1,10,8),head,.085,1.08,.10);b.scale.set(1,.65,.5);
-      box(head,0,1.08,.10,.06,.07,.06);
+      // Ribbon loops and tails share the real equipped and thumbnail mesh.
+      for(const side of [-1,1]){
+        const loop=new THREE.Shape();loop.moveTo(0,0);loop.bezierCurveTo(.07,.035,.155,.11,.17,.065);loop.bezierCurveTo(.205,-.015,.16,-.08,.12,-.06);loop.bezierCurveTo(.06,-.035,.025,-.018,0,0);
+        const wing=mesh(new THREE.ExtrudeGeometry(loop,{depth:.035,bevelEnabled:true,bevelThickness:.012,bevelSize:.01,bevelSegments:3,curveSegments:12}),head,side*.018,1.08,.10);wing.scale.x=side;
+        const tail=new THREE.Shape();tail.moveTo(0,0);tail.lineTo(.04,0);tail.lineTo(.09,-.14);tail.lineTo(.05,-.12);tail.lineTo(.025,-.15);tail.closePath();
+        const ribbon=mesh(new THREE.ExtrudeGeometry(tail,{depth:.02,bevelEnabled:true,bevelThickness:.005,bevelSize:.005,bevelSegments:2}),head,side*.01,1.07,.095);ribbon.scale.x=side;
+      }
+      const knot=mesh(new THREE.SphereGeometry(.038,14,10),head,0,1.08,.13);knot.scale.set(.8,1,.7);
     }else if(head.style==='cone'||head.style==='santa'){
       mesh(new THREE.ConeGeometry(.22,.32,20),head,0,1.16,0);ring(head,0,1.005,0,.22,.025);
       if(head.style==='santa')mesh(new THREE.SphereGeometry(.055,10,8),{color:'#fff5e5'},0,1.32,0);

@@ -1,3 +1,4 @@
+import 'rose_ui.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
 import '../services/supabase_service.dart';
@@ -49,7 +50,7 @@ class _PrivateMemoryImageState extends State<PrivateMemoryImage> {
     return SupabaseService.instance.client.storage.from('memory-photos').createSignedUrl(path, 300);
   }
   @override
-  Widget build(BuildContext context) => FutureBuilder<String>(
+  Widget build(BuildContext context) => widget.source.startsWith("twohearts-preview:") ? SizedBox(width:widget.width,height:widget.height,child:StoryArt(panel:int.tryParse(widget.source.split(":").last)??0)) : FutureBuilder<String>(
     future: _url,
     builder: (context, state) {
       if (state.hasError) return widget.errorBuilder?.call(context, state.error!, null)

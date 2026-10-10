@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../services/app_language.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../theme/app_theme.dart';
@@ -169,6 +170,13 @@ class _ProfileScreenState extends State<ProfileScreen>
                       const SizedBox(height: 24),
                       _buildSocialSection(),
                       const SizedBox(height: 32),
+                      ListenableBuilder(listenable: AppLanguage.instance, builder: (context, _) => DropdownButtonFormField<String>(
+                        initialValue: AppLanguage.instance.code,
+                        decoration: InputDecoration(labelText: AppLanguage.instance.text('Idioma de la aplicación','App language','Idioma do aplicativo')),
+                        items: [for(final entry in AppLanguage.names.entries) DropdownMenuItem(value: entry.key, child: Text(entry.value))],
+                        onChanged: (value) { if(value != null) AppLanguage.instance.select(value); },
+                      )),
+                      const SizedBox(height: 24),
                       _buildSaveButton(),
                     ],
                   ),

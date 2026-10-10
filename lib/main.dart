@@ -1,6 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import './services/app_language.dart';
 import 'package:sizer/sizer.dart';
 
 import './core/app_export.dart';
@@ -11,6 +13,7 @@ import './widgets/custom_error_widget.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  await AppLanguage.instance.initialize();
   bool initialized = false;
   // Initialize Supabase
   try {
@@ -56,7 +59,10 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return Sizer(
       builder: (context, orientation, screenType) {
-        return MaterialApp.router(
+        return ListenableBuilder(listenable: AppLanguage.instance, builder: (context, _) => MaterialApp.router(
+          locale: AppLanguage.instance.locale,
+          supportedLocales: const [Locale("es"),Locale("en"),Locale("pt")],
+          localizationsDelegates: GlobalMaterialLocalizations.delegates,
           title: 'twohearts',
           theme: AppTheme.lightTheme,
           darkTheme: AppTheme.darkTheme,
@@ -73,7 +79,7 @@ class MyApp extends StatelessWidget {
           // 🚨 END CRITICAL SECTION
           debugShowCheckedModeBanner: false,
           routerConfig: appRouter,
-        );
+        ));
       },
     );
   }

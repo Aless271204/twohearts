@@ -6,7 +6,7 @@ class SceneStatus extends StatelessWidget {
   final VoidCallback? onRetry;
   const SceneStatus({super.key, required this.title, required this.message, this.loading = true, this.onRetry});
   @override
-  Widget build(BuildContext context) => Center(child: Padding(
+  Widget build(BuildContext context) => loading ? const Center(child: SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2, color: Color(0xFFF05280)))) : Center(child: Padding(
     padding: const EdgeInsets.all(24),
     child: ConstrainedBox(constraints: const BoxConstraints(maxWidth: 340), child: Container(
       padding: const EdgeInsets.all(28),

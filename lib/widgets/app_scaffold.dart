@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import './app_navigation.dart';
+import 'twohearts_ui.dart';
+import '../services/scene_audio_policy.dart';
 
 class AppScaffold extends StatefulWidget {
   final StatefulNavigationShell navigationShell;
@@ -16,6 +18,7 @@ class _AppScaffoldState extends State<AppScaffold> with SingleTickerProviderStat
   void initState() {
     super.initState();
     _branch = widget.navigationShell.currentIndex;
+    SceneAudioPolicy.instance.update(tab: _branch);
     _transition = AnimationController(vsync: this, duration: const Duration(milliseconds: 180), value: 1);
   }
   @override
@@ -23,6 +26,7 @@ class _AppScaffoldState extends State<AppScaffold> with SingleTickerProviderStat
     super.didUpdateWidget(oldWidget);
     if (_branch != widget.navigationShell.currentIndex) {
       _branch = widget.navigationShell.currentIndex;
+    SceneAudioPolicy.instance.update(tab: _branch);
       if (MediaQuery.disableAnimationsOf(context)) { _transition.value = 1; }
       else { _transition.forward(from: 0); }
     }
@@ -40,7 +44,7 @@ class _AppScaffoldState extends State<AppScaffold> with SingleTickerProviderStat
     },
     child: Scaffold(
       extendBody: false,
-      body: FadeTransition(opacity: CurvedAnimation(parent: _transition, curve: Curves.easeOut), child: widget.navigationShell),
+      body: HeartSurface(child: FadeTransition(opacity: CurvedAnimation(parent: _transition, curve: Curves.easeOut), child: widget.navigationShell)),
       bottomNavigationBar: AnimatedSize(
         duration: const Duration(milliseconds: 220), curve: Curves.easeOutCubic,
         child: _modeOpen ? const SizedBox.shrink() : AppNavigation(navigationShell: widget.navigationShell),
