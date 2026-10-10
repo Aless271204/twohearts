@@ -115,7 +115,7 @@ class _CloudsPainter extends CustomPainter {
       canvas.drawCircle(Offset(x,y+15),r*.8,Paint()..color=const Color(0x99FFF9F3));
     }
     final heart=Path()..moveTo(0,8)..cubicTo(-17,-5,-20,12,0,27)..cubicTo(20,12,17,-5,0,8);
-    canvas.save();canvas.translate(s.width*.06,s.height*.20);canvas.rotate(-.25);canvas.drawPath(heart,Paint()..color=const Color(0xFFFF6592)..style=PaintingStyle.stroke..strokeWidth=2.5);canvas.restore();
+    canvas.save();canvas.translate(s.width*.06,s.height*.65);canvas.rotate(-.25);canvas.drawPath(heart,Paint()..color=const Color(0xFFFF6592)..style=PaintingStyle.stroke..strokeWidth=2.5);canvas.restore();
   }
   @override bool shouldRepaint(_CloudsPainter oldDelegate)=>false;
 }
