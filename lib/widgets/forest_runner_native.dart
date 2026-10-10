@@ -11,14 +11,16 @@ import '../core/asset_byte_range.dart';
 
 class ForestRunnerView extends StatefulWidget {
   final VoidCallback? onExit;
+  final VoidCallback? onPetStroke;
   final bool petOnly;
+  final int petReaction;
   final String petSpecies;
   final int petLevel;
   final bool petOrbit;
   final String? appearance;
   final String? animationName;
   final ValueChanged<WebViewController>? onWebViewCreated;
-  const ForestRunnerView({super.key, this.onExit, this.onWebViewCreated, this.petOnly = false, this.petSpecies = 'penguin', this.petLevel = 10, this.petOrbit = false, this.appearance, this.animationName});
+  const ForestRunnerView({super.key, this.onExit, this.onPetStroke, this.onWebViewCreated, this.petOnly = false, this.petReaction = 0, this.petSpecies = 'penguin', this.petLevel = 10, this.petOrbit = false, this.appearance, this.animationName});
   @override
   State<ForestRunnerView> createState() => _ForestRunnerViewState();
 }
@@ -132,6 +134,7 @@ class _ForestRunnerViewState extends State<ForestRunnerView> with WidgetsBinding
         'RunnerBridge',
         onMessageReceived: (message) async {
           try {
+            if(widget.petOnly && jsonDecode(message.message)['type']=='pet-stroke'){widget.onPetStroke?.call();return;}
             if (!widget.petOnly && jsonDecode(message.message)['type'] == 'runner-exit') {
               widget.onExit?.call();
               return;
@@ -160,8 +163,14 @@ class _ForestRunnerViewState extends State<ForestRunnerView> with WidgetsBinding
   }
 
   @override
+  void didUpdateWidget(covariant ForestRunnerView oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if(widget.petOnly && widget.petReaction != oldWidget.petReaction) _controller?.runJavaScript('window.petStroke?.();').catchError((Object _) {});
+  }
+
+  @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state != AppLifecycleState.resumed) _controller?.runJavaScript('window.runnerSuspend?.();').catchError((Object _) {});
+    _controller?.runJavaScript(state == AppLifecycleState.resumed ? 'window.petResume?.();' : 'window.runnerSuspend?.();').catchError((Object _) {});
   }
 
   @override

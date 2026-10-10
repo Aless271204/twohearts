@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../services/inventory_service.dart';
+import 'room_catalog_scene.dart';
 
 /// A stable, non-interactive layer: decorations never intercept game controls.
 class InventoryScene extends StatelessWidget {
@@ -14,7 +15,8 @@ class InventoryScene extends StatelessWidget {
   Widget build(BuildContext context) => IgnorePointer(
     child: Stack(fit: StackFit.expand, children: [
       if (!accessories) Image.asset('assets/images/ui/room-background.png', fit: BoxFit.cover),
-      CustomPaint(painter: _ScenePainter(loadout, accessories), size: Size.infinite),
+      CustomPaint(painter: _ScenePainter({for(final e in loadout.entries)if(!isRoomConcept(e.value))e.key:e.value}, accessories, showRug: !loadout.containsKey('room_rug')), size: Size.infinite),
+      if(!accessories) RoomCatalogArt(items: loadout),
     ]),
   );
 }
@@ -23,7 +25,8 @@ class _ScenePainter extends CustomPainter {
   final Map<String, InventoryItem> items;
   final bool accessories;
   final String? isolatedSlot;
-  _ScenePainter(this.items, this.accessories, {this.isolatedSlot});
+  final bool showRug;
+  _ScenePainter(this.items, this.accessories, {this.isolatedSlot, this.showRug = true});
   static Rect boundsFor(String slot) => switch(slot) {
     'room_bed' => const Rect.fromLTWH(4, 240, 86, 58),
     'room_plant' => const Rect.fromLTWH(14, 174, 53, 104),
@@ -74,8 +77,8 @@ class _ScenePainter extends CustomPainter {
       if (floor != null) {
         rect(const Rect.fromLTWH(0, 260, 300, 90), floor.color.withAlpha(55), 0);
       }
-      if(isolatedSlot == null) oval(const Rect.fromLTWH(82, 278, 136, 46), wallColor.withAlpha(145));
-      if(isolatedSlot == null) oval(const Rect.fromLTWH(90, 282, 120, 35), const Color(0x55FFFFFF));
+      if(isolatedSlot == null && showRug) oval(const Rect.fromLTWH(82, 278, 136, 46), wallColor.withAlpha(145));
+      if(isolatedSlot == null && showRug) oval(const Rect.fromLTWH(90, 282, 120, 35), const Color(0x55FFFFFF));
       final bed = items['room_bed'];
       if (bed != null) {
         oval(const Rect.fromLTWH(8, 271, 77, 23), const Color(0x22000000));
@@ -205,7 +208,7 @@ class RoomItemThumbnail extends StatelessWidget {
   final InventoryItem item;
   const RoomItemThumbnail({super.key, required this.item});
   @override
-  Widget build(BuildContext context) => ['room_wall','room_floor'].contains(item.slot)
+  Widget build(BuildContext context) => isRoomConcept(item) ? RoomCatalogArt(isolated: item) : ['room_wall','room_floor'].contains(item.slot)
     ? InventoryScene(loadout: {item.slot:item})
     : CustomPaint(painter: _ScenePainter({item.slot:item}, false, isolatedSlot: item.slot), size: Size.infinite);
 }

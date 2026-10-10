@@ -9,7 +9,9 @@ import 'package:webview_flutter/webview_flutter.dart';
 class Pet3DViewer extends StatefulWidget {
   final String modelPath;
   final int petLevel;
+  final int petReaction;
   final String altText;
+  final VoidCallback? onPetStroke;
   final bool cameraControls;
   final bool disableZoom;
   final bool autoRotate;
@@ -23,6 +25,8 @@ class Pet3DViewer extends StatefulWidget {
     super.key,
     required this.modelPath,
     this.petLevel = 10,
+    this.petReaction = 0,
+    this.onPetStroke,
     this.altText = 'Mascota 3D de TwoHearts',
     this.cameraControls = true,
     this.disableZoom = false,
@@ -62,7 +66,7 @@ class _Pet3DViewerState extends State<Pet3DViewer> {
       return ListenableBuilder(listenable: InventoryService.instance, builder: (context, _) {
         final appearance = jsonEncode({for (final entry in (widget.previewLoadout ?? InventoryService.instance.loadout).entries)
           entry.key: entry.value.appearance});
-        return ForestRunnerView(key: ValueKey('$appearance|${widget.animationName}|${widget.modelPath}|${widget.petLevel}'), petOnly: true, petLevel: widget.petLevel, petSpecies: PetModelCatalog.speciesForPath(widget.modelPath), petOrbit: widget.cameraControls,
+        return ForestRunnerView(key: ValueKey('$appearance|${widget.animationName}|${widget.modelPath}|${widget.petLevel}'), petOnly: true, petReaction:widget.petReaction, onPetStroke:widget.onPetStroke, petLevel: widget.petLevel, petSpecies: PetModelCatalog.speciesForPath(widget.modelPath), petOrbit: widget.cameraControls,
           appearance: appearance, animationName: widget.cameraControls ? widget.animationName : 'Natural_Rest');
       });
     }

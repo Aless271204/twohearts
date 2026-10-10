@@ -289,6 +289,9 @@ class _VirtualPetWidgetState extends State<VirtualPetWidget>
     orElse: () => _moods.first,
   );
 
+  int _petReaction=0;
+  DateTime? _lastStrokeSaved;
+
   void _handlePetTap() {
     _care('stroke');
     HapticFeedback.lightImpact();
@@ -301,6 +304,11 @@ class _VirtualPetWidgetState extends State<VirtualPetWidget>
   }
 
   Future<void> _care(String action) async {
+    if(action=='stroke'){
+      setState(()=>_petReaction++);
+      if(_lastStrokeSaved!=null&&DateTime.now().difference(_lastStrokeSaved!)<const Duration(seconds:30))return;
+      _lastStrokeSaved=DateTime.now();
+    }
     if(widget.previewMode){_tapController.forward(from:0);return;}
     if (_careBusy) return;
     _careBusy = true;
@@ -325,7 +333,8 @@ class _VirtualPetWidgetState extends State<VirtualPetWidget>
 
   @override
   Widget build(BuildContext context) => LayoutBuilder(builder:(context,c)=>SingleChildScrollView(child:Column(children:[
-    Padding(padding:const EdgeInsets.symmetric(horizontal:12),child:ClipRRect(borderRadius:BorderRadius.circular(26),child:SizedBox(height:(c.maxWidth*1.10).clamp(310.0,470.0),child:PetRoomStage(loadout:InventoryService.instance.loadout,onTap:_handlePetTap,pet:Pet3DViewer(modelPath:PetModelCatalog.modelPathFor(_pet.species),petLevel:_pet.level,altText:'${_pet.displayName}, mascota compartida',autoPlay:true,cameraControls:false,animationName:'Natural_Rest'))))),
+    Padding(padding:const EdgeInsets.symmetric(horizontal:12),child:ClipRRect(borderRadius:BorderRadius.circular(26),child:SizedBox(height:(c.maxWidth*1.10).clamp(310.0,470.0),child:PetRoomStage(loadout:InventoryService.instance.loadout,onTap:_handlePetTap,pet:Pet3DViewer(petReaction:_petReaction,onPetStroke:_handlePetTap,modelPath:PetModelCatalog.modelPathFor(_pet.species),petLevel:_pet.level,altText:'${_pet.displayName}, mascota compartida',autoPlay:true,cameraControls:false,animationName:'Natural_Rest'))))),
+    if(InventoryService.instance.roomDraft.isNotEmpty) TextButton.icon(onPressed:InventoryService.instance.clearRoomDraft,icon:const Icon(Icons.undo_rounded,size:16),label:const Text('Vista previa · Restaurar habitación')),
     Padding(padding:const EdgeInsets.fromLTRB(12,8,12,0),child:Card(child:ListTile(contentPadding:const EdgeInsets.symmetric(horizontal:14),leading:const Icon(Icons.favorite_rounded,color:AppTheme.primary,size:32),title:Text(_pet.displayName,style:const TextStyle(fontWeight:FontWeight.w700)),subtitle:Row(children:[Text('Nivel ${_pet.level}',style:const TextStyle(fontSize:12)),const SizedBox(width:10),Expanded(child:ClipRRect(borderRadius:BorderRadius.circular(99),child:LinearProgressIndicator(value:(_pet.level%5)/5,minHeight:5,backgroundColor:Color(0xFFF5E5EB),color:AppTheme.primary)))]),trailing:const Icon(Icons.chevron_right_rounded),onTap:()=>showModalBottomSheet(useRootNavigator:true,context:context,isScrollControlled:true,builder:(_)=>const PetFamilySheet())))),
     Padding(padding:const EdgeInsets.symmetric(vertical:14),child:_buildBottomHUD()),
     Container(margin:const EdgeInsets.fromLTRB(12,0,12,16),padding:const EdgeInsets.all(12),decoration:BoxDecoration(color:Colors.white,borderRadius:BorderRadius.circular(22)),child:Column(children:[

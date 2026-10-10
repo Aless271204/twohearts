@@ -1,0 +1,35 @@
+<!doctype html><html lang="es"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TwoHearts · Ajuste de accesorios</title>
+<style>body{margin:0;padding:20px;background:#fff9fa;color:#29232c;font:14px system-ui}h1{font-size:23px}p{color:#675461}select{padding:10px;border:1px solid #efc7d5;border-radius:12px;background:white}#pets{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:18px 0}.pet{background:#f9e9e9;border-radius:20px;overflow:hidden;text-align:center}.pet iframe{width:100%;height:310px;border:0}.pet h2{font-size:15px;margin:10px}#products{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}.product{background:white;border:1px solid #f3e2e7;border-radius:18px;padding:8px;text-align:center}.product img{width:100%;display:block}.product p{font-size:11px;margin:6px}label{display:inline-block;margin:5px}button{border:0;border-radius:18px;background:#f05280;color:white;padding:10px 16px}@media(max-width:600px){#pets{grid-template-columns:repeat(2,1fr)}#products{grid-template-columns:repeat(3,1fr)}}</style>
+<h1>Accesorios en los cuatro modelos reales</h1><p>Revisión de encaje · Sin compras ni cambios en cuentas.</p>
+<div id="controls"></div><div id="pets"></div><h2>Miniaturas del mismo objeto 3D</h2><div id="products"></div>
+<script type="importmap">{"imports":{"three":"./vendor/three.module.js","three/addons/":"./vendor/"}}</script>
+<script type="module">
+import * as THREE from 'three';
+import {createAccessory,disposeAccessory} from './accessory-pieces.js';
+const catalog=await fetch('accessory-catalog.json').then(r=>r.json());
+const legacy=await fetch('../../docs/inventory-catalog.json').then(r=>r.json());
+const selection={},controls=document.querySelector('#controls'),pets=document.querySelector('#pets');
+for(const [slot,label] of Object.entries({pet_head:'Cabeza',pet_eyes:'Ojos',pet_neck:'Cuello',pet_body:'Cuerpo',pet_feet:'Patas'})){
+ const row=document.createElement('label');row.textContent=label+' ';const select=document.createElement('select');
+ select.dataset.slot=slot;select.add(new Option('Sin accesorio',''));
+ for(const item of catalog.filter(i=>i.equip_slot===slot))select.add(new Option(item.name,item.item_key));
+ select.onchange=()=>{selection[slot]=catalog.find(i=>i.item_key===select.value)?.appearance;update();};row.append(select);controls.append(row);
+}
+const species={penguin:'Pingüino',bear:'Oso',pig:'Cerdito',chick:'Pollito'};
+for(const [key,label] of Object.entries(species)){const card=document.createElement('div');card.className='pet';card.innerHTML=`<h2>${label}</h2><iframe title="${label}" data-species="${key}"></iframe>`;pets.append(card);}
+function update(){for(const frame of pets.querySelectorAll('iframe')){const query=new URLSearchParams({pet:'1',species:frame.dataset.species,level:'10',appearance:JSON.stringify(selection)});frame.src='index.html?'+query;}}
+update();
+const renderer=new THREE.WebGLRenderer({antialias:true,preserveDrawingBuffer:true});renderer.setSize(256,256);renderer.setClearColor('#fff5f7');renderer.outputColorSpace=THREE.SRGBColorSpace;
+const scene=new THREE.Scene();scene.add(new THREE.HemisphereLight('#fff6ee','#a4a6b5',1.6));const sun=new THREE.DirectionalLight('#ffffff',1.8);sun.position.set(-3,6,5);scene.add(sun);
+const fill=new THREE.DirectionalLight('#e1eeff',.8);fill.position.set(4,6,8);scene.add(fill);const camera=new THREE.PerspectiveCamera(36,1,.001,30);
+const variants=[...catalog.map(i=>({name:i.name,slot:i.equip_slot,...i.appearance})),...legacy.filter(i=>i.scope==='pet')];
+const seen=new Set();
+for(const item of variants){const file=`${item.slot}-${item.style}-${item.color.slice(1).toLowerCase()}.png`;if(seen.has(file))continue;seen.add(file);
+ const root=createAccessory(item,item.slot);
+ if(item.slot==='pet_feet'){const twin=root.clone(true);root.position.x=-.105;twin.position.x=.105;const pair=new THREE.Group();pair.add(root,twin);scene.add(pair);render(pair,item,file);disposeAccessory(pair);}
+ else{scene.add(root);render(root,item,file);disposeAccessory(root);}
+}
+function render(root,item,file){root.rotation.y=-.25;root.updateMatrixWorld(true);const box=new THREE.Box3().setFromObject(root),size=box.getSize(new THREE.Vector3()),center=box.getCenter(new THREE.Vector3());const distance=Math.max(size.y,size.x)/(.78*2*Math.tan(THREE.MathUtils.degToRad(18)))+size.z/2;camera.position.set(center.x,center.y+size.y*.12,center.z+distance);camera.lookAt(center);renderer.render(scene,camera);const card=document.createElement('div');card.className='product';const image=new Image();image.src=renderer.domElement.toDataURL('image/png');image.dataset.file=file;image.alt=item.name;const label=document.createElement('p');label.textContent=item.name;card.append(image,label);document.querySelector('#products').append(card);}
+renderer.dispose();document.body.dataset.ready='true';
+</script></html>

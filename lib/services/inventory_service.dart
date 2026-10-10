@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'supabase_service.dart';
+import '../core/pet_accessory_catalog.dart';
+import '../core/room_catalog.dart';
 
 class InventoryItem {
   final Map<String, dynamic> data;
   const InventoryItem(this.data);
+  bool get previewOnly => data['preview_only']==true;
+  String get roomCategory => data['room_category'] as String? ?? (slot == 'room_ceiling' ? 'Techo' : ['room_wall','room_decor','room_mirror','room_shelf'].contains(slot) ? 'Pared' : ['room_floor','room_rug'].contains(slot) ? 'Suelo' : 'Muebles');
   String get key => data['item_key'] as String;
   String get name => data['name'] as String;
   String get emoji => data['emoji'] as String? ?? '🎁';
@@ -33,11 +37,19 @@ class InventoryItem {
   };
   static const slots = {
     'pet_head': 'Cabeza',
-    'pet_eyes': 'Gafas',
+    'pet_eyes': 'Ojos',
     'pet_neck': 'Cuello',
-    'pet_body': 'Ropa',
+    'pet_body': 'Cuerpo',
+    'pet_feet': 'Patas',
     'pet_back': 'Mochila',
     'room_wall': 'Pared',
+    'room_ceiling': 'Techo',
+    'room_rug': 'Alfombra',
+    'room_mirror': 'Espejo',
+    'room_shelf': 'Repisa',
+    'room_chair': 'Sillón',
+    'room_table': 'Mesa',
+    'room_dresser': 'Cómoda',
     'room_floor': 'Suelo',
     'room_bed': 'Cama',
     'room_plant': 'Planta',
@@ -71,6 +83,12 @@ class InventoryService extends ChangeNotifier {
   Map<String, Map<String, dynamic>> owned = {};
   int _generation = 0;
   Map<String, InventoryItem>? _sharedLoadout;
+  final Map<String, InventoryItem> roomDraft = {};
+  void previewRoomItem(InventoryItem item) {
+    if(item.scope!='room'||!item.previewOnly)return;
+    roomDraft[item.slot]=item;notifyListeners();
+  }
+  void clearRoomDraft() {roomDraft.clear();notifyListeners();}
   bool owns(String key) => owned.containsKey(key);
   bool equipped(String key) {
     final item = catalog.where((i) => i.key == key).firstOrNull;
@@ -88,13 +106,16 @@ class InventoryService extends ChangeNotifier {
     for (final i in catalog)
       if (equipped(i.key) && (_sharedLoadout == null || !['pet','room'].contains(i.scope))) i.slot: i,
     ...?_sharedLoadout,
+    ...roomDraft,
   };
   void _clear() {
     _generation++;
     _account = _uid;
     coins = 0;
     _sharedLoadout = null;
+    roomDraft.clear();
     catalog = [];
+    catalog=mergeAccessoryConcepts(catalog);
     owned = {};
     notifyListeners();
   }
@@ -124,6 +145,7 @@ class InventoryService extends ChangeNotifier {
     catalog = (raw['catalog'] as List)
         .map((r) => InventoryItem(Map<String, dynamic>.from(r as Map)))
         .toList();
+    catalog=mergeAccessoryConcepts(catalog);
     owned = {
       for (final r in raw['owned'] as List)
         r['item_key'] as String: Map<String, dynamic>.from(r as Map),
@@ -131,7 +153,13 @@ class InventoryService extends ChangeNotifier {
     notifyListeners();
   }
 
+  static List<InventoryItem> mergeAccessoryConcepts(List<InventoryItem> published)=>[
+    ...published,
+    for(final data in [...petAccessoryConcepts,...roomConcepts])if(!published.any((i)=>i.key==data['item_key']))InventoryItem(data),
+  ];
+
   Future<void> purchase(InventoryItem item) async {
+    if(item.previewOnly)throw StateError('Este accesorio aun esta en preparacion.');
     await _db.rpc('inventory_purchase', params: {'p_item_key': item.key});
     await refresh();
   }

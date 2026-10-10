@@ -7,13 +7,15 @@ import 'runner_bridge.dart';
 
 class ForestRunnerView extends StatefulWidget {
   final VoidCallback? onExit;
+  final VoidCallback? onPetStroke;
   final bool petOnly;
+  final int petReaction;
   final String petSpecies;
   final int petLevel;
   final bool petOrbit;
   final String? appearance;
   final String? animationName;
-  const ForestRunnerView({super.key, this.onExit, this.petOnly = false, this.petSpecies = 'penguin', this.petLevel = 10, this.petOrbit = false, this.appearance, this.animationName});
+  const ForestRunnerView({super.key, this.onExit, this.onPetStroke, this.petOnly = false, this.petReaction = 0, this.petSpecies = 'penguin', this.petLevel = 10, this.petOrbit = false, this.appearance, this.animationName});
   @override
   State<ForestRunnerView> createState() => _ForestRunnerViewState();
 }
@@ -37,6 +39,7 @@ class _ForestRunnerViewState extends State<ForestRunnerView> with WidgetsBinding
       ..style.border = '0'
       ..style.width = '100%'
       ..style.height = '100%';
+    _updatePointerPolicy();
     ui_web.platformViewRegistry.registerViewFactory(_viewType, (_) => _frame);
     _listener = ((web.Event event) {
       final message = event as web.MessageEvent;
@@ -51,6 +54,7 @@ class _ForestRunnerViewState extends State<ForestRunnerView> with WidgetsBinding
 
   Future<void> _handleMessage(String raw) async {
     try {
+      if(widget.petOnly && jsonDecode(raw)['type']=='pet-stroke'){widget.onPetStroke?.call();return;}
       if (!widget.petOnly && jsonDecode(raw)['type'] == 'runner-exit') {
         widget.onExit?.call();
         return;
@@ -67,8 +71,20 @@ class _ForestRunnerViewState extends State<ForestRunnerView> with WidgetsBinding
   }
 
   @override
+  void didUpdateWidget(covariant ForestRunnerView oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _updatePointerPolicy();
+    if(widget.petOnly && widget.petReaction != oldWidget.petReaction) _frame.contentWindow?.postMessage('pet-stroke'.toJS, Uri.base.origin.toJS);
+  }
+
+  void _updatePointerPolicy() {
+    // Static shop previews must let scrolling reach the Flutter list.
+    _frame.style.pointerEvents = widget.petOnly && !widget.petOrbit && widget.onPetStroke == null ? 'none' : 'auto';
+  }
+
+  @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state != AppLifecycleState.resumed) _frame.contentWindow?.postMessage('runner-suspend'.toJS, Uri.base.origin.toJS);
+    _frame.contentWindow?.postMessage((state == AppLifecycleState.resumed ? 'runner-resume' : 'runner-suspend').toJS, Uri.base.origin.toJS);
   }
 
   @override

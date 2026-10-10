@@ -27,3 +27,9 @@ export function exitGame(){
  else if(window.parent!==window)window.parent.postMessage(message,location.origin);
  else history.back();
 }
+
+export function notifyPetStroke(){
+ const message=JSON.stringify({type:"pet-stroke"});
+ if(window.RunnerBridge)window.RunnerBridge.postMessage(message);
+ else if(window.parent!==window)window.parent.postMessage(message,location.origin);
+}

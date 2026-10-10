@@ -48,7 +48,7 @@ class _MemoriesScreenState extends State<MemoriesScreen> {
   @override
   void initState() {
     super.initState();
-    if(widget.previewAlbums==null) _loadCoupleData(); else { _loadingProfile=false;_coupleData={..._coupleData,'myName':'Tú','partnerName':'Tu pareja','myNickname':'Tú','partnerNickname':'Tu pareja','startDate':DateTime.now().subtract(const Duration(days:365)),'myCity':'Quito','partnerCity':'Barcelona','distanceKm':9350}; }
+    if(widget.previewAlbums==null) _loadCoupleData(); else { _loadingProfile=false;_coupleData={..._coupleData,'myName':'Tú','partnerName':'Tu pareja','myNickname':'Tú','partnerNickname':'Tu pareja','startDate':DateTime.now().subtract(const Duration(days:365)),'myCity':'Quito, Ecuador','partnerCity':'Barcelona, España','distanceKm':9350}; }
     ProfileChangeNotifier.instance.addListener(_onProfileChanged);
   }
 
@@ -230,7 +230,7 @@ class _AlbumJuntosTabState extends State<_AlbumJuntosTab> {
                 .where((c) => c.isNotEmpty)
                 .toList();
 
-            return SingleChildScrollView(
+            return NidoWelcomeSurface(child:SingleChildScrollView(
               padding: const EdgeInsets.only(bottom: 24),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -251,7 +251,7 @@ class _AlbumJuntosTabState extends State<_AlbumJuntosTab> {
                   Padding(
                     padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
                     child: Text(
-                      '🗺️ Mapa interactivo',
+                      'Nuestro mapa',
                       style: GoogleFonts.dmSans(
                         fontSize: 15,
                         fontWeight: FontWeight.w700,
@@ -277,7 +277,7 @@ class _AlbumJuntosTabState extends State<_AlbumJuntosTab> {
                   if (_viewMode == _AlbumViewMode.todos) _legacyPhotos(),
                 ],
               ),
-            );
+            ));
           },
         );
       },

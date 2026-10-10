@@ -1,61 +1,81 @@
 import * as THREE from 'three';
+import {createAccessory, disposeAccessory} from './accessory-pieces.js';
 
-// One renderer and one loadout in Home, inventory and the forest.
-export function equipRunnerCosmetics(penguin, loadout) {
-  const previous=penguin.userData.cosmetics;
-  if(previous){for(const slot of previous.userData.slots??[]){slot.removeFromParent();slot.traverse(o=>{o.geometry?.dispose();o.material?.dispose();});}previous.traverse(o=>{o.geometry?.dispose();o.material?.dispose();});previous.removeFromParent();}
-  let neckBone;penguin.traverse(o=>{if(o.isBone&&/neck$/i.test(o.name))neckBone=o;});
-  const neckHeight=neckBone?penguin.worldToLocal(neckBone.getWorldPosition(new THREE.Vector3())).y:.52;
-  const group=new THREE.Group();group.name='equipped-cosmetics';group.userData.slots=[];penguin.add(group);
-  const safeColor=item=>/^#[0-9a-f]{6}$/i.test(item?.color)?item.color:'#91bda7';
-  let slot;
-  const mesh=(geometry,item,x,y,z)=>{const object=new THREE.Mesh(geometry,new THREE.MeshStandardMaterial({color:safeColor(item),roughness:.9,metalness:0}));object.position.set(x,y,z);slot.add(object);return object;};
-  const box=(item,x,y,z,w,h,d)=>mesh(new THREE.BoxGeometry(w,h,d),item,x,y,z);
-  const ring=(item,x,y,z,radius,tube)=>{const object=mesh(new THREE.TorusGeometry(radius,tube,6,24),item,x,y,z);object.rotation.x=Math.PI/2;return object;};
-  const heart=(item,x,y,z,size,hollow=false)=>{const shape=new THREE.Shape();shape.moveTo(0,-.4);shape.bezierCurveTo(-.9,.1,-.65,.85,0,.4);shape.bezierCurveTo(.65,.85,.9,.1,0,-.4);if(hollow){const inner=new THREE.Path();inner.moveTo(0,-.28);inner.bezierCurveTo(-.63,.07,-.455,.595,0,.28);inner.bezierCurveTo(.455,.595,.63,.07,0,-.28);shape.holes.push(inner);}const object=mesh(new THREE.ExtrudeGeometry(shape,{depth:.018,bevelEnabled:false,curveSegments:8}),item,x,y,z);object.scale.set(size,size,1);return object;};
-  const begin=()=>{slot=new THREE.Group();group.add(slot);return slot;};
-  const anchors=[];
-  const head=loadout.pet_head;
-  if(head){begin();slot.position.y=-.08;anchors.push([slot,'head']);
-    if(head.style==='crown'){
-      ring(head,0,1.06,0,.235,.025);
-      for(let i=0;i<5;i++){const angle=i*Math.PI*2/5;mesh(new THREE.ConeGeometry(.035,.105,4),head,Math.sin(angle)*.235,1.105,Math.cos(angle)*.235);}
-    }else if(head.style==='bow'){
-      // Ribbon loops and tails share the real equipped and thumbnail mesh.
-      for(const side of [-1,1]){
-        const loop=new THREE.Shape();loop.moveTo(0,0);loop.bezierCurveTo(.07,.035,.155,.11,.17,.065);loop.bezierCurveTo(.205,-.015,.16,-.08,.12,-.06);loop.bezierCurveTo(.06,-.035,.025,-.018,0,0);
-        const wing=mesh(new THREE.ExtrudeGeometry(loop,{depth:.035,bevelEnabled:true,bevelThickness:.012,bevelSize:.01,bevelSegments:3,curveSegments:12}),head,side*.018,1.08,.10);wing.scale.x=side;
-        const tail=new THREE.Shape();tail.moveTo(0,0);tail.lineTo(.04,0);tail.lineTo(.09,-.14);tail.lineTo(.05,-.12);tail.lineTo(.025,-.15);tail.closePath();
-        const ribbon=mesh(new THREE.ExtrudeGeometry(tail,{depth:.02,bevelEnabled:true,bevelThickness:.005,bevelSize:.005,bevelSegments:2}),head,side*.01,1.07,.095);ribbon.scale.x=side;
+export {createAccessory} from './accessory-pieces.js';
+
+export function measureAccessoryFit(model) {
+  model.updateMatrixWorld(true);
+  const head=new THREE.Box3(),body=new THREE.Box3(),feet={Left:new THREE.Box3(),Right:new THREE.Box3()};
+  const points=[],weightedFeet={Left:new THREE.Box3(),Right:new THREE.Box3()};
+  // Include the replacement feet and torso when fitting the room variant.
+  // Otherwise the removed original toes raise the measured floor and neck.
+  model.traverse(mesh=>{
+    if(!mesh.isMesh||!/(RoundedFoot|RoundedTorsoLining)$/.test(mesh.name))return;
+    const positions=mesh.geometry.attributes.position;
+    for(let i=0;i<positions.count;i++){
+      const point=new THREE.Vector3().fromBufferAttribute(positions,i);
+      mesh.localToWorld(point);model.worldToLocal(point);points.push(point);
+    }
+  });
+  model.traverse(mesh=>{
+    if(!mesh.isSkinnedMesh)return;
+    mesh.skeleton.update();
+    const positions=mesh.geometry.attributes.position;
+    const vertices=mesh.geometry.index?new Set(mesh.geometry.index.array):Array.from({length:positions.count},(_,i)=>i);
+    for(const i of vertices){
+      const point=new THREE.Vector3().fromBufferAttribute(positions,i);mesh.applyBoneTransform(i,point);mesh.localToWorld(point);model.worldToLocal(point);points.push(point);
+      for(const side of ['Left','Right']){let weight=0;for(let k=0;k<4;k++)if(new RegExp(side+'(Foot|ToeBase|Toe_End)$').test(mesh.skeleton.bones[mesh.geometry.attributes.skinIndex.getComponent(i,k)]?.name??''))weight+=mesh.geometry.attributes.skinWeight.getComponent(i,k);if(weight>.45)weightedFeet[side].expandByPoint(point);}
+    }
+  });
+  const all=new THREE.Box3().setFromPoints(points);
+  if(!all.isEmpty()){
+    const size=all.getSize(new THREE.Vector3()),center=all.getCenter(new THREE.Vector3());
+    const split=all.min.y+size.y*({penguin:.46,bear:.40,pig:.42,chick:.42}[model.userData.species]??.46);
+    for(const point of points){
+      if(point.y>=split)head.expandByPoint(point);
+      else if(point.y>all.min.y+size.y*.07&&Math.abs(point.x-center.x)<size.x*.30)body.expandByPoint(point);
+      if(point.y<all.min.y+size.y*.07){
+        const side=point.x>center.x?'Left':'Right';feet[side].expandByPoint(point);
       }
-      const knot=mesh(new THREE.SphereGeometry(.038,14,10),head,0,1.08,.13);knot.scale.set(.8,1,.7);
-    }else if(head.style==='cone'||head.style==='santa'){
-      mesh(new THREE.ConeGeometry(.22,.32,20),head,0,1.16,0);ring(head,0,1.005,0,.22,.025);
-      if(head.style==='santa')mesh(new THREE.SphereGeometry(.055,10,8),{color:'#fff5e5'},0,1.32,0);
-    }else if(head.style==='cap'){
-      const cap=mesh(new THREE.SphereGeometry(.25,16,8,0,Math.PI*2,0,Math.PI/2),head,0,1.02,0);cap.scale.y=.5;
-      const visor=box(head,0,1.02,.21,.39,.035,.22);visor.rotation.x=-.1;
-    }else{
-      mesh(new THREE.CylinderGeometry(.18,.21,.15,20),head,0,1.1,0);
-      mesh(new THREE.CylinderGeometry(.31,.31,.025,24),head,0,1.025,0);
-      if(head.style==='flower_hat')for(let i=0;i<5;i++)mesh(new THREE.SphereGeometry(.035,8,6),{color:'#f4a8c0'},Math.sin(i*1.2)*.21,1.06,Math.cos(i*1.2)*.21);
     }
   }
-  const scarf=loadout.pet_neck;if(scarf){begin();slot.position.y=neckHeight+.015-.65;anchors.push([slot,'neck']);const collar=ring(scarf,0,.65,0,.245,.028);collar.scale.set(1,.8,.8);box(scarf,.18,.57,.17,.065,.18,.035);}
-  const back=loadout.pet_back;if(back){begin();anchors.push([slot,'body']);const pack=mesh(new THREE.CapsuleGeometry(.12,.14,4,12),back,0,.47,-.29);pack.scale.set(1.4,1,.6);box(back,0,.46,-.375,.25,.17,.04);heart({color:'#f7bbbd'},0,.46,-.401,.07).rotation.y=Math.PI;
-    for(const side of [-1,1])box(back,side*.145,.50,-.22,.035,.34,.035);
+  for(const side of ['Left','Right']){const w=weightedFeet[side].getSize(new THREE.Vector3());if(w.x>.05&&w.z>.06)feet[side].union(weightedFeet[side]);}
+  // Refined penguin feet are rigid meshes following the original foot joints.
+  model.traverse(mesh=>{for(const side of ['Left','Right'])if(mesh.name===side+'RoundedFoot'){
+    const bounds=new THREE.Box3().setFromObject(mesh,true);feet[side].makeEmpty();
+    for(const x of [bounds.min.x,bounds.max.x])for(const y of [bounds.min.y,bounds.max.y])for(const z of [bounds.min.z,bounds.max.z])feet[side].expandByPoint(model.worldToLocal(new THREE.Vector3(x,y,z)));
+  }});
+  if(head.isEmpty())head.set(new THREE.Vector3(-.28,.55,-.26),new THREE.Vector3(.28,1.08,.30));
+  if(body.isEmpty())body.set(new THREE.Vector3(-.24,.13,-.19),new THREE.Vector3(.24,.57,.23));
+  return {head,body,feet};
+}
+
+// Equipment is positioned in the resting model's coordinates, then attached
+// preserving its world transform. It follows the rig without moving the pet.
+export function equipRunnerCosmetics(model, loadout={}) {
+  const previous=model.userData.cosmetics;
+  if(previous){for(const part of previous.userData.slots??[])disposeAccessory(part);disposeAccessory(previous);}
+  const bones={};model.traverse(o=>{if(o.isBone)bones[o.name.replace(/^mixamorig:?/,'')]=o;});
+  const fit=model.userData.accessoryFit??=measureAccessoryFit(model);
+  const group=new THREE.Group();group.name='equipped-cosmetics';group.userData.slots=[];model.add(group);
+  const h=fit.head.getSize(new THREE.Vector3()),hc=fit.head.getCenter(new THREE.Vector3());
+  const b=fit.body.getSize(new THREE.Vector3()),bc=fit.body.getCenter(new THREE.Vector3());
+  function attach(item,slot,bone,position,scale){
+    const part=createAccessory(item,slot);part.position.copy(position);part.scale.copy(scale);group.add(part);
+    model.updateMatrixWorld(true);if(bone)bone.attach(part);group.userData.slots.push(part);return part;
   }
-  const body=loadout.pet_body;if(body){begin();slot.position.y=-.10;anchors.push([slot,'body']);const shirt=mesh(new THREE.SphereGeometry(.27,20,12,0,Math.PI*2,.5,2.05),body,0,.43,0);shirt.scale.set(1,.85,1);heart({color:'#ffe9e8'},0,.46,.29,.10);}
-  const eyes=loadout.pet_eyes;if(eyes){begin();slot.position.y=-.18;anchors.push([slot,'head']);
-    for(const side of [-1,1]){
-      if(eyes.style==='heart_glasses')heart(eyes,side*.125,.88,.34,.095,true);
-      else {const lens=mesh(new THREE.TorusGeometry(.085,.012,6,18),eyes,side*.125,.88,.33);lens.scale.y=.75;}
+  for(const [slot,item] of Object.entries(loadout??{})){
+    if(!item||typeof item!=='object'||!slot.startsWith('pet_'))continue;
+    if(slot==='pet_head'){const ratio={bear:.78,pig:.76,penguin:.94,chick:.94}[model.userData.species]??1;const inset={bear:.24,pig:.23,penguin:.23,chick:.24}[model.userData.species]??.18;attach(item,slot,bones.Head,new THREE.Vector3(hc.x,fit.head.max.y-h.y*inset,hc.z),new THREE.Vector3(h.x/.56*ratio,h.x/.56*ratio,h.z/.56*ratio));}
+    else if(slot==='pet_eyes'){const ratio={penguin:.86,bear:.82,pig:.88,chick:.85}[model.userData.species]??.85;const height={penguin:.36,bear:.43,pig:.32,chick:.38}[model.userData.species]??.38;attach(item,slot,bones.Head,new THREE.Vector3(hc.x,fit.head.min.y+h.y*height,hc.z+h.z*.43),new THREE.Vector3(h.x/.56*ratio,h.x/.56*ratio,1));}
+    else if(slot==='pet_neck'){const penguin=model.userData.species==='penguin';attach(item,slot,bones.Neck??bones.Spine2,new THREE.Vector3(bc.x,fit.head.min.y+(penguin?-.055:.035),bc.z),new THREE.Vector3(b.x*(penguin?.94:1.03)/.50,penguin?.82:1,Math.max(b.z,h.z*.75)/.40));}
+    else if(slot==='pet_body')attach(item,slot,bones.Spine2,new THREE.Vector3(bc.x,bc.y,bc.z),new THREE.Vector3(Math.max(.38,b.x)*1.06/.57,Math.max(.34,b.y)*1.12/.48,Math.max(.3,b.z)*1.08/.456));
+    else if(slot==='pet_back')attach(item,slot,bones.Spine2,new THREE.Vector3(bc.x,bc.y,fit.body.min.z-.025),new THREE.Vector3(1,1,1));
+    else if(slot==='pet_feet')for(const side of ['Left','Right']){
+      const box=fit.feet[side];if(box.isEmpty())continue;const center=box.getCenter(new THREE.Vector3()),size=box.getSize(new THREE.Vector3());
+      attach(item,slot,bones[side+'Foot'],new THREE.Vector3(center.x,box.min.y-.01,center.z+.01),new THREE.Vector3(size.x*1.14/.16,Math.max(.10,size.y)/.09,size.z*1.28/.19));
     }
-    box(eyes,0,.88,.34,.08,.018,.025);
-    for(const side of [-1,1])box(eyes,side*.22,.88,.19,.015,.018,.29);
   }
-  penguin.updateMatrixWorld(true);
-  let headBone,bodyBone;penguin.traverse(o=>{if(!o.isBone)return;if(/head$/i.test(o.name))headBone=o;if(/spine2$/i.test(o.name))bodyBone=o;});
-  for(const [part,name] of anchors){const bone=name==='head'?headBone:name==='neck'?neckBone:bodyBone;if(bone){bone.attach(part);group.userData.slots.push(part);}}
-  penguin.userData.cosmetics=group;return group;
+  model.userData.cosmetics=group;model.userData.cosmeticStyles=Object.fromEntries(Object.entries(loadout??{}).filter(([k,v])=>k.startsWith('pet_')&&v).map(([k,v])=>[k,v.style]));
+  return group;
 }

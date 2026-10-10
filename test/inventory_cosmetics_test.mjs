@@ -3,8 +3,8 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {Group,Box3,Vector3,Bone} from '../assets/runner/vendor/three.module.js';
 
-const source=readFileSync(new URL('../assets/runner/cosmetics.js',import.meta.url),'utf8').replace("'three'",JSON.stringify(new URL('../assets/runner/vendor/three.module.js',import.meta.url).href));
-const {equipRunnerCosmetics}=await import('data:text/javascript;base64,'+Buffer.from(source).toString('base64'));
+import {runtimeUrl} from './three-runtime.mjs';
+const {equipRunnerCosmetics}=await import(runtimeUrl('../assets/runner/cosmetics.js'));
 const catalog=JSON.parse(readFileSync(new URL('../docs/inventory-catalog.json',import.meta.url),'utf8'));
 test('All catalogue accessories produce finite 3D geometry without changing Pip',()=>{
   for(const item of catalog.filter(i=>i.scope==='pet')){

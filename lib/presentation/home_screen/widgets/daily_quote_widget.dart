@@ -88,6 +88,6 @@ class _DailyQuoteWidgetState extends State<DailyQuoteWidget>
   @override
   Widget build(BuildContext context) {
     final quote=_quotes[_quoteIndex];
-    return Padding(padding:const EdgeInsets.fromLTRB(20,4,20,0),child:RepaintBoundary(key:_shareKey,child:FadeTransition(opacity:_fadeAnim,child:HeartQuoteCard(text:quote['text']!,sendLabel:AppLanguage.instance.text('Enviar a mi pareja','Send to my partner','Enviar para meu amor'),onSend:_sharing?null:_shareToStories,onMore:_nextQuote))));
+    return Padding(padding:const EdgeInsets.fromLTRB(20,4,20,0),child:RepaintBoundary(key:_shareKey,child:FadeTransition(opacity:_fadeAnim,child:HeartQuoteCard(text:quote['text']!,eyebrow:AppLanguage.instance.text('Un momento para ustedes','A moment for the two of you','Um momento para vocês'),sendLabel:AppLanguage.instance.text('Enviar a mi pareja','Send to my partner','Enviar para meu amor'),onSend:_sharing?null:_shareToStories,onMore:_nextQuote))));
   }
 }

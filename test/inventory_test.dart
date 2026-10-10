@@ -4,6 +4,13 @@ import 'package:twohearts/services/inventory_service.dart';
 import 'package:twohearts/core/duo_pong.dart';
 
 void main() {
+  test('Accessory previews preserve published items and their prices', () {
+    final published = InventoryItem({'item_key': 'cap_pink', 'price': 75});
+    final catalog = InventoryService.mergeAccessoryConcepts([published]);
+    expect(catalog.where((item) => item.key == 'cap_pink').single, same(published));
+    expect(catalog.where((item) => item.previewOnly && item.scope == 'pet').length, 24);
+    expect(catalog.any((item) => item.slot == 'pet_feet'), isTrue);
+  });
   test('Inventory color parsing rejects unsafe and malformed styles', () {
     expect(InventoryItem.parseColor('#ef91b4'), const Color(0xFFEF91B4));
     for (final value in [

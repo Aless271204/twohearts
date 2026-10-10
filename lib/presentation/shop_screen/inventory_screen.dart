@@ -9,6 +9,7 @@ import '../../services/shared_pet_service.dart';
 import '../../widgets/scene_status.dart';
 import '../../widgets/rose_ui.dart';
 import '../../theme/app_theme.dart';
+import '../../core/room_catalog.dart';
 
 class ShopScreen extends StatefulWidget {
   final String initialScope;
@@ -24,6 +25,7 @@ class _ShopScreenState extends State<ShopScreen> {
   String scope = 'pet', query = '';
   String? error;
   String? slot;
+  String? roomCategory;
   InventoryItem? preview;
   bool showPreview = false;
   bool showCoins = false;
@@ -67,6 +69,7 @@ class _ShopScreenState extends State<ShopScreen> {
   }
 
   Future<void> _action(InventoryItem item) async {
+    if(item.previewOnly)return;
     if(widget.previewMode){ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content:Text("Vista de diseño · Las compras están desactivadas")));return;}
     if (busy) return;
     if (!inventory.owns(item.key)) {
@@ -127,14 +130,18 @@ class _ShopScreenState extends State<ShopScreen> {
         const SizedBox(height: 12), Text(item.description),
         const SizedBox(height: 8), Text('Vista real del objeto · ${InventoryItem.slots[item.slot] ?? item.slot}'),
         const SizedBox(height: 16),
-        FilledButton(onPressed: busy ? null : () { Navigator.pop(context); _action(item); }, child: Text(inventory.equipped(item.key) ? 'Quitar' : inventory.owns(item.key) ? 'Equipar' : 'Comprar por ${item.price} LoveCoins')),
+        if(item.previewOnly && item.scope=='room') HeartButton(label:'Probar en mi habitación',icon:Icons.home_outlined,onPressed:(){inventory.previewRoomItem(item);Navigator.pop(context);}),
+        if(item.previewOnly && item.scope=='room') const Padding(padding:EdgeInsets.only(top:8),child:Text('Prueba temporal en este dispositivo. No compra el objeto ni modifica la habitación compartida.',style:TextStyle(fontSize:12,color:Color(0xFF716B78)))),
+        if(!(item.previewOnly && item.scope=='room'))
+        FilledButton(onPressed: busy || item.previewOnly ? null : () { Navigator.pop(context); _action(item); }, child: Text(item.previewOnly ? 'En preparación' : inventory.equipped(item.key) ? 'Quitar' : inventory.owns(item.key) ? 'Equipar' : 'Comprar por ${item.price} LoveCoins')),
       ]),
     )));
   }
 
   @override
   Widget build(BuildContext context) {
-    final items = inventory.catalog.where((i) => i.scope == scope && (slot == null || i.slot == slot) && (!onlyOwned || inventory.owns(i.key)) && (query.isEmpty || '${i.name} ${i.collection} ${i.description}'.toLowerCase().contains(query.toLowerCase()))).toList();
+    final items = inventory.catalog.where((i) => i.scope == scope && (scope!='room'||roomCategory==null||i.roomCategory==roomCategory) && (slot == null || i.slot == slot) && (!onlyOwned || inventory.owns(i.key)) && (query.isEmpty || '${i.name} ${i.collection} ${i.description}'.toLowerCase().contains(query.toLowerCase()))).toList();
+    if(scope=='room')items.sort((a,b){final priority=(a.collection=='Nuestro rincón'?0:1).compareTo(b.collection=='Nuestro rincón'?0:1);return priority!=0?priority:inventory.catalog.indexOf(a).compareTo(inventory.catalog.indexOf(b));});
     return Scaffold(
       backgroundColor: Colors.transparent,
       appBar: AppBar(toolbarHeight:76,titleSpacing:20,title:const Text('Tienda e inventario',style:TextStyle(fontSize:23,fontWeight:FontWeight.w800,letterSpacing:-.7)),actions:[Padding(padding:const EdgeInsets.only(right:16),child:HeartButton(label:'${inventory.coins}',icon:Icons.monetization_on_rounded,outlined:true,onPressed:()=>setState(()=>showCoins=true)))]),
@@ -143,15 +150,23 @@ class _ShopScreenState extends State<ShopScreen> {
         : error != null
           ? SceneStatus(key: const ValueKey('error'), title: 'Tu colección', message: error!, loading: false, onRetry: _load)
           : RefreshIndicator(key: const ValueKey('catalog'), onRefresh: _load, child: ListView(padding: const EdgeInsets.all(20), children: [
-            SegmentedButton<bool>(showSelectedIcon: false, segments: const [ButtonSegment(value: false, label: Text('Catálogo')), ButtonSegment(value: true, label: Text('Mis objetos'))], selected: {onlyOwned}, onSelectionChanged: (v) => setState(() { onlyOwned = v.first; showCoins = false; })),
+            SegmentedButton<bool>(style:const ButtonStyle(foregroundColor:WidgetStatePropertyAll(Color(0xFF202027))),showSelectedIcon: false, segments: const [ButtonSegment(value: false, label: Text('Catálogo')), ButtonSegment(value: true, label: Text('Mis objetos'))], selected: {onlyOwned}, onSelectionChanged: (v) => setState(() { onlyOwned = v.first; showCoins = false; })),
             const SizedBox(height: 12),
             SingleChildScrollView(scrollDirection: Axis.horizontal, child: Row(children: [
-              for (final e in InventoryItem.destinations.entries) Padding(padding: const EdgeInsets.only(right: 6), child: ChoiceChip(showCheckmark: false, label: Text(e.value), selected: !showCoins && scope == e.key, onSelected: (_) => setState(() { scope = e.key; slot = null; showCoins = false; preview = null; }))),
-              ChoiceChip(showCheckmark: false, label: const Text('Comprar monedas'), selected: showCoins, onSelected: (_) => setState(() => showCoins = true)),
+              for (final e in InventoryItem.destinations.entries) Padding(padding: const EdgeInsets.only(right: 6), child: ChoiceChip(labelStyle:const TextStyle(color:Color(0xFF202027)),showCheckmark: false, label: Text(e.value), selected: !showCoins && scope == e.key, onSelected: (_) => setState(() { scope = e.key; slot = null; showCoins = false; preview = null; }))),
+              ChoiceChip(labelStyle:const TextStyle(color:Color(0xFF202027)),showCheckmark: false, label: const Text('Comprar monedas'), selected: showCoins, onSelected: (_) => setState(() => showCoins = true)),
             ])),
             const SizedBox(height: 16),
             if (showCoins) _coinsPanel() else ...[
-              TextField(onChanged: (v) => setState(() => query = v), decoration: const InputDecoration(prefixIcon: Icon(Icons.search_rounded), hintText: 'Buscar objeto o colección')),
+              if(scope=='room') ...[
+                SingleChildScrollView(scrollDirection:Axis.horizontal,child:Row(children:[for(final category in ['Todo',...roomCategories])Padding(padding:const EdgeInsets.only(right:4),child:ChoiceChip(showCheckmark:false,label:Text(category),labelStyle:const TextStyle(fontSize:12,color:Color(0xFF202027)),selected:(roomCategory??'Todo')==category,onSelected:(_)=>setState((){roomCategory=category=='Todo'?null:category;slot=null;})))])),
+                const SizedBox(height:12),
+                if(inventory.roomDraft.isNotEmpty) ...[
+                  ClipRRect(borderRadius:BorderRadius.circular(20),child:InventoryPreview(scope:'room',loadout:inventory.loadout)),
+                  TextButton.icon(onPressed:inventory.clearRoomDraft,icon:const Icon(Icons.undo_rounded),label:const Text('Restaurar mi habitación')),
+                ],
+              ],
+              TextField(style:const TextStyle(color:Color(0xFF202027)),onChanged: (v) => setState(() => query = v), decoration: const InputDecoration(prefixIcon: Icon(Icons.search_rounded), hintText: 'Buscar objeto o colección')),
               const SizedBox(height: 12),
               Align(alignment:Alignment.centerRight,child:PopupMenuButton<String>(tooltip:'Filtrar objetos',initialValue:slot??'all',onSelected:(v)=>setState(()=>slot=v=='all'?null:v),itemBuilder:(_)=>[const PopupMenuItem(value:'all',child:Text('Todos los objetos')),for(final e in InventoryItem.slots.entries.where((e)=>e.key.startsWith('${scope}_')))PopupMenuItem(value:e.key,child:Text(e.value))],child:Padding(padding:const EdgeInsets.symmetric(vertical:4),child:Row(mainAxisSize:MainAxisSize.min,children:[Text(slot==null?'Todos los objetos':InventoryItem.slots[slot]??'Filtro',style:const TextStyle(fontSize:12,color:Color(0xFF746874))),const SizedBox(width:5),const Icon(Icons.tune_rounded,size:16)])))),
               const SizedBox(height: 16),
@@ -179,9 +194,9 @@ class _ShopScreenState extends State<ShopScreen> {
   Widget _productCard(InventoryItem item) {
     return Card(clipBehavior: Clip.antiAlias, child: Padding(padding: const EdgeInsets.all(12), child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       ClipRRect(borderRadius: BorderRadius.circular(16), child: SizedBox(height: 120, width: double.infinity, child: ProductThumbnail(item: item))),
-      const SizedBox(height: 12), Text(item.name, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700)),
+      const SizedBox(height: 12), Text(item.name, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700,color:Color(0xFF202027))),
       const SizedBox(height: 4), Text(item.description, style: const TextStyle(fontSize: 12, height: 1.4, color: Color(0xFF716B78))),
-      const SizedBox(height: 8), Text(inventory.equipped(item.key) ? '✓ Equipado' : inventory.owns(item.key) ? '✓ En tu inventario' : '🪙 ${item.price}', style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600)),
+      const SizedBox(height: 8), Text(item.previewOnly ? 'En preparación' : inventory.equipped(item.key) ? '✓ Equipado' : inventory.owns(item.key) ? '✓ En tu inventario' : '🪙 ${item.price}', style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600)),
       const SizedBox(height: 8), SizedBox(width: double.infinity, child: HeartButton(onPressed: busy ? null : () => _viewItem(item), label: 'Ver')),
     ])));
   }
@@ -199,7 +214,8 @@ class InventoryPreview extends StatelessWidget {
   Widget build(BuildContext context) {
     if (scope == 'pet' || scope == 'room') {
       return Container(
-        height: 210,
+        width: 360,
+        height: scope=='room'?360:310,
         decoration: BoxDecoration(
           color: const Color(0xFFF3EBDD),
           borderRadius: BorderRadius.circular(20),
@@ -207,9 +223,8 @@ class InventoryPreview extends StatelessWidget {
         clipBehavior: Clip.antiAlias,
         child: Stack(
           children: [
-            Positioned.fill(child: InventoryScene(loadout: loadout)),
             Positioned.fill(
-              child: Pet3DViewer(
+              child: PetRoomStage(loadout:loadout,pet: Pet3DViewer(
                 previewLoadout: loadout,
                 modelPath: PetModelCatalog.modelPathFor(SharedPetService.instance.species),
                 petLevel: SharedPetService.instance.level,
@@ -217,14 +232,14 @@ class InventoryPreview extends StatelessWidget {
                 autoPlay: true,
                 cameraControls: false,
                 cameraOrbit: '0deg 75deg 105%',
-              ),
+              )),
             ),
             const Positioned(
               bottom: 8,
               left: 12,
               child: Text(
                 'Vista previa · Sin guardar',
-                style: TextStyle(fontSize: 11),
+                style: TextStyle(fontSize: 11,color:Color(0xFF202027)),
               ),
             ),
           ],
@@ -298,7 +313,7 @@ class InventoryPreview extends StatelessWidget {
                 ),
                 borderRadius: BorderRadius.circular(9),
               ),
-              child: Text(answer),
+              child: Text(answer,style:const TextStyle(color:Color(0xFF202027))),
             ),
         ],
       ),

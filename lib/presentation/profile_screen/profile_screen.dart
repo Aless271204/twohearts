@@ -1,3 +1,5 @@
+import '../../widgets/place_search_sheet.dart';
+import '../../services/geographic_location_service.dart';
 import 'package:flutter/material.dart';
 import '../../services/app_language.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -349,11 +351,16 @@ class _ProfileScreenState extends State<ProfileScreen>
           ),
           const SizedBox(height: 12),
           _buildField(
-            label: 'Ciudad',
-            hint: 'Tu ciudad actual',
+            label: 'Ciudad o ubicación',
+            hint: 'Ciudad, país o dirección',
             controller: _cityCtrl,
             icon: Icons.location_on_outlined,
+            helperText: 'Elige el lugar para ubicarlo correctamente en Nuestro Nido.',
           ),
+          Align(alignment:Alignment.centerLeft,child:TextButton.icon(icon:const Icon(Icons.travel_explore_rounded),label:const Text('Buscar en el mapa'),onPressed:()async{
+            final place=await showModalBottomSheet<GeoPlace>(context:context,useRootNavigator:true,isScrollControlled:true,showDragHandle:true,builder:(_)=>PlaceSearchSheet(initialQuery:_cityCtrl.text));
+            if(place!=null&&mounted)setState(()=>_cityCtrl.text=place.label);
+          })),
           const SizedBox(height: 12),
           _buildField(
             label: 'Bio',

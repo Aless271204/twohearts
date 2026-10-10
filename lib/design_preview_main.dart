@@ -23,7 +23,7 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await AppLanguage.instance.initialize();
   await Supabase.initialize(url:'http://127.0.0.1:9',anonKey:'twohearts-design-preview',authOptions:FlutterAuthClientOptions(autoRefreshToken:false,localStorage:const EmptyLocalStorage()));
-  InventoryService.instance.catalog=previewInventory;
+  InventoryService.instance.catalog=InventoryService.mergeAccessoryConcepts(previewInventory);
   InventoryService.instance.coins=80;
   SharedPetService.instance.data={'species':'penguin','name':'','level':3,'hunger':85,'energy':90,'joy':95,'members':['example-1','example-2']};
   final router=GoRouter(observers:[SceneAudioRouteObserver()],routes:[

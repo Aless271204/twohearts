@@ -90,32 +90,35 @@ class PetRoomStage extends StatelessWidget {
   ]));
 }
 
-class HeartQuoteCard extends StatelessWidget {
-  final String text,sendLabel;
-  final VoidCallback? onSend,onMore;
-  const HeartQuoteCard({super.key,required this.text,required this.sendLabel,this.onSend,this.onMore});
-  @override
-  Widget build(BuildContext context) => ClipRRect(borderRadius:BorderRadius.circular(22),child:Stack(children:[
-    Positioned.fill(child:CustomPaint(painter:_CloudsPainter())),
-    Padding(padding:const EdgeInsets.fromLTRB(24,18,24,14),child:Column(children:[
-      Text(text,textAlign:TextAlign.center,style:const TextStyle(fontSize:21,fontWeight:FontWeight.w500,fontStyle:FontStyle.italic,height:1.35,color:Color(0xFF891F49))),
-      const SizedBox(height:12),
-      Row(mainAxisAlignment:MainAxisAlignment.center,children:[Flexible(child:HeartButton(label:sendLabel,icon:Icons.send_rounded,outlined:true,onPressed:onSend)),if(onMore!=null)...[const SizedBox(width:8),IconButton(onPressed:onMore,tooltip:'Otra frase',icon:const Icon(Icons.refresh_rounded,color:AppTheme.primary,size:20))]]),
-    ])),
-  ]));
+
+class NidoWelcomeSurface extends StatelessWidget {
+  final Widget child;
+  const NidoWelcomeSurface({super.key,required this.child});
+  @override Widget build(BuildContext context)=>Stack(children:[
+    Positioned.fill(child:ColoredBox(color:const Color(0xFFFFF9FA))),
+    Positioned(top:0,left:0,right:0,height:700,child:Image.asset('assets/images/ui/nido-wallpaper.png',fit:BoxFit.cover)),
+    Positioned.fill(child:DecoratedBox(decoration:BoxDecoration(gradient:LinearGradient(begin:Alignment.topCenter,end:Alignment.bottomCenter,colors:[const Color(0xA6FFF9FA),const Color(0xEEFFF9FA),const Color(0xFFFFF9FA)],stops:const[0,.72,1])))),
+    child,
+  ]);
 }
 
-class _CloudsPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas,Size s){
-    canvas.drawRect(Offset.zero&s,Paint()..shader=const LinearGradient(begin:Alignment.topLeft,end:Alignment.bottomRight,colors:[Color(0xFFFFD9E5),Color(0xFFFFEEE7)]).createShader(Offset.zero&s));
-    for(var i=0;i<11;i++){
-      final x=s.width*i/10,y=s.height*(.93-(i%3)*.06),r=s.width*(.09+(i%2)*.015);
-      canvas.drawCircle(Offset(x,y),r,Paint()..color=const Color(0x77FFFFFF));
-      canvas.drawCircle(Offset(x,y+15),r*.8,Paint()..color=const Color(0x99FFF9F3));
-    }
-    final heart=Path()..moveTo(0,8)..cubicTo(-17,-5,-20,12,0,27)..cubicTo(20,12,17,-5,0,8);
-    canvas.save();canvas.translate(s.width*.06,s.height*.65);canvas.rotate(-.25);canvas.drawPath(heart,Paint()..color=const Color(0xFFFF6592)..style=PaintingStyle.stroke..strokeWidth=2.5);canvas.restore();
-  }
-  @override bool shouldRepaint(_CloudsPainter oldDelegate)=>false;
+class HeartQuoteCard extends StatelessWidget {
+  final String text,sendLabel,eyebrow;
+  final VoidCallback? onSend,onMore;
+  const HeartQuoteCard({super.key,required this.text,required this.sendLabel,this.eyebrow='Un momento para ustedes',this.onSend,this.onMore});
+  @override Widget build(BuildContext context)=>Container(
+    decoration:BoxDecoration(borderRadius:BorderRadius.circular(26),boxShadow:heartShadow,border:Border.all(color:const Color(0xFFF4DDE3))),
+    clipBehavior:Clip.antiAlias,
+    child:ConstrainedBox(constraints:const BoxConstraints(minHeight:270),child:Stack(children:[
+      Positioned.fill(child:Image.asset('assets/images/ui/nido-wallpaper.png',fit:BoxFit.cover)),
+      Positioned.fill(child:DecoratedBox(decoration:const BoxDecoration(gradient:LinearGradient(begin:Alignment.topCenter,end:Alignment.bottomCenter,colors:[Color(0x99FFF9FA),Color(0x44FFF9FA),Color(0x22FFF9FA)])))),
+      SingleChildScrollView(child:Padding(padding:const EdgeInsets.fromLTRB(24,28,24,28),child:Column(mainAxisSize:MainAxisSize.min,children:[
+        Text(eyebrow,textAlign:TextAlign.center,style:const TextStyle(fontSize:11,fontWeight:FontWeight.w600,letterSpacing:.5,color:Color(0xFF634958))),
+        const SizedBox(height:22),
+        Text(text,textAlign:TextAlign.center,style:const TextStyle(fontSize:22,fontWeight:FontWeight.w500,fontStyle:FontStyle.italic,height:1.4,color:Color(0xFF612A43))),
+        const SizedBox(height:26),
+        Row(mainAxisAlignment:MainAxisAlignment.center,children:[Flexible(child:HeartButton(label:sendLabel,icon:Icons.send_rounded,outlined:true,onPressed:onSend)),if(onMore!=null)...[const SizedBox(width:8),DecoratedBox(decoration:BoxDecoration(color:Colors.white.withAlpha(220),shape:BoxShape.circle),child:IconButton(onPressed:onMore,tooltip:'Otra frase',icon:const Icon(Icons.refresh_rounded,color:AppTheme.primary,size:20)))]]),
+      ]))),
+    ])),
+  );
 }
