@@ -57,6 +57,25 @@ Publicar precios y habilitar compras exige añadir los artículos al catálogo d
 
 ## Reglas al continuar el desarrollo
 
+### Vestuario 3D actual
+
+La fuente visual del vestuario ya es geometría 3D. Los maestros editables están en
+`design/blender/fitting/NIDO-patronaje-prendas.blend` y `NIDO-complementos-prendas.blend`,
+separados por artículo y especie. Se conservan localmente, con respaldos.
+
+Los datos editables de patrones están en `design/blender/wardrobe-patterns.json`;
+los complementos usan su catálogo en la misma carpeta. Los catálogos exportados son
+`assets/runner/blender-wardrobe-models.json` y `blender-complement-models.json`.
+`accessory-catalog.json` es el catálogo unificado que consume la app. Para ocultar
+un artículo, cambiar `visible` en su fuente y sincronizar con
+`scripts/register-blender-wardrobe.py`. Mantener el código interno conserva compras.
+
+Después de modificar la geometría: exportar, ejecutar `package-wardrobe-assets.py`
+y registrar. Renderizar miniaturas con `blender-render-wardrobe-thumbnails.py` desde
+los GLB definitivos; no usar una ilustración distinta del objeto vendido.
+Revisar todas las especies en `wardrobe-final-review.html`, además de las pruebas
+de rig. El punto guardado y las limitaciones están en `wardrobe-resume-1814.md`.
+
 Coloca datos editables en `core`, dibujado reutilizable en `widgets`, pantallas en `presentation` y estado o persistencia en `services`. Evita duplicar catálogos o añadir otra moneda. No cambies la navegación para introducir un objeto. Mantén separadas las previsualizaciones (`design_preview_main.dart`) de la entrada real (`main.dart`). Los archivos de `sources/` son referencias de solo lectura.
 
 Antes de publicar, verifica las piezas modificadas. Para el catálogo actual: `flutter test test/room_catalog_test.dart test/inventory_test.dart`. Si amplías el catálogo aprobado, actualiza también sus cantidades esperadas en la prueba. Para modelos: las pruebas `pet_accessory_fit_test.mjs` y `inventory_cosmetics_test.mjs` comprueban ajustes y animaciones. No se generó un APK como parte de esta integración.

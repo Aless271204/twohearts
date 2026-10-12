@@ -1,0 +1,170 @@
+[
+  {
+    "item_key": "cap_pink",
+    "model": "assets/runner/accessories/cap_pink_penguin_pattern.glb",
+    "model_sha256": "7b701456ed7c94fea7a551bd101f833a0a03fdbb761a0c469b1a4bcba1b1c0a2",
+    "thumbnail": "assets/images/products/pet_head-cap-f05280.png",
+    "thumbnail_sha256": "a9bd94e8e65a5b40ed2568efe6059b2c23505af4a889e18d2bc608901293ceaa"
+  },
+  {
+    "item_key": "beanie_cloud",
+    "model": "assets/runner/accessories/beanie_cloud_penguin_pattern.glb",
+    "model_sha256": "c2784b4efccb31da51910aee9c98cae8b55e8990adebef32e6d7b369e415e14f",
+    "thumbnail": "assets/images/products/pet_head-beanie-fff2df.png",
+    "thumbnail_sha256": "712f28ab9b6151a086f8c715ab51d630a5aee3b641b910cc17879cd82ef3d32f"
+  },
+  {
+    "item_key": "hat_garden",
+    "model": "assets/runner/accessories/hat_garden_penguin_pattern.glb",
+    "model_sha256": "da820b4fc7959967657ff59d7857abe514c86f4957f9a8c2e6c351122f0eedb2",
+    "thumbnail": "assets/images/products/pet_head-garden_hat-b8dccb.png",
+    "thumbnail_sha256": "d4d1ce321b38ccfa0f8647471ec1797637fc6bf50c050c0ae3b1b729a7dd6b1b"
+  },
+  {
+    "item_key": "beret_chic",
+    "model": "assets/runner/accessories/beret_chic_penguin_pattern.glb",
+    "model_sha256": "aa25c3f26be5b06c12dc0a1aabf525104c29afb80b461787643db8a94f85f394",
+    "thumbnail": "assets/images/products/pet_head-beret-baa2db.png",
+    "thumbnail_sha256": "776b26b229460fb72bb3de3f455d32d916355701e8700e5ad0e3024054629800"
+  },
+  {
+    "item_key": "glasses_heart",
+    "model": "assets/runner/accessories/glasses_heart_penguin_tailored.glb",
+    "model_sha256": "30860fd0f9b0f021ce0c02225e493fea975cc5ff86a306779879f1ce246fb4de",
+    "thumbnail": "assets/images/products/pet_eyes-heart_glasses-f05280.png",
+    "thumbnail_sha256": "7644fa72d15286142c0f0eb2b48d12a2ce2b388796f5546707918c74753093d5"
+  },
+  {
+    "item_key": "glasses_round",
+    "model": "assets/runner/accessories/glasses_round_penguin_tailored.glb",
+    "model_sha256": "5f910c600a1b260927f0e1b8ffeae552a4178c931fb8bfa8ca999840c3ec3e98",
+    "thumbnail": "assets/images/products/pet_eyes-round_glasses-e2b957.png",
+    "thumbnail_sha256": "aa12a1bd6670b0620cb78177aacf74a07f06aef640a140489e06960b38864260"
+  },
+  {
+    "item_key": "glasses_star",
+    "model": "assets/runner/accessories/glasses_star_penguin_tailored.glb",
+    "model_sha256": "339935bc99df65cf38f44cf33ac18ddeb56675c80626095c2b6c6eac06ac90a1",
+    "thumbnail": "assets/images/products/pet_eyes-star_glasses-baa2db.png",
+    "thumbnail_sha256": "440f087c49d9ff7e30d08459f1e8f191b5ebe10c0db6c17a164c2f68ae810340"
+  },
+  {
+    "item_key": "patch_pirate",
+    "model": "assets/runner/accessories/patch_pirate_penguin_tailored.glb",
+    "model_sha256": "a95647f2601564c620870b88a77f1f211c67c8669cfc049954343ec32105046e",
+    "thumbnail": "assets/images/products/pet_eyes-eyepatch-30303d.png",
+    "thumbnail_sha256": "2611baae6f8d5a77232b823105562066f63314ff7a2f2df46eb2d89d139644c4"
+  },
+  {
+    "item_key": "mask_sleep",
+    "model": "assets/runner/accessories/mask_sleep_penguin_tailored.glb",
+    "model_sha256": "5bd8177c66ffa2b3e699aca4963914a8c26d586a051d0d724abba77c2f130f97",
+    "thumbnail": "assets/images/products/pet_eyes-sleep_mask-efa0ab.png",
+    "thumbnail_sha256": "c5f3dde804a66f5815e66921fad3bd310d8ee7528d410d199de1a3c8db21453c"
+  },
+  {
+    "item_key": "shoes_heart",
+    "model": "assets/runner/accessories/shoes_heart_penguin_tailored.glb",
+    "model_sha256": "514b0b0167b88c0daa34da2cfaf397cc29be71f2835e66c9e91fb3d15a537ca4",
+    "thumbnail": "assets/images/products/pet_feet-sneakers-efa0ab.png",
+    "thumbnail_sha256": "dba211acdf9a0b2e6a16fbbd879ce64df7aab7d5e1c8d75ea551541897f03f5a"
+  },
+  {
+    "item_key": "boots_rain",
+    "model": "assets/runner/accessories/boots_rain_penguin_tailored.glb",
+    "model_sha256": "b487a129f6380b085000be4f8956a7e12865f242714f679dbeea0cef9da4633b",
+    "thumbnail": "assets/images/products/pet_feet-rain_boots-b8dccb.png",
+    "thumbnail_sha256": "511127de0b8f5c075b32b6cc621f1df30a3d93f9830b4c4ce90a2ce458324d64"
+  },
+  {
+    "item_key": "slippers_cloud",
+    "model": "assets/runner/accessories/slippers_cloud_penguin_tailored.glb",
+    "model_sha256": "947b5b578d3f468472ba751a17875800c32e99201048e54d1d7a2221af11862d",
+    "thumbnail": "assets/images/products/pet_feet-slippers-fff2df.png",
+    "thumbnail_sha256": "a5f7cd163fda3945f4255f2ccf19c1181a7ea404b6c3d940a1f3853d3a230d7b"
+  },
+  {
+    "item_key": "shoes_chic",
+    "model": "assets/runner/accessories/shoes_chic_penguin_tailored.glb",
+    "model_sha256": "af1199007197ee8ff1bc2426c0249a2cd13debbcf3fb88052216abd7bad68466",
+    "thumbnail": "assets/images/products/pet_feet-mary_jane-f05280.png",
+    "thumbnail_sha256": "dd0d9a8b797d28bf37107d2accfc88e155ec4d688c1a0bd887a4cbc7a09d486c"
+  },
+  {
+    "item_key": "sandals_summer",
+    "model": "assets/runner/accessories/sandals_summer_penguin_tailored.glb",
+    "model_sha256": "72191b5d55b633a0e6df49615dbbb58e23acdc23f5395471fb5c0d68b2b95d94",
+    "thumbnail": "assets/images/products/pet_feet-sandals-f2b29b.png",
+    "thumbnail_sha256": "76ace58d20a1478d9533ae14b92d7c19cd4d54097fe5686f0ad017a787346b8b"
+  },
+  {
+    "item_key": "scarf_hearts",
+    "model": "assets/runner/accessories/scarf_hearts_penguin_tailored.glb",
+    "model_sha256": "22ee7c0b59e26f9f226e91eb510ec92e4e10334c48c25d8347894cbd267343ff",
+    "thumbnail": "assets/images/products/pet_neck-scarf-efa0ab.png",
+    "thumbnail_sha256": "df648ee2298f792ed5e6b2859a4a4ca6ac6b7c786ac8a0bb818ca2fb3040b022"
+  },
+  {
+    "item_key": "bandana_sage",
+    "model": "assets/runner/accessories/bandana_sage_penguin_tailored.glb",
+    "model_sha256": "5725c7021a9bcd4be9a82dd0ea18a427aca133db82827717847a8a1055e5bd7e",
+    "thumbnail": "assets/images/products/pet_neck-bandana-b8dccb.png",
+    "thumbnail_sha256": "6f89533d6e3dda5c9a8be8d1983e88fd8d663cc007169f99b576f1d6676e0987"
+  },
+  {
+    "item_key": "necklace_heart",
+    "model": "assets/runner/accessories/necklace_heart_penguin_tailored.glb",
+    "model_sha256": "aaa1361e30332305880d97df2b2aea60a14e546ef4b11309d7d683b7e8db2e66",
+    "thumbnail": "assets/images/products/pet_neck-bead_necklace-efa0ab.png",
+    "thumbnail_sha256": "46c9d31cf84a84004790b397b3a2b584d2ea4b4b74d9ccca665ac81fef59853f"
+  },
+  {
+    "item_key": "chain_gold",
+    "model": "assets/runner/accessories/chain_gold_penguin_tailored.glb",
+    "model_sha256": "3167c31d44115dd670724c639567642326823223a9f7453182782a8dc7907642",
+    "thumbnail": "assets/images/products/pet_neck-gold_chain-e2b957.png",
+    "thumbnail_sha256": "31fea6fb7c559d8d2b1b85b84e65d4442d42d2fa77ef495952041c6c390dfc8e"
+  },
+  {
+    "item_key": "bow_neck",
+    "model": "assets/runner/accessories/bow_neck_penguin_tailored.glb",
+    "model_sha256": "f005bac6742921d85c47f3fa197b691b57d2a1730a09f941d38593e3c7a48429",
+    "thumbnail": "assets/images/products/pet_neck-bow_tie-f05280.png",
+    "thumbnail_sha256": "5087967c80d7ca546eb500e85429b48c7571c6f37ed92dcc0aa7eb4a2ad3d455"
+  },
+  {
+    "item_key": "shirt_love",
+    "model": "assets/runner/accessories/shirt_love_penguin_pattern.glb",
+    "model_sha256": "da6286291a54d75c6aaa125e50eb9b10db925bb2d7325e6a4212711ed393de66",
+    "thumbnail": "assets/images/products/pet_body-shirt-fff2df.png",
+    "thumbnail_sha256": "a99685b335273e21221b8c194e1f6e0d4801dc4fddf1aa34fe55437fbbb10c21"
+  },
+  {
+    "item_key": "jacket_denim",
+    "model": "assets/runner/accessories/jacket_denim_penguin_pattern.glb",
+    "model_sha256": "a818de7bb6bf90480cf86967c85c09a268e579ae20c6e21fefdab0c324d74599",
+    "thumbnail": "assets/images/products/pet_body-denim_jacket-91b6d6.png",
+    "thumbnail_sha256": "ce2cc0089f8fefeb8d0b112e25f105beb30ad143fda6d662fffc33b27b07f24f"
+  },
+  {
+    "item_key": "coat_cloud",
+    "model": "assets/runner/accessories/coat_cloud_penguin_pattern.glb",
+    "model_sha256": "387adf5fa7e49957cb2e748d67374c5b2262423c0bd9e3832f9b982a694fa188",
+    "thumbnail": "assets/images/products/pet_body-coat-b8dccb.png",
+    "thumbnail_sha256": "56871c890e7c816ac46cb8276fdd17ff417a6c5c60a2738c1af764dba6968c35"
+  },
+  {
+    "item_key": "dress_petal",
+    "model": "assets/runner/accessories/dress_petal_penguin_pattern.glb",
+    "model_sha256": "af0f8519f309c9ce11c39229c20c6520a2e2d92bc2a719eea64aa85bca0baccc",
+    "thumbnail": "assets/images/products/pet_body-dress-efa0ab.png",
+    "thumbnail_sha256": "e33cfd62764ad297d8fa4a1375536a702b71856a6a1f5f9ca2d9ae9422fced30"
+  },
+  {
+    "item_key": "hoodie_nido",
+    "model": "assets/runner/accessories/hoodie_nido_penguin_pattern.glb",
+    "model_sha256": "4467f194e6b3f350dc7efd0cc539c8dd8574a4ff09043cbb1bc7946bbf0ac85c",
+    "thumbnail": "assets/images/products/pet_body-hoodie-baa2db.png",
+    "thumbnail_sha256": "86d2643d099c251630939a12c63984cc6279dfc29ed32195164427ad734aa1e3"
+  }
+]

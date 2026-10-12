@@ -192,6 +192,7 @@ Map<String, dynamic> roomItem(
   String color,
   int? atlasIndex, {
   String? imageAsset,
+  bool visible = true,
 }) => {
   'item_key': key,
   'name': name,
@@ -207,5 +208,6 @@ Map<String, dynamic> roomItem(
   'collection': 'Nuestro rincón',
   'rarity': 'Común',
   'preview_only': true,
+  'visible': visible,
   'description': 'Una pieza de Nuestro rincón. Pruébala en tu habitación.',
 };

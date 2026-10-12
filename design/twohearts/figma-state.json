@@ -1,0 +1,31 @@
+{
+  "fileKey": "6AmFNt0S3jYLZn4kEtuV98",
+  "url": "https://www.figma.com/design/6AmFNt0S3jYLZn4kEtuV98",
+  "status": "editable design draft; actual Flutter browser preview is the implementation review",
+  "pageId": "0:1",
+  "screens": {
+    "Social": "7:3",
+    "Tienda": "7:4",
+    "Nido": "7:5",
+    "Mascota": "7:6",
+    "Actividades": "7:7"
+  },
+  "components": {
+    "buttonSet": "3:17",
+    "card": "3:24"
+  },
+  "uploadedImageCount": 16,
+  "mapVectorId": "9:11",
+  "implementation": {
+    "version": "1.1.6+11",
+    "preview": "http://127.0.0.1:58094/?tab=2",
+    "order": [
+      "Social",
+      "Tienda",
+      "Nido",
+      "Mascota",
+      "Actividades"
+    ]
+  },
+  "note": "Content images and actual accessory geometry only; no flattened UI screenshots uploaded."
+}

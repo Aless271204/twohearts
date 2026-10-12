@@ -1,0 +1,21 @@
+const { chromium } = require('C:/Users/Lenovo/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright');
+const path=require('path');
+(async()=>{
+ const browser=await chromium.launch({headless:true,channel:"chrome"});
+ const page=await browser.newPage({viewport:{width:1800,height:2200},deviceScaleFactor:1});
+ const errors=[];page.on('pageerror',e=>errors.push(e.message));
+ await page.goto('file:///'+path.join(__dirname,'index.html').replaceAll('\\','/'));
+ await page.screenshot({path:path.join(__dirname,'overview.png'),fullPage:true});
+ await page.locator('.frame').first().locator('[data-to="3"]').click();
+ if(await page.locator('.frame.selected figcaption').textContent()!=='04 / Nuestro Álbum') throw Error('Album navigation');
+ await page.selectOption('select','1');
+ await page.locator('.frame.selected [data-action="Girar la ruleta"]').click();
+ if(!await page.locator('#toast').isVisible()) throw Error('Roulette state');
+ await page.setViewportSize({width:390,height:1000});
+ await page.selectOption('select','0');
+ if(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth)) throw Error('Horizontal overflow');
+ await page.locator('.frame.selected .phone').screenshot({path:path.join(__dirname,'nido.png')});
+ if(errors.length) throw Error(errors.join('\n'));
+ console.log('Eight screens rendered; navigation, roulette and narrow viewport passed.');
+ await browser.close();
+})();

@@ -1,0 +1,202 @@
+[
+  {
+    "item_key": "ceiling_cloud",
+    "name": "Lámpara nube",
+    "equip_slot": "room_ceiling",
+    "room_category": "Techo",
+    "appearance": {
+      "style": "cloud",
+      "color": "#FFF2DF"
+    }
+  },
+  {
+    "item_key": "ceiling_petal",
+    "name": "Lámpara pétalo",
+    "equip_slot": "room_ceiling",
+    "room_category": "Techo",
+    "appearance": {
+      "style": "petal",
+      "color": "#EFA0AB"
+    }
+  },
+  {
+    "item_key": "ceiling_mobile",
+    "name": "Móvil de estrellas",
+    "equip_slot": "room_ceiling",
+    "room_category": "Techo",
+    "appearance": {
+      "style": "mobile",
+      "color": "#BAA2DB"
+    }
+  },
+  {
+    "item_key": "ceiling_lights",
+    "name": "Guirnalda de luz",
+    "equip_slot": "room_ceiling",
+    "room_category": "Techo",
+    "appearance": {
+      "style": "lights",
+      "color": "#E2B957"
+    }
+  },
+  {
+    "item_key": "ceiling_beams",
+    "name": "Vigas de madera",
+    "equip_slot": "room_ceiling",
+    "room_category": "Techo",
+    "appearance": {
+      "style": "beams",
+      "color": "#C99D70"
+    }
+  },
+  {
+    "item_key": "wall_floral",
+    "name": "Papel floral",
+    "equip_slot": "room_wall",
+    "room_category": "Pared",
+    "appearance": {
+      "style": "floral",
+      "color": "#F6E8DD"
+    }
+  },
+  {
+    "item_key": "wall_sage_panel",
+    "name": "Panel salvia",
+    "equip_slot": "room_wall",
+    "room_category": "Pared",
+    "appearance": {
+      "style": "sage_panel",
+      "color": "#B8DCCB"
+    }
+  },
+  {
+    "item_key": "wall_heart_frame",
+    "name": "Cuadro corazón",
+    "equip_slot": "room_decor",
+    "room_category": "Pared",
+    "appearance": {
+      "style": "heart_frame",
+      "color": "#EFA0AB"
+    }
+  },
+  {
+    "item_key": "wall_arch_mirror",
+    "name": "Espejo arco",
+    "equip_slot": "room_mirror",
+    "room_category": "Pared",
+    "appearance": {
+      "style": "arch_mirror",
+      "color": "#C99D70"
+    }
+  },
+  {
+    "item_key": "wall_memory_shelf",
+    "name": "Repisa de recuerdos",
+    "equip_slot": "room_shelf",
+    "room_category": "Pared",
+    "appearance": {
+      "style": "memory_shelf",
+      "color": "#C99D70"
+    }
+  },
+  {
+    "item_key": "floor_honey",
+    "name": "Parquet miel",
+    "equip_slot": "room_floor",
+    "room_category": "Suelo",
+    "appearance": {
+      "style": "honey",
+      "color": "#D9B17E"
+    }
+  },
+  {
+    "item_key": "floor_cream",
+    "name": "Tarima crema",
+    "equip_slot": "room_floor",
+    "room_category": "Suelo",
+    "appearance": {
+      "style": "cream",
+      "color": "#EEDCC7"
+    }
+  },
+  {
+    "item_key": "floor_rose",
+    "name": "Baldosa rosa",
+    "equip_slot": "room_floor",
+    "room_category": "Suelo",
+    "appearance": {
+      "style": "rose_tile",
+      "color": "#DBA397"
+    }
+  },
+  {
+    "item_key": "rug_cloud",
+    "name": "Alfombra nube",
+    "equip_slot": "room_rug",
+    "room_category": "Suelo",
+    "appearance": {
+      "style": "cloud_rug",
+      "color": "#FFF2DF"
+    }
+  },
+  {
+    "item_key": "rug_garden",
+    "name": "Alfombra jardín",
+    "equip_slot": "room_rug",
+    "room_category": "Suelo",
+    "appearance": {
+      "style": "garden_rug",
+      "color": "#B8DCCB"
+    }
+  },
+  {
+    "item_key": "furniture_cloud_bed",
+    "name": "Cama nube",
+    "equip_slot": "room_bed",
+    "room_category": "Muebles",
+    "appearance": {
+      "style": "cloud_bed",
+      "color": "#B8DCCB"
+    }
+  },
+  {
+    "item_key": "furniture_cuddle_chair",
+    "name": "Sillón abrazo",
+    "equip_slot": "room_chair",
+    "room_category": "Muebles",
+    "appearance": {
+      "style": "cuddle_chair",
+      "color": "#EFA0AB"
+    }
+  },
+  {
+    "item_key": "furniture_heart_table",
+    "name": "Mesa corazón",
+    "equip_slot": "room_table",
+    "room_category": "Muebles",
+    "appearance": {
+      "style": "heart_table",
+      "color": "#D9B17E"
+    }
+  },
+  {
+    "item_key": "furniture_nido_dresser",
+    "name": "Cómoda nido",
+    "equip_slot": "room_dresser",
+    "room_category": "Muebles",
+    "appearance": {
+      "style": "nido_dresser",
+      "color": "#FFF2DF"
+    }
+  },
+  {
+    "item_key": "furniture_companion_plant",
+    "name": "Planta compañera",
+    "equip_slot": "room_plant",
+    "room_category": "Muebles",
+    "appearance": {
+      "style": "companion_plant",
+      "color": "#B8DCCB"
+    }
+  }
+]

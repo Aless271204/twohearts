@@ -1,0 +1,95 @@
+{
+  "schema": 1,
+  "note": "Experimental Blender patterns. Enable in the production catalog only after visual review.",
+  "clearance": 0.012,
+  "items": {
+    "cap_pink": {
+      "slot": "pet_head",
+      "name": "Gorra corazón",
+      "color": "#F05280",
+      "visible": true,
+      "fabric": "cotton"
+    },
+    "beanie_cloud": {
+      "slot": "pet_head",
+      "name": "Gorro nube",
+      "color": "#FFF2DF",
+      "visible": true,
+      "fabric": "knit"
+    },
+    "hat_garden": {
+      "slot": "pet_head",
+      "name": "Sombrero jardín",
+      "color": "#B8DCCB",
+      "visible": true,
+      "fabric": "straw"
+    },
+    "beret_chic": {
+      "slot": "pet_head",
+      "name": "Boina chic",
+      "color": "#BAA2DB",
+      "visible": true,
+      "fabric": "felt"
+    },
+    "shirt_love": {
+      "slot": "pet_body",
+      "name": "Camiseta abrazo",
+      "color": "#FFF2DF",
+      "visible": true,
+      "fabric": "cotton"
+    },
+    "jacket_denim": {
+      "slot": "pet_body",
+      "name": "Chaqueta denim",
+      "color": "#91B6D6",
+      "visible": true,
+      "fabric": "denim"
+    },
+    "coat_cloud": {
+      "slot": "pet_body",
+      "name": "Abrigo nube",
+      "color": "#B8DCCB",
+      "visible": true,
+      "fabric": "wool",
+      "padding": 0.032
+    },
+    "dress_petal": {
+      "slot": "pet_body",
+      "name": "Vestido pétalo",
+      "color": "#EFA0AB",
+      "visible": true,
+      "fabric": "poplin"
+    },
+    "hoodie_nido": {
+      "slot": "pet_body",
+      "name": "Sudadera nido",
+      "color": "#BAA2DB",
+      "visible": true,
+      "fabric": "cotton",
+      "padding": 0.025
+    }
+  },
+  "species_fit": {
+    "penguin": {
+      "head_raise": 0,
+      "beret_height": 0.76,
+      "body_padding": 0.014
+    },
+    "bear": {
+      "head_raise": 0.075,
+      "beret_height": 1.0,
+      "body_padding": 0.022,
+      "neck_extension": 0.075
+    },
+    "pig": {
+      "head_raise": 0.07,
+      "beret_height": 1.0,
+      "body_padding": 0.02
+    },
+    "chick": {
+      "head_raise": 0.045,
+      "beret_height": 0.95,
+      "body_padding": 0.02
+    }
+  }
+}

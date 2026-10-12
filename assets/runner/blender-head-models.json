@@ -1,0 +1,346 @@
+[
+  {
+    "item_key": "cap_pink",
+    "name": "Gorra corazón",
+    "scope": "pet",
+    "equip_slot": "pet_head",
+    "collection": "Dulce",
+    "rarity": "Común",
+    "description": "Adaptado a las cuatro mascotas.",
+    "preview_only": true,
+    "visible": true,
+    "price_coins": 110,
+    "complexity": "Esencial",
+    "source_file": "Meshy_AI_Coral_Heart_Cap_1011015258_texture.glb",
+    "fit_status": "blender_visual_review",
+    "appearance": {
+      "style": "cap",
+      "color": "#f05280",
+      "model_asset": "assets/runner/accessories/cap_pink_penguin_blender.glb",
+      "species_models": {
+        "bear": "assets/runner/accessories/cap_pink_bear_blender.glb",
+        "pig": "assets/runner/accessories/cap_pink_pig_blender.glb",
+        "chick": "assets/runner/accessories/cap_pink_chick_blender.glb",
+        "penguin": "assets/runner/accessories/cap_pink_penguin_blender.glb"
+      },
+      "fitted_model_space": true,
+      "tuck_crown_tuft": true
+    },
+    "blender_variants": [
+      {
+        "item_key": "cap_pink",
+        "species": "bear",
+        "path": "assets/runner/accessories/cap_pink_bear_blender.glb",
+        "source": "cap_pink_meshy.glb",
+        "triangles": 4697,
+        "max_contact_adjustment": 0.05730411765390809,
+        "fit_status": "visual_review",
+        "sha256": "778c4a55b3a464800b305f26ead34156e1f22c6fbe4a240fb9255c621e1e2cd2",
+        "shared_textures": [
+          "head_texture_f82417ea6c8779c96b56.jpg",
+          "head_texture_647812afd91fd0e0f64d.jpg"
+        ]
+      },
+      {
+        "item_key": "cap_pink",
+        "species": "pig",
+        "path": "assets/runner/accessories/cap_pink_pig_blender.glb",
+        "source": "cap_pink_meshy.glb",
+        "triangles": 8245,
+        "max_contact_adjustment": 0.03064333681688139,
+        "fit_status": "visual_review",
+        "sha256": "e2cad4c8d59f96e5efcc9655a7de3b5a0a0e3c3e7b3c26085612c639d6cecfec",
+        "shared_textures": [
+          "head_texture_f82417ea6c8779c96b56.jpg",
+          "head_texture_647812afd91fd0e0f64d.jpg"
+        ]
+      },
+      {
+        "item_key": "cap_pink",
+        "species": "chick",
+        "path": "assets/runner/accessories/cap_pink_chick_blender.glb",
+        "source": "cap_pink_meshy.glb",
+        "triangles": 4089,
+        "max_contact_adjustment": 0.04479528165223283,
+        "fit_status": "visual_review",
+        "sha256": "c1754ff13e2333c7848e955e3076461d6772929234dc89896068caa5b06414eb",
+        "shared_textures": [
+          "head_texture_f82417ea6c8779c96b56.jpg",
+          "head_texture_647812afd91fd0e0f64d.jpg"
+        ]
+      },
+      {
+        "item_key": "cap_pink",
+        "species": "penguin",
+        "path": "assets/runner/accessories/cap_pink_penguin_blender.glb",
+        "source": "cap_pink_meshy.glb",
+        "triangles": 4089,
+        "max_contact_adjustment": 0.03575992422726741,
+        "fit_status": "visual_review",
+        "sha256": "557d23504ddf79202d459165a9cea47dd7bbc22ff69e801eb2e1a6c20cc456c9",
+        "shared_textures": [
+          "head_texture_f82417ea6c8779c96b56.jpg",
+          "head_texture_647812afd91fd0e0f64d.jpg"
+        ]
+      }
+    ]
+  },
+  {
+    "item_key": "hat_garden",
+    "name": "Sombrero jardín",
+    "scope": "pet",
+    "equip_slot": "pet_head",
+    "collection": "Dulce",
+    "rarity": "Común",
+    "description": "Adaptado a las cuatro mascotas.",
+    "preview_only": true,
+    "visible": true,
+    "price_coins": 190,
+    "complexity": "Detallado",
+    "source_file": "Meshy_AI_Green_Straw_Hat_with__1011015320_texture.glb",
+    "fit_status": "blender_visual_review",
+    "appearance": {
+      "style": "garden_hat",
+      "color": "#b8dccb",
+      "model_asset": "assets/runner/accessories/hat_garden_penguin_blender.glb",
+      "species_models": {
+        "penguin": "assets/runner/accessories/hat_garden_penguin_blender.glb",
+        "bear": "assets/runner/accessories/hat_garden_bear_blender.glb",
+        "pig": "assets/runner/accessories/hat_garden_pig_blender.glb",
+        "chick": "assets/runner/accessories/hat_garden_chick_blender.glb"
+      },
+      "fitted_model_space": true,
+      "tuck_crown_tuft": true
+    },
+    "blender_variants": [
+      {
+        "item_key": "hat_garden",
+        "species": "penguin",
+        "path": "assets/runner/accessories/hat_garden_penguin_blender.glb",
+        "source": "hat_garden_meshy.glb",
+        "triangles": 16010,
+        "max_contact_adjustment": 0,
+        "fit_status": "visual_review",
+        "sha256": "115584e145a6ade68eacdb80f680dbd672b96d0a9d315a79bf726a45728ff099",
+        "shared_textures": [
+          "head_texture_d6e1afdd9a3bb07a2d1e.jpg",
+          "head_texture_72b144db7d79d7b15740.jpg"
+        ]
+      },
+      {
+        "item_key": "hat_garden",
+        "species": "bear",
+        "path": "assets/runner/accessories/hat_garden_bear_blender.glb",
+        "source": "hat_garden_meshy.glb",
+        "triangles": 14146,
+        "max_contact_adjustment": 0.02803155259924973,
+        "fit_status": "visual_review",
+        "sha256": "04226c863aa6e65cb2e548bc777f089125572b4adc0b26a355622b0c63d2c728",
+        "shared_textures": [
+          "head_texture_d6e1afdd9a3bb07a2d1e.jpg",
+          "head_texture_72b144db7d79d7b15740.jpg"
+        ]
+      },
+      {
+        "item_key": "hat_garden",
+        "species": "pig",
+        "path": "assets/runner/accessories/hat_garden_pig_blender.glb",
+        "source": "hat_garden_meshy.glb",
+        "triangles": 15021,
+        "max_contact_adjustment": 0.007218623789665717,
+        "fit_status": "visual_review",
+        "sha256": "36b5f52f11457e16a28a6460f4a4439e7d3c13613837ac321fdb9fbd6afe870c",
+        "shared_textures": [
+          "head_texture_d6e1afdd9a3bb07a2d1e.jpg",
+          "head_texture_72b144db7d79d7b15740.jpg"
+        ]
+      },
+      {
+        "item_key": "hat_garden",
+        "species": "chick",
+        "path": "assets/runner/accessories/hat_garden_chick_blender.glb",
+        "source": "hat_garden_meshy.glb",
+        "triangles": 16010,
+        "max_contact_adjustment": 0.004125415344892532,
+        "fit_status": "visual_review",
+        "sha256": "334706a0689abf7d475701c7f1b583a1de82d117802aa5f89ab1d0fce2c0203e",
+        "shared_textures": [
+          "head_texture_d6e1afdd9a3bb07a2d1e.jpg",
+          "head_texture_72b144db7d79d7b15740.jpg"
+        ]
+      }
+    ]
+  },
+  {
+    "item_key": "beanie_cloud",
+    "name": "Gorro nube",
+    "scope": "pet",
+    "equip_slot": "pet_head",
+    "collection": "Dulce",
+    "rarity": "Común",
+    "description": "Adaptado a las cuatro mascotas.",
+    "preview_only": true,
+    "visible": true,
+    "price_coins": 140,
+    "complexity": "Esencial",
+    "source_file": "Meshy_AI_Heartfelt_Winter_Pom__1011015311_texture.glb",
+    "fit_status": "blender_visual_review",
+    "appearance": {
+      "style": "beanie",
+      "color": "#fff2df",
+      "model_asset": "assets/runner/accessories/beanie_cloud_penguin_blender.glb",
+      "species_models": {
+        "penguin": "assets/runner/accessories/beanie_cloud_penguin_blender.glb",
+        "bear": "assets/runner/accessories/beanie_cloud_bear_blender.glb",
+        "pig": "assets/runner/accessories/beanie_cloud_pig_blender.glb",
+        "chick": "assets/runner/accessories/beanie_cloud_chick_blender.glb"
+      },
+      "fitted_model_space": true,
+      "tuck_crown_tuft": true
+    },
+    "blender_variants": [
+      {
+        "item_key": "beanie_cloud",
+        "species": "penguin",
+        "path": "assets/runner/accessories/beanie_cloud_penguin_blender.glb",
+        "source": "beanie_cloud_meshy.glb",
+        "triangles": 12040,
+        "max_contact_adjustment": 0.14308189977069488,
+        "fit_status": "visual_review",
+        "sha256": "5f8749be968d3b7edf9014f6aa2fee09dae22224ab096642b7090110a2d694b8",
+        "shared_textures": [
+          "head_texture_1b7ffdb5e3a44d77602b.jpg",
+          "head_texture_ff0709841c8bd03cb1fd.jpg"
+        ]
+      },
+      {
+        "item_key": "beanie_cloud",
+        "species": "bear",
+        "path": "assets/runner/accessories/beanie_cloud_bear_blender.glb",
+        "source": "beanie_cloud_meshy.glb",
+        "triangles": 12622,
+        "max_contact_adjustment": 0.1428200856066877,
+        "fit_status": "visual_review",
+        "sha256": "a49d521061d45bab3feb0ba3bf3517b915b2bb9ccf5125ecc23c97fc7a080cc8",
+        "shared_textures": [
+          "head_texture_1b7ffdb5e3a44d77602b.jpg",
+          "head_texture_ff0709841c8bd03cb1fd.jpg"
+        ]
+      },
+      {
+        "item_key": "beanie_cloud",
+        "species": "pig",
+        "path": "assets/runner/accessories/beanie_cloud_pig_blender.glb",
+        "source": "beanie_cloud_meshy.glb",
+        "triangles": 12522,
+        "max_contact_adjustment": 0.1417756488294486,
+        "fit_status": "visual_review",
+        "sha256": "436444803a6aa2cd63ec9d9826f1a0f811c3016ce0e87e3fd9482966d98f98a0",
+        "shared_textures": [
+          "head_texture_1b7ffdb5e3a44d77602b.jpg",
+          "head_texture_ff0709841c8bd03cb1fd.jpg"
+        ]
+      },
+      {
+        "item_key": "beanie_cloud",
+        "species": "chick",
+        "path": "assets/runner/accessories/beanie_cloud_chick_blender.glb",
+        "source": "beanie_cloud_meshy.glb",
+        "triangles": 12041,
+        "max_contact_adjustment": 0.1522358520276341,
+        "fit_status": "visual_review",
+        "sha256": "a526ce33fe5cdce7be361844b768a2ac596491245a045f57e3c6e756237da1e8",
+        "shared_textures": [
+          "head_texture_1b7ffdb5e3a44d77602b.jpg",
+          "head_texture_ff0709841c8bd03cb1fd.jpg"
+        ]
+      }
+    ]
+  },
+  {
+    "item_key": "beret_chic",
+    "name": "Boina chic",
+    "scope": "pet",
+    "equip_slot": "pet_head",
+    "collection": "Dulce",
+    "rarity": "Común",
+    "description": "Adaptado a las cuatro mascotas.",
+    "preview_only": true,
+    "visible": true,
+    "price_coins": 170,
+    "complexity": "Detallado",
+    "source_file": "Meshy_AI_Lavender_Heart_Beret_1011015331_texture.glb",
+    "fit_status": "blender_visual_review",
+    "appearance": {
+      "style": "beret",
+      "color": "#baa2db",
+      "model_asset": "assets/runner/accessories/beret_chic_penguin_blender.glb",
+      "species_models": {
+        "penguin": "assets/runner/accessories/beret_chic_penguin_blender.glb",
+        "bear": "assets/runner/accessories/beret_chic_bear_blender.glb",
+        "pig": "assets/runner/accessories/beret_chic_pig_blender.glb",
+        "chick": "assets/runner/accessories/beret_chic_chick_blender.glb"
+      },
+      "fitted_model_space": true,
+      "tuck_crown_tuft": true
+    },
+    "blender_variants": [
+      {
+        "item_key": "beret_chic",
+        "species": "penguin",
+        "path": "assets/runner/accessories/beret_chic_penguin_blender.glb",
+        "source": "beret_chic_meshy.glb",
+        "triangles": 4825,
+        "max_contact_adjustment": 0.08696903508790617,
+        "fit_status": "visual_review",
+        "sha256": "a8a4bccd3fb1c724c2734b18624270817e6053cd4a7c71ecc51178d78376d630",
+        "shared_textures": [
+          "head_texture_dd8d62a997a0d757eb6e.jpg",
+          "head_texture_b608a6659cf38f2a1933.jpg"
+        ]
+      },
+      {
+        "item_key": "beret_chic",
+        "species": "bear",
+        "path": "assets/runner/accessories/beret_chic_bear_blender.glb",
+        "source": "beret_chic_meshy.glb",
+        "triangles": 4809,
+        "max_contact_adjustment": 0.08175288914992355,
+        "fit_status": "visual_review",
+        "sha256": "3b6524d4681222ad71f77db11979dabcb76be7d69180c011398032c139d86833",
+        "shared_textures": [
+          "head_texture_dd8d62a997a0d757eb6e.jpg",
+          "head_texture_b608a6659cf38f2a1933.jpg"
+        ]
+      },
+      {
+        "item_key": "beret_chic",
+        "species": "pig",
+        "path": "assets/runner/accessories/beret_chic_pig_blender.glb",
+        "source": "beret_chic_meshy.glb",
+        "triangles": 4489,
+        "max_contact_adjustment": 0.07434676174794096,
+        "fit_status": "visual_review",
+        "sha256": "c84afa9d7ef0f2ccf972534967a4e4b91164b6426d311b78b5898ff14155413e",
+        "shared_textures": [
+          "head_texture_dd8d62a997a0d757eb6e.jpg",
+          "head_texture_b608a6659cf38f2a1933.jpg"
+        ]
+      },
+      {
+        "item_key": "beret_chic",
+        "species": "chick",
+        "path": "assets/runner/accessories/beret_chic_chick_blender.glb",
+        "source": "beret_chic_meshy.glb",
+        "triangles": 4853,
+        "max_contact_adjustment": 0.09213890530569814,
+        "fit_status": "visual_review",
+        "sha256": "ad0a5ad0118f892c903680446c81238bc21d073d6a7e5fb8ee634163d4277dc1",
+        "shared_textures": [
+          "head_texture_dd8d62a997a0d757eb6e.jpg",
+          "head_texture_b608a6659cf38f2a1933.jpg"
+        ]
+      }
+    ]
+  }
+]

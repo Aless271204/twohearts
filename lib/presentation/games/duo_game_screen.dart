@@ -209,7 +209,7 @@ class _DuoGameScreenState extends State<DuoGameScreen>
       },
       child: Scaffold(
         backgroundColor: dark
-            ? const Color(0xFF090E1A)
+            ? const Color(0xFFFFF9FA)
             : inventory.at('quiz_table')?.color.withAlpha(80) ??
                   const Color(0xFFFFF4F7),
         appBar: status == 'playing' ? null : AppBar(
@@ -253,7 +253,7 @@ class _DuoGameScreenState extends State<DuoGameScreen>
                       'Tú ${s['score_$mine'] ?? 0}  ·  ${s['score_$other'] ?? 0} Tu pareja\nRondas ${s['wins_$mine'] ?? 0} – ${s['wins_$other'] ?? 0} · Gana quien consiga 2',
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        color: dark ? Colors.white : Colors.black87,
+                        color: Colors.black87,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -272,7 +272,7 @@ class _DuoGameScreenState extends State<DuoGameScreen>
                                   ? '¡Ganaste la partida!'
                                   : '¡Tu pareja ganó!',
                               style: TextStyle(
-                                color: dark ? Colors.white : Colors.black87,
+                                color: Colors.black87,
                                 fontSize: 24,
                               ),
                             ),
@@ -372,7 +372,7 @@ class _DuoGameScreenState extends State<DuoGameScreen>
                           : 'Responde sobre ti en secreto, luego adivina la respuesta de tu pareja.',
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        color: dark ? Colors.white60 : Colors.black54,
+                        color: Colors.black54,
                         fontSize: 12,
                       ),
                     ),

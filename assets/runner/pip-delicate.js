@@ -23,7 +23,18 @@ export function refinePip(model) {
       const oldLimb=center.y<.105||(center.y<.525&&center.y>.08&&Math.abs(center.x)>.215+.018*Math.sin((center.y-.08)/.445*Math.PI));
       if(!oldLimb&&triangle.reduce((sum,v)=>sum+coverage(v),0)/3<.35)kept.push(...triangle);
     }
-    geometry.setIndex(kept);mesh.geometry=geometry;
+    geometry.setIndex(kept);
+    // Removed wings/toes must not remain as unused vertices. Precise bounds
+    // include every position and otherwise frame invisible old anatomy.
+    const used=[...new Set(kept)],mapping=new Map(used.map((index,i)=>[index,i]));
+    function compact(attribute){
+      const array=new attribute.array.constructor(used.length*attribute.itemSize);
+      for(let i=0;i<used.length;i++)for(let k=0;k<attribute.itemSize;k++)array[i*attribute.itemSize+k]=attribute.array[used[i]*attribute.itemSize+k];
+      return new THREE.BufferAttribute(array,attribute.itemSize,attribute.normalized);
+    }
+    for(const [name,attribute] of Object.entries(geometry.attributes))geometry.setAttribute(name,compact(attribute));
+    for(const [name,attributes] of Object.entries(geometry.morphAttributes))geometry.morphAttributes[name]=attributes.map(compact);
+    geometry.setIndex(kept.map(index=>mapping.get(index)));geometry.computeBoundingBox();geometry.computeBoundingSphere();mesh.geometry=geometry;
     const soften=source=>{const material=source.clone();material.metalness=0;material.roughness=.85;material.normalMap=null;material.roughnessMap=null;return material;};
     mesh.material=Array.isArray(mesh.material)?mesh.material.map(soften):soften(mesh.material);
   });

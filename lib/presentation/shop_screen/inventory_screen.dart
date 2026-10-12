@@ -209,6 +209,7 @@ class _ShopScreenState extends State<ShopScreen> {
         .where(
           (i) =>
               i.scope == scope &&
+              (i.visible || onlyOwned) &&
               (scope != 'room' ||
                   roomCategory == null ||
                   i.roomCategory == roomCategory) &&
@@ -681,7 +682,7 @@ class InventoryPreview extends StatelessWidget {
         height: 180,
         padding: const EdgeInsets.all(18),
         decoration: BoxDecoration(
-          color: const Color(0xFF090E1A),
+          color: const Color(0xFFFFF9FA),
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
             color: loadout['pong_court']?.color ?? const Color(0xFFE2A4C9),
@@ -711,7 +712,7 @@ class InventoryPreview extends StatelessWidget {
             const SizedBox(height: 12),
             const Text(
               'Tu paleta, pelota y cancha',
-              style: TextStyle(color: Colors.white70, fontSize: 11),
+              style: TextStyle(color: Color(0xFF202027), fontSize: 11),
             ),
           ],
         ),

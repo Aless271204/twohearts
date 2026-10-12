@@ -17,7 +17,7 @@ class _PebbleRunnerTestState extends State<PebbleRunnerTest> {
   void initState(){super.initState();AudioService.instance.pause();_petReady=SharedPetService.instance.refresh();}
   @override
   Widget build(BuildContext context) => ImmersiveGame(child: Scaffold(
-    backgroundColor: const Color(0xFF17392B),
+    backgroundColor: const Color(0xFFFFF9FA),
     body: FutureBuilder<void>(future: _petReady, builder: (context, snapshot) {
       if (snapshot.connectionState != ConnectionState.done) return const SceneStatus(title: 'Nos vamos al bosque', message: 'Cargando vuestra mascota y sus accesorios…');
       if (snapshot.hasError) return SceneStatus(title: 'No pudimos conectar', message: 'Comprueba la conexión y vuelve a entrar.', loading: false, onRetry: () => Navigator.pop(context));

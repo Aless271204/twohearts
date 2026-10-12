@@ -1,12 +1,15 @@
 import * as THREE from 'three';
 import {createAccessory, disposeAccessory} from './accessory-pieces.js';
+import {conformHeadAccessory} from './head-conform.js';
+import {restoreFootwearCoverage,coverClosedFootwear} from './pet-footwear-coverage.js';
+import {restoreSleeveCoverage,coverSleeveSkin} from './pet-sleeve-coverage.js?revision=sleeves-4';
 
 export {createAccessory} from './accessory-pieces.js';
 
 export function measureAccessoryFit(model) {
   model.updateMatrixWorld(true);
   const head=new THREE.Box3(),body=new THREE.Box3(),feet={Left:new THREE.Box3(),Right:new THREE.Box3()};
-  const points=[],weightedFeet={Left:new THREE.Box3(),Right:new THREE.Box3()};
+  const points=[],torsoPoints=[],weightedFeet={Left:new THREE.Box3(),Right:new THREE.Box3()};
   // Include the replacement feet and torso when fitting the room variant.
   // Otherwise the removed original toes raise the measured floor and neck.
   model.traverse(mesh=>{
@@ -24,6 +27,9 @@ export function measureAccessoryFit(model) {
     const vertices=mesh.geometry.index?new Set(mesh.geometry.index.array):Array.from({length:positions.count},(_,i)=>i);
     for(const i of vertices){
       const point=new THREE.Vector3().fromBufferAttribute(positions,i);mesh.applyBoneTransform(i,point);mesh.localToWorld(point);model.worldToLocal(point);points.push(point);
+      let torsoWeight=0;
+      for(let k=0;k<4;k++)if(/(Hips|Spine|Spine1|Spine2)$/.test(mesh.skeleton.bones[mesh.geometry.attributes.skinIndex.getComponent(i,k)]?.name??''))torsoWeight+=mesh.geometry.attributes.skinWeight.getComponent(i,k);
+      if(torsoWeight>.65)torsoPoints.push(point.clone());
       for(const side of ['Left','Right']){let weight=0;for(let k=0;k<4;k++)if(new RegExp(side+'(Foot|ToeBase|Toe_End)$').test(mesh.skeleton.bones[mesh.geometry.attributes.skinIndex.getComponent(i,k)]?.name??''))weight+=mesh.geometry.attributes.skinWeight.getComponent(i,k);if(weight>.45)weightedFeet[side].expandByPoint(point);}
     }
   });
@@ -39,6 +45,9 @@ export function measureAccessoryFit(model) {
       }
     }
   }
+  // Leg and arm vertices must not stretch a shirt down to the toes or across
+  // the wings. Fit the garment to skin weighted to the torso joints only.
+  if(torsoPoints.length>20){const torso=new THREE.Box3().setFromPoints(torsoPoints);torso.max.y=Math.min(torso.max.y,head.min.y+.025);const size=torso.getSize(new THREE.Vector3());if(size.x>.1&&size.y>.1&&size.z>.1)body.copy(torso);}
   for(const side of ['Left','Right']){const w=weightedFeet[side].getSize(new THREE.Vector3());if(w.x>.05&&w.z>.06)feet[side].union(weightedFeet[side]);}
   // Refined penguin feet are rigid meshes following the original foot joints.
   model.traverse(mesh=>{for(const side of ['Left','Right'])if(mesh.name===side+'RoundedFoot'){
@@ -55,17 +64,57 @@ export function measureAccessoryFit(model) {
 export function equipRunnerCosmetics(model, loadout={}) {
   const previous=model.userData.cosmetics;
   if(previous){for(const part of previous.userData.slots??[])disposeAccessory(part);disposeAccessory(previous);}
+  restoreSleeveCoverage(model);
+  restoreFootwearCoverage(model);
+  tuckCrownTuft(model,!!loadout?.pet_head?.tuck_crown_tuft);
   const bones={};model.traverse(o=>{if(o.isBone)bones[o.name.replace(/^mixamorig:?/,'')]=o;});
   const fit=model.userData.accessoryFit??=measureAccessoryFit(model);
+  coverClosedFootwear(model,fit,loadout?.pet_feet);
+  coverSleeveSkin(model,loadout?.pet_body);
   const group=new THREE.Group();group.name='equipped-cosmetics';group.userData.slots=[];model.add(group);
   const h=fit.head.getSize(new THREE.Vector3()),hc=fit.head.getCenter(new THREE.Vector3());
   const b=fit.body.getSize(new THREE.Vector3()),bc=fit.body.getCenter(new THREE.Vector3());
   function attach(item,slot,bone,position,scale){
-    const part=createAccessory(item,slot);part.position.copy(position);part.scale.copy(scale);group.add(part);
-    model.updateMatrixWorld(true);if(bone)bone.attach(part);group.userData.slots.push(part);return part;
+    const part=createAccessory(item,slot,model.userData.species);part.position.copy(position);part.scale.copy(scale);
+    if(item.preserve_proportions)part.scale.setScalar(scale.x);
+    const profile=slot==='pet_head'?item.head_fit?.[model.userData.species]:null;
+    if(profile){part.position.add(new THREE.Vector3(...profile.offset));part.rotation.set(...profile.rotation);part.scale.multiplyScalar(profile.scale);}
+    group.add(part);
+    model.updateMatrixWorld(true);
+    if(slot==='pet_head'&&item.conform_head)conformHeadAccessory(part,model,fit.head,{...item.conform_head,visor:item.style==='cap'});
+    if(profile?.ear_clearance)cutHeadEarOpenings(part,model,profile.ear_clearance);
+    if(bone)bone.attach(part);group.userData.slots.push(part);return part;
   }
   for(const [slot,item] of Object.entries(loadout??{})){
     if(!item||typeof item!=='object'||!slot.startsWith('pet_'))continue;
+    if(item.skinned_model_space){
+      const part=createAccessory(item,slot,model.userData.species);group.add(part);model.updateMatrixWorld(true);
+      const replacements=[];
+      const skeletons=new Map();
+      part.traverse(mesh=>{if(mesh.isMesh)replacements.push(mesh);});
+      for(const mesh of replacements){
+        const names=mesh.userData.nidoBoneNames;
+        if(!Array.isArray(names)||!mesh.geometry.attributes.skinIndex||!mesh.geometry.attributes.skinWeight)throw Error('La prenda no tiene pesos de animación');
+        const joints=names.map(name=>bones[name.replace(/^mixamorig:?/,'')]);
+        if(joints.some(joint=>!joint))throw Error('El esqueleto de la prenda no corresponde a la mascota');
+        const key=names.join('|');
+        let skeleton=skeletons.get(key);
+        if(!skeleton){skeleton=new THREE.Skeleton(joints,joints.map(joint=>joint.matrixWorld.clone().invert()));skeletons.set(key,skeleton);}
+        const garment=new THREE.SkinnedMesh(mesh.geometry,mesh.material);garment.name=mesh.name;garment.userData={...mesh.userData,cosmetic:true};
+        // Pattern vertices are authored in the normalized resting model frame.
+        mesh.updateWorldMatrix(true,false);garment.bind(skeleton,mesh.matrixWorld.clone());
+        garment.position.copy(mesh.position);garment.quaternion.copy(mesh.quaternion);garment.scale.copy(mesh.scale);
+        garment.frustumCulled=false;mesh.parent.add(garment);mesh.parent.remove(mesh);
+      }
+      part.userData.blenderTailored=true;part.userData.skinnedWardrobe=true;group.userData.slots.push(part);continue;
+    }
+    if(['pet_head','pet_eyes'].includes(slot)&&item.fitted_model_space){
+      // Blender exported this species' garment in the app's resting model frame.
+      // Re-scaling or conforming it again would undo the authored tailoring.
+      const part=createAccessory(item,slot,model.userData.species);group.add(part);model.updateMatrixWorld(true);
+      if(!bones.Head)throw Error('La mascota no tiene el hueso Head');
+      bones.Head.attach(part);part.userData.blenderTailored=true;group.userData.slots.push(part);continue;
+    }
     if(slot==='pet_head'){const ratio={bear:.78,pig:.76,penguin:.94,chick:.94}[model.userData.species]??1;const inset={bear:.24,pig:.23,penguin:.23,chick:.24}[model.userData.species]??.18;attach(item,slot,bones.Head,new THREE.Vector3(hc.x,fit.head.max.y-h.y*inset,hc.z),new THREE.Vector3(h.x/.56*ratio,h.x/.56*ratio,h.z/.56*ratio));}
     else if(slot==='pet_eyes'){const ratio={penguin:.86,bear:.82,pig:.88,chick:.85}[model.userData.species]??.85;const height={penguin:.36,bear:.43,pig:.32,chick:.38}[model.userData.species]??.38;attach(item,slot,bones.Head,new THREE.Vector3(hc.x,fit.head.min.y+h.y*height,hc.z+h.z*.43),new THREE.Vector3(h.x/.56*ratio,h.x/.56*ratio,1));}
     else if(slot==='pet_neck'){const penguin=model.userData.species==='penguin';attach(item,slot,bones.Neck??bones.Spine2,new THREE.Vector3(bc.x,fit.head.min.y+(penguin?-.055:.035),bc.z),new THREE.Vector3(b.x*(penguin?.94:1.03)/.50,penguin?.82:1,Math.max(b.z,h.z*.75)/.40));}
@@ -78,4 +127,60 @@ export function equipRunnerCosmetics(model, loadout={}) {
   }
   model.userData.cosmetics=group;model.userData.cosmeticStyles=Object.fromEntries(Object.entries(loadout??{}).filter(([k,v])=>k.startsWith('pet_')&&v).map(([k,v])=>[k,v.style]));
   return group;
+}
+
+// Tuck the small crown feathers only while a fitted hat is worn. Restore the
+// same source indices when removed; no permanent edit to the character GLB.
+export function tuckCrownTuft(model,tucked){
+  if(!['penguin','chick'].includes(model.userData.species))return;
+  model.updateMatrixWorld(true);
+  model.traverse(mesh=>{
+    if(!mesh.isSkinnedMesh||mesh.userData.cosmetic)return;
+    if(mesh.userData.crownTuftSource){mesh.geometry.setIndex(mesh.userData.crownTuftSource.clone());delete mesh.userData.crownTuftSource;}
+    if(!tucked)return;
+    const geometry=mesh.geometry;if(!geometry.index)return;
+    mesh.skeleton.update();const positions=geometry.attributes.position,hidden=new Set();
+    for(let i=0;i<positions.count;i++){
+      const point=new THREE.Vector3().fromBufferAttribute(positions,i);mesh.applyBoneTransform(i,point);mesh.localToWorld(point);model.worldToLocal(point);
+      if(point.y>1.065&&Math.abs(point.x)<.18)hidden.add(i);
+    }
+    const indices=geometry.index.array,kept=[];
+    for(let i=0;i<indices.length;i+=3)if(!hidden.has(indices[i])&&!hidden.has(indices[i+1])&&!hidden.has(indices[i+2]))kept.push(indices[i],indices[i+1],indices[i+2]);
+    mesh.userData.crownTuftSource=geometry.index.clone();geometry.setIndex(kept);
+  });
+  model.userData.crownTuftTucked=tucked;
+}
+
+// Open the cloth around the ears in the resting pet's coordinates. This edits
+// only this equipment instance; the pet mesh, source GLB and UVs stay intact.
+export function cutHeadEarOpenings(part,model,openings){
+  let removed=0;
+  part.traverse(mesh=>{
+    if(!mesh.isMesh)return;
+    const geometry=mesh.geometry,positions=geometry.attributes.position;
+    const indices=geometry.index?.array??Array.from({length:positions.count},(_,i)=>i);
+    const attributes=Object.entries(geometry.attributes),output=Object.fromEntries(attributes.map(([name])=>[name,[]]));
+    const vertices=Array.from({length:positions.count},(_,i)=>({point:model.worldToLocal(mesh.localToWorld(new THREE.Vector3().fromBufferAttribute(positions,i))),data:Object.fromEntries(attributes.map(([name,a])=>[name,Array.from({length:a.itemSize},(_,k)=>a.getComponent(i,k))]))}));
+    const interpolate=(a,b,t)=>({point:a.point.clone().lerp(b.point,t),data:Object.fromEntries(attributes.map(([name])=>[name,a.data[name].map((v,k)=>v+(b.data[name][k]-v)*t)]))});
+    function clip(polygon,{center,radius}){
+      const distance=v=>v.point.toArray().reduce((sum,x,k)=>sum+((x-center[k])/radius[k])**2,0)-1;
+      const result=[];
+      for(let i=0;i<polygon.length;i++){
+        const a=polygon[i],b=polygon[(i+1)%polygon.length],outsideA=distance(a)>=0,outsideB=distance(b)>=0;
+        if(outsideA)result.push(a);
+        if(outsideA!==outsideB){let low=0,high=1;for(let step=0;step<18;step++){const t=(low+high)/2;if((distance(interpolate(a,b,t))>=0)===outsideA)low=t;else high=t;}result.push(interpolate(a,b,(low+high)/2));}
+      }
+      return result;
+    }
+    for(let i=0;i<indices.length;i+=3){
+      let polygon=[vertices[indices[i]],vertices[indices[i+1]],vertices[indices[i+2]]];
+      for(const opening of openings)polygon=clip(polygon,opening);
+      if(polygon.length!==3||polygon.some(v=>!vertices.includes(v)))removed++;
+      for(let k=1;k+1<polygon.length;k++)for(const vertex of [polygon[0],polygon[k],polygon[k+1]])for(const [name] of attributes)output[name].push(...vertex.data[name]);
+    }
+    const fitted=new THREE.BufferGeometry();for(const [name,a] of attributes)fitted.setAttribute(name,new THREE.Float32BufferAttribute(output[name],a.itemSize));
+    fitted.normalizeNormals();fitted.computeBoundingBox();fitted.computeBoundingSphere();mesh.geometry=fitted;geometry.dispose();
+  });
+  part.userData.earClearanceTriangles=removed;
+  return removed;
 }

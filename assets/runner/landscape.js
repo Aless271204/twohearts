@@ -4,7 +4,7 @@ export function createLandscape(scene) {
   const backdrop=new THREE.Group();scene.add(backdrop);
   const sky=new THREE.Mesh(new THREE.SphereGeometry(240,32,16),new THREE.ShaderMaterial({
     side:THREE.BackSide,depthWrite:false,
-    uniforms:{zenith:{value:new THREE.Color('#86c8e0')},horizon:{value:new THREE.Color('#f8edcb')}},
+    uniforms:{zenith:{value:new THREE.Color('#35b9ed')},horizon:{value:new THREE.Color('#d8f4ee')}},
     vertexShader:'varying vec3 vPosition; void main(){vPosition=position;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}',
     fragmentShader:'uniform vec3 zenith; uniform vec3 horizon; varying vec3 vPosition; void main(){float h=smoothstep(0.0,0.65,normalize(vPosition).y);gl_FragColor=vec4(mix(horizon,zenith,h),1.0);}'
   }));backdrop.add(sky);
@@ -12,16 +12,16 @@ export function createLandscape(scene) {
     const vertices=[],indices=[];
     for(let i=0;i<=48;i++){
       const x=-170+i*340/48;
-      const y=base+Math.sin(i*.36+phase)*amplitude+Math.sin(i*.81+phase)*amplitude*.25+Math.abs(x)*.035;
+      const y=base+Math.sin(i*.36+phase)*amplitude+Math.sin(i*.81+phase)*amplitude*.25+Math.abs(x)*.035-12*Math.exp(-x*x/1200);
       vertices.push(x,-10,z,x,y,z);
       if(i<48){const a=i*2;indices.push(a,a+2,a+1,a+1,a+2,a+3);}
     }
     const geometry=new THREE.BufferGeometry();geometry.setAttribute('position',new THREE.Float32BufferAttribute(vertices,3));geometry.setIndex(indices);geometry.computeVertexNormals();
     backdrop.add(new THREE.Mesh(geometry,new THREE.MeshBasicMaterial({color,side:THREE.DoubleSide,fog:false})));
   }
-  ridge(-190,'#b6cdb3',29,10,1.2);
-  ridge(-150,'#93b8a1',23,8,2.4);
-  ridge(-112,'#78a68a',15,5,.8);
+  ridge(-190,'#8ad5cd',29,10,1.2);
+  ridge(-150,'#5cb6ad',23,8,2.4);
+  ridge(-112,'#329d89',15,5,.8);
   const sun=new THREE.Mesh(new THREE.SphereGeometry(5.5,24,16),new THREE.MeshBasicMaterial({color:'#fff1b6',fog:false}));sun.position.set(-34,40,-165);backdrop.add(sun);
   const canvas=document.createElement('canvas');canvas.width=canvas.height=128;
   const ctx=canvas.getContext('2d'),gradient=ctx.createRadialGradient(64,64,8,64,64,64);

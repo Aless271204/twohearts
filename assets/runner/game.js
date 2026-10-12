@@ -1,4 +1,5 @@
 import {prepareAccessoryAssets} from './accessory-pieces.js';
+import {createPetRoom} from './room-pieces.js';
 import {POWER_UPS,freshPowers,tickPowers,activatePower,powerForRow,canJump,registerJump,coinMultiplier,speedMultiplier,protectsCollision,magnetCollects} from './power-ups.js';
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
@@ -15,13 +16,20 @@ import { AdventureMusic } from './music.js';
 import { limitTextureMemory } from './texture_budget.js';
 import { showRunnerError } from './diagnostics.js';
 import { requestHost, exitGame, notifyPetStroke } from './bridge.js';
-import { equipRunnerCosmetics } from './cosmetics.js';
+import { equipRunnerCosmetics, measureAccessoryFit } from './cosmetics.js?revision=wardrobe-rig-8';
+import { stabilizePetTorso } from './pet-garment-rig.js?revision=torso-2';
 import { measurePetSoles, createNaturalRest } from './pet-rest-pose.js';
 import { refinePip } from './pip-delicate.js';
 import { createPetMotion } from './pet-motion.js';
-clearTimeout(window.runnerBootTimer);
-
+import { createRunnerJump } from './pet-runner-jump.js';
+import { createRunnerRun } from './pet-runner-run.js';
 const params=new URLSearchParams(location.search),petOnly=params.get('pet')==='1',petOrbit=params.get('orbit')==='1';
+const reviewMotion=petOnly&&['Running','Regular_Jump'].includes(params.get('review_motion'))?params.get('review_motion'):null;
+const reviewPhase=reviewMotion&&params.has('review_phase')?THREE.MathUtils.clamp(Number(params.get('review_phase'))||0,0,1):null;
+const roomMode=petOnly&&params.get('room')==='1';
+let petRoom;
+let roomSupport=0;
+let sceneClosing=false;
 const species=['penguin','bear','pig','chick'].includes(params.get('species'))?params.get('species'):'penguin';
 const petLevel=Math.max(1,Math.min(10000,Number(params.get('level'))||10)),growth=petLevel>=10?1:petLevel>=5?.88:.74;
 const $ = id => document.getElementById(id);
@@ -37,9 +45,9 @@ let restSole=null,petMotion=null,petSuspended=false;
 const renderer=new THREE.WebGLRenderer({antialias:true,alpha:petOnly,powerPreference:'high-performance'});
 let renderScale=Math.min(devicePixelRatio,1.25);renderer.setPixelRatio(renderScale);renderer.setSize(innerWidth,innerHeight);
 renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.NoToneMapping;renderer.toneMappingExposure=1;
-renderer.shadowMap.enabled=false;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+renderer.shadowMap.enabled=roomMode;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
 document.body.prepend(renderer.domElement);
-renderer.domElement.addEventListener('webglcontextlost',()=>showRunnerError('Android perdió el contexto gráfico 3D','gráficos'));
+renderer.domElement.addEventListener('webglcontextlost',event=>{event.preventDefault();if(!sceneClosing)showRunnerError('Se interrumpió la vista 3D. Reintenta para recuperarla.','gráficos');});
 scene.add(new THREE.HemisphereLight(petOnly?0xfff6ee:0xd3f5ff,petOnly?0xa4a6b5:0x435d45,petOnly?1.6:1.35));
 const sun=new THREE.DirectionalLight(petOnly?0xffffff:0xffe4aa,petOnly?1.8:2.5);sun.position.set(...(petOnly?[-3,6,5]:[-10,18,-16]));scene.add(sun);
 sun.castShadow=true;sun.shadow.mapSize.set(1024,1024);sun.shadow.camera.left=-12;sun.shadow.camera.right=12;sun.shadow.camera.top=18;sun.shadow.camera.bottom=-18;sun.shadow.camera.far=65;sun.shadow.normalBias=.035;
@@ -216,7 +224,10 @@ function frame(now){
   if(frameSample>=2000){measuredFps=1000*frameCount/frameSample;frameSample=frameCount=0;
     if(measuredFps<42&&renderScale>.75){renderScale=Math.max(.75,renderScale-.125);renderer.setPixelRatio(renderScale);}}
   const microseconds=Math.max(1,Math.round(Math.min((now-last)/1000,.12)*1000000));const dt=microseconds/1000000;last=now;
-  if((paused||petOnly&&(document.hidden||petSuspended))&&!needsRender)return;
+  // A paused inspection pose needs one render after loading or resizing.
+  // The room and the playable runner keep their normal animation loop.
+  const frozenReview=petOnly&&ready&&reviewPhase!==null;
+  if((paused||petOnly&&(document.hidden||petSuspended||frozenReview))&&!needsRender)return;
   needsRender=false;
   const simulationTime=dt;
   for(let remaining=simulationTime; running&&!paused&&remaining>0;){
@@ -266,27 +277,31 @@ function frame(now){
     penguin.scale.set(growth*(1+landingPulse*.07),growth*(1-landingPulse*.09),growth*(1+landingPulse*.07));
     penguin.rotation.x=THREE.MathUtils.lerp(penguin.rotation.x,height>0?-.08:0,1-Math.exp(-dt*8));
     penguin.rotation.z=THREE.MathUtils.lerp(penguin.rotation.z,(LANES[lane]-x)*-.08,1-Math.exp(-dt*8));
-    const name=petOnly?(!petOrbit?'Natural_Rest':params.get('animation')??'Natural_Rest'):running?(height>.01?'Regular_Jump':'Running'):'Natural_Rest';
+    const name=petOnly?(reviewMotion??(!petOrbit?'Natural_Rest':params.get('animation')??'Natural_Rest')):running?(height>.01?'Regular_Jump':'Running'):'Natural_Rest';
     if(activeAction!==name&&actions[name]){
       const next=actions[name];next.reset().fadeIn(.16).play();
       if(activeAction)actions[activeAction].fadeOut(.16);activeAction=name;
     }
-    if(!paused){music.intensity=Math.max(0,(speed()-14)/10);if(actions.Running)actions.Running.timeScale=Math.min(1.7,speed()/14);mixer.update(dt);}
+    if(!paused){music.intensity=Math.max(0,(speed()-14)/10);if(actions.Running)actions.Running.timeScale=Math.min(1.7,speed()/14);if(reviewPhase!==null){actions[reviewMotion].timeScale=1;mixer.setTime(actions[reviewMotion].getClip().duration*reviewPhase);}else mixer.update(dt);}
     if(petOnly){
-      if(!petOrbit&&!petSuspended)petMotion?.update(dt);
+      if(!petOrbit&&!petSuspended&&!reviewMotion)petMotion?.update(dt);
       const feet=[];penguin.traverse(o=>{if(o.isBone&&/(LeftToeBase|RightToeBase)$/.test(o.name))feet.push(o.getWorldPosition(new THREE.Vector3()).y);});
-      if(restSole!==null)penguin.position.y=floorY+.006-restSole;
+      if(restSole!==null)penguin.position.y=floorY+roomSupport+.006-restSole;
       else if(feet.length)penguin.position.y+=floorY+.065-Math.min(...feet);
       document.body.dataset.petGrounded='true';document.body.dataset.petBreathing=String(penguin.userData.breathing??0);document.body.dataset.petAffection=String(penguin.userData.affection??0);
     }
-    if(petOnly){document.body.dataset.petAnimation=activeAction??'';if(!petOrbit){penguin.rotation.set(0,0,0);document.body.dataset.petPosition=penguin.position.toArray().join(',');}}
+    if(petOnly){document.body.dataset.petAnimation=activeAction??'';if(!petOrbit){const angle=Number(params.get('review_angle')??0);penguin.rotation.set(0,Number.isFinite(angle)?THREE.MathUtils.degToRad(angle):0,0);document.body.dataset.petPosition=penguin.position.toArray().join(',');}}
   }
   shadow.position.x=x;shadow.material.opacity=.22/(1+height);shadow.scale.set(petOnly?.7:1+height*.18,petOnly?.45:.65+height*.1,1);
+  if(roomMode)shadow.position.y=floorY+roomSupport+.01;
   cameraX=THREE.MathUtils.lerp(cameraX,petOnly?0:x*.72,1-Math.exp(-dt*9));
-  if(petOnly&&penguin){
+  if(roomMode&&penguin){
+    camera.position.set(0,1.40,Math.max(2.20,1.20/camera.aspect));camera.lookAt(0,.94,-.50);
+  }else if(petOnly&&penguin){
     if(!petFraming){const bounds=new THREE.Box3().setFromObject(penguin,true);petFraming={center:bounds.getCenter(new THREE.Vector3()),size:bounds.getSize(new THREE.Vector3())};}
     const {center,size}=petFraming,tan=Math.tan(THREE.MathUtils.degToRad(camera.fov/2));
-    const z=Math.max(size.y/(2*tan*.78),size.x/(2*tan*camera.aspect*.72))+size.z/2;
+    const inspection=params.has('review_angle');
+    const z=Math.max(size.y/(2*tan*(inspection?.92:.78)),size.x/(2*tan*camera.aspect*(inspection?.90:.72)))+size.z*(inspection?.25:.5);
     camera.position.set(center.x,center.y+size.y*.035,z);
     camera.lookAt(center.x,center.y+size.y*.035,center.z);
   }else{
@@ -309,8 +324,8 @@ async function boot(){
     const entries=Object.entries(manifest).filter(([key])=>(petOnly?['pip']:['pip','crate','fence','rock']).includes(key));
     for(let i=0;i<entries.length;i++){
       const [key,file]=entries[i];$('message').textContent=`Cargando bosque ${i+1}/${entries.length}…`;
-      const gltf=await loader.loadAsync(`play-models/${key==='pip'&&species!=='penguin'?manifest[species]:file}`);templates[key]=gltf.scene;
-      limitTextureMemory(gltf.scene,petOnly?1024:512);
+      const gltf=await loader.loadAsync(`play-models/${key==='pip'&&species!=='penguin'?manifest[species]:file}`);if(sceneClosing)return;templates[key]=gltf.scene;
+      if(!petOnly)limitTextureMemory(gltf.scene,512);
       // The supplied maps carry the artwork. Keep them, but make natural props
       // non-metallic and soften exaggerated normal-map relief under sunlight.
       if(key!=='pip')gltf.scene.traverse(o=>{
@@ -324,20 +339,36 @@ async function boot(){
         mixer=new THREE.AnimationMixer(penguin);
         actions.Natural_Rest=mixer.clipAction(createNaturalRest(penguin));
         actions.Natural_Rest.play();activeAction='Natural_Rest';
-        for(const clip of gltf.animations){if(petOnly&&!petOrbit&&clip.name==='Idle_9')continue;actions[clip.name]=mixer.clipAction(clip);}
+        for(const clip of gltf.animations){if(petOnly&&clip.name==='Idle_9')continue;actions[clip.name]=mixer.clipAction(clip);}
         if(actions.Regular_Jump){actions.Regular_Jump.setLoop(THREE.LoopOnce,1);actions.Regular_Jump.clampWhenFinished=true;}
         mixer.update(0);
-        if(petOnly&&!petOrbit){mixer.stopAllAction();actions.Natural_Rest=mixer.clipAction(createNaturalRest(penguin));actions.Natural_Rest.play();activeAction='Natural_Rest';mixer.update(0);if(species==='penguin')refinePip(penguin);penguin.scale.setScalar(growth);restSole=measurePetSoles(penguin);document.body.dataset.petPose='standing';document.body.dataset.petShape=species==='penguin'?'delicate':'original';}
+        // The same normalized character is the garment mannequin in every mode.
+        // Refining only the room penguin left its game body outside the pattern.
+        if(species==='penguin')refinePip(penguin);
+        penguin.userData.species=species;
+        stabilizePetTorso(penguin,measureAccessoryFit(penguin));
+        if(petOnly&&!petOrbit){mixer.stopAllAction();actions.Natural_Rest=mixer.clipAction(createNaturalRest(penguin));actions.Natural_Rest.play();activeAction='Natural_Rest';mixer.update(0);penguin.scale.setScalar(growth);restSole=measurePetSoles(penguin);document.body.dataset.petPose='standing';document.body.dataset.petShape=species==='penguin'?'delicate':'original';}
+        actions.Regular_Jump=mixer.clipAction(createRunnerJump(penguin));
+        const naturalRun=createRunnerRun(penguin,gltf.animations.find(clip=>clip.name==='Running'));
+        if(naturalRun)actions.Running=mixer.clipAction(naturalRun);
+        actions.Regular_Jump.setLoop(THREE.LoopOnce,1);actions.Regular_Jump.clampWhenFinished=true;
         document.body.dataset.petSpecies=species;penguin.userData.species=species;
         if(petOnly&&!petOrbit)petMotion=createPetMotion(penguin);
-        (petOnly||params.has('appearance')&&window.parent===window&&!window.RunnerBridge?Promise.resolve(JSON.parse(params.get('appearance')??'{}')):requestHost('cosmetics')).then(async loadout=>{await prepareAccessoryAssets(loadout);const equipped=equipRunnerCosmetics(penguin,loadout);if(petOnly){document.body.dataset.petAnchors=equipped.userData.slots.map(slot=>slot.parent.name).join(',');restSole=measurePetSoles(penguin);petFraming=null;}needsRender=true;}).catch(()=>{});
+        const loadout=await (petOnly||params.has('appearance')&&window.parent===window&&!window.RunnerBridge?Promise.resolve(JSON.parse(params.get('appearance')??'{}')):requestHost('cosmetics'));
+        await prepareAccessoryAssets(loadout,species);
+        const equipped=equipRunnerCosmetics(penguin,loadout);
+        if(reviewMotion&&actions[reviewMotion]){actions[reviewMotion].setLoop(THREE.LoopRepeat,Infinity);actions[reviewMotion].clampWhenFinished=false;if(reviewPhase!==null){mixer.stopAllAction();actions[reviewMotion].reset().play();activeAction=reviewMotion;mixer.setTime(actions[reviewMotion].getClip().duration*reviewPhase);}}
+        if(petOnly){document.body.dataset.petAnchors=equipped.userData.slots.map(slot=>slot.parent.name).join(',');restSole=measurePetSoles(penguin);petFraming=null;}
+        if(roomMode){petRoom=createPetRoom(loadout);roomSupport=petRoom.userData.petFloor??0;petRoom.position.y=floorY;scene.add(petRoom);document.body.dataset.room='3d';}
+        needsRender=true;
       }
     }
+    if(sceneClosing)return;
     if(!petOnly)boardwalk();
     penguin.traverse(o=>{if(o.isMesh)o.castShadow=true;});
     clearTimeout(window.runnerBootTimer);ready=true;start.disabled=false;
     showPanel('Un paseo con tu mascota','Tu aventura comienza aquí.','Correr con tu mascota');
-    if(petOnly){document.body.classList.add('pet-only');scene.background=null;scene.fog=null;renderer.setClearColor(0,0);for(const child of scene.children)if(child!==penguin&&child!==shadow&&!child.isLight)child.visible=false;}
+    if(petOnly){document.body.classList.add('pet-only');scene.background=roomMode?new THREE.Color('#fff9fa'):null;scene.fog=null;renderer.setClearColor(0,0);for(const child of scene.children)if(child!==penguin&&child!==shadow&&child!==petRoom&&!child.isLight)child.visible=false;}
     last=performance.now();animationId=requestAnimationFrame(frame);
   }catch(error){
     clearTimeout(window.runnerBootTimer);$('title').textContent='No pudimos abrir el bosque';
@@ -345,10 +376,11 @@ async function boot(){
   }
 }
 addEventListener('pagehide',()=>{
+  sceneClosing=true;clearTimeout(window.runnerBootTimer);
   music.dispose();
   backdrop.dispose();
   cancelAnimationFrame(animationId);const geometries=new Set(),materials=new Set(),textures=new Set();
   scene.traverse(o=>{if(o.geometry)geometries.add(o.geometry);for(const m of(Array.isArray(o.material)?o.material:[o.material])){if(!m)continue;materials.add(m);for(const value of Object.values(m))if(value?.isTexture)textures.add(value);}});
-  for(const g of geometries)g.dispose();for(const t of textures)t.dispose();for(const m of materials)m.dispose();renderer.dispose();
+  for(const g of geometries)g.dispose();for(const t of textures)t.dispose();for(const m of materials)m.dispose();renderer.dispose();renderer.forceContextLoss();
 },{once:true});
 boot();

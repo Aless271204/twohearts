@@ -20,6 +20,7 @@ class Pet3DViewer extends StatefulWidget {
   final String? cameraOrbit;
   final ValueChanged<WebViewController>? onWebViewCreated;
   final Map<String, InventoryItem>? previewLoadout;
+  final bool room;
 
   const Pet3DViewer({
     super.key,
@@ -36,7 +37,22 @@ class Pet3DViewer extends StatefulWidget {
     this.cameraOrbit,
     this.onWebViewCreated,
     this.previewLoadout,
+    this.room = false,
   });
+
+  Pet3DViewer inRoom(Map<String, InventoryItem> loadout) => Pet3DViewer(
+    modelPath: modelPath,
+    petLevel: petLevel,
+    petReaction: petReaction,
+    altText: altText,
+    onPetStroke: onPetStroke,
+    cameraControls: false,
+    disableZoom: true,
+    autoPlay: autoPlay,
+    animationName: 'Natural_Rest',
+    previewLoadout: loadout,
+    room: true,
+  );
 
   @override
   State<Pet3DViewer> createState() => _Pet3DViewerState();
@@ -56,19 +72,41 @@ class _Pet3DViewerState extends State<Pet3DViewer> {
           child: Padding(
             padding: const EdgeInsets.all(16),
             child: SelectableText(
-              'No pudimos mostrar la mascota.\nVersión 1.1.0\n$_failure',
+              'No pudimos mostrar la mascota. Vuelve a intentarlo.\n$_failure',
             ),
           ),
         ),
       );
     }
-    if (PetModelCatalog.models.containsValue(widget.modelPath) && widget.onWebViewCreated == null) {
-      return ListenableBuilder(listenable: InventoryService.instance, builder: (context, _) {
-        final appearance = jsonEncode({for (final entry in (widget.previewLoadout ?? InventoryService.instance.loadout).entries)
-          entry.key: entry.value.appearance});
-        return ForestRunnerView(key: ValueKey('$appearance|${widget.animationName}|${widget.modelPath}|${widget.petLevel}'), petOnly: true, petReaction:widget.petReaction, onPetStroke:widget.onPetStroke, petLevel: widget.petLevel, petSpecies: PetModelCatalog.speciesForPath(widget.modelPath), petOrbit: widget.cameraControls,
-          appearance: appearance, animationName: widget.cameraControls ? widget.animationName : 'Natural_Rest');
-      });
+    if (PetModelCatalog.models.containsValue(widget.modelPath) &&
+        widget.onWebViewCreated == null) {
+      return ListenableBuilder(
+        listenable: InventoryService.instance,
+        builder: (context, _) {
+          final appearance = jsonEncode({
+            for (final entry
+                in (widget.previewLoadout ?? InventoryService.instance.loadout)
+                    .entries)
+              entry.key: entry.value.appearance,
+          });
+          return ForestRunnerView(
+            key: ValueKey(
+              '$appearance|${widget.animationName}|${widget.modelPath}|${widget.petLevel}|${widget.room}',
+            ),
+            room: widget.room,
+            petOnly: true,
+            petReaction: widget.petReaction,
+            onPetStroke: widget.onPetStroke,
+            petLevel: widget.petLevel,
+            petSpecies: PetModelCatalog.speciesForPath(widget.modelPath),
+            petOrbit: widget.cameraControls,
+            appearance: appearance,
+            animationName: widget.cameraControls
+                ? widget.animationName
+                : 'Natural_Rest',
+          );
+        },
+      );
     }
     return ModelViewer(
       key: ValueKey(

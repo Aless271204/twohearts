@@ -1,0 +1,113 @@
+{
+  "schema": 1,
+  "clearance": 0.008,
+  "pets": {
+    "penguin": {
+      "width": 0.6,
+      "depth": 0.59,
+      "base": 0.825,
+      "crown": 0.405,
+      "skull_center": [
+        0,
+        0.8,
+        -0.022
+      ],
+      "skull_radius": [
+        0.335,
+        0.27,
+        0.32
+      ]
+    },
+    "bear": {
+      "width": 0.72,
+      "depth": 0.67,
+      "base": 0.845,
+      "crown": 0.405,
+      "skull_center": [
+        0,
+        0.82,
+        -0.018
+      ],
+      "skull_radius": [
+        0.38,
+        0.29,
+        0.335
+      ]
+    },
+    "pig": {
+      "width": 0.8,
+      "depth": 0.7,
+      "base": 0.865,
+      "crown": 0.405,
+      "skull_center": [
+        0,
+        0.815,
+        0.012
+      ],
+      "skull_radius": [
+        0.4,
+        0.32,
+        0.37
+      ]
+    },
+    "chick": {
+      "width": 0.63,
+      "depth": 0.63,
+      "base": 0.815,
+      "crown": 0.425,
+      "skull_center": [
+        0,
+        0.795,
+        -0.015
+      ],
+      "skull_radius": [
+        0.345,
+        0.29,
+        0.345
+      ]
+    }
+  },
+  "items": {
+    "cap_pink": {
+      "source": "cap_pink_meshy.glb",
+      "shape": "cap",
+      "source_crown_center_z": -0.123,
+      "source_crown_depth": 0.705,
+      "visor_extension": 0.135,
+      "species_fit": {
+        "penguin": {
+          "width": 0.63,
+          "depth": 0.61,
+          "base": 0.805,
+          "crown": 0.31,
+          "visor_extension": 0.105
+        }
+      }
+    },
+    "hat_garden": {
+      "source": "hat_garden_meshy.glb",
+      "shape": "garden",
+      "width_ratio": 1.42,
+      "height": 0.43
+    },
+    "beanie_cloud": {
+      "source": "beanie_cloud_meshy.glb",
+      "shape": "beanie",
+      "width_ratio": 1.08,
+      "height": 0.54
+    },
+    "beret_chic": {
+      "source": "beret_chic_meshy.glb",
+      "shape": "beret",
+      "width_ratio": 1.18,
+      "height": 0.31
+    },
+    "wig_pastel": {
+      "source": "wig_pastel_meshy.glb",
+      "shape": "wig",
+      "width_ratio": 1.12,
+      "height": 0.46,
+      "visible": false
+    }
+  }
+}

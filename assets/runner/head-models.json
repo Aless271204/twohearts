@@ -1,0 +1,690 @@
+[
+  {
+    "item_key": "cap_pink",
+    "name": "Gorra corazón",
+    "scope": "pet",
+    "equip_slot": "pet_head",
+    "appearance": {
+      "style": "cap",
+      "color": "#f05280",
+      "model_asset": "assets/runner/accessories/cap_pink_meshy.glb",
+      "normalize_head": true,
+      "preserve_proportions": true,
+      "head_fit": {
+        "penguin": {
+          "offset": [
+            0,
+            -0.085,
+            -0.025
+          ],
+          "rotation": [
+            0.12,
+            0,
+            0
+          ],
+          "scale": 1.03
+        },
+        "bear": {
+          "offset": [
+            0,
+            -0.025,
+            -0.015
+          ],
+          "rotation": [
+            0.12,
+            0,
+            0
+          ],
+          "scale": 1.04,
+          "ear_clearance": [
+            {
+              "center": [
+                -0.332,
+                1.015,
+                -0.035
+              ],
+              "radius": [
+                0.073,
+                0.11,
+                0.095
+              ]
+            },
+            {
+              "center": [
+                0.332,
+                1.015,
+                -0.035
+              ],
+              "radius": [
+                0.073,
+                0.11,
+                0.095
+              ]
+            }
+          ]
+        },
+        "pig": {
+          "offset": [
+            0,
+            -0.025,
+            -0.015
+          ],
+          "rotation": [
+            0.12,
+            0,
+            0
+          ],
+          "scale": 1.0,
+          "ear_clearance": [
+            {
+              "center": [
+                -0.4,
+                0.985,
+                0.1
+              ],
+              "radius": [
+                0.085,
+                0.065,
+                0.1
+              ]
+            },
+            {
+              "center": [
+                0.4,
+                0.985,
+                0.1
+              ],
+              "radius": [
+                0.085,
+                0.065,
+                0.1
+              ]
+            }
+          ]
+        },
+        "chick": {
+          "offset": [
+            0,
+            -0.1,
+            -0.025
+          ],
+          "rotation": [
+            0.12,
+            0,
+            0
+          ],
+          "scale": 1.03
+        }
+      },
+      "conform_head": {
+        "band": 0.09,
+        "clearance": 0.008,
+        "crown_height": 0.72,
+        "visor_length": 0.62,
+        "visor_flatten": 0.55
+      },
+      "soft_fabric": true,
+      "smooth_mesh": false
+    },
+    "collection": "Dulce",
+    "rarity": "Común",
+    "description": "Adaptado a las cuatro mascotas.",
+    "preview_only": true,
+    "visible": true,
+    "price_coins": 110,
+    "complexity": "Esencial",
+    "source_file": "Meshy_AI_Coral_Heart_Cap_1011015258_texture.glb",
+    "sha256": "4962d08da447d62834b73dbacf36612ad39860210032e4298e64ca13017d60a4",
+    "triangles": 4089,
+    "fit_status": "pending_visual_review"
+  },
+  {
+    "item_key": "hat_garden",
+    "name": "Sombrero jardín",
+    "scope": "pet",
+    "equip_slot": "pet_head",
+    "appearance": {
+      "style": "garden_hat",
+      "color": "#b8dccb",
+      "model_asset": "assets/runner/accessories/hat_garden_meshy.glb",
+      "normalize_head": true,
+      "preserve_proportions": true,
+      "head_fit": {
+        "penguin": {
+          "offset": [
+            0,
+            -0.085,
+            -0.015
+          ],
+          "rotation": [
+            0.1,
+            0,
+            0
+          ],
+          "scale": 1.02
+        },
+        "bear": {
+          "offset": [
+            0,
+            -0.025,
+            -0.015
+          ],
+          "rotation": [
+            0.1,
+            0,
+            0
+          ],
+          "scale": 1.04,
+          "ear_clearance": [
+            {
+              "center": [
+                -0.332,
+                1.015,
+                -0.035
+              ],
+              "radius": [
+                0.073,
+                0.11,
+                0.095
+              ]
+            },
+            {
+              "center": [
+                0.332,
+                1.015,
+                -0.035
+              ],
+              "radius": [
+                0.073,
+                0.11,
+                0.095
+              ]
+            }
+          ]
+        },
+        "pig": {
+          "offset": [
+            0,
+            -0.025,
+            -0.015
+          ],
+          "rotation": [
+            0.1,
+            0,
+            0
+          ],
+          "scale": 1.0,
+          "ear_clearance": [
+            {
+              "center": [
+                -0.4,
+                0.985,
+                0.1
+              ],
+              "radius": [
+                0.085,
+                0.065,
+                0.1
+              ]
+            },
+            {
+              "center": [
+                0.4,
+                0.985,
+                0.1
+              ],
+              "radius": [
+                0.085,
+                0.065,
+                0.1
+              ]
+            }
+          ]
+        },
+        "chick": {
+          "offset": [
+            0,
+            -0.095,
+            -0.015
+          ],
+          "rotation": [
+            0.1,
+            0,
+            0
+          ],
+          "scale": 1.02
+        }
+      },
+      "conform_head": {
+        "band": 0.09,
+        "clearance": 0.008,
+        "crown_height": 0.85
+      },
+      "soft_fabric": true,
+      "smooth_mesh": false
+    },
+    "collection": "Dulce",
+    "rarity": "Común",
+    "description": "Adaptado a las cuatro mascotas.",
+    "preview_only": true,
+    "visible": true,
+    "price_coins": 190,
+    "complexity": "Detallado",
+    "source_file": "Meshy_AI_Green_Straw_Hat_with__1011015320_texture.glb",
+    "sha256": "31177b6f82d1da620de2ea2a104c9b732c8b4752c83a0396c6316b145886159e",
+    "triangles": 4054,
+    "fit_status": "pending_visual_review"
+  },
+  {
+    "item_key": "beanie_cloud",
+    "name": "Gorro nube",
+    "scope": "pet",
+    "equip_slot": "pet_head",
+    "appearance": {
+      "style": "beanie",
+      "color": "#fff2df",
+      "model_asset": "assets/runner/accessories/beanie_cloud_meshy.glb",
+      "normalize_head": true,
+      "preserve_proportions": true,
+      "head_fit": {
+        "penguin": {
+          "offset": [
+            0,
+            -0.11,
+            0
+          ],
+          "rotation": [
+            0.32,
+            0,
+            0
+          ],
+          "scale": 1.05
+        },
+        "bear": {
+          "offset": [
+            0,
+            -0.09,
+            0
+          ],
+          "rotation": [
+            0.32,
+            0,
+            0
+          ],
+          "scale": 1.07,
+          "ear_clearance": [
+            {
+              "center": [
+                -0.332,
+                1.015,
+                -0.035
+              ],
+              "radius": [
+                0.073,
+                0.11,
+                0.095
+              ]
+            },
+            {
+              "center": [
+                0.332,
+                1.015,
+                -0.035
+              ],
+              "radius": [
+                0.073,
+                0.11,
+                0.095
+              ]
+            }
+          ]
+        },
+        "pig": {
+          "offset": [
+            0,
+            -0.085,
+            0
+          ],
+          "rotation": [
+            0.32,
+            0,
+            0
+          ],
+          "scale": 1.03,
+          "ear_clearance": [
+            {
+              "center": [
+                -0.4,
+                0.985,
+                0.1
+              ],
+              "radius": [
+                0.085,
+                0.065,
+                0.1
+              ]
+            },
+            {
+              "center": [
+                0.4,
+                0.985,
+                0.1
+              ],
+              "radius": [
+                0.085,
+                0.065,
+                0.1
+              ]
+            }
+          ]
+        },
+        "chick": {
+          "offset": [
+            0,
+            -0.125,
+            0
+          ],
+          "rotation": [
+            0.32,
+            0,
+            0
+          ],
+          "scale": 1.05
+        }
+      },
+      "conform_head": {
+        "band": 0.09,
+        "clearance": 0.008
+      },
+      "soft_fabric": true,
+      "smooth_mesh": false
+    },
+    "collection": "Dulce",
+    "rarity": "Común",
+    "description": "Adaptado a las cuatro mascotas.",
+    "preview_only": true,
+    "visible": true,
+    "price_coins": 140,
+    "complexity": "Esencial",
+    "source_file": "Meshy_AI_Heartfelt_Winter_Pom__1011015311_texture.glb",
+    "sha256": "f8e6aba67f4aa99acc89a0a2d1438ccbb1d60fe68d5aab220a1fe0b9bfb8bcc9",
+    "triangles": 3657,
+    "fit_status": "pending_visual_review"
+  },
+  {
+    "item_key": "beret_chic",
+    "name": "Boina chic",
+    "scope": "pet",
+    "equip_slot": "pet_head",
+    "appearance": {
+      "style": "beret",
+      "color": "#baa2db",
+      "model_asset": "assets/runner/accessories/beret_chic_meshy.glb",
+      "normalize_head": true,
+      "preserve_proportions": true,
+      "head_fit": {
+        "penguin": {
+          "offset": [
+            0,
+            -0.035,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            -0.06
+          ],
+          "scale": 1.03
+        },
+        "bear": {
+          "offset": [
+            0,
+            -0.025,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            -0.06
+          ],
+          "scale": 1.04,
+          "ear_clearance": [
+            {
+              "center": [
+                -0.332,
+                1.015,
+                -0.035
+              ],
+              "radius": [
+                0.073,
+                0.11,
+                0.095
+              ]
+            },
+            {
+              "center": [
+                0.332,
+                1.015,
+                -0.035
+              ],
+              "radius": [
+                0.073,
+                0.11,
+                0.095
+              ]
+            }
+          ]
+        },
+        "pig": {
+          "offset": [
+            0,
+            -0.025,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            -0.06
+          ],
+          "scale": 1.0,
+          "ear_clearance": [
+            {
+              "center": [
+                -0.4,
+                0.985,
+                0.1
+              ],
+              "radius": [
+                0.085,
+                0.065,
+                0.1
+              ]
+            },
+            {
+              "center": [
+                0.4,
+                0.985,
+                0.1
+              ],
+              "radius": [
+                0.085,
+                0.065,
+                0.1
+              ]
+            }
+          ]
+        },
+        "chick": {
+          "offset": [
+            0,
+            -0.035,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            -0.06
+          ],
+          "scale": 1.03
+        }
+      },
+      "conform_head": {
+        "band": 0.09,
+        "clearance": 0.008,
+        "crown_height": 0.65
+      },
+      "soft_fabric": true,
+      "smooth_mesh": true
+    },
+    "collection": "Dulce",
+    "rarity": "Común",
+    "description": "Adaptado a las cuatro mascotas.",
+    "preview_only": true,
+    "visible": true,
+    "price_coins": 170,
+    "complexity": "Detallado",
+    "source_file": "Meshy_AI_Lavender_Heart_Beret_1011015331_texture.glb",
+    "sha256": "dbe54db8d4c64527288731f3d4b069dacd87a3e5db60271661e8c02d0ac03dbd",
+    "triangles": 4103,
+    "fit_status": "pending_visual_review"
+  },
+  {
+    "item_key": "wig_pastel",
+    "name": "Peluca pastel",
+    "scope": "pet",
+    "equip_slot": "pet_head",
+    "appearance": {
+      "style": "wig",
+      "color": "#efa0ab",
+      "model_asset": "assets/runner/accessories/wig_pastel_meshy.glb",
+      "normalize_head": true,
+      "preserve_proportions": true,
+      "head_fit": {
+        "penguin": {
+          "offset": [
+            0,
+            -0.19,
+            -0.025
+          ],
+          "rotation": [
+            0,
+            3.141592653589793,
+            0
+          ],
+          "scale": 1.17
+        },
+        "bear": {
+          "offset": [
+            0,
+            -0.145,
+            -0.025
+          ],
+          "rotation": [
+            0,
+            3.141592653589793,
+            0
+          ],
+          "scale": 1.18,
+          "ear_clearance": [
+            {
+              "center": [
+                -0.332,
+                1.015,
+                -0.035
+              ],
+              "radius": [
+                0.073,
+                0.11,
+                0.095
+              ]
+            },
+            {
+              "center": [
+                0.332,
+                1.015,
+                -0.035
+              ],
+              "radius": [
+                0.073,
+                0.11,
+                0.095
+              ]
+            }
+          ]
+        },
+        "pig": {
+          "offset": [
+            0,
+            -0.16,
+            -0.025
+          ],
+          "rotation": [
+            0,
+            3.141592653589793,
+            0
+          ],
+          "scale": 1.1,
+          "ear_clearance": [
+            {
+              "center": [
+                -0.4,
+                0.985,
+                0.1
+              ],
+              "radius": [
+                0.085,
+                0.065,
+                0.1
+              ]
+            },
+            {
+              "center": [
+                0.4,
+                0.985,
+                0.1
+              ],
+              "radius": [
+                0.085,
+                0.065,
+                0.1
+              ]
+            }
+          ]
+        },
+        "chick": {
+          "offset": [
+            0,
+            -0.2,
+            -0.025
+          ],
+          "rotation": [
+            0,
+            3.141592653589793,
+            0
+          ],
+          "scale": 1.17
+        }
+      },
+      "conform_head": {
+        "band": 0.09,
+        "clearance": 0.008,
+        "depth_scale": 1.16,
+        "hair_lining": "#efa0ab",
+        "contact": false
+      },
+      "soft_fabric": true,
+      "smooth_mesh": true
+    },
+    "collection": "Dulce",
+    "rarity": "Común",
+    "description": "Adaptado a las cuatro mascotas.",
+    "preview_only": true,
+    "visible": false,
+    "price_coins": 260,
+    "complexity": "Elaborado",
+    "source_file": "Meshy_AI_Pink_Peach_Wavy_Wig_1011015512_texture.glb",
+    "sha256": "81baa1a2d08da4bfbb52f464642a21106bd2d301a4bad738a532bda4937961c4",
+    "triangles": 3177,
+    "fit_status": "pending_visual_review"
+  }
+]

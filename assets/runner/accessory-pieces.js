@@ -1,18 +1,47 @@
 import * as THREE from 'three';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
+import {softenAccessoryGeometry} from './accessory-subdivision.js';
+import {mergeGeometries} from 'three/addons/utils/BufferGeometryUtils.js';
 const accessoryAssets=new Map();
-export async function prepareAccessoryAssets(loadout){
+export function registerAccessoryAsset(path,scene){
+ if(!/^assets\/runner\/accessories\/[a-z0-9_-]+\.glb$/.test(path)||!scene?.isObject3D)throw Error('Modelo de accesorio no válido');
+ accessoryAssets.set(path,scene);
+}
+export function releaseAccessoryAssets(){
+ for(const scene of accessoryAssets.values()){
+  scene.traverse(o=>{if(!o.isMesh)return;for(const material of Array.isArray(o.material)?o.material:[o.material])for(const value of Object.values(material))if(value?.isTexture)value.dispose();});
+  disposeAccessory(scene);
+ }
+ accessoryAssets.clear();
+}
+export async function prepareAccessoryAssets(loadout,species='penguin'){
  const loader=new GLTFLoader();
  await Promise.all(Object.values(loadout).map(async item=>{
-  const path=item?.model_asset;if(!path||!/^assets\/runner\/accessories\/[a-z0-9_-]+\.glb$/.test(path)||accessoryAssets.has(path))return;
-  try{const gltf=await loader.loadAsync('./accessories/'+path.split('/').pop());accessoryAssets.set(path,gltf.scene);}catch(error){console.warn('Accessory uses editable fallback',path);}
+  const path=item?.species_models?.[species]??item?.model_asset;if(!path)return;
+  if(!/^assets\/runner\/accessories\/[a-z0-9_-]+\.glb$/.test(path))throw Error('Ruta del accesorio no válida');
+  if(accessoryAssets.has(path))return;
+  const revision=item.asset_revision??new URLSearchParams(globalThis.location?.search??'').get('v')??'wardrobe-volume-20261011';
+  const gltf=await loader.loadAsync('./accessories/'+path.split('/').pop()+'?v='+encodeURIComponent(revision));registerAccessoryAsset(path,gltf.scene);
  }));
 }
 
 
 // Small editable meshes, shared by equipment and product photography.
-export function createAccessory(item, slotName) {
-  if(accessoryAssets.has(item?.model_asset)){const model=accessoryAssets.get(item.model_asset).clone(true);model.traverse(o=>{if(o.isMesh){o.geometry=o.geometry.clone();o.material=Array.isArray(o.material)?o.material.map(m=>m.clone()):o.material.clone();}});model.userData.cosmetic=true;return model;}
+export function createAccessory(item, slotName, species='penguin') {
+  if(item?.species_models)item={...item,model_asset:item.species_models[species]??item.model_asset};
+  if(item?.fitted_model_space&&!accessoryAssets.has(item.model_asset))throw Error('No se cargó la prenda adaptada a '+species);
+  if(accessoryAssets.has(item?.model_asset)){
+    const model=accessoryAssets.get(item.model_asset).clone(true);
+    const materialCopies=new Map();
+    model.traverse(o=>{if(o.isMesh){
+      o.geometry=item.smooth_mesh?softenAccessoryGeometry(o.geometry):o.geometry.clone();
+      const copy=source=>{if(materialCopies.has(source))return materialCopies.get(source);const material=source.clone();if(item.soft_fabric){material.metalness=0;material.roughness=.90;material.roughnessMap=null;material.normalScale?.setScalar(.30);}materialCopies.set(source,material);return material;};
+      o.material=Array.isArray(o.material)?o.material.map(copy):copy(o.material);
+    }});
+    if(item.fitted_model_space)batchTailoredMeshes(model);
+    const root=item.normalize_head?normalizeHeadAsset(model,item.style):model;
+    root.userData.cosmetic=true;if(slotName==='pet_feet')root.userData.shoeSole=true;return root;
+  }
   const root = new THREE.Group();
   root.userData.cosmetic = true;
   const color = /^#[0-9a-f]{6}$/i.test(item?.color) ? item.color : '#91bda7';
@@ -104,8 +133,41 @@ export function createAccessory(item, slotName) {
   return root;
 }
 
+// Stitch meshes with the same material and binding into one draw. No vertices,
+// UVs, normals or skin weights are simplified; editable Blender parts stay apart.
+function batchTailoredMeshes(root){
+ root.updateMatrixWorld(true);const inverse=root.matrixWorld.clone().invert(),buckets=new Map();
+ root.traverse(mesh=>{
+  if(!mesh.isMesh||Array.isArray(mesh.material)||mesh.geometry.groups.length||Object.keys(mesh.geometry.morphAttributes).length)return;
+  const signature=Object.entries(mesh.geometry.attributes).sort(([a],[b])=>a.localeCompare(b)).map(([name,a])=>`${name}:${a.itemSize}:${a.normalized}:${a.array.constructor.name}`).join('|');
+  const key=JSON.stringify([mesh.material.uuid,signature,!!mesh.geometry.index,mesh.userData.nidoBoneNames,mesh.userData.nidoSkinTransfer]);
+  if(!buckets.has(key))buckets.set(key,[]);buckets.get(key).push(mesh);
+ });
+ for(const meshes of buckets.values()){
+  if(meshes.length<2)continue;
+  const geometry=mergeGeometries(meshes.map(mesh=>mesh.geometry.clone().applyMatrix4(inverse.clone().multiply(mesh.matrixWorld))));
+  if(!geometry)continue;
+  const batch=new THREE.Mesh(geometry,meshes[0].material);batch.name=meshes[0].name+' · conjunto';batch.userData={...meshes[0].userData,batchedParts:meshes.length};root.add(batch);
+  for(const mesh of meshes){mesh.geometry.dispose();mesh.removeFromParent();}
+ }
+}
+
 export function disposeAccessory(root) {
-  const geometries=new Set(),materials=new Set();
-  root.traverse(o=>{if(o.geometry)geometries.add(o.geometry);for(const m of Array.isArray(o.material)?o.material:[o.material])if(m)materials.add(m);});
-  geometries.forEach(g=>g.dispose());materials.forEach(m=>m.dispose());root.removeFromParent();
+  const geometries=new Set(),materials=new Set(),skeletons=new Set();
+  root.traverse(o=>{if(o.geometry)geometries.add(o.geometry);if(o.isSkinnedMesh&&o.userData.cosmetic)skeletons.add(o.skeleton);for(const m of Array.isArray(o.material)?o.material:[o.material])if(m)materials.add(m);});
+  geometries.forEach(g=>g.dispose());materials.forEach(m=>m.dispose());skeletons.forEach(s=>s.dispose());root.removeFromParent();
+}
+
+// Convert authored units to the same head-anchor coordinates used by the app.
+// Uniform scaling preserves the actual garment proportions and its textures.
+export function normalizeHeadAsset(model,style){
+  model.updateMatrixWorld(true);
+  const bounds=new THREE.Box3().setFromObject(model,true),size=bounds.getSize(new THREE.Vector3()),center=bounds.getCenter(new THREE.Vector3());
+  if(!Number.isFinite(size.x)||size.x<=0)throw Error('Modelo de cabeza sin geometría válida');
+  const width={cap:.57,garden_hat:.74,beanie:.57,beret:.60,wig:.60}[style]??.57;
+  // The cap's visor skews its bounding-box centre away from the crown.
+  const scale=width/size.x,offset=style==='cap'?.15:0;
+  const wrapper=new THREE.Group();wrapper.name='normalized-head:'+style;
+  model.scale.multiplyScalar(scale);model.position.add(new THREE.Vector3(-center.x*scale,-bounds.min.y*scale-.045,-center.z*scale+offset));
+  wrapper.add(model);return wrapper;
 }

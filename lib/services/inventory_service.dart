@@ -8,6 +8,7 @@ class InventoryItem {
   final Map<String, dynamic> data;
   const InventoryItem(this.data);
   bool get previewOnly => data['preview_only']==true;
+  bool get visible => data['visible'] != false;
   String get roomCategory => data['room_category'] as String? ?? (slot == 'room_ceiling' ? 'Techo' : ['room_wall','room_decor','room_mirror','room_shelf'].contains(slot) ? 'Pared' : ['room_floor','room_rug'].contains(slot) ? 'Suelo' : 'Muebles');
   String get key => data['item_key'] as String;
   String get name => data['name'] as String;
@@ -105,7 +106,9 @@ class InventoryService extends ChangeNotifier {
   Map<String, InventoryItem> get loadout => {
     for (final i in catalog)
       if (equipped(i.key) && (_sharedLoadout == null || !['pet','room'].contains(i.scope))) i.slot: i,
-    ...?_sharedLoadout,
+    if (_sharedLoadout != null)
+      for (final entry in _sharedLoadout!.entries)
+        entry.key: _withLocalAppearance(entry.value),
     ...roomDraft,
   };
   void _clear() {
@@ -154,8 +157,16 @@ class InventoryService extends ChangeNotifier {
     notifyListeners();
   }
 
+  static InventoryItem _withLocalAppearance(InventoryItem item) {
+    final local = petAccessoryConcepts.where((row) => row['item_key'] == item.key).firstOrNull;
+    if (local == null || (local['appearance'] as Map?)?['fitted_model_space'] != true) return item;
+    return InventoryItem({...item.data, 'appearance': local['appearance']});
+  }
+
   static List<InventoryItem> mergeAccessoryConcepts(List<InventoryItem> published)=>[
-    ...published.where((item)=>!petAccessoryConcepts.any((local)=>local['item_key']==item.key&&local['visible']==false)),
+    for(final item in published)
+      [...petAccessoryConcepts,...roomConcepts].any((local)=>local['item_key']==item.key&&local['visible']==false)
+        ? InventoryItem({...item.data,'visible':false}) : _withLocalAppearance(item),
     for(final data in [...petAccessoryConcepts,...roomConcepts])if(data['visible']!=false&&!published.any((i)=>i.key==data['item_key']))InventoryItem(data),
   ];
 

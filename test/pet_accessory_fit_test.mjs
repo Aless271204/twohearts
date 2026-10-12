@@ -3,10 +3,13 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {Group,Box3,Vector3,AnimationMixer} from '../assets/runner/vendor/three.module.js';
 import {runtimeUrl,loadPet} from './three-runtime.mjs';
+import {registerWardrobeGeometry} from './wardrobe-runtime-fixtures.mjs';
 const {createNaturalRest}=await import(runtimeUrl('../assets/runner/pet-rest-pose.js'));
 const {equipRunnerCosmetics}=await import(runtimeUrl('../assets/runner/cosmetics.js'));
 const {createPetMotion}=await import(runtimeUrl('../assets/runner/pet-motion.js'));
 const {refinePip}=await import(runtimeUrl('../assets/runner/pip-delicate.js'));
+const {measureAccessoryFit}=await import(runtimeUrl('../assets/runner/cosmetics.js'));
+const {stabilizePetTorso}=await import(runtimeUrl('../assets/runner/pet-garment-rig.js'));
 const catalog=JSON.parse(readFileSync(new URL('../assets/runner/accessory-catalog.json',import.meta.url)));
 
 test('Refined room penguin fits the scarf below its face and shoes around replacement feet',async()=>{
@@ -27,7 +30,7 @@ test('Refined room penguin fits the scarf below its face and shoes around replac
   }
 });
 
-test('25 accessories attach to all four actual skeletons, follow animation and preserve growth',async()=>{
+test('24 visible accessories attach to all four actual skeletons, follow animation and preserve growth',async()=>{
   assert.equal(catalog.length,25);
   for(const [species,file] of Object.entries({penguin:'Meshy_AI_Pip_the_Penguin_All_Animations.glb',bear:'bear.glb',pig:'pig.glb',chick:'chick.glb'})){
     const {scene,animations}=await loadPet(file);
@@ -35,11 +38,15 @@ test('25 accessories attach to all four actual skeletons, follow animation and p
     const bounds=new Box3().setFromObject(scene),center=bounds.getCenter(new Vector3());scene.position.sub(new Vector3(center.x,bounds.min.y,center.z));
     const model=new Group();model.add(scene);model.userData.species=species;
     const rest=createNaturalRest(model),mixer=new AnimationMixer(model);mixer.clipAction(rest).play();mixer.update(0);
-    for(const item of catalog){
+    if(species==='penguin')refinePip(model);stabilizePetTorso(model,measureAccessoryFit(model));
+    const visible=catalog.filter(item=>item.visible!==false);assert.equal(visible.length,24);
+    for(const item of visible){
+      await registerWardrobeGeometry(item.appearance.species_models[species]);
       const group=equipRunnerCosmetics(model,{[item.equip_slot]:item.appearance});
-      assert.equal(group.userData.slots.length,item.equip_slot==='pet_feet'?2:1,`${species}:${item.item_key}`);
+      assert.equal(group.userData.slots.length,1,`${species}:${item.item_key}`);
       for(const part of group.userData.slots){
-        assert.ok(part.parent.isBone,`${species}:${item.item_key} must follow skeleton`);
+        if(item.appearance.skinned_model_space){let bound=0;part.traverse(mesh=>{if(mesh.isSkinnedMesh){bound++;assert.ok(mesh.skeleton.bones.every(bone=>bone.isBone));}});assert.ok(bound>0);}
+        else assert.ok(part.parent.isBone,`${species}:${item.item_key} must follow skeleton`);
         const local=part.matrix.clone();
         for(const scale of [.74,.88,1]){
           model.scale.setScalar(scale);model.updateMatrixWorld(true);
@@ -50,7 +57,7 @@ test('25 accessories attach to all four actual skeletons, follow animation and p
       }
       model.scale.setScalar(1);
     }
-    equipRunnerCosmetics(model,Object.fromEntries(catalog.filter((_,i)=>i%5===0).map(item=>[item.equip_slot,item.appearance])));
+    equipRunnerCosmetics(model,Object.fromEntries(visible.filter((_,i)=>i%5===0).map(item=>[item.equip_slot,item.appearance])));
     const run=animations.find(c=>c.name==='Running');
     if(run){mixer.stopAllAction();mixer.clipAction(run).play();for(let i=0;i<90;i++){mixer.update(1/30);model.updateMatrixWorld(true);for(const part of model.userData.cosmetics.userData.slots)assert.ok(part.getWorldPosition(new Vector3()).toArray().every(Number.isFinite));}}
   }

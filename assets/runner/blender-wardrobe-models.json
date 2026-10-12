@@ -1,0 +1,544 @@
+[
+  {
+    "item_key": "cap_pink",
+    "slot": "pet_head",
+    "name": "Gorra corazón",
+    "color": "#F05280",
+    "visible": true,
+    "fabric": "cotton",
+    "equip_slot": "pet_head",
+    "appearance": {
+      "style": "cap_pink",
+      "color": "#F05280",
+      "species_models": {
+        "penguin": "assets/runner/accessories/cap_pink_penguin_pattern.glb",
+        "bear": "assets/runner/accessories/cap_pink_bear_pattern.glb",
+        "pig": "assets/runner/accessories/cap_pink_pig_pattern.glb",
+        "chick": "assets/runner/accessories/cap_pink_chick_pattern.glb"
+      },
+      "model_asset": "assets/runner/accessories/cap_pink_penguin_pattern.glb",
+      "fitted_model_space": true,
+      "tuck_crown_tuft": true,
+      "asset_revision": "6175314afd8fb9b6"
+    },
+    "preview_only": true,
+    "variants": [
+      {
+        "item_key": "cap_pink",
+        "species": "penguin",
+        "path": "assets/runner/accessories/cap_pink_penguin_pattern.glb",
+        "sha256": "7b701456ed7c94fea7a551bd101f833a0a03fdbb761a0c469b1a4bcba1b1c0a2"
+      },
+      {
+        "item_key": "cap_pink",
+        "species": "bear",
+        "path": "assets/runner/accessories/cap_pink_bear_pattern.glb",
+        "sha256": "7ae74e57cbb1be50c7b70d3896dd09986a916266ca77b1382a0925fc9988e5b8"
+      },
+      {
+        "item_key": "cap_pink",
+        "species": "pig",
+        "path": "assets/runner/accessories/cap_pink_pig_pattern.glb",
+        "sha256": "c8775b95b864857c68554354a5f172adbf0b4f71712623bd2764d7e134b92e57"
+      },
+      {
+        "item_key": "cap_pink",
+        "species": "chick",
+        "path": "assets/runner/accessories/cap_pink_chick_pattern.glb",
+        "sha256": "0e3e724e5e3c2c99000bfc0e43fb6233b0106e8f6298bf0ed8d22e113d1ac801"
+      }
+    ]
+  },
+  {
+    "item_key": "beanie_cloud",
+    "slot": "pet_head",
+    "name": "Gorro nube",
+    "color": "#FFF2DF",
+    "visible": true,
+    "fabric": "knit",
+    "equip_slot": "pet_head",
+    "appearance": {
+      "style": "beanie_cloud",
+      "color": "#FFF2DF",
+      "species_models": {
+        "penguin": "assets/runner/accessories/beanie_cloud_penguin_pattern.glb",
+        "bear": "assets/runner/accessories/beanie_cloud_bear_pattern.glb",
+        "pig": "assets/runner/accessories/beanie_cloud_pig_pattern.glb",
+        "chick": "assets/runner/accessories/beanie_cloud_chick_pattern.glb"
+      },
+      "model_asset": "assets/runner/accessories/beanie_cloud_penguin_pattern.glb",
+      "fitted_model_space": true,
+      "tuck_crown_tuft": true,
+      "asset_revision": "e1cddeac40c67ef7"
+    },
+    "preview_only": true,
+    "variants": [
+      {
+        "item_key": "beanie_cloud",
+        "species": "penguin",
+        "path": "assets/runner/accessories/beanie_cloud_penguin_pattern.glb",
+        "sha256": "c2784b4efccb31da51910aee9c98cae8b55e8990adebef32e6d7b369e415e14f"
+      },
+      {
+        "item_key": "beanie_cloud",
+        "species": "bear",
+        "path": "assets/runner/accessories/beanie_cloud_bear_pattern.glb",
+        "sha256": "034b9b5c7d54db8ee58dfa1e80f4b4d5d62c04e2dfb9b9960e78827f877bce9c"
+      },
+      {
+        "item_key": "beanie_cloud",
+        "species": "pig",
+        "path": "assets/runner/accessories/beanie_cloud_pig_pattern.glb",
+        "sha256": "71759eb062d36ba8f4169e07614fe4d88f1e394baace69d9d588ffdd821550b9"
+      },
+      {
+        "item_key": "beanie_cloud",
+        "species": "chick",
+        "path": "assets/runner/accessories/beanie_cloud_chick_pattern.glb",
+        "sha256": "4b7422e6671891c70a591eddf47ef139f28bc645359cc473dba55620cb364dd6"
+      }
+    ]
+  },
+  {
+    "item_key": "hat_garden",
+    "slot": "pet_head",
+    "name": "Sombrero jardín",
+    "color": "#B8DCCB",
+    "visible": true,
+    "fabric": "straw",
+    "equip_slot": "pet_head",
+    "appearance": {
+      "style": "hat_garden",
+      "color": "#B8DCCB",
+      "species_models": {
+        "penguin": "assets/runner/accessories/hat_garden_penguin_pattern.glb",
+        "bear": "assets/runner/accessories/hat_garden_bear_pattern.glb",
+        "pig": "assets/runner/accessories/hat_garden_pig_pattern.glb",
+        "chick": "assets/runner/accessories/hat_garden_chick_pattern.glb"
+      },
+      "model_asset": "assets/runner/accessories/hat_garden_penguin_pattern.glb",
+      "fitted_model_space": true,
+      "tuck_crown_tuft": true,
+      "asset_revision": "5248832251f09f89"
+    },
+    "preview_only": true,
+    "variants": [
+      {
+        "item_key": "hat_garden",
+        "species": "penguin",
+        "path": "assets/runner/accessories/hat_garden_penguin_pattern.glb",
+        "sha256": "da820b4fc7959967657ff59d7857abe514c86f4957f9a8c2e6c351122f0eedb2"
+      },
+      {
+        "item_key": "hat_garden",
+        "species": "bear",
+        "path": "assets/runner/accessories/hat_garden_bear_pattern.glb",
+        "sha256": "98a135e7adb4757488f2287a846e7023722f741c8c4098a8a7d4e7b1ab3ea898"
+      },
+      {
+        "item_key": "hat_garden",
+        "species": "pig",
+        "path": "assets/runner/accessories/hat_garden_pig_pattern.glb",
+        "sha256": "68448fb745d85d8cfc112bc2bac62985e59ff38811288cd262843398544b15c1"
+      },
+      {
+        "item_key": "hat_garden",
+        "species": "chick",
+        "path": "assets/runner/accessories/hat_garden_chick_pattern.glb",
+        "sha256": "40ba83c2f98b4488030ff81f0c2c2f1749900a2e95c845c4207eb881b2b4705e"
+      }
+    ]
+  },
+  {
+    "item_key": "beret_chic",
+    "slot": "pet_head",
+    "name": "Boina chic",
+    "color": "#BAA2DB",
+    "visible": true,
+    "fabric": "felt",
+    "equip_slot": "pet_head",
+    "appearance": {
+      "style": "beret_chic",
+      "color": "#BAA2DB",
+      "species_models": {
+        "penguin": "assets/runner/accessories/beret_chic_penguin_pattern.glb",
+        "bear": "assets/runner/accessories/beret_chic_bear_pattern.glb",
+        "pig": "assets/runner/accessories/beret_chic_pig_pattern.glb",
+        "chick": "assets/runner/accessories/beret_chic_chick_pattern.glb"
+      },
+      "model_asset": "assets/runner/accessories/beret_chic_penguin_pattern.glb",
+      "fitted_model_space": true,
+      "tuck_crown_tuft": true,
+      "asset_revision": "a33353b73f703b2d"
+    },
+    "preview_only": true,
+    "variants": [
+      {
+        "item_key": "beret_chic",
+        "species": "penguin",
+        "path": "assets/runner/accessories/beret_chic_penguin_pattern.glb",
+        "sha256": "aa25c3f26be5b06c12dc0a1aabf525104c29afb80b461787643db8a94f85f394"
+      },
+      {
+        "item_key": "beret_chic",
+        "species": "bear",
+        "path": "assets/runner/accessories/beret_chic_bear_pattern.glb",
+        "sha256": "7720fbd7436dfd2ee41ebec87c97bc287b2fa0cdf5343254f90214066ce870c0"
+      },
+      {
+        "item_key": "beret_chic",
+        "species": "pig",
+        "path": "assets/runner/accessories/beret_chic_pig_pattern.glb",
+        "sha256": "9c7197ddead7620c2c3cd7140e2b1993f6672f54e646dadc017c5307b337abba"
+      },
+      {
+        "item_key": "beret_chic",
+        "species": "chick",
+        "path": "assets/runner/accessories/beret_chic_chick_pattern.glb",
+        "sha256": "a390a57ca86229001bc43d13ae13844164476912afa214ee20546ade129a3e0a"
+      }
+    ]
+  },
+  {
+    "item_key": "shirt_love",
+    "slot": "pet_body",
+    "name": "Camiseta abrazo",
+    "color": "#FFF2DF",
+    "visible": true,
+    "fabric": "cotton",
+    "equip_slot": "pet_body",
+    "appearance": {
+      "style": "shirt_love",
+      "color": "#FFF2DF",
+      "species_models": {
+        "penguin": "assets/runner/accessories/shirt_love_penguin_pattern.glb",
+        "bear": "assets/runner/accessories/shirt_love_bear_pattern.glb",
+        "pig": "assets/runner/accessories/shirt_love_pig_pattern.glb",
+        "chick": "assets/runner/accessories/shirt_love_chick_pattern.glb"
+      },
+      "model_asset": "assets/runner/accessories/shirt_love_penguin_pattern.glb",
+      "fitted_model_space": true,
+      "skinned_model_space": true,
+      "asset_revision": "e4ecc23846fe4b38",
+      "sleeve_coverage": {
+        "penguin": {
+          "min_y": 0.41660043558286364,
+          "max_y": 0.5486004355828636
+        },
+        "bear": {
+          "min_y": 0.4124329012765121,
+          "max_y": 0.5444329012765121
+        },
+        "pig": {
+          "min_y": 0.36964478800103934,
+          "max_y": 0.5016447880010393
+        },
+        "chick": {
+          "min_y": 0.37036480218482115,
+          "max_y": 0.5023648021848212
+        }
+      }
+    },
+    "preview_only": true,
+    "variants": [
+      {
+        "item_key": "shirt_love",
+        "species": "penguin",
+        "path": "assets/runner/accessories/shirt_love_penguin_pattern.glb",
+        "sha256": "da6286291a54d75c6aaa125e50eb9b10db925bb2d7325e6a4212711ed393de66"
+      },
+      {
+        "item_key": "shirt_love",
+        "species": "bear",
+        "path": "assets/runner/accessories/shirt_love_bear_pattern.glb",
+        "sha256": "c966d4a33da9f99d57045ce66109f3164fc59842b15dd5ec350a50ff6a5d0011"
+      },
+      {
+        "item_key": "shirt_love",
+        "species": "pig",
+        "path": "assets/runner/accessories/shirt_love_pig_pattern.glb",
+        "sha256": "9cfb83b08ef67fbc0e6d233e2d8afb70ae6bedb0b1039e067e6114816b0c1891"
+      },
+      {
+        "item_key": "shirt_love",
+        "species": "chick",
+        "path": "assets/runner/accessories/shirt_love_chick_pattern.glb",
+        "sha256": "0536bfd19a86ded0cef73120d328ee641c58c2b023102128709c3560f2f1afdf"
+      }
+    ]
+  },
+  {
+    "item_key": "jacket_denim",
+    "slot": "pet_body",
+    "name": "Chaqueta denim",
+    "color": "#91B6D6",
+    "visible": true,
+    "fabric": "denim",
+    "equip_slot": "pet_body",
+    "appearance": {
+      "style": "jacket_denim",
+      "color": "#91B6D6",
+      "species_models": {
+        "penguin": "assets/runner/accessories/jacket_denim_penguin_pattern.glb",
+        "bear": "assets/runner/accessories/jacket_denim_bear_pattern.glb",
+        "pig": "assets/runner/accessories/jacket_denim_pig_pattern.glb",
+        "chick": "assets/runner/accessories/jacket_denim_chick_pattern.glb"
+      },
+      "model_asset": "assets/runner/accessories/jacket_denim_penguin_pattern.glb",
+      "fitted_model_space": true,
+      "skinned_model_space": true,
+      "asset_revision": "de899de6eb884cbf",
+      "sleeve_coverage": {
+        "penguin": {
+          "min_y": 0.41660043558286364,
+          "max_y": 0.5486004355828636
+        },
+        "bear": {
+          "min_y": 0.4124329012765121,
+          "max_y": 0.5444329012765121
+        },
+        "pig": {
+          "min_y": 0.36964478800103934,
+          "max_y": 0.5016447880010393
+        },
+        "chick": {
+          "min_y": 0.37036480218482115,
+          "max_y": 0.5023648021848212
+        }
+      }
+    },
+    "preview_only": true,
+    "variants": [
+      {
+        "item_key": "jacket_denim",
+        "species": "penguin",
+        "path": "assets/runner/accessories/jacket_denim_penguin_pattern.glb",
+        "sha256": "a818de7bb6bf90480cf86967c85c09a268e579ae20c6e21fefdab0c324d74599"
+      },
+      {
+        "item_key": "jacket_denim",
+        "species": "bear",
+        "path": "assets/runner/accessories/jacket_denim_bear_pattern.glb",
+        "sha256": "647afc5e2a32ba3bf0e1beb929b4e417b48a323d2c6a8623b68c69df8e4d0a08"
+      },
+      {
+        "item_key": "jacket_denim",
+        "species": "pig",
+        "path": "assets/runner/accessories/jacket_denim_pig_pattern.glb",
+        "sha256": "aa164fd95314fb73216b99b3b3657fcc8b0880b39d004767913488e79fdb8dc1"
+      },
+      {
+        "item_key": "jacket_denim",
+        "species": "chick",
+        "path": "assets/runner/accessories/jacket_denim_chick_pattern.glb",
+        "sha256": "b68d8713d9b147028f2b32af97c5069ad317b21a1e1f2de4133c7b41ee5cc2ec"
+      }
+    ]
+  },
+  {
+    "item_key": "coat_cloud",
+    "slot": "pet_body",
+    "name": "Abrigo nube",
+    "color": "#B8DCCB",
+    "visible": true,
+    "fabric": "wool",
+    "padding": 0.032,
+    "equip_slot": "pet_body",
+    "appearance": {
+      "style": "coat_cloud",
+      "color": "#B8DCCB",
+      "species_models": {
+        "penguin": "assets/runner/accessories/coat_cloud_penguin_pattern.glb",
+        "bear": "assets/runner/accessories/coat_cloud_bear_pattern.glb",
+        "pig": "assets/runner/accessories/coat_cloud_pig_pattern.glb",
+        "chick": "assets/runner/accessories/coat_cloud_chick_pattern.glb"
+      },
+      "model_asset": "assets/runner/accessories/coat_cloud_penguin_pattern.glb",
+      "fitted_model_space": true,
+      "skinned_model_space": true,
+      "asset_revision": "ab73f9edd4444244",
+      "sleeve_coverage": {
+        "penguin": {
+          "min_y": 0.3716004355828636,
+          "max_y": 0.5486004355828636
+        },
+        "bear": {
+          "min_y": 0.36743290127651207,
+          "max_y": 0.5444329012765121
+        },
+        "pig": {
+          "min_y": 0.32464478800103935,
+          "max_y": 0.5016447880010393
+        },
+        "chick": {
+          "min_y": 0.3253648021848211,
+          "max_y": 0.5023648021848212
+        }
+      }
+    },
+    "preview_only": true,
+    "variants": [
+      {
+        "item_key": "coat_cloud",
+        "species": "penguin",
+        "path": "assets/runner/accessories/coat_cloud_penguin_pattern.glb",
+        "sha256": "387adf5fa7e49957cb2e748d67374c5b2262423c0bd9e3832f9b982a694fa188"
+      },
+      {
+        "item_key": "coat_cloud",
+        "species": "bear",
+        "path": "assets/runner/accessories/coat_cloud_bear_pattern.glb",
+        "sha256": "9e75f7178a7fdaa63bd82a2944abf1a164a22460e188ae2acfcc16e30feed6e0"
+      },
+      {
+        "item_key": "coat_cloud",
+        "species": "pig",
+        "path": "assets/runner/accessories/coat_cloud_pig_pattern.glb",
+        "sha256": "f8fd0fd67087937e998cf02c8b3b7c7cdf1ac988571ce5b3412eedfe527ef89b"
+      },
+      {
+        "item_key": "coat_cloud",
+        "species": "chick",
+        "path": "assets/runner/accessories/coat_cloud_chick_pattern.glb",
+        "sha256": "c4eadf3a300a59f6d540e0c5bf19a35f86d980aa84913e84e91a76f8c8b108ca"
+      }
+    ]
+  },
+  {
+    "item_key": "dress_petal",
+    "slot": "pet_body",
+    "name": "Vestido pétalo",
+    "color": "#EFA0AB",
+    "visible": true,
+    "fabric": "poplin",
+    "equip_slot": "pet_body",
+    "appearance": {
+      "style": "dress_petal",
+      "color": "#EFA0AB",
+      "species_models": {
+        "penguin": "assets/runner/accessories/dress_petal_penguin_pattern.glb",
+        "bear": "assets/runner/accessories/dress_petal_bear_pattern.glb",
+        "pig": "assets/runner/accessories/dress_petal_pig_pattern.glb",
+        "chick": "assets/runner/accessories/dress_petal_chick_pattern.glb"
+      },
+      "model_asset": "assets/runner/accessories/dress_petal_penguin_pattern.glb",
+      "fitted_model_space": true,
+      "skinned_model_space": true,
+      "asset_revision": "03dd9d0de6257224",
+      "sleeve_coverage": {
+        "penguin": {
+          "min_y": 0.41660043558286364,
+          "max_y": 0.5486004355828636
+        },
+        "bear": {
+          "min_y": 0.4124329012765121,
+          "max_y": 0.5444329012765121
+        },
+        "pig": {
+          "min_y": 0.36964478800103934,
+          "max_y": 0.5016447880010393
+        },
+        "chick": {
+          "min_y": 0.37036480218482115,
+          "max_y": 0.5023648021848212
+        }
+      }
+    },
+    "preview_only": true,
+    "variants": [
+      {
+        "item_key": "dress_petal",
+        "species": "penguin",
+        "path": "assets/runner/accessories/dress_petal_penguin_pattern.glb",
+        "sha256": "af0f8519f309c9ce11c39229c20c6520a2e2d92bc2a719eea64aa85bca0baccc"
+      },
+      {
+        "item_key": "dress_petal",
+        "species": "bear",
+        "path": "assets/runner/accessories/dress_petal_bear_pattern.glb",
+        "sha256": "7b5764ed41f889b1a5ed51ce7fdc1cccc42660853b2a4c2cbd6c4d81389658a2"
+      },
+      {
+        "item_key": "dress_petal",
+        "species": "pig",
+        "path": "assets/runner/accessories/dress_petal_pig_pattern.glb",
+        "sha256": "2d54fc693507ea1b7466c94f08685d19e61120bf354089976613bdd2fb317d6b"
+      },
+      {
+        "item_key": "dress_petal",
+        "species": "chick",
+        "path": "assets/runner/accessories/dress_petal_chick_pattern.glb",
+        "sha256": "9be6ad98b25ade144f90e54565d96aeff309104107a38c612bae0f042724748c"
+      }
+    ]
+  },
+  {
+    "item_key": "hoodie_nido",
+    "slot": "pet_body",
+    "name": "Sudadera nido",
+    "color": "#BAA2DB",
+    "visible": true,
+    "fabric": "cotton",
+    "padding": 0.025,
+    "equip_slot": "pet_body",
+    "appearance": {
+      "style": "hoodie_nido",
+      "color": "#BAA2DB",
+      "species_models": {
+        "penguin": "assets/runner/accessories/hoodie_nido_penguin_pattern.glb",
+        "bear": "assets/runner/accessories/hoodie_nido_bear_pattern.glb",
+        "pig": "assets/runner/accessories/hoodie_nido_pig_pattern.glb",
+        "chick": "assets/runner/accessories/hoodie_nido_chick_pattern.glb"
+      },
+      "model_asset": "assets/runner/accessories/hoodie_nido_penguin_pattern.glb",
+      "fitted_model_space": true,
+      "skinned_model_space": true,
+      "asset_revision": "0c40c67b68ac0ab1",
+      "sleeve_coverage": {
+        "penguin": {
+          "min_y": 0.3716004355828636,
+          "max_y": 0.5486004355828636
+        },
+        "bear": {
+          "min_y": 0.36743290127651207,
+          "max_y": 0.5444329012765121
+        },
+        "pig": {
+          "min_y": 0.32464478800103935,
+          "max_y": 0.5016447880010393
+        },
+        "chick": {
+          "min_y": 0.3253648021848211,
+          "max_y": 0.5023648021848212
+        }
+      }
+    },
+    "preview_only": true,
+    "variants": [
+      {
+        "item_key": "hoodie_nido",
+        "species": "penguin",
+        "path": "assets/runner/accessories/hoodie_nido_penguin_pattern.glb",
+        "sha256": "4467f194e6b3f350dc7efd0cc539c8dd8574a4ff09043cbb1bc7946bbf0ac85c"
+      },
+      {
+        "item_key": "hoodie_nido",
+        "species": "bear",
+        "path": "assets/runner/accessories/hoodie_nido_bear_pattern.glb",
+        "sha256": "39e7cf4fb58bf59fa403bcee7ce990ac7886eb8a8f48dc18e64af767beff8fc3"
+      },
+      {
+        "item_key": "hoodie_nido",
+        "species": "pig",
+        "path": "assets/runner/accessories/hoodie_nido_pig_pattern.glb",
+        "sha256": "685cc12d7befbbe9fd8152c9b1e00bec4543d2facb0179f3f0a654a6a58306db"
+      },
+      {
+        "item_key": "hoodie_nido",
+        "species": "chick",
+        "path": "assets/runner/accessories/hoodie_nido_chick_pattern.glb",
+        "sha256": "f54d3e56b704c45834f7817c168e6b055c8f7c9af9e30f518484be1ab1819abf"
+      }
+    ]
+  }
+]

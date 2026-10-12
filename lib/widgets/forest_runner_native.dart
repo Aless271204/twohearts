@@ -14,6 +14,7 @@ class ForestRunnerView extends StatefulWidget {
   final VoidCallback? onExit;
   final VoidCallback? onPetStroke;
   final bool petOnly;
+  final bool room;
   final int petReaction;
   final String petSpecies;
   final int petLevel;
@@ -27,6 +28,7 @@ class ForestRunnerView extends StatefulWidget {
     this.onPetStroke,
     this.onWebViewCreated,
     this.petOnly = false,
+    this.room = false,
     this.petReaction = 0,
     this.petSpecies = 'penguin',
     this.petLevel = 10,
@@ -129,7 +131,7 @@ class _ForestRunnerViewState extends State<ForestRunnerView>
       final controller = WebViewController()
         ..setJavaScriptMode(JavaScriptMode.unrestricted)
         ..setBackgroundColor(
-          widget.petOnly ? Colors.transparent : const Color(0xFF17392B),
+          widget.petOnly ? Colors.transparent : const Color(0xFFFFF9FA),
         );
       await controller.setNavigationDelegate(
         NavigationDelegate(
@@ -149,7 +151,7 @@ class _ForestRunnerViewState extends State<ForestRunnerView>
             if (error.isForMainFrame != false && mounted) {
               setState(
                 () => _error =
-                    'No se pudo abrir el bosque.\nVersión 1.1.1\n${error.errorCode}: ${error.description}',
+                    'No se pudo cargar esta escena. Vuelve a intentarlo.\n${error.errorCode}: ${error.description}',
               );
             }
           },
@@ -190,12 +192,13 @@ class _ForestRunnerViewState extends State<ForestRunnerView>
           queryParameters: widget.petOnly
               ? {
                   'pet': '1',
+                  'room': widget.room ? '1' : '0',
                   'species': widget.petSpecies,
                   'level': (FeatureFlags.petGrowth ? widget.petLevel : 10)
                       .toString(),
                   'orbit': widget.petOrbit ? '1' : '0',
                   'appearance': widget.appearance ?? '{}',
-                  'animation': widget.animationName ?? 'Idle_9',
+                  'animation': widget.animationName ?? 'Natural_Rest',
                 }
               : {
                   'species': widget.petSpecies,
@@ -209,7 +212,7 @@ class _ForestRunnerViewState extends State<ForestRunnerView>
     } catch (error) {
       if (mounted)
         setState(
-          () => _error = 'No se pudo abrir el bosque.\nVersión 1.1.1\n$error',
+          () => _error = 'No se pudo cargar esta escena. Vuelve a intentarlo.\n$error',
         );
     }
   }

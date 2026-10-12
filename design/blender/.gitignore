@@ -1,0 +1,10 @@
+# Local, reproducible workshop files. Original runtime assets live in assets/.
+*.blend
+*.blend1
+*.blend2
+library.json
+import-report.json
+verification.json
+biblioteca-preview.png
+exports/
+fitting/

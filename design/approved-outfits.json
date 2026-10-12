@@ -1,0 +1,21 @@
+{
+  "purpose": "Especificación visual aprobada; no concede compras ni certifica modelos existentes",
+  "reference": "penguin-outfits-approved.png",
+  "status": "awaiting_reference_quality_meshes",
+  "outfits": [
+    {"key":"dulce","name":"Dulce","items":["cap_pink","shirt_love","bow_neck","shoes_heart"]},
+    {"key":"cozy","name":"Cozy","items":["beanie_cloud","coat_cloud","scarf_hearts","slippers_cloud"]},
+    {"key":"jardin","name":"Jardín","items":["hat_garden","jacket_denim","bandana_sage","boots_rain","glasses_round"]},
+    {"key":"chic","name":"Chic","items":["beret_chic","dress_petal","necklace_heart","shoes_chic"]},
+    {"key":"pastel","name":"Pastel","items":["wig_pastel","hoodie_nido","glasses_star","sandals_summer"]}
+  ],
+  "acceptance": [
+    "Miniatura obtenida del mismo modelo y materiales equipados",
+    "Comparación frontal y de tres cuartos con la referencia aprobada",
+    "Ajuste independiente para pingüino, oso, cerdito y pollito",
+    "Sin intersecciones con cara, pico, brazos/alas y patas en reposo, carrera y salto",
+    "Prendas del cuerpo con aberturas y pesos de deformación, no una esfera rígida",
+    "Combinación completa: sombrero y pelo, cuello y cuerpo, calzado y suelo",
+    "Validación en la habitación y el recorrido en un teléfono Android"
+  ]
+}

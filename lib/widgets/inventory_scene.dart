@@ -13,11 +13,28 @@ class InventoryScene extends StatelessWidget {
   });
   @override
   Widget build(BuildContext context) => IgnorePointer(
-    child: Stack(fit: StackFit.expand, children: [
-      if (!accessories) Image.asset('assets/images/ui/room-background.png', fit: BoxFit.cover),
-      CustomPaint(painter: _ScenePainter({for(final e in loadout.entries)if(!isRoomConcept(e.value))e.key:e.value}, accessories, showRug: !loadout.containsKey('room_rug')), size: Size.infinite),
-      if(!accessories) RoomCatalogArt(items: loadout),
-    ]),
+    child: Stack(
+      fit: StackFit.expand,
+      children: [
+        if (!accessories)
+          Image.asset(
+            'assets/images/ui/room-background.png',
+            fit: BoxFit.cover,
+          ),
+        CustomPaint(
+          painter: _ScenePainter(
+            {
+              for (final e in loadout.entries)
+                if (!isRoomConcept(e.value)) e.key: e.value,
+            },
+            accessories,
+            showRug: !loadout.containsKey('room_rug'),
+          ),
+          size: Size.infinite,
+        ),
+        if (!accessories) RoomCatalogArt(items: loadout),
+      ],
+    ),
   );
 }
 
@@ -26,8 +43,13 @@ class _ScenePainter extends CustomPainter {
   final bool accessories;
   final String? isolatedSlot;
   final bool showRug;
-  _ScenePainter(this.items, this.accessories, {this.isolatedSlot, this.showRug = true});
-  static Rect boundsFor(String slot) => switch(slot) {
+  _ScenePainter(
+    this.items,
+    this.accessories, {
+    this.isolatedSlot,
+    this.showRug = true,
+  });
+  static Rect boundsFor(String slot) => switch (slot) {
     'room_bed' => const Rect.fromLTWH(4, 240, 86, 58),
     'room_plant' => const Rect.fromLTWH(14, 174, 53, 104),
     'room_lamp' => const Rect.fromLTWH(220, 125, 75, 155),
@@ -39,13 +61,30 @@ class _ScenePainter extends CustomPainter {
     canvas.save();
     if (isolatedSlot != null) {
       final bounds = boundsFor(isolatedSlot!);
-      final scale = (size.width / bounds.width).clamp(0.0, size.height / bounds.height) * .85;
-      canvas.translate((size.width - bounds.width * scale)/2, (size.height - bounds.height * scale)/2);
-      canvas.scale(scale);canvas.translate(-bounds.left, -bounds.top);
-    } else { canvas.scale(size.width / 300, size.height / 350); }
+      final scale =
+          (size.width / bounds.width).clamp(0.0, size.height / bounds.height) *
+          .85;
+      canvas.translate(
+        (size.width - bounds.width * scale) / 2,
+        (size.height - bounds.height * scale) / 2,
+      );
+      canvas.scale(scale);
+      canvas.translate(-bounds.left, -bounds.top);
+    } else {
+      canvas.scale(size.width / 300, size.height / 350);
+    }
     void rect(Rect r, Color c, [double radius = 8]) => canvas.drawRRect(
       RRect.fromRectAndRadius(r, Radius.circular(radius)),
-      Paint()..shader = LinearGradient(begin: Alignment.topLeft, end: Alignment.bottomRight, colors: [Color.lerp(c, Colors.white.withAlpha((c.a * 255).round()), .08)!, c, Color.lerp(c, Colors.black.withAlpha((c.a * 255).round()), .10)!]).createShader(r),
+      Paint()
+        ..shader = LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Color.lerp(c, Colors.white.withAlpha((c.a * 255).round()), .08)!,
+            c,
+            Color.lerp(c, Colors.black.withAlpha((c.a * 255).round()), .10)!,
+          ],
+        ).createShader(r),
     );
     void oval(Rect r, Color c) => canvas.drawOval(r, Paint()..color = c);
     void line(Offset a, Offset b, Color c, [double width = 2]) =>
@@ -75,16 +114,26 @@ class _ScenePainter extends CustomPainter {
       }
       final floor = items['room_floor'];
       if (floor != null) {
-        rect(const Rect.fromLTWH(0, 260, 300, 90), floor.color.withAlpha(55), 0);
+        rect(
+          const Rect.fromLTWH(0, 260, 300, 90),
+          floor.color.withAlpha(55),
+          0,
+        );
       }
-      if(isolatedSlot == null && showRug) oval(const Rect.fromLTWH(82, 278, 136, 46), wallColor.withAlpha(145));
-      if(isolatedSlot == null && showRug) oval(const Rect.fromLTWH(90, 282, 120, 35), const Color(0x55FFFFFF));
+      if (isolatedSlot == null && showRug)
+        oval(const Rect.fromLTWH(82, 278, 136, 46), wallColor.withAlpha(145));
+      if (isolatedSlot == null && showRug)
+        oval(const Rect.fromLTWH(90, 282, 120, 35), const Color(0x55FFFFFF));
       final bed = items['room_bed'];
       if (bed != null) {
         oval(const Rect.fromLTWH(8, 271, 77, 23), const Color(0x22000000));
         rect(const Rect.fromLTWH(13, 268, 6, 22), const Color(0xFF9B7655), 3);
         rect(const Rect.fromLTWH(72, 268, 6, 22), const Color(0xFF9B7655), 3);
-        rect(const Rect.fromLTWH(8, 246, 77, 30), Color.lerp(bed.color, Colors.black, .18)!, 12);
+        rect(
+          const Rect.fromLTWH(8, 246, 77, 30),
+          Color.lerp(bed.color, Colors.black, .18)!,
+          12,
+        );
         oval(const Rect.fromLTWH(8, 258, 77, 30), bed.color);
         oval(
           const Rect.fromLTWH(16, 262, 61, 19),
@@ -98,7 +147,10 @@ class _ScenePainter extends CustomPainter {
       if (plant != null) {
         oval(const Rect.fromLTWH(18, 261, 43, 11), const Color(0x22000000));
         rect(const Rect.fromLTWH(23, 230, 32, 38), plant.color);
-        oval(const Rect.fromLTWH(23, 226, 32, 12), Color.lerp(plant.color, Colors.white, .25)!);
+        oval(
+          const Rect.fromLTWH(23, 226, 32, 12),
+          Color.lerp(plant.color, Colors.white, .25)!,
+        );
         oval(const Rect.fromLTWH(27, 229, 24, 6), const Color(0xFF6D5947));
         line(
           const Offset(39, 235),
@@ -208,7 +260,25 @@ class RoomItemThumbnail extends StatelessWidget {
   final InventoryItem item;
   const RoomItemThumbnail({super.key, required this.item});
   @override
-  Widget build(BuildContext context) => isRoomConcept(item) ? RoomCatalogArt(isolated: item) : ['room_wall','room_floor'].contains(item.slot)
-    ? InventoryScene(loadout: {item.slot:item})
-    : CustomPaint(painter: _ScenePainter({item.slot:item}, false, isolatedSlot: item.slot), size: Size.infinite);
+  Widget build(BuildContext context) =>
+      item.scope == 'room'
+      ? Image.asset(
+          'assets/images/products/room_${item.slot}-${item.style}-${(item.appearance['color'] as String? ?? '#b8dccb').replaceFirst('#','').toLowerCase()}.png',
+          fit: BoxFit.contain,
+          errorBuilder: (_, __, ___) => const Center(
+            child: Text('Vista 3D no disponible', textAlign: TextAlign.center),
+          ),
+        )
+      : isRoomConcept(item)
+      ? RoomCatalogArt(isolated: item)
+      : ['room_wall', 'room_floor'].contains(item.slot)
+      ? InventoryScene(loadout: {item.slot: item})
+      : CustomPaint(
+          painter: _ScenePainter(
+            {item.slot: item},
+            false,
+            isolatedSlot: item.slot,
+          ),
+          size: Size.infinite,
+        );
 }

@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="es">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TwoHearts · Vestuario por mascota</title>
+<style>
+:root{color-scheme:light}*{box-sizing:border-box}body{margin:0;padding:24px;background:#fff9fa;color:#29232c;font:15px system-ui}main{max-width:1380px;margin:auto}h1{font-size:26px;margin:0 0 8px}p{color:#735965;line-height:1.5}.controls{display:flex;flex-wrap:wrap;gap:16px;margin:22px 0}label{display:flex;gap:8px;align-items:center}select{padding:12px;border:1px solid #eec6d2;border-radius:14px;background:white;color:#29232c}.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.card{background:#faecec;border:1px solid #f0d9dd;border-radius:24px;overflow:hidden}.card h2{font-size:17px;margin:16px;text-align:center}.card iframe{width:100%;height:440px;border:0;display:block}.reference{display:flex;align-items:center;gap:20px;margin-top:22px;padding:16px;background:white;border-radius:20px}.reference img{width:min(48%,650px);height:auto;border-radius:14px}.reference p{margin:0}.status{font-size:13px;color:#735965}@media(max-width:900px){.grid{grid-template-columns:repeat(2,1fr)}.card iframe{height:400px}}@media(max-width:500px){body{padding:12px}.grid{grid-template-columns:1fr}.reference{display:block}.reference img{width:100%}}
+</style>
+<main><h1>Vestuario · Ajuste por mascota</h1><p>Los cuatro personajes usan las prendas exportadas de Blender y el mismo visor 3D de la app.</p>
+<div class="controls"><label>Conjunto <select id="outfit" aria-label="Conjunto"><option value="">Artículo individual</option></select></label><label>Artículo <select id="item" aria-label="Artículo"></select></label><label>Vista <select id="angle" aria-label="Vista"><option value="0">Frontal</option><option value="45">Tres cuartos</option><option value="90">Perfil</option><option value="180">Posterior</option></select></label><label>Movimiento <select id="motion" aria-label="Movimiento"><option value="Natural_Rest">Reposo</option><option value="Running">Correr</option><option value="Regular_Jump">Saltar</option></select></label><label>Escena <select id="environment" aria-label="Escena"><option value="studio">Estudio</option><option value="room">Habitación</option></select></label></div>
+<div class="grid" id="pets"></div>
+<div class="reference"><img src="../../design/penguin-outfits-approved.png" alt="Referencia aprobada de los conjuntos"><div><p>Referencia de proporciones, tejidos y acabado.</p><p class="status">24 artículos, con variantes para las cuatro mascotas. La peluca sigue oculta. Puedes comprobar cada pieza o los cinco conjuntos completos en reposo, carrera y salto.</p></div></div>
+<p id="status" class="status" role="status">Cargando prendas…</p></main>
+<script type="module">
+const read=async path=>{const r=await fetch(path,{cache:'no-store'});if(!r.ok)throw Error('No se pudo cargar el vestuario');return r.json()};
+const data=[...await read('blender-wardrobe-models.json'),...await read('blender-complement-models.json')];
+const outfits=(await read('../../design/approved-outfits.json')).outfits;
+const item=document.querySelector('#item'),outfit=document.querySelector('#outfit'),environment=document.querySelector('#environment'),angle=document.querySelector('#angle'),motion=document.querySelector('#motion'),pets=document.querySelector('#pets');
+const phase=document.createElement('select');phase.id='phase';phase.setAttribute('aria-label','Instante');for(const [value,label] of [['','En movimiento'],['0','Inicio'],['.25','25 %'],['.5','50 %'],['.75','75 %']])phase.add(new Option(label,value));const phaseLabel=document.createElement('label');phaseLabel.append('Instante ',phase);document.querySelector('.controls').append(phaseLabel);
+const species={penguin:'Pingüino',bear:'Oso',pig:'Cerdito',chick:'Pollito'};
+for(const entry of data.filter(i=>i.visible!==false))item.add(new Option(entry.name,entry.item_key));
+for(const entry of outfits)outfit.add(new Option(entry.name,entry.key));
+const initial=new URLSearchParams(location.search);item.value=data.some(i=>i.item_key===initial.get('item'))?initial.get('item'):'shirt_love';
+for(const control of [outfit,angle,motion,environment,phase])if([...control.options].some(option=>option.value===initial.get(control.id)))control.value=initial.get(control.id);
+const apply=document.createElement('button');apply.textContent='Ver selección';apply.style.cssText='border:0;border-radius:14px;padding:12px 20px;background:#f05280;color:white;font:600 15px system-ui;cursor:pointer';document.querySelector('.controls').append(apply);
+for(const [key,name] of Object.entries(species)){const card=document.createElement('section');card.className='card';const heading=document.createElement('h2');heading.textContent=name;const frame=document.createElement('iframe');frame.title=name;frame.id=key;card.append(heading,frame);pets.append(card);}
+function update(){const selected=outfits.find(o=>o.key===outfit.value);const entries=selected?selected.items.map(key=>data.find(i=>i.item_key===key)).filter(Boolean):[data.find(i=>i.item_key===item.value)];
+const revision=entries.flatMap(entry=>entry.variants.map(v=>v.sha256.slice(0,10))).join('-');const loadout=Object.fromEntries(entries.map(entry=>[entry.equip_slot,{...structuredClone(entry.appearance),asset_revision:entry.variants.map(v=>v.sha256.slice(0,10)).join('-')} ]));
+for(const key of Object.keys(species)){const q=new URLSearchParams({pet:'1',species:key,level:'10',review_angle:angle.value,review_motion:motion.value,appearance:JSON.stringify(loadout),v:revision});if(phase.value!==''&&motion.value!=='Natural_Rest')q.set('review_phase',phase.value);if(environment.value==='room')q.set('room','1');document.querySelector('#'+key).src='index.html?'+q;}
+document.querySelector('#status').textContent=`${selected?.name??entries[0].name} · 4 mascotas · ${motion.selectedOptions[0].textContent}`;
+const query=new URLSearchParams();for(const control of [item,outfit,angle,motion,environment,phase])if(control.value)query.set(control.id,control.value);history.replaceState(null,'',location.pathname+'?'+query);}
+const pending=()=>{document.querySelector('#status').textContent='Pulsa «Ver selección» para cargar esta combinación.'};item.onchange=()=>{outfit.value='';pending()};for(const control of [outfit,angle,motion,environment,phase])control.onchange=pending;apply.onclick=update;update();
+</script></html>

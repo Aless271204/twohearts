@@ -10,6 +10,7 @@ class ForestRunnerView extends StatefulWidget {
   final VoidCallback? onExit;
   final VoidCallback? onPetStroke;
   final bool petOnly;
+  final bool room;
   final int petReaction;
   final String petSpecies;
   final int petLevel;
@@ -21,6 +22,7 @@ class ForestRunnerView extends StatefulWidget {
     this.onExit,
     this.onPetStroke,
     this.petOnly = false,
+    this.room = false,
     this.petReaction = 0,
     this.petSpecies = 'penguin',
     this.petLevel = 10,
@@ -51,12 +53,13 @@ class _ForestRunnerViewState extends State<ForestRunnerView>
             queryParameters: widget.petOnly
                 ? {
                     'pet': '1',
+                    'room': widget.room ? '1' : '0',
                     'species': widget.petSpecies,
                     'level': (FeatureFlags.petGrowth ? widget.petLevel : 10)
                         .toString(),
                     'orbit': widget.petOrbit ? '1' : '0',
                     'appearance': widget.appearance ?? '{}',
-                    'animation': widget.animationName ?? 'Idle_9',
+                    'animation': widget.animationName ?? 'Natural_Rest',
                   }
                 : {
                     'species': widget.petSpecies,

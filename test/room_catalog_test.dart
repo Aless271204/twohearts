@@ -3,8 +3,19 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:twohearts/core/room_catalog.dart';
 import 'package:twohearts/services/inventory_service.dart';
 import 'package:twohearts/widgets/room_catalog_scene.dart';
+import 'package:twohearts/widgets/inventory_scene.dart';
 
 void main() {
+  testWidgets('Every 3D room thumbnail decodes without a missing-product fallback', (tester) async {
+    await tester.pumpWidget(MaterialApp(home: Scaffold(body: Wrap(children: [
+      for(final data in roomConcepts) SizedBox(width:60,height:60,child:RoomItemThumbnail(item:InventoryItem(data))),
+    ]))));
+    await tester.runAsync(() async {await Future<void>.delayed(const Duration(seconds:1));});
+    await tester.pump();
+    expect(tester.takeException(),isNull);
+    expect(find.text('Vista 3D no disponible'),findsNothing);
+    expect(find.byType(Image),findsNWidgets(20));
+  });
   test('Atlas crops are isolated and stable when catalog order changes', () {
     const size=Size(1402,1122);
     final crops=[for(var i=0;i<20;i++)RoomCatalogPainter.sourceFor(i,size)];

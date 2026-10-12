@@ -6,7 +6,8 @@ export function showRunnerError(error, stage = 'carga') {
   const reason = String(error?.message || error || 'Error desconocido').slice(0, 600);
   if (new URLSearchParams(location.search).get('pet') === '1') {
     const loader = document.getElementById('pet-loader');
-    loader.style.cssText = 'display:flex;position:fixed;inset:0;align-items:center;justify-content:center;flex-direction:column;gap:12px;color:#746874;font:13px system-ui;text-align:center;padding:20px';
+    document.body.classList.remove('pet-ready');
+    loader.style.cssText = 'display:flex;position:fixed;inset:0;width:auto;height:auto;border:0;border-radius:0;animation:none;background:#fff9fa;align-items:center;justify-content:center;flex-direction:column;gap:12px;color:#746874;font:13px system-ui;text-align:center;padding:20px';
     loader.textContent = 'No pudimos cargar tu mascota.';
     const retry = document.createElement('button');retry.textContent = 'Reintentar';
     retry.style.cssText = 'background:#fff5f7;color:#e54378;border:1px solid #ffd0df;border-radius:99px;padding:10px 18px;font-size:13px';
