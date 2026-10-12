@@ -1,5 +1,32 @@
 # Punto de continuación: vestuario digital · 11 de octubre de 2026
 
+## Entrega verificada · 12 de octubre de 2026
+
+- APK publicado: NIDO 1.1.9+14, 247.399.846 bytes (247,4 MB).
+- Código y activos de la app subidos: `2b761703bfb51f58809c34271e7052ce9c0de57a`.
+- GitHub Actions 38208862649: verificación, Android y publicación aprobados.
+- Descarga: https://github.com/Aless271204/twohearts/releases/download/nido-1.1.9/NIDO-1.1.9-actualizada.apk
+- SHA-256: `68c2c3f9df8aaa2ce48aa4dbe194c19989650789ebf702fbc5f6d4c5835337a6`.
+- Archivo descargado revisado: versión/código correctos, ZIP íntegro, 96 GLB y
+  24 miniaturas con hashes exactos, 38 texturas compartidas idénticas y los siete
+  módulos actuales del visor. Firma idéntica al APK 1.1.8 anterior.
+- Evidencia en outputs/wardrobe-apk-verification.json y wardrobe-delivery-record.json.
+- 13 pruebas locales de carga, encaje y movimiento, 4 pruebas de reparación de
+  exportación y auditoría estricta de las 20 superficies de cuerpo aprobadas.
+- Miniaturas regeneradas sin bajar resolución ni muestras; 24 procedencias
+  comprobadas. Los diez archivos de cuerpo/cuello precedentes quedaron sustituidos.
+- Capturas reales actuales: delivery-dulce-front.jpg, delivery-dulce-room.jpg,
+  delivery-cozy-running-quarter.jpg, delivery-jardin-running-quarter.jpg,
+  delivery-chic-jump-quarter.jpg, delivery-pastel-running-back.jpg, en
+  outputs/wardrobe-proof/. El visor quedó disponible en el navegador.
+
+Esta entrega conserva diferencias visuales respecto a la ilustración. Revisar
+acabado de cuellos, puños, bordes alrededor de orejas y combinaciones extremas
+en teléfono; no certificar identidad exacta ni impresión. Los artículos nuevos
+conservan su estado de previsualización, precios y propiedad existente. Peluca,
+cuidado/crecimiento sin modelos y cobros/anuncios reales pendientes siguen ocultos
+o inactivos. La impresión se trabajará posteriormente.
+
 ## Actualización posterior: el usuario pidió continuar e incorporar todo al APK
 
 La pausa descrita más abajo quedó revocada. Se activó la transferencia V3 para
