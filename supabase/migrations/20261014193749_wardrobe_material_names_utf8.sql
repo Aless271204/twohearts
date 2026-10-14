@@ -1,0 +1,19 @@
+-- Preserve exact UTF-8 GLB material names used by garment dye.
+update public.shop_items set appearance=appearance||'{"color_materials": ["Algod\u00f3n coral"], "color_base": "#F05280"}'::jsonb where item_key='cap_pink';
+update public.shop_items set appearance=appearance||'{"color_materials": ["knit \u00b7 #FFF2DF"], "color_base": "#FFF2DF"}'::jsonb where item_key='beanie_cloud';
+update public.shop_items set appearance=appearance||'{"color_materials": ["straw \u00b7 #B8DCCB"], "color_base": "#B8DCCB"}'::jsonb where item_key='hat_garden';
+update public.shop_items set appearance=appearance||'{"color_materials": ["felt \u00b7 #BAA2DB"], "color_base": "#BAA2DB"}'::jsonb where item_key='beret_chic';
+update public.shop_items set appearance=appearance||'{"color_materials": ["cotton \u00b7 #EFA0AB"], "color_base": "#EFA0AB"}'::jsonb where item_key='mask_sleep';
+update public.shop_items set appearance=appearance||'{"color_materials": ["knit \u00b7 #EFA0AB"], "color_base": "#EFA0AB"}'::jsonb where item_key='scarf_hearts';
+update public.shop_items set appearance=appearance||'{"color_materials": ["cotton \u00b7 #B8DCCB"], "color_base": "#B8DCCB"}'::jsonb where item_key='bandana_sage';
+update public.shop_items set appearance=appearance||'{"color_materials": ["Algod\u00f3n coral nuevo"], "color_base": "#EC6276"}'::jsonb where item_key='bow_neck';
+update public.shop_items set appearance=appearance||'{"color_materials": ["Algod\u00f3n crema grueso"], "color_base": "#FFF0D9"}'::jsonb where item_key='shirt_love';
+update public.shop_items set appearance=appearance||'{"color_materials": ["denim \u00b7 #92B9D5"], "color_base": "#92B9D5"}'::jsonb where item_key='jacket_denim';
+update public.shop_items set appearance=appearance||'{"color_materials": ["wool \u00b7 #B3C4A2"], "color_base": "#B3C4A2"}'::jsonb where item_key='coat_cloud';
+update public.shop_items set appearance=appearance||'{"color_materials": ["poplin \u00b7 #F5A8B6"], "color_base": "#F5A8B6"}'::jsonb where item_key='dress_petal';
+update public.shop_items set appearance=appearance||'{"color_materials": ["cotton \u00b7 #C1ADE2"], "color_base": "#C1ADE2"}'::jsonb where item_key='hoodie_nido';
+update public.shop_items set appearance=appearance||'{"color_materials": ["Algod\u00f3n coral nuevo"], "color_base": "#EC6276"}'::jsonb where item_key='shoes_heart';
+update public.shop_items set appearance=appearance||'{"color_materials": ["plastic \u00b7 #B8DCCB"], "color_base": "#B8DCCB"}'::jsonb where item_key='boots_rain';
+update public.shop_items set appearance=appearance||'{"color_materials": ["wool \u00b7 #FFF2DF"], "color_base": "#FFF2DF"}'::jsonb where item_key='slippers_cloud';
+update public.shop_items set appearance=appearance||'{"color_materials": ["cotton \u00b7 #F05280"], "color_base": "#F05280"}'::jsonb where item_key='shoes_chic';
+update public.shop_items set appearance=appearance||'{"color_materials": ["cotton \u00b7 #F2B29B"], "color_base": "#F2B29B"}'::jsonb where item_key='sandals_summer';

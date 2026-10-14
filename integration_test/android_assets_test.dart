@@ -95,8 +95,8 @@ void main() {
     final idleUrl = Uri.parse((await fittedController.currentUrl())!).replace(queryParameters: {'pet': '1', 'orbit': '0', 'animation': 'Idle_9'});
     await fittedController.loadRequest(idleUrl);
     await waitForJavaScript(tester, fittedController,
-      "document.body.dataset.petAnimation === 'Natural_Rest' && document.body.dataset.petShape === 'delicate' && document.body.dataset.petPose === 'standing' && document.body.dataset.petGrounded === 'true'",
-      'The room uses the original idle pose and a grounded pet');
+      "document.body.dataset.petAnimation === 'Natural_Rest' && document.body.dataset.petShape === 'original' && document.body.dataset.petPose === 'standing' && document.body.dataset.petGrounded === 'true'",
+      'The room preserves the original anatomy with a grounded pet');
     await fittedController.runJavaScript("""
       const fixedPosition = document.body.dataset.petPosition;
       const canvas = document.querySelector('canvas');

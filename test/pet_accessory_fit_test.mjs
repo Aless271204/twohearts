@@ -38,7 +38,9 @@ test('24 visible accessories attach to all four actual skeletons, follow animati
     const bounds=new Box3().setFromObject(scene),center=bounds.getCenter(new Vector3());scene.position.sub(new Vector3(center.x,bounds.min.y,center.z));
     const model=new Group();model.add(scene);model.userData.species=species;
     const rest=createNaturalRest(model),mixer=new AnimationMixer(model);mixer.clipAction(rest).play();mixer.update(0);
-    if(species==='penguin')refinePip(model);stabilizePetTorso(model,measureAccessoryFit(model));
+    // Current garments are authored against the immutable supplied pet, as in
+    // game.js. The old refined feet changed its vertex indices and are retained
+    // only in the separate legacy compatibility test above.
     const visible=catalog.filter(item=>item.visible!==false);assert.equal(visible.length,24);
     for(const item of visible){
       await registerWardrobeGeometry(item.appearance.species_models[species]);

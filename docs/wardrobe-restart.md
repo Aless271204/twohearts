@@ -949,3 +949,48 @@ El cambio del probador pet ampliado en inventory_screen.dart está guardado, per
  su compilación anterior no se ejecutó tras analyze (info anonKey depreciado).
  No confundir ese cambio de interfaz con el probador web compilado existente.
 Sin APK ni publicación. Continuar desde esta nota sin repetir el ajuste de altura.
+
+### 2026-10-14 — anatomía, personalización y entrega solicitada
+
+El usuario pidió APK con los cambios de habitación, cofre, economía y anuncios.
+Ese pedido directo sustituye la antigua prohibición de generar APK para esta
+entrega. No certificar perfección artística ni habilitar compras pendientes.
+
+- Cuello del oso: la máscara anterior recortaba parte de la cabeza por altura.
+  Ahora conserva todos los triángulos con vértices plenamente ligados a Head.
+  Se regeneraron las quince máscaras de oso/cerdito/pollito y cinco camisetas,
+  sin modificar ningún GLB original ni el patrón aprobado del pingüino.
+- QA real en Chrome aislado: 100 capturas (5 conjuntos × 4 mascotas × frente,
+  perfil, espalda, carrera .5 y salto .5), sin errores de carga. Evidencia:
+  `outputs/wardrobe-qa-20261014/results.json`, PNG individuales y contactos.
+  Esto comprueba carga y esas poses; no certifica ausencia de penetraciones en
+  todo el ciclo. Persiste piel amarilla expuesta sobre el hombro del pollito:
+  hay que adaptar la abertura al volumen original, no recortar su cabeza.
+- Veinte capturas adicionales: camiseta teñida salvia y gafas corazón, parche,
+  antifaz y cadena sobre las cuatro mascotas durante carrera .5. Shader real
+  sin errores; preserva relieve y bordado coral. PNG y resultados en el mismo
+  directorio. Cuello del oso ya no se vacía. Contactos de collar/lazo y sandalias
+  requieren revisión artística durante el ciclo completo; no llamarlos finales.
+- Habitación inmersiva con controles fuera del render y cofre real; cinco
+  tintes a 10 oro por color/prenda, débito único y servidor idempotente.
+  Precios centralizados en StoreEconomy: gafas desde50, camiseta50, zapatos100+.
+  Paquetes1000/2000/5000 por1.99/2.99/4.99: pagos reales todavía desactivados.
+- AdMob Android instalado con los IDs públicos del usuario. APK permanece en
+  modo de prueba hasta configurar y validar SSV; no paga oro por callbacks
+  locales. Servidor:3 oro por vídeo verificado,5 en ventana móvil de12h.
+- Migraciones y función SSV aplicadas. Se verificó débito único de colores,
+  idempotencia de crédito, límite de reservas y prohibición del sexto vídeo;
+  transacción sintética revertida. Materiales UTF-8 corregidos en migración
+  adicional; el cliente conserva los nombres exactos del GLB.
+- Primera compilación c73cbd0: pruebas antiguas seguían exigiendo las prendas
+  del registro anterior y modificaban los pies del pingüino antes de probar
+  mangas. Corregidas para comprobar maestros actuales y originales íntegros.
+ 43 pruebas de esa suite pasan. La prueba Android cargó el modelo y el render
+  offline, pero esperaba `petShape=delicate`; ahora exige `original`, como
+  solicita el usuario. No confundir ese fallo de expectativa con un fallo de
+  carga. Compilación firmada y prueba Android deben repetirse antes de entregar.
+
+Siguiente: revisar resultado de GitHub Actions, descargar únicamente APK nuevo,
+verificar firma respecto a1.1.9 y96 GLB/miniaturas del catálogo antes de generar
+QR. Registrar los fallos artísticos restantes y continuar sobre las mascotas
+originales. No habilitar anuncios de producción sin verificar SSV del usuario.

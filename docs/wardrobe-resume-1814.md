@@ -299,3 +299,12 @@ El cambio del probador pet ampliado en inventory_screen.dart está guardado, per
  su compilación anterior no se ejecutó tras analyze (info anonKey depreciado).
  No confundir ese cambio de interfaz con el probador web compilado existente.
 Sin APK ni publicación. Continuar desde esta nota sin repetir el ajuste de altura.
+
+### Continuación 2026-10-14: estado actualizado
+Leer el último bloque «anatomía, personalización y entrega solicitada» de
+`docs/wardrobe-restart.md`; sustituye este estado anterior. Se conserva el cuello
+original, hay120 capturas reales de revisión y tintes, habitación/cofre y economía
+implementados. El usuario pidió expresamente APK: compilación en GitHub autorizada,
+con anuncios de prueba y pagos desactivados. No prometer todos los ajustes finales;
+el hombro del pollito muestra piel que todavía debe cubrir el patrón. Registrar
+el APK verificado y el resultado de Android antes de entregar su QR.
