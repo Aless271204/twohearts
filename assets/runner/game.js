@@ -1,4 +1,4 @@
-import {prepareAccessoryAssets} from './accessory-pieces.js';
+import {prepareAccessoryAssets} from './accessory-pieces.js?revision=wardrobe-colors-2';
 import {createPetRoom} from './room-pieces.js';
 import {POWER_UPS,freshPowers,tickPowers,activatePower,powerForRow,canJump,registerJump,coinMultiplier,speedMultiplier,protectsCollision,magnetCollects} from './power-ups.js';
 import * as THREE from 'three';
@@ -14,17 +14,18 @@ import {runnerRow} from './patterns.js';
 import { runnerDifficulty } from './difficulty.js';
 import { AdventureMusic } from './music.js';
 import { limitTextureMemory } from './texture_budget.js';
+import {createWardrobeJump,createWardrobeRun} from './pet-wardrobe-jump.js?revision=ankles-dynamic-6';
 import { showRunnerError } from './diagnostics.js';
 import { requestHost, exitGame, notifyPetStroke } from './bridge.js';
-import { equipRunnerCosmetics, measureAccessoryFit } from './cosmetics.js?revision=wardrobe-rig-8';
-import { stabilizePetTorso } from './pet-garment-rig.js?revision=torso-2';
+import { equipRunnerCosmetics, measureAccessoryFit } from './cosmetics.js?revision=wardrobe-neck-colors-8';
 import { measurePetSoles, createNaturalRest } from './pet-rest-pose.js';
-import { refinePip } from './pip-delicate.js';
 import { createPetMotion } from './pet-motion.js';
-import { createRunnerJump } from './pet-runner-jump.js';
-import { createRunnerRun } from './pet-runner-run.js';
+import {keepJumpFacingForward} from './pet-jump-heading.js';
 const params=new URLSearchParams(location.search),petOnly=params.get('pet')==='1',petOrbit=params.get('orbit')==='1';
-const reviewMotion=petOnly&&['Running','Regular_Jump'].includes(params.get('review_motion'))?params.get('review_motion'):null;
+// Opt-in local wardrobe trial. Published sessions retain their current motion.
+const wardrobeTrial=params.get('wardrobe_trial')==='1'&&params.has('appearance')&&!window.RunnerBridge;
+let useTailoredMotion=wardrobeTrial;
+const reviewMotion=petOnly&&['Running','Regular_Jump','Natural_Jump','Wardrobe_Run'].includes(params.get('review_motion'))?params.get('review_motion'):null;
 const reviewPhase=reviewMotion&&params.has('review_phase')?THREE.MathUtils.clamp(Number(params.get('review_phase'))||0,0,1):null;
 const roomMode=petOnly&&params.get('room')==='1';
 let petRoom;
@@ -277,12 +278,12 @@ function frame(now){
     penguin.scale.set(growth*(1+landingPulse*.07),growth*(1-landingPulse*.09),growth*(1+landingPulse*.07));
     penguin.rotation.x=THREE.MathUtils.lerp(penguin.rotation.x,height>0?-.08:0,1-Math.exp(-dt*8));
     penguin.rotation.z=THREE.MathUtils.lerp(penguin.rotation.z,(LANES[lane]-x)*-.08,1-Math.exp(-dt*8));
-    const name=petOnly?(reviewMotion??(!petOrbit?'Natural_Rest':params.get('animation')??'Natural_Rest')):running?(height>.01?'Regular_Jump':'Running'):'Natural_Rest';
+    const name=petOnly?(reviewMotion??(!petOrbit?'Natural_Rest':params.get('animation')??'Natural_Rest')):running?(height>.01?(useTailoredMotion?'Natural_Jump':'Regular_Jump'):(useTailoredMotion?'Wardrobe_Run':'Running')):'Natural_Rest';
     if(activeAction!==name&&actions[name]){
       const next=actions[name];next.reset().fadeIn(.16).play();
       if(activeAction)actions[activeAction].fadeOut(.16);activeAction=name;
     }
-    if(!paused){music.intensity=Math.max(0,(speed()-14)/10);if(actions.Running)actions.Running.timeScale=Math.min(1.7,speed()/14);if(reviewPhase!==null){actions[reviewMotion].timeScale=1;mixer.setTime(actions[reviewMotion].getClip().duration*reviewPhase);}else mixer.update(dt);}
+    if(!paused){music.intensity=Math.max(0,(speed()-14)/10);if(actions.Running)actions.Running.timeScale=Math.min(1.7,speed()/14);if(useTailoredMotion&&actions.Wardrobe_Run)actions.Wardrobe_Run.timeScale=Math.min(1.7,speed()/14);if(reviewPhase!==null){actions[reviewMotion].timeScale=1;mixer.setTime(actions[reviewMotion].getClip().duration*reviewPhase);}else mixer.update(dt);}
     if(petOnly){
       if(!petOrbit&&!petSuspended&&!reviewMotion)petMotion?.update(dt);
       const feet=[];penguin.traverse(o=>{if(o.isBone&&/(LeftToeBase|RightToeBase)$/.test(o.name))feet.push(o.getWorldPosition(new THREE.Vector3()).y);});
@@ -291,6 +292,7 @@ function frame(now){
       document.body.dataset.petGrounded='true';document.body.dataset.petBreathing=String(penguin.userData.breathing??0);document.body.dataset.petAffection=String(penguin.userData.affection??0);
     }
     if(petOnly){document.body.dataset.petAnimation=activeAction??'';if(!petOrbit){const angle=Number(params.get('review_angle')??0);penguin.rotation.set(0,Number.isFinite(angle)?THREE.MathUtils.degToRad(angle):0,0);document.body.dataset.petPosition=penguin.position.toArray().join(',');}}
+    penguin.userData.cosmetics?.userData.updateSleeves?.();
   }
   shadow.position.x=x;shadow.material.opacity=.22/(1+height);shadow.scale.set(petOnly?.7:1+height*.18,petOnly?.45:.65+height*.1,1);
   if(roomMode)shadow.position.y=floorY+roomSupport+.01;
@@ -315,6 +317,7 @@ function frame(now){
   if(!petOnly)updateCoinBatch();
   renderer.render(scene,camera);
   if(petOnly&&ready)document.body.classList.add('pet-ready');
+  if(petOnly&&ready&&params.get('wardrobe_review')==='1'&&!document.body.dataset.reviewRendered){document.body.dataset.reviewRendered='true';window.parent.postMessage({type:'wardrobe-preview-ready',species},location.origin);}
 }
 function boardwalk(){const deck=createBridgeBelt();scene.add(deck);paths.push(deck);}
 async function boot(){
@@ -325,7 +328,7 @@ async function boot(){
     for(let i=0;i<entries.length;i++){
       const [key,file]=entries[i];$('message').textContent=`Cargando bosque ${i+1}/${entries.length}…`;
       const gltf=await loader.loadAsync(`play-models/${key==='pip'&&species!=='penguin'?manifest[species]:file}`);if(sceneClosing)return;templates[key]=gltf.scene;
-      if(!petOnly)limitTextureMemory(gltf.scene,512);
+      if(!petOnly&&key!=='pip')limitTextureMemory(gltf.scene,512);
       // The supplied maps carry the artwork. Keep them, but make natural props
       // non-metallic and soften exaggerated normal-map relief under sunlight.
       if(key!=='pip')gltf.scene.traverse(o=>{
@@ -342,19 +345,19 @@ async function boot(){
         for(const clip of gltf.animations){if(petOnly&&clip.name==='Idle_9')continue;actions[clip.name]=mixer.clipAction(clip);}
         if(actions.Regular_Jump){actions.Regular_Jump.setLoop(THREE.LoopOnce,1);actions.Regular_Jump.clampWhenFinished=true;}
         mixer.update(0);
-        // The same normalized character is the garment mannequin in every mode.
-        // Refining only the room penguin left its game body outside the pattern.
-        if(species==='penguin')refinePip(penguin);
+        // Preserve the supplied GLB anatomy, skin weights and textures in every
+        // mode. Clothes must be authored on this model, never on a replacement.
         penguin.userData.species=species;
-        stabilizePetTorso(penguin,measureAccessoryFit(penguin));
-        if(petOnly&&!petOrbit){mixer.stopAllAction();actions.Natural_Rest=mixer.clipAction(createNaturalRest(penguin));actions.Natural_Rest.play();activeAction='Natural_Rest';mixer.update(0);penguin.scale.setScalar(growth);restSole=measurePetSoles(penguin);document.body.dataset.petPose='standing';document.body.dataset.petShape=species==='penguin'?'delicate':'original';}
-        actions.Regular_Jump=mixer.clipAction(createRunnerJump(penguin));
-        const naturalRun=createRunnerRun(penguin,gltf.animations.find(clip=>clip.name==='Running'));
-        if(naturalRun)actions.Running=mixer.clipAction(naturalRun);
+        if(petOnly&&!petOrbit){mixer.stopAllAction();actions.Natural_Rest=mixer.clipAction(createNaturalRest(penguin));actions.Natural_Rest.play();activeAction='Natural_Rest';mixer.update(0);penguin.scale.setScalar(growth);restSole=measurePetSoles(penguin);document.body.dataset.petPose='standing';document.body.dataset.petShape='original';}
+        // Keep the source jump articulation, correcting only its sideways root.
+        const forwardJump=keepJumpFacingForward(penguin,gltf.animations.find(c=>c.name==='Regular_Jump'));
+        if(forwardJump)actions.Regular_Jump=mixer.clipAction(forwardJump);
         actions.Regular_Jump.setLoop(THREE.LoopOnce,1);actions.Regular_Jump.clampWhenFinished=true;
         document.body.dataset.petSpecies=species;penguin.userData.species=species;
         if(petOnly&&!petOrbit)petMotion=createPetMotion(penguin);
         const loadout=await (petOnly||params.has('appearance')&&window.parent===window&&!window.RunnerBridge?Promise.resolve(JSON.parse(params.get('appearance')??'{}')):requestHost('cosmetics'));
+        useTailoredMotion=wardrobeTrial||loadout?.pet_feet?.fitted_model_space===true||/^assets\/runner\/accessories\/sewn_[a-z_]+_(?:penguin|bear|pig|chick)\.glb$/.test(loadout?.pet_body?.species_models?.[species]??loadout?.pet_body?.model_asset??'');
+        if(petOnly||useTailoredMotion){const naturalJump=createWardrobeJump(penguin,gltf.animations.find(c=>c.name==='Regular_Jump'));if(naturalJump){actions.Natural_Jump=mixer.clipAction(naturalJump);if(!petOnly){actions.Natural_Jump.setLoop(THREE.LoopOnce,1);actions.Natural_Jump.clampWhenFinished=true;}}const tailoredRun=createWardrobeRun(penguin,gltf.animations.find(c=>c.name==='Running'));if(tailoredRun)actions.Wardrobe_Run=mixer.clipAction(tailoredRun);}
         await prepareAccessoryAssets(loadout,species);
         const equipped=equipRunnerCosmetics(penguin,loadout);
         if(reviewMotion&&actions[reviewMotion]){actions[reviewMotion].setLoop(THREE.LoopRepeat,Infinity);actions[reviewMotion].clampWhenFinished=false;if(reviewPhase!==null){mixer.stopAllAction();actions[reviewMotion].reset().play();activeAction=reviewMotion;mixer.setTime(actions[reviewMotion].getClip().duration*reviewPhase);}}

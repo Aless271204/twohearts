@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import {applyGarmentColor} from './pet-garment-colors.js';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 import {softenAccessoryGeometry} from './accessory-subdivision.js';
 import {mergeGeometries} from 'three/addons/utils/BufferGeometryUtils.js';
@@ -17,10 +18,18 @@ export function releaseAccessoryAssets(){
 export async function prepareAccessoryAssets(loadout,species='penguin'){
  const loader=new GLTFLoader();
  await Promise.all(Object.values(loadout).map(async item=>{
+  if(item?.coverage_assets?.[species])item.coverage_asset=item.coverage_assets[species];
+  if(item?.headwear_occlusions?.[species])item.headwear_occlusion=item.headwear_occlusions[species];
   const path=item?.species_models?.[species]??item?.model_asset;if(!path)return;
   if(!/^assets\/runner\/accessories\/[a-z0-9_-]+\.glb$/.test(path))throw Error('Ruta del accesorio no válida');
-  if(accessoryAssets.has(path))return;
   const revision=item.asset_revision??new URLSearchParams(globalThis.location?.search??'').get('v')??'wardrobe-volume-20261011';
+  if(item.coverage_asset){
+   if(!/^assets\/runner\/restart\/(?:shirt-original-coverage-[a-z]+|sewn-coverage-(?:penguin|bear|pig|chick)-(?:jacket_denim|coat_cloud|dress_petal|hoodie_nido))\.json$/.test(item.coverage_asset))throw Error('Cobertura de prenda no válida');
+   const response=await fetch('./restart/'+item.coverage_asset.split('/').pop()+'?v='+encodeURIComponent(revision));
+   if(!response.ok)throw Error('No se pudo cargar el ajuste de la prenda');
+   item.covered_skin_triangles=await response.json();
+  }
+  if(accessoryAssets.has(path))return;
   const gltf=await loader.loadAsync('./accessories/'+path.split('/').pop()+'?v='+encodeURIComponent(revision));registerAccessoryAsset(path,gltf.scene);
  }));
 }
@@ -38,7 +47,8 @@ export function createAccessory(item, slotName, species='penguin') {
       const copy=source=>{if(materialCopies.has(source))return materialCopies.get(source);const material=source.clone();if(item.soft_fabric){material.metalness=0;material.roughness=.90;material.roughnessMap=null;material.normalScale?.setScalar(.30);}materialCopies.set(source,material);return material;};
       o.material=Array.isArray(o.material)?o.material.map(copy):copy(o.material);
     }});
-    if(item.fitted_model_space)batchTailoredMeshes(model);
+    applyGarmentColor(model,item);
+    if(item.fitted_model_space&&!item.preview_component)batchTailoredMeshes(model);
     const root=item.normalize_head?normalizeHeadAsset(model,item.style):model;
     root.userData.cosmetic=true;if(slotName==='pet_feet')root.userData.shoeSole=true;return root;
   }

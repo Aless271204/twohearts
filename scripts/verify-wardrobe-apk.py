@@ -53,17 +53,25 @@ def verify(apk,previous=None):
                     content=archive.read('assets/flutter_assets/'+variant['path'])
                     assert hashlib.sha256(content).hexdigest()==variant['sha256'],variant['path']
                     checked+=1
-        for file in ('game.js','cosmetics.js','pet-garment-rig.js','pet-sleeve-coverage.js','pet-footwear-coverage.js','pet-runner-jump.js','pet-runner-run.js'):
+        for file in ('game.js','cosmetics.js','pet-garment-rig.js','pet-garment-colors.js','pet-sleeve-coverage.js','pet-footwear-coverage.js','pet-runner-jump.js','pet-runner-run.js'):
             name='assets/runner/'+file
             local=(ROOT/name).read_text(encoding='utf-8-sig').replace('\r\n','\n')
             packed=archive.read('assets/flutter_assets/'+name).decode('utf-8-sig').replace('\r\n','\n')
             assert packed==local,'Stale packaged renderer: '+file
         report=json.loads(archive.read('assets/flutter_assets/assets/images/products/wardrobe-thumbnails.json'))
-        assert len(report)==24
+        assert len(report)==96
         for entry in report:
             for key in ('model','thumbnail'):
                 content=archive.read('assets/flutter_assets/'+entry[key])
                 assert hashlib.sha256(content).hexdigest()==entry[key+'_sha256'],entry[key]
+        canonical=json.loads((ROOT/'assets/runner/accessory-catalog.json').read_text(encoding='utf-8'))
+        assert json.loads(archive.read('assets/flutter_assets/assets/runner/accessory-catalog.json'))==canonical
+        for item in canonical:
+            if not item.get('visible',True):continue
+            appearance=item['appearance']
+            for species,asset in appearance.get('species_models',{}).items():
+                assert hashlib.sha256(archive.read('assets/flutter_assets/'+asset)).hexdigest()==appearance['species_model_hashes'][species],asset
+                checked+=1
     certificate=signer(apk)
     if previous:assert certificate==signer(previous),'Signing identity changed'
     result={'apk':str(apk),'identity':identity,'bytes':apk.stat().st_size,'models_checked':checked,'thumbnails_checked':len(report),

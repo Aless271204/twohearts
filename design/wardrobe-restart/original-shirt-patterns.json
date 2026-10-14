@@ -1,0 +1,142 @@
+{
+  "item_key": "shirt_love",
+  "label": "Camiseta abrazo · algodón crema",
+  "visible": false,
+  "status": "experimental_pending_visual_review",
+  "species": {
+    "penguin": {
+      "hem": 0.27,
+      "neck": 0.51,
+      "torso_y": 0.336,
+      "torso_height_radius": 0.255,
+      "torso_half_width": 0.236,
+      "torso_depth_radius": 0.261,
+      "sleeve_center": [
+        0.245,
+        0.41,
+        -0.015
+      ],
+      "sleeve_radius": [
+        0.11,
+        0.09,
+        0.1
+      ],
+      "cuff_cut_x": 0.28,
+      "cuff_cut_y": 0.365,
+      "cuff_center": [
+        0.265,
+        0.375,
+        -0.015
+      ],
+      "neck_cut_radius": 0.225,
+      "heart_y": 0.395,
+      "shoulder_start": 0.18,
+      "sleeve_full": 0.28,
+      "sleeve_min_y": 0.35,
+      "sleeve_shape": "casual",
+      "sleeve_start": [
+        0.13,
+        0.51,
+        -0.015
+      ],
+      "sleeve_end": [
+        0.335,
+        0.35,
+        -0.015
+      ],
+      "sleeve_width": 0.07,
+      "sleeve_depth": 0.09
+    },
+    "bear": {
+      "hem": 0.225,
+      "neck": 0.455,
+      "torso_y": 0.295,
+      "torso_height_radius": 0.235,
+      "torso_half_width": 0.282,
+      "torso_depth_radius": 0.31,
+      "sleeve_center": [
+        0.315,
+        0.375,
+        -0.02
+      ],
+      "sleeve_radius": [
+        0.13,
+        0.11,
+        0.13
+      ],
+      "cuff_cut_x": 0.41,
+      "cuff_cut_y": 0.325,
+      "cuff_center": [
+        0.35,
+        0.325,
+        -0.02
+      ],
+      "neck_cut_radius": 0.265,
+      "heart_y": 0.345,
+      "shoulder_start": 0.23,
+      "sleeve_full": 0.345,
+      "sleeve_min_y": 0.3
+    },
+    "pig": {
+      "hem": 0.245,
+      "neck": 0.478,
+      "torso_y": 0.315,
+      "torso_height_radius": 0.24,
+      "torso_half_width": 0.285,
+      "torso_depth_radius": 0.272,
+      "sleeve_center": [
+        0.315,
+        0.41,
+        -0.01
+      ],
+      "sleeve_radius": [
+        0.1,
+        0.1,
+        0.105
+      ],
+      "cuff_cut_x": 0.38,
+      "cuff_cut_y": 0.345,
+      "cuff_center": [
+        0.325,
+        0.355,
+        -0.01
+      ],
+      "neck_cut_radius": 0.265,
+      "heart_y": 0.365,
+      "shoulder_start": 0.255,
+      "sleeve_full": 0.335,
+      "sleeve_min_y": 0.325
+    },
+    "chick": {
+      "hem": 0.24,
+      "neck": 0.48,
+      "torso_y": 0.312,
+      "torso_height_radius": 0.24,
+      "torso_half_width": 0.235,
+      "torso_depth_radius": 0.28,
+      "sleeve_center": [
+        0.265,
+        0.395,
+        -0.005
+      ],
+      "sleeve_radius": [
+        0.11,
+        0.11,
+        0.125
+      ],
+      "cuff_cut_x": 0.335,
+      "cuff_cut_y": 0.345,
+      "cuff_center": [
+        0.285,
+        0.335,
+        -0.005
+      ],
+      "neck_cut_radius": 0.23,
+      "heart_y": 0.365,
+      "shoulder_start": 0.195,
+      "sleeve_full": 0.29,
+      "sleeve_min_y": 0.315
+    }
+  },
+  "design_note": "Casual short sleeves: no puffed or spherical shoulder silhouette. Fabric thickness and finished seams retained."
+}

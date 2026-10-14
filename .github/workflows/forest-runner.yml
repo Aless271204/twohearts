@@ -22,6 +22,7 @@ jobs:
           node-version: '22'
       - run: node --test test/runner_replay_test.mjs test/runner_assets_test.mjs test/runner_feedback_test.mjs test/runner_mobile_test.mjs test/runner_art_test.mjs test/inventory_cosmetics_test.mjs test/runner_endless_test.mjs test/pet_accessory_fit_test.mjs test/runner_power_ups_test.mjs test/accessory_glb_test.mjs test/blender_head_fit_test.mjs test/imported_head_models_test.mjs test/room_3d_test.mjs
       - run: node --test test/blender_wardrobe_test.mjs test/blender_complements_test.mjs test/pet_torso_rig_test.mjs test/pet_footwear_coverage_test.mjs test/pet_runner_jump_test.mjs test/pet_runner_run_test.mjs test/pet_sleeve_coverage_test.mjs
+      - run: node --test test/admob_signature_test.mjs test/garment_colors_test.mjs test/original_wardrobe_coverage_test.mjs test/wardrobe_details_fit_test.mjs
       - run: python3 scripts/audit-wardrobe-topology.py --strict
       - run: python3 test/wardrobe_export_seams_test.py
       - uses: subosito/flutter-action@v2
@@ -130,7 +131,16 @@ jobs:
           GH_REPO: ${{ github.repository }}
           SOURCE_SHA: ${{ github.sha }}
         run: |
-          mv apk/app-release.apk apk/NIDO-1.1.9-actualizada.apk
-          sha256sum apk/NIDO-1.1.9-actualizada.apk > apk/NIDO-1.1.9-actualizada.apk.sha256
-          printf 'APK de prueba solicitado para conservar el avance de hoy. Vestuario digital: 24 articulos con 96 variantes para pinguino, oso, cerdito y pollito, tejidos con volumen, correcciones de rig y salto, y miniaturas renderizadas del mismo objeto equipado. Habitacion 3D y mejoras de Social. Peluca y cuidado ocultos. Articulos nuevos en previsualizacion; pagos y anuncios reales pendientes.\nFallos conocidos: puños y hombros de algunas prendas requieren mas ajuste durante movimiento; el acabado todavia no es identico a la ilustracion. Punto de continuacion: docs/wardrobe-resume-1814.md.\nVersion: 1.1.9+14\nCommit: %s\nCompilado tras pruebas de Flutter, vestuario, simulacion y recorrido Android sin conexion.\n' "$SOURCE_SHA" > release-notes.txt
-          gh release create nido-1.1.9 apk/NIDO-1.1.9-actualizada.apk apk/NIDO-1.1.9-actualizada.apk.sha256 --target "$SOURCE_SHA" --title "NIDO 1.1.9 · Vestuario 3D en prueba" --notes-file release-notes.txt --prerelease
+          mv apk/app-release.apk apk/NIDO-1.2.0-cofre.apk
+          sha256sum apk/NIDO-1.2.0-cofre.apk > apk/NIDO-1.2.0-cofre.apk.sha256
+          cat > release-notes.txt <<'NOTES'
+          NIDO 1.2.0: habitacion inmersiva y cofre, precios revisados, colores textiles por 10 de oro guardados en servidor.
+          Paquetes de 1000/2000/5000 a US$1.99/2.99/4.99. Pagos reales pendientes de configurar las tiendas.
+          SDK AdMob integrado: cinco videos cada doce horas, tres de oro por video confirmado mediante SSV.
+          Este APK usa anuncios de prueba: no generan oro real ni ingresos.
+          Mascaras corregidas para conservar el cuello original. Articulos pendientes siguen indicados como proximamente.
+          Vestuario revisado en navegador: no certificamos igualdad exacta con la ilustracion ni ausencia de penetraciones en todas las fases.
+          Version: 1.2.0+15
+          NOTES
+          echo "Commit: $SOURCE_SHA" >> release-notes.txt
+          gh release create nido-1.2.0 apk/NIDO-1.2.0-cofre.apk apk/NIDO-1.2.0-cofre.apk.sha256 --target "$SOURCE_SHA" --title "NIDO 1.2.0 - Cofre y personalizacion" --notes-file release-notes.txt --prerelease

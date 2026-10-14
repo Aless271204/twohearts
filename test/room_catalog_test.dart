@@ -21,7 +21,9 @@ void main() {
     final crops=[for(var i=0;i<20;i++)RoomCatalogPainter.sourceFor(i,size)];
     for(var i=0;i<crops.length;i++) {
       expect(crops[i].left>=0&&crops[i].top>=0&&crops[i].right<=size.width&&crops[i].bottom<=size.height,isTrue);
-      for(var j=i+1;j<crops.length;j++) expect(crops[i].overlaps(crops[j]),isFalse);
+      for(var j=i+1;j<crops.length;j++) {
+        expect(crops[i].overlaps(crops[j]),isFalse);
+      }
     }
     for(final data in roomConcepts.reversed) {
       final index=InventoryItem(data).appearance['atlas_index'] as int;
@@ -34,16 +36,17 @@ void main() {
   test('Approved room catalog contains five distinct items per category', () {
     expect(roomConcepts.length, 20);
     expect(roomConcepts.map((i) => i['item_key']).toSet().length, 20);
-    for (final category in roomCategories)
+    for (final category in roomCategories) {
       expect(
         roomConcepts.where((i) => i['room_category'] == category).length,
         5,
       );
+    }
     for (final data in roomConcepts) {
       final item = InventoryItem(data);
       expect(item.previewOnly, isTrue);
       expect(item.scope, 'room');
-      expect(data.containsKey('price_coins'), isFalse);
+      expect(item.price, greaterThanOrEqualTo(60));
       expect(InventoryItem.slots.containsKey(item.slot), isTrue);
     }
   });

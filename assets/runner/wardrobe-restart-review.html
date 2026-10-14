@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NIDO · Nuevo vestuario</title>
+<style>
+:root{font-family:system-ui,sans-serif;color:#282534;background:#fff9fa}*{box-sizing:border-box}body{margin:0;padding:24px;max-width:1440px;margin:auto}h1{font-size:27px;margin:0 0 8px}p{color:#6f6979;margin:0 0 20px;line-height:1.5}.controls{display:flex;gap:16px;align-items:center;flex-wrap:wrap;margin:20px 0}select,button{font:inherit;background:white;border:1px solid #edcbd5;border-radius:16px;padding:10px 16px;color:#292735}button{cursor:pointer}button.active{background:#f05280;color:white}label{display:flex;align-items:center;gap:8px}.pets{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}.pet{background:#fbeeee;border-radius:24px;overflow:hidden}.pet h2{font-size:17px;text-align:center;margin:18px 0 0}.stage{height:430px;position:relative}.stage canvas{width:100%;height:100%;display:block}.status{font-size:12px;padding:0 16px 16px;color:#746774;text-align:center;min-height:36px}.refs{display:flex;gap:16px;margin-top:26px;overflow-x:auto}.refs a{color:#302731;text-decoration:none;text-align:center;flex:0 0 180px;background:white;border-radius:18px;padding:12px}.refs img{height:155px;width:155px;object-fit:contain;display:block;margin:auto}.hero{margin:28px 0 0;background:white;border-radius:20px;padding:14px}.hero img{width:100%;max-height:360px;object-fit:contain}small{color:#827383}input[type=range]{width:180px;accent-color:#f05280}@media(max-width:850px){.pets{grid-template-columns:repeat(2,minmax(0,1fr))}.stage{height:380px}}@media(max-width:450px){body{padding:14px}.pets{gap:8px}.stage{height:310px}.controls{gap:9px}}
+</style>
+<script type="importmap">{"imports":{"three":"./vendor/three.module.js","three/addons/":"./vendor/"}}</script>
+</head><body>
+<h1>Gorra coral · prueba real en 3D</h1><p>Prendas nuevas de Blender sobre la mascota. Puedes revisar la vista y el movimiento. Es una prueba de revisión; todavía no sustituye el catálogo de la app.</p>
+<div class="controls"><label>Mascota <select id="species"><option value="all">Las cuatro</option><option value="penguin">Pingüino</option><option value="bear">Oso</option><option value="pig">Cerdito</option><option value="chick">Pollito</option></select></label><label>Vista <select id="angle"><option value="0">Frente</option><option value=".7">Tres cuartos</option><option value="1.57">Perfil</option><option value="3.14">Espalda</option></select></label><label>Movimiento <select id="motion"><option value="Rest_R2">Reposo</option><option value="Run_R2">Carrera</option><option value="Jump_R2">Salto</option></select></label><button id="play" class="active">Pausar</button><label>Instante <input id="phase" type="range" min="0" max="1" step=".01" value="0"></label><label><input type="checkbox" id="cap" checked> Gorra</label></div>
+<div class="pets" id="pets"></div>
+<div class="hero"><img src="../../design/wardrobe-restart/penguin-dulce-reference-v1.png" alt="Referencia artística del conjunto Dulce"><small>Referencia artística del conjunto. La vista superior muestra los archivos 3D reales.</small></div>
+<div class="refs" id="refs"></div>
+<script type="module">
+import * as THREE from 'three';import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
+import {prepareHeadwearOcclusion} from './pet-headwear-occlusion.js?v=1';
+const params=new URLSearchParams(location.search);const loader=new GLTFLoader(),views=[];let playing=!params.has('phase'),last=performance.now(),elapsed=0;
+const article=params.get('item')||'cap_pink';
+const articleLabel=document.createElement('label');articleLabel.innerHTML='Prenda <select id="article"><option value="cap_pink">Gorra coral</option><option value="shirt_love">Camiseta abrazo</option></select>';document.querySelector('.controls').prepend(articleLabel);const articleSelect=document.querySelector('#article');articleSelect.value=article;
+articleSelect.addEventListener('change',e=>{const query=new URLSearchParams(location.search);query.set('item',e.target.value);query.set('focus',e.target.value==='shirt_love'?'full':'cap');location.search=query.toString();});
+if(article==='shirt_love'){document.querySelector('h1').textContent='Camiseta abrazo · prueba real en 3D';document.title='NIDO · Camiseta abrazo';}
+const controls={angle:document.querySelector('#angle'),motion:document.querySelector('#motion'),phase:document.querySelector('#phase'),cap:document.querySelector('#cap')};
+const focusLabel=document.createElement('label');focusLabel.innerHTML='Encuadre <select id="focus"><option value="full">Cuerpo entero</option><option value="cap">Detalle de gorra</option><option value="fabric">Detalle de tela</option></select>';document.querySelector('.controls').prepend(focusLabel);const focusSelect=document.querySelector('#focus');focusSelect.value=params.get('focus')||'full';focusSelect.addEventListener('change',()=>views.forEach(v=>v.resize()));
+document.querySelector('#species').value=params.get('species')||'all';document.querySelector('#species').addEventListener('change',e=>{const query=new URLSearchParams(location.search);if(e.target.value==='all')query.delete('species');else query.set('species',e.target.value);query.set('angle',controls.angle.value);query.set('motion',controls.motion.value);location.search=query.toString();});
+for(const key of ['angle','motion','phase'])if(params.has(key))controls[key].value=params.get(key);
+if(!playing){document.querySelector('#play').textContent='Reproducir';document.querySelector('#play').classList.remove('active');}
+const catalog=await fetch('./restart/catalog.json',{cache:'no-store'}).then(r=>r.json());
+for(const row of catalog.variants){
+ if(params.has('species')&&params.get('species')!==row.species)continue;
+ const card=document.createElement('article');card.className='pet';card.innerHTML=`<h2>${row.label}</h2><div class="stage"></div><div class="status">Cargando modelo…</div>`;document.querySelector('#pets').append(card);
+ const stage=card.querySelector('.stage'),status=card.querySelector('.status');
+ const renderer=new THREE.WebGLRenderer({antialias:true,alpha:false});renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));renderer.setClearColor(0xfbeeee);renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=.9;renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;stage.append(renderer.domElement);
+ const scene=new THREE.Scene(),camera=new THREE.PerspectiveCamera(32,1,.01,30);camera.position.set(0,.76,2.8);camera.lookAt(0,.57,0);
+ // Soft studio reflections give fabric and brass a physical light response.
+ const studio=new THREE.Scene();studio.background=new THREE.Color().setRGB(.16,.15,.14);
+ for(const [p,size,power]of [[[-2,2,1],[2,3,.02],3],[[2,1,-1],[2,2,.02],1.7],[[0,4,0],[3,2,.02],2.2]]){const panel=new THREE.Mesh(new THREE.BoxGeometry(...size),new THREE.MeshBasicMaterial({color:new THREE.Color().setRGB(power,power*.98,power*.95)}));panel.position.set(...p);panel.lookAt(0,.7,0);studio.add(panel);}
+ const pmrem=new THREE.PMREMGenerator(renderer);viewEnvironmentCleanup(studio);const environment=pmrem.fromScene(studio,.07);scene.environment=environment.texture;scene.environmentIntensity=.4;pmrem.dispose();
+ function viewEnvironmentCleanup(s){window.addEventListener('pagehide',()=>{environment.dispose();s.traverse(o=>{o.geometry?.dispose();o.material?.dispose();});renderer.dispose();},{once:true});}
+ scene.add(new THREE.HemisphereLight(0xfff8ef,0xe0cbd7,1.1));const sun=new THREE.DirectionalLight(0xfff9ee,2);sun.position.set(-2.5,4,3);sun.castShadow=true;sun.shadow.mapSize.set(2048,2048);sun.shadow.camera.left=-.65;sun.shadow.camera.right=.65;sun.shadow.camera.top=1.35;sun.shadow.camera.bottom=-.15;sun.shadow.bias=-.00005;sun.shadow.normalBias=.002;scene.add(sun);const fill=new THREE.DirectionalLight(0xffffff,.7);fill.position.set(3,2,-2);scene.add(fill);
+ const floor=new THREE.Mesh(new THREE.PlaneGeometry(20,20),new THREE.ShadowMaterial({color:0x5c3b39,opacity:.16}));floor.rotation.x=-Math.PI/2;floor.receiveShadow=true;floor.position.y=-.006;scene.add(floor);
+ const root=new THREE.Group();root.rotation.y=Number(controls.angle.value);scene.add(root);const view={row,root,renderer,camera,scene,stage,status};views.push(view);
+ const resize=()=>{const w=stage.clientWidth,h=stage.clientHeight;renderer.setSize(w,h,false);camera.aspect=w/h;if(focusSelect.value==='cap'){camera.position.set(0,.94,Math.max(1.8,.98/(2*Math.tan(16*Math.PI/180)*camera.aspect)));camera.lookAt(0,.86,0);}else if(focusSelect.value==="fabric"){camera.position.set(0,.43,1.25);camera.lookAt(0,.43,0);}else{camera.position.set(0,.76,2.8);camera.lookAt(0,.57,0);}camera.updateProjectionMatrix()};view.resize=resize;new ResizeObserver(resize).observe(stage);resize();
+ try{
+  const [pet,cap]=await Promise.all([loader.loadAsync('../../'+row.pet+'?v='+row.pet_sha256),loader.loadAsync('../../'+row.cap+'?v='+row.cap_sha256)]);root.add(pet.scene);root.updateMatrixWorld(true);root.add(cap.scene);root.updateMatrixWorld(true);
+  let head;pet.scene.traverse(o=>{if(o.isBone&&o.name==='Head')head=o;if(o.isMesh){o.castShadow=true;o.receiveShadow=true;}});cap.scene.traverse(o=>{if(o.isMesh){o.castShadow=true;o.receiveShadow=true;}});
+  if(!head)throw new Error('Falta el anclaje de cabeza');view.occlusion=prepareHeadwearOcclusion(pet.scene,root,row.headwear_occlusion);head.attach(cap.scene);view.cap=cap.scene;view.pet=pet.scene;view.clips=pet.animations;view.mixer=new THREE.AnimationMixer(pet.scene);
+  if(article==='shirt_love'){
+   const entry=catalog.wardrobe?.find(i=>i.item_key==='shirt_love')?.variants.find(i=>i.species===row.species);
+   if(!entry)throw new Error('Camiseta de esta mascota todavía en construcción');
+   const clothing=await loader.loadAsync('../../'+entry.asset+'?v='+entry.sha256);root.add(clothing.scene);root.updateMatrixWorld(true);
+   const petBones=new Map();pet.scene.traverse(o=>{if(o.isBone)petBones.set(o.name,o);});
+   clothing.scene.traverse(o=>{if(o.isSkinnedMesh){const bones=o.skeleton.bones.map(b=>petBones.get(b.name));if(bones.some(b=>!b))throw new Error('La camiseta no corresponde al esqueleto de la mascota');const skeleton=new THREE.Skeleton(bones,o.skeleton.boneInverses.map(m=>m.clone()));o.bind(skeleton,o.bindMatrix.clone());o.frustumCulled=false;o.castShadow=true;o.receiveShadow=false;}});
+   clothing.scene.traverse(o=>{if(o.isMesh){for(const mat of Array.isArray(o.material)?o.material:[o.material]){for(const key of ["map","normalMap","roughnessMap"])if(mat[key])mat[key].anisotropy=Math.min(8,renderer.capabilities.getMaxAnisotropy());}}});view.clothing=clothing.scene;
+  }
+  window.addEventListener('pagehide',()=>view.occlusion.dispose(),{once:true});
+  cap.scene.traverse(o=>{if(o.isMesh){for(const mat of Array.isArray(o.material)?o.material:[o.material]){for(const key of ['map','normalMap','roughnessMap'])if(mat[key])mat[key].anisotropy=Math.min(8,renderer.capabilities.getMaxAnisotropy());}}});
+  chooseMotion(view);updateHeadwear(view);
+ }catch(error){status.textContent='No se pudo cargar: '+error.message;status.style.color='#9d273f';}
+}
+if(views.length===1){document.querySelector('#pets').style.gridTemplateColumns='minmax(0, 520px)';document.querySelector('#pets').style.justifyContent='center';views[0].stage.style.height='500px';}
+function chooseMotion(v){if(!v.mixer)return;v.mixer.stopAllAction();const clip=v.clips.find(c=>c.name===controls.motion.value);if(!clip){v.status.textContent='No existe el movimiento solicitado';return;}v.action=v.mixer.clipAction(clip);v.action.play();v.duration=clip.duration;v.mixer.setTime(Number(controls.phase.value)*v.duration);}
+function updateHeadwear(v){if(!v.cap)return;v.cap.visible=controls.cap.checked;v.occlusion?.setEquipped(controls.cap.checked);v.status.textContent=controls.cap.checked?'Gorra equipada · mechón y orejas cubiertos':'Sin gorra · mechón y orejas restaurados';}
+controls.motion.addEventListener('change',()=>{elapsed=0;views.forEach(chooseMotion)});controls.angle.addEventListener('change',()=>views.forEach(v=>v.root.rotation.y=Number(controls.angle.value)));controls.cap.addEventListener('change',()=>views.forEach(updateHeadwear));
+document.querySelector('#play').addEventListener('click',e=>{playing=!playing;e.target.textContent=playing?'Pausar':'Reproducir';e.target.classList.toggle('active',playing)});controls.phase.addEventListener('input',()=>{playing=false;document.querySelector('#play').textContent='Reproducir';document.querySelector('#play').classList.remove('active');views.forEach(v=>v.mixer?.setTime(Number(controls.phase.value)*v.duration));});
+for(const [file,name]of [['cap-coral-reference-v1.png','Gorra coral'],['shirt-ivory-reference-v1.png','Camiseta crema'],['bow-coral-reference-v1.png','Lazo coral'],['sneakers-heart-reference-v1.png','Zapatillas corazón']]){const a=document.createElement('a');a.href='../../design/wardrobe-restart/'+file;a.target='_blank';a.innerHTML=`<img src="${a.href}" alt="${name}">${name}`;document.querySelector('#refs').append(a);}
+function frame(now){requestAnimationFrame(frame);if(now-last<1000/30)return;const dt=Math.min((now-last)/1000,.08);last=now;if(document.hidden)return;if(playing)elapsed+=dt;for(const v of views){if(playing&&v.mixer)v.mixer.setTime(elapsed%(v.duration||3));v.renderer.render(v.scene,v.camera);}}requestAnimationFrame(frame);
+</script></body></html>

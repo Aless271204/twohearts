@@ -55,3 +55,4 @@ android/key.properties
 build-env.json
 
 /supabase/.temp/
+/tools/bin/

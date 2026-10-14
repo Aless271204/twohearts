@@ -1,3 +1,4 @@
+import 'store_economy.dart';
 // Entries are independent: removing or reordering never changes their art.
 const roomCategories = ['Techo', 'Pared', 'Suelo', 'Muebles'];
 final roomConcepts = <Map<String, dynamic>>[
@@ -197,6 +198,7 @@ Map<String, dynamic> roomItem(
   'item_key': key,
   'name': name,
   'scope': 'room',
+  'price_coins': StoreEconomy.price(key, slot),
   'equip_slot': slot,
   'room_category': category,
   'appearance': {

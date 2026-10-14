@@ -1,7 +1,7 @@
 name: twohearts
 description: A new Flutter project.
 publish_to: none
-version: 1.1.9+14
+version: 1.2.0+15
 
 environment:
   sdk: ^3.9.0
@@ -42,6 +42,7 @@ dependencies:
   latlong2: ^0.10.1
   http: ^1.6.0
   url_launcher: ^6.3.3
+  google_mobile_ads: 7.0.0
 
 
 dev_dependencies:
@@ -62,6 +63,26 @@ flutter:
     - assets/models/
     - assets/runner/
     - assets/runner/accessories/
+    - assets/runner/restart/sewn-coverage-bear-coat_cloud.json
+    - assets/runner/restart/sewn-coverage-bear-dress_petal.json
+    - assets/runner/restart/sewn-coverage-bear-hoodie_nido.json
+    - assets/runner/restart/sewn-coverage-bear-jacket_denim.json
+    - assets/runner/restart/sewn-coverage-chick-coat_cloud.json
+    - assets/runner/restart/sewn-coverage-chick-dress_petal.json
+    - assets/runner/restart/sewn-coverage-chick-hoodie_nido.json
+    - assets/runner/restart/sewn-coverage-chick-jacket_denim.json
+    - assets/runner/restart/sewn-coverage-penguin-coat_cloud.json
+    - assets/runner/restart/sewn-coverage-penguin-dress_petal.json
+    - assets/runner/restart/sewn-coverage-penguin-hoodie_nido.json
+    - assets/runner/restart/sewn-coverage-penguin-jacket_denim.json
+    - assets/runner/restart/sewn-coverage-pig-coat_cloud.json
+    - assets/runner/restart/sewn-coverage-pig-dress_petal.json
+    - assets/runner/restart/sewn-coverage-pig-hoodie_nido.json
+    - assets/runner/restart/sewn-coverage-pig-jacket_denim.json
+    - assets/runner/restart/shirt-original-coverage-bear.json
+    - assets/runner/restart/shirt-original-coverage-chick.json
+    - assets/runner/restart/shirt-original-coverage-penguin.json
+    - assets/runner/restart/shirt-original-coverage-pig.json
     - assets/runner/play-models/
     - assets/runner/vendor/
     - assets/runner/vendor/loaders/

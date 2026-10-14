@@ -21,11 +21,14 @@ test('closed footwear hides only its covered skin and restores original triangle
   let hidden=0;
   for(const [mesh,source] of originals){
    hidden+=source.indices.length-mesh.geometry.index.count;
-   assert.deepEqual(Array.from(mesh.geometry.attributes.position.array),source.positions);
+   assert.deepEqual(Array.from(mesh.geometry.attributes.position.array).slice(0,source.positions.length),source.positions,'clipping interpolates boundary vertices without modifying original anatomy');
    for(const vertex of mesh.geometry.index.array)assert.ok(!mesh.userData.closedFootwearVertices?.has(vertex),species+': covered toe remains visible');
   }
   assert.ok(hidden>0,species);
   restoreFootwearCoverage(model);tuckCrownTuft(model,false);coverClosedFootwear(model,fit,{fitted_model_space:true,style:'sandals'});
-  for(const [mesh,source] of originals)assert.deepEqual(Array.from(mesh.geometry.index.array),source.indices,species+': remove shoes restores anatomy');
+  for(const [mesh,source] of originals){
+    assert.deepEqual(Array.from(mesh.geometry.index.array),source.indices,species+': remove shoes restores anatomy');
+    assert.deepEqual(Array.from(mesh.geometry.attributes.position.array),source.positions,species+': temporary ankle vertices are removed');
+  }
  }
 });

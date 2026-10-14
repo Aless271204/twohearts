@@ -19,30 +19,30 @@ class StorePackage {
 
 const storePackages = [
   StorePackage(
-    'nido_gold_099',
+    'nido_gold_1000',
     'Un toque de ternura',
-    99,
-    3000,
-    'Dos conjuntos esenciales y decoración para su rincón. Incluye voz de mascota.',
+    199,
+    1000,
+    '1.000 de oro para prendas y pequeños detalles de su habitación. Incluye voz de mascota.',
     voice: true,
   ),
   StorePackage(
-    'nido_gold_200',
+    'nido_gold_2000',
     'Nuestro estilo',
-    200,
-    10000,
-    'Varios conjuntos, muebles y accesorios. Voz personalizable, una adopción y crecimiento para dos mascotas.',
+    299,
+    2000,
+    '2.000 de oro para combinar conjuntos y muebles. Voz personalizable y una adopción. Crecimiento para dos mascotas cuando estén disponibles sus etapas.',
     voice: true,
     customVoice: true,
     adoptions: 1,
     growthPets: 2,
   ),
   StorePackage(
-    'nido_gold_500',
+    'nido_gold_5000',
     'Un nido completo',
-    500,
-    30000,
-    'Todo el catálogo actual y oro de reserva. Tres adopciones, crecimiento para esas tres mascotas y voz interactiva: frases, datos y chistes.',
+    499,
+    5000,
+    '5.000 de oro para una gran colección. Tres adopciones y voz interactiva. Crecimiento reservado hasta disponer de las etapas.',
     voice: true,
     customVoice: true,
     interactions: true,
@@ -55,6 +55,7 @@ const purchasesEnabled = false;
 
 // Proposed balance, configurable before publishing the rewarded ad placement.
 // Never credit these amounts from an unverified client callback.
-const rewardedAdsEnabled = false;
-const rewardedAdGold = 30;
-const rewardedAdsDailyLimit = 5;
+const rewardedAdsEnabled = true;
+const rewardedAdGold = 3;
+const rewardedAdsWindowLimit = 5;
+const rewardedAdsWindowHours = 12;

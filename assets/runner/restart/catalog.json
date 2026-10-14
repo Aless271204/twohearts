@@ -1,0 +1,288 @@
+{
+  "status": "experimental",
+  "visible": false,
+  "reference": "design/wardrobe-restart/penguin-dulce-reference-v1.png",
+  "variants": [
+    {
+      "species": "penguin",
+      "label": "Pingüino",
+      "pet": "assets/runner/restart/pet_rig_r2_penguin.glb",
+      "cap": "assets/runner/restart/cap_coral_r2_penguin.glb",
+      "pet_sha256": "d3ce180a0f70071761cada0a5c24612666fd46183796f3ac8f55c4baee37ebbf",
+      "cap_sha256": "02075fd446b9f552c2baf7d027210fdacbb081e15ec7e94fbf5567d7b0f3d971",
+      "headwear_occlusion": {
+        "center": [
+          0,
+          0.8,
+          -0.022
+        ],
+        "radius": [
+          0.34900000000000003,
+          0.28300000000000003,
+          0.334
+        ],
+        "hem_margin": 0.012
+      },
+      "original_cap_asset": "assets/runner/accessories/restart_cap_pink_penguin.glb",
+      "fit_status": "pending_original_model_visual_review"
+    },
+    {
+      "species": "bear",
+      "label": "Oso",
+      "pet": "assets/runner/restart/pet_rig_r2_bear.glb",
+      "cap": "assets/runner/restart/cap_coral_r2_bear.glb",
+      "pet_sha256": "771ba086f6269b4af9a874ba907d651a2ea4d10b3b13ba5091b17fc57baf734e",
+      "cap_sha256": "788f5ffc24d58b28ce8104e0767d54e581b70200b711b34dec262d0b9ebfd0e4",
+      "headwear_occlusion": {
+        "center": [
+          0,
+          0.82,
+          -0.018
+        ],
+        "radius": [
+          0.394,
+          0.303,
+          0.34900000000000003
+        ],
+        "hem_margin": -0.01,
+        "lateral_hem_margin": 0.027
+      },
+      "original_cap_asset": "assets/runner/accessories/restart_cap_pink_bear.glb",
+      "fit_status": "pending_original_model_visual_review"
+    },
+    {
+      "species": "pig",
+      "label": "Cerdito",
+      "pet": "assets/runner/restart/pet_rig_r2_pig.glb",
+      "cap": "assets/runner/restart/cap_coral_r2_pig.glb",
+      "pet_sha256": "3fa2604fec03bc522e6ecf5c58888f77a4df8ad1a1ebd303049c5ea09e71b0fb",
+      "cap_sha256": "2b857b97e5f2e13f8c1a0518d15b0a340eb4d9614ee178c10ad5a6e15ba93faa",
+      "headwear_occlusion": {
+        "center": [
+          0,
+          0.815,
+          0.012
+        ],
+        "radius": [
+          0.41400000000000003,
+          0.333,
+          0.384
+        ],
+        "hem_margin": -0.01,
+        "lateral_hem_margin": 0.027
+      },
+      "original_cap_asset": "assets/runner/accessories/restart_cap_pink_pig.glb",
+      "fit_status": "pending_original_model_visual_review"
+    },
+    {
+      "species": "chick",
+      "label": "Pollito",
+      "pet": "assets/runner/restart/pet_rig_r2_chick.glb",
+      "cap": "assets/runner/restart/cap_coral_r2_chick.glb",
+      "pet_sha256": "3d25a3f861f21a3d2e17bfa37b3b24b0691e23b47fdf3a3b59be4bfc0c5ceaeb",
+      "cap_sha256": "7405f8bc79c2583e8c6ee1c0a019814e4f091f064c5fd43ad0047f807ae84ce6",
+      "headwear_occlusion": {
+        "center": [
+          0,
+          0.795,
+          -0.015
+        ],
+        "radius": [
+          0.359,
+          0.303,
+          0.359
+        ],
+        "hem_margin": -0.01,
+        "lateral_hem_margin": 0.027
+      },
+      "original_cap_asset": "assets/runner/accessories/restart_cap_pink_chick.glb",
+      "fit_status": "pending_original_model_visual_review"
+    }
+  ],
+  "wardrobe": [
+    {
+      "item_key": "shirt_love",
+      "label": "Camiseta abrazo",
+      "visible": false,
+      "variants": [
+        {
+          "species": "penguin",
+          "asset": "assets/runner/restart/shirt_love_r2_penguin.glb",
+          "sha256": "c98638501ebd2a4be8378b93d7a0af88c0d579919e7cb10031cf301c8fcdfc7f",
+          "qa": {
+            "edge_loops": 4,
+            "vertices": 111716,
+            "faces": 102822
+          },
+          "original_asset": "assets/runner/accessories/sewn_shirt_love_penguin.glb",
+          "original_sha256": "4cea182e66c13c36ef8bdc5182312b2c6b9ec7c746bed4b9c05c839e0c6a27f5",
+          "fit_status": "continuous_sewn_pattern_in_review",
+          "coverage_asset": "assets/runner/restart/shirt-original-coverage-penguin.json",
+          "approved_reference": "design/wardrobe-restart/camiseta-acabados-frente-r20.png",
+          "approved_source_sha256": "c98638501ebd2a4be8378b93d7a0af88c0d579919e7cb10031cf301c8fcdfc7f"
+        },
+        {
+          "species": "bear",
+          "original_asset": "assets/runner/accessories/sewn_shirt_love_bear.glb",
+          "original_sha256": "eae819959f3d90d83b91596b3980b07b6e03fc6904bd1e1b35cee5ec65938425",
+          "fit_status": "continuous_sewn_pattern_in_review",
+          "coverage_asset": "assets/runner/restart/shirt-original-coverage-bear.json"
+        },
+        {
+          "species": "pig",
+          "original_asset": "assets/runner/accessories/sewn_shirt_love_pig.glb",
+          "original_sha256": "920fabebb9d4f579e190df4a8c50dc9954ff06d6ca33e880a51b3ef02c17973b",
+          "fit_status": "continuous_sewn_pattern_in_review",
+          "coverage_asset": "assets/runner/restart/shirt-original-coverage-pig.json"
+        },
+        {
+          "species": "chick",
+          "original_asset": "assets/runner/accessories/sewn_shirt_love_chick.glb",
+          "original_sha256": "9ab91cbf65ad5fe533efb951de1cc66a8e53dac3be7b9e15eff5f9fd00da2bfa",
+          "fit_status": "continuous_sewn_pattern_in_review",
+          "coverage_asset": "assets/runner/restart/shirt-original-coverage-chick.json"
+        }
+      ]
+    },
+    {
+      "item_key": "coat_cloud",
+      "visible": false,
+      "status": "experimental_pending_visual_review",
+      "variants": [
+        {
+          "species": "bear",
+          "original_asset": "assets/runner/accessories/sewn_coat_cloud_bear.glb",
+          "original_sha256": "ca37cce57880a29a7b7eba95b2b4e123b90dea378b536ac644a39d8030524034",
+          "coverage_asset": "assets/runner/restart/sewn-coverage-bear-coat_cloud.json",
+          "fit_status": "continuous_sewn_pattern_in_review"
+        },
+        {
+          "species": "pig",
+          "original_asset": "assets/runner/accessories/sewn_coat_cloud_pig.glb",
+          "original_sha256": "5cc12830a9cf0c7c007aa945c337c415ebc2c9c10b0f3ab184919f0d09516e0d",
+          "coverage_asset": "assets/runner/restart/sewn-coverage-pig-coat_cloud.json",
+          "fit_status": "continuous_sewn_pattern_in_review"
+        },
+        {
+          "species": "chick",
+          "original_asset": "assets/runner/accessories/sewn_coat_cloud_chick.glb",
+          "original_sha256": "c3f9cd8aacdfea5ba5024338c8282a48977caac8ec32f9a423380da5626f891d",
+          "coverage_asset": "assets/runner/restart/sewn-coverage-chick-coat_cloud.json",
+          "fit_status": "continuous_sewn_pattern_in_review"
+        },
+        {
+          "species": "penguin",
+          "original_asset": "assets/runner/accessories/sewn_coat_cloud_penguin.glb",
+          "original_sha256": "c5d47eac25416a9a63c4ad27a21f950be18e526e147352453a6770530d830eb7",
+          "coverage_asset": "assets/runner/restart/sewn-coverage-penguin-coat_cloud.json",
+          "fit_status": "approved_shirt_derived_in_review"
+        }
+      ]
+    },
+    {
+      "item_key": "jacket_denim",
+      "visible": false,
+      "status": "experimental_pending_visual_review",
+      "variants": [
+        {
+          "species": "bear",
+          "original_asset": "assets/runner/accessories/sewn_jacket_denim_bear.glb",
+          "original_sha256": "fb12f230b78e0baa2d5bc8236629d2f1f2dfc09d86e4d8070ca5b85cfc0c5f77",
+          "coverage_asset": "assets/runner/restart/sewn-coverage-bear-jacket_denim.json",
+          "fit_status": "continuous_sewn_pattern_in_review"
+        },
+        {
+          "species": "pig",
+          "original_asset": "assets/runner/accessories/sewn_jacket_denim_pig.glb",
+          "original_sha256": "11b340e9ddac98c762496660d00784a38df4a8f738df285a7151ea48c5ddab49",
+          "coverage_asset": "assets/runner/restart/sewn-coverage-pig-jacket_denim.json",
+          "fit_status": "continuous_sewn_pattern_in_review"
+        },
+        {
+          "species": "chick",
+          "original_asset": "assets/runner/accessories/sewn_jacket_denim_chick.glb",
+          "original_sha256": "6e0e20a2c32d5df00d900d7259f50ea3a8874639081e54432e588f7fc98571e1",
+          "coverage_asset": "assets/runner/restart/sewn-coverage-chick-jacket_denim.json",
+          "fit_status": "continuous_sewn_pattern_in_review"
+        },
+        {
+          "species": "penguin",
+          "original_asset": "assets/runner/accessories/sewn_jacket_denim_penguin.glb",
+          "original_sha256": "22bc9283cecb61b69d7a733309b851eaebdd1ae027603b173f684fd9327d6439",
+          "coverage_asset": "assets/runner/restart/sewn-coverage-penguin-jacket_denim.json",
+          "fit_status": "approved_shirt_derived_in_review"
+        }
+      ]
+    },
+    {
+      "item_key": "dress_petal",
+      "visible": false,
+      "status": "experimental_pending_visual_review",
+      "variants": [
+        {
+          "species": "bear",
+          "original_asset": "assets/runner/accessories/sewn_dress_petal_bear.glb",
+          "original_sha256": "e3a802a9df13d21db6fde72ef0f11e3b0cffe150520906e65c8856b7a44a62be",
+          "coverage_asset": "assets/runner/restart/sewn-coverage-bear-dress_petal.json",
+          "fit_status": "continuous_sewn_pattern_in_review"
+        },
+        {
+          "species": "pig",
+          "original_asset": "assets/runner/accessories/sewn_dress_petal_pig.glb",
+          "original_sha256": "2b794d2c400a700a6bab1a96c5d1e5d9a52eb80f30d82182a2b943e84e9662a9",
+          "coverage_asset": "assets/runner/restart/sewn-coverage-pig-dress_petal.json",
+          "fit_status": "continuous_sewn_pattern_in_review"
+        },
+        {
+          "species": "chick",
+          "original_asset": "assets/runner/accessories/sewn_dress_petal_chick.glb",
+          "original_sha256": "968e2b03fe5434b6a0d4acb3defb2acb713af1b014a2b5846b690b56912eccb5",
+          "coverage_asset": "assets/runner/restart/sewn-coverage-chick-dress_petal.json",
+          "fit_status": "continuous_sewn_pattern_in_review"
+        },
+        {
+          "species": "penguin",
+          "original_asset": "assets/runner/accessories/sewn_dress_petal_penguin.glb",
+          "original_sha256": "6081cd5be46c0e2565ab01976bc93d9119539f381e1ea1f77839c0aad2ae9a0d",
+          "coverage_asset": "assets/runner/restart/sewn-coverage-penguin-dress_petal.json",
+          "fit_status": "approved_shirt_derived_in_review"
+        }
+      ]
+    },
+    {
+      "item_key": "hoodie_nido",
+      "visible": false,
+      "status": "experimental_pending_visual_review",
+      "variants": [
+        {
+          "species": "bear",
+          "original_asset": "assets/runner/accessories/sewn_hoodie_nido_bear.glb",
+          "original_sha256": "479105b15d9cfb58576e1ccbc11d24997dd41228eb305bce9a6dadd2cd94ab11",
+          "coverage_asset": "assets/runner/restart/sewn-coverage-bear-hoodie_nido.json",
+          "fit_status": "continuous_sewn_pattern_in_review"
+        },
+        {
+          "species": "pig",
+          "original_asset": "assets/runner/accessories/sewn_hoodie_nido_pig.glb",
+          "original_sha256": "7343ffbbb6a4bfa42f706e3735a4a5568c14703bea7846eaaf6f1df3b318d36e",
+          "coverage_asset": "assets/runner/restart/sewn-coverage-pig-hoodie_nido.json",
+          "fit_status": "continuous_sewn_pattern_in_review"
+        },
+        {
+          "species": "chick",
+          "original_asset": "assets/runner/accessories/sewn_hoodie_nido_chick.glb",
+          "original_sha256": "24839521867880995fb1ccf671f58b09148a6bef3334ea06534c29b7d6331c44",
+          "coverage_asset": "assets/runner/restart/sewn-coverage-chick-hoodie_nido.json",
+          "fit_status": "continuous_sewn_pattern_in_review"
+        },
+        {
+          "species": "penguin",
+          "original_asset": "assets/runner/accessories/sewn_hoodie_nido_penguin.glb",
+          "original_sha256": "1ccea9a0b80a5580b8a7f69a2ba6dfac8507a475405cabce9e09847364aa05f1",
+          "coverage_asset": "assets/runner/restart/sewn-coverage-penguin-hoodie_nido.json",
+          "fit_status": "approved_shirt_derived_in_review"
+        }
+      ]
+    }
+  ]
+}

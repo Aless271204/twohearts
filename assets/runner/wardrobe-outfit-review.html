@@ -1,0 +1,65 @@
+<!doctype html><html lang="es"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>NIDO · Conjuntos por mascota</title>
+<style>body{margin:18px;background:#fff9fa;color:#292735;font:15px system-ui}h1{font-size:23px;margin-bottom:8px}p{color:#786774;line-height:1.5}nav{display:flex;gap:10px;flex-wrap:wrap;margin:18px 0}label{display:flex;align-items:center;gap:6px}select{background:white;color:#292735;border:1px solid #ebccd5;padding:9px;border-radius:12px;font:inherit}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}article{background:#faeded;border-radius:20px;overflow:hidden;text-align:center}h2{font-size:17px}iframe{width:100%;height:430px;border:0;display:block}small{display:block;padding:12px;color:#786774}#status{font-size:13px}@media(max-width:520px){.grid{grid-template-columns:1fr}} </style>
+<h1>Vestuario de nuestras mascotas</h1><p>Conjuntos sobre los modelos originales. Compara sus costuras, volumen y ajuste en reposo, carrera y salto.</p>
+<nav><label>Conjunto <select id="outfit"><option value="dulce">Dulce</option><option value="cozy">Cozy</option><option value="jardin">Jardín</option><option value="chic">Chic</option><option value="pastel">Pastel</option></select></label><label>Vista <select id="angle"><option value="40">Tres cuartos</option><option value="0">Frente</option><option value="90">Perfil</option><option value="180">Espalda</option></select></label><label>Movimiento <select id="motion"><option value="">Reposo</option><option value="Wardrobe_Run">Carrera nueva</option><option value="Natural_Jump">Salto nuevo</option><option value="Running">Carrera original</option><option value="Regular_Jump">Salto original</option></select></label><label><input id="live" type="checkbox" checked> Animar</label><label>Instante <select id="phase"><option value="0">Inicio</option><option value=".25">25 %</option><option value=".5">50 %</option><option value=".75">75 %</option></select></label></nav>
+<p id="status"></p><div class="grid" id="pets"></div><small>Revisión digital con los modelos del catálogo local. Comprueba cada combinación antes de publicar la actualización. La peluca sigue oculta.</small>
+<script type="module">
+const read=async p=>{const r=await fetch(p,{cache:'no-store'});if(!r.ok)throw Error('No se pudo cargar '+p);return r.json()};
+const storeCatalog=await read('./accessory-catalog.json');
+const [catalog,details,wardrobe,complements,outfits]=await Promise.all(['restart/catalog.json','restart/details-catalog.json','blender-wardrobe-models.json','blender-complement-models.json','../../design/approved-outfits.json'].map(read));
+const speciesLabel=document.createElement('label');speciesLabel.textContent='Mascota ';
+const speciesControl=document.createElement('select');speciesControl.id='species';speciesLabel.append(speciesControl);
+for(const [value,text]of [['all','Todas'],['penguin','Pingüino'],['bear','Oso'],['pig','Cerdito'],['chick','Pollito']]){const option=document.createElement('option');option.value=value;option.textContent=text;speciesControl.append(option);}
+document.querySelector('nav').prepend(speciesLabel);
+const itemLabel=document.createElement('label');itemLabel.textContent='Prenda ';
+const itemControl=document.createElement('select');itemControl.id='item';itemLabel.append(itemControl);
+const allOption=document.createElement('option');allOption.value='';allOption.textContent='Conjunto completo';itemControl.append(allOption);
+for(const item of [...wardrobe,...complements]){
+ if(item.item_key==='wig_pastel'||item.visible===false)continue;
+ const option=document.createElement('option');option.value=item.item_key;option.textContent=item.name??item.label??item.item_key;itemControl.append(option);
+}
+document.querySelector('nav').append(itemLabel);
+const style=document.createElement('style');style.textContent='.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.grid.single{grid-template-columns:1fr}.grid.single iframe{height:560px}@media(min-width:1200px){.grid:not(.single){grid-template-columns:repeat(4,minmax(0,1fr))}}';document.head.append(style);
+const c=Object.fromEntries(['species','outfit','angle','motion','live','phase','item'].map(k=>[k,document.getElementById(k)])),params=new URLSearchParams(location.search);
+for(const k of ['species','outfit','angle','motion','phase','item'])if(params.has(k))c[k].value=params.get(k);c.live.checked=params.get('live')!=='0';
+function equipment(sp){const result={},pending=[];
+ for(const key of c.item.value?[c.item.value]:outfits.outfits.find(o=>o.key===c.outfit.value).items){
+  if(key==='wig_pastel')continue;
+  const item=[...wardrobe,...complements].find(v=>v.item_key===key);if(!item)throw Error('Falta '+key);
+  const slot=item.equip_slot??item.slot,variant=item.variants.find(v=>v.species===sp);
+  let appearance={...item.appearance,model_asset:variant.path,asset_revision:variant.sha256};delete appearance.species_models;
+  const sewn=catalog.wardrobe?.find(v=>v.item_key===key)?.variants.find(v=>v.species===sp&&v.original_asset?.includes('/sewn_'));
+  if(sewn)appearance={style:key,model_asset:sewn.original_asset,asset_revision:sewn.original_sha256+'-coverage6',fitted_model_space:true,skinned_model_space:true,coverage_asset:sewn.coverage_asset};
+  else if(slot==='pet_body')pending.push(key);
+  if(key==='cap_pink'){const cap=catalog.variants.find(v=>v.species===sp);appearance={style:key,model_asset:cap.original_cap_asset,asset_revision:cap.cap_sha256,fitted_model_space:true,tuck_crown_tuft:true,headwear_occlusion:{...cap.headwear_occlusion,hide_inside_crown:true}};}
+  const detail=details.find(v=>v.species===sp&&v.item_key===key);if(detail)appearance={...appearance,style:key,model_asset:detail.asset,asset_revision:detail.sha256,fitted_model_space:true,skinned_model_space:detail.skinned_model_space??true};
+  if(slot==='pet_body'&&params.get('static')==='1'){appearance.preview_static_fit=true;appearance.preview_component=params.get('component');}
+  const storeItem=storeCatalog.find(v=>v.item_key===key);
+  if(storeItem?.appearance.color_materials){
+    appearance.color_materials=storeItem.appearance.color_materials;appearance.color_base=storeItem.appearance.color_base;
+    if(/^#[0-9a-fA-F]{6}$/.test(params.get('color')??''))appearance.garment_color=params.get('color');
+  }
+  result[slot]=appearance;
+ }
+ return {appearance:result,pending};
+}
+function render(){const root=document.getElementById('pets');root.replaceChildren();root.classList.toggle('single',c.species.value!=='all');c.phase.disabled=c.live.checked;let pending=false;
+ c.outfit.disabled=!!c.item.value;
+ for(const key of ['species','outfit','angle','motion','phase','item'])params.set(key,c[key].value);params.set('live',c.live.checked?'1':'0');history.replaceState(null,'','?'+params);
+ for(const [sp,label]of [['penguin','Pingüino'],['bear','Oso'],['pig','Cerdito'],['chick','Pollito']]){
+  if(c.species.value!=='all'&&c.species.value!==sp)continue;
+  const fit=equipment(sp);pending ||=fit.pending.length>0;
+  const card=document.createElement('article'),title=document.createElement('h2');title.textContent=label;card.append(title);root.append(card);
+  card.dataset.species=sp;card.dataset.ready='false';card.setAttribute('aria-busy','true');
+  const q=new URLSearchParams({pet:'1',wardrobe_review:'1',species:sp,review_angle:c.angle.value,appearance:JSON.stringify(fit.appearance),v:'sewn-ankles-12'});
+  if(c.motion.value){q.set('review_motion',c.motion.value);if(!c.live.checked)q.set('review_phase',c.phase.value);}
+  const frame=document.createElement('iframe');frame.title=label+' · '+c.outfit.options[c.outfit.selectedIndex].text;frame.src='./index.html?'+q;card.append(frame);
+  const readiness=document.createElement('small');readiness.className='readiness';readiness.textContent='Cargando vista…';readiness.style.padding='4px';card.append(readiness);
+  const play=document.createElement('a');play.textContent='Probar en el recorrido';play.style.cssText='display:block;margin:12px;padding:10px;background:#f05280;color:white;border-radius:14px;text-decoration:none';
+  play.href='./index.html?'+new URLSearchParams({species:sp,wardrobe_trial:'1',appearance:JSON.stringify(fit.appearance),v:'sewn-outfits-2'});play.target='_blank';play.rel='noopener';card.append(play);
+ }
+ document.getElementById('status').textContent=pending?'Este conjunto todavía incluye prendas anteriores pendientes de sustitución y revisión.':'Patrones cosidos disponibles para las cuatro mascotas. Encaje en revisión visual.';
+}
+addEventListener('message',event=>{if(event.origin!==location.origin||event.data?.type!=='wardrobe-preview-ready')return;for(const card of document.querySelectorAll('#pets article'))if(card.querySelector('iframe').contentWindow===event.source){card.dataset.ready='true';card.setAttribute('aria-busy','false');card.querySelector('.readiness').textContent='Vista lista';}});
+for(const control of Object.values(c))control.addEventListener('change',render);render();
+</script></html>

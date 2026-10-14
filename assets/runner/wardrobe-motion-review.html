@@ -1,0 +1,26 @@
+<!doctype html><html lang="es"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>NIDO · Carrera y salto nuevos</title>
+<style>body{margin:20px;background:#fff9fa;color:#292735;font:15px system-ui}main{max-width:1040px;margin:auto}h1{font-size:24px;margin-bottom:8px}p{color:#766874;line-height:1.5}nav{display:flex;gap:14px;flex-wrap:wrap;margin:20px 0}label{display:flex;align-items:center;gap:8px}select{border:1px solid #efcad6;border-radius:12px;padding:10px;background:white;font:inherit;color:#292735}.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}article{background:#faeded;border-radius:22px;overflow:hidden;text-align:center}h2{font-size:18px;margin:16px}iframe{display:block;width:100%;height:490px;border:0}small{display:block;padding:14px;color:#766874}@media(max-width:520px){.grid{grid-template-columns:1fr}}</style>
+<main><h1>Una carrera y un salto más suaves</h1><p>Prueba con tu modelo original y la camiseta aprobada. Las animaciones se repiten para comparar su movimiento y el encaje de la ropa.</p>
+<nav><label>Vestuario <select id="outfit"><option value="shirt">Camiseta</option><option value="dulce">Conjunto Dulce</option></select></label><label>Vista <select id="angle"><option value="40">Tres cuartos</option><option value="0">Frente</option><option value="90">Perfil</option><option value="180">Espalda</option></select></label><label><input id="live" type="checkbox" checked> En movimiento</label><label>Instante <select id="phase"><option value="0">Inicio</option><option value=".25">25 %</option><option value=".5" selected>50 %</option><option value=".75">75 %</option></select></label></nav>
+<div class="grid"><article><h2>Carrera nueva</h2><div id="run"></div></article><article><h2>Salto nuevo</h2><div id="jump"></div></article></div><small>Vista de prueba. El juego publicado conserva sus animaciones mientras revisamos esta propuesta.</small></main>
+<script type="module">
+const read=async path=>{const r=await fetch(path,{cache:'no-store'});if(!r.ok)throw Error('No se pudo cargar el vestuario');return r.json()};
+const catalog=await read('restart/catalog.json'),details=await read('restart/details-catalog.json');
+const controls=Object.fromEntries(['outfit','angle','live','phase'].map(k=>[k,document.getElementById(k)]));
+const params=new URLSearchParams(location.search);for(const key of ['outfit','angle','phase'])if(params.has(key))controls[key].value=params.get(key);controls.live.checked=params.get('live')!=='0';
+function render(){
+ const shirt=catalog.wardrobe.find(i=>i.item_key==='shirt_love').variants.find(v=>v.species==='penguin');
+ const loadout={pet_body:{style:'shirt_love',model_asset:shirt.original_asset,fitted_model_space:true,skinned_model_space:true,coverage_asset:shirt.coverage_asset??'assets/runner/restart/shirt-original-coverage-penguin.json',asset_revision:shirt.original_sha256}};
+ if(controls.outfit.value==='dulce'){
+  const cap=catalog.variants.find(v=>v.species==='penguin');loadout.pet_head={style:'cap_pink',model_asset:cap.original_cap_asset,fitted_model_space:true,asset_revision:cap.cap_sha256,tuck_crown_tuft:true,headwear_occlusion:cap.headwear_occlusion};
+  for(const detail of details.filter(v=>v.species==='penguin'))loadout[detail.item_key==='bow_neck'?'pet_neck':'pet_feet']={style:detail.item_key,model_asset:detail.asset,fitted_model_space:true,skinned_model_space:true,asset_revision:detail.sha256};
+ }
+ controls.phase.disabled=controls.live.checked;
+ for(const [id,motion] of [['run','Wardrobe_Run'],['jump','Natural_Jump']]){
+  const q=new URLSearchParams({pet:'1',species:'penguin',review_angle:controls.angle.value,review_motion:motion,appearance:JSON.stringify(loadout),v:'dynamic-cloth-4'});
+  if(!controls.live.checked)q.set('review_phase',controls.phase.value);
+  const frame=document.createElement('iframe');frame.title=id==='run'?'Carrera nueva con camiseta':'Salto nuevo con camiseta';frame.src='index.html?'+q;document.getElementById(id).replaceChildren(frame);
+ }
+}
+for(const c of Object.values(controls))c.addEventListener('change',render);render();
+</script></html>

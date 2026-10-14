@@ -7,9 +7,22 @@ import '../core/room_catalog.dart';
 class InventoryItem {
   final Map<String, dynamic> data;
   const InventoryItem(this.data);
-  bool get previewOnly => data['preview_only']==true;
+  bool get previewOnly => data['preview_only'] == true;
   bool get visible => data['visible'] != false;
-  String get roomCategory => data['room_category'] as String? ?? (slot == 'room_ceiling' ? 'Techo' : ['room_wall','room_decor','room_mirror','room_shelf'].contains(slot) ? 'Pared' : ['room_floor','room_rug'].contains(slot) ? 'Suelo' : 'Muebles');
+  String get roomCategory =>
+      data['room_category'] as String? ??
+      (slot == 'room_ceiling'
+          ? 'Techo'
+          : [
+              'room_wall',
+              'room_decor',
+              'room_mirror',
+              'room_shelf',
+            ].contains(slot)
+          ? 'Pared'
+          : ['room_floor', 'room_rug'].contains(slot)
+          ? 'Suelo'
+          : 'Muebles');
   String get key => data['item_key'] as String;
   String get name => data['name'] as String;
   String get emoji => data['emoji'] as String? ?? '🎁';
@@ -84,18 +97,30 @@ class InventoryService extends ChangeNotifier {
   Map<String, Map<String, dynamic>> owned = {};
   int _generation = 0;
   Map<String, InventoryItem>? _sharedLoadout;
+  Map<String, Set<String>> colorUnlocks = {};
   final Map<String, InventoryItem> roomDraft = {};
   void previewRoomItem(InventoryItem item) {
-    if(item.scope!='room'||!item.previewOnly)return;
-    roomDraft[item.slot]=item;notifyListeners();
+    if (item.scope != 'room' || !item.previewOnly) return;
+    roomDraft[item.slot] = item;
+    notifyListeners();
   }
-  void clearRoomDraft() {roomDraft.clear();notifyListeners();}
+
+  void clearRoomDraft() {
+    roomDraft.clear();
+    notifyListeners();
+  }
+
   bool owns(String key) => owned.containsKey(key);
   bool equipped(String key) {
     final item = catalog.where((i) => i.key == key).firstOrNull;
-    if (_sharedLoadout != null && item != null && ['pet','room'].contains(item.scope)) return _sharedLoadout![item.slot]?.key == key;
+    if (_sharedLoadout != null &&
+        item != null &&
+        ['pet', 'room'].contains(item.scope)) {
+      return _sharedLoadout![item.slot]?.key == key;
+    }
     return owned[key]?['equipped'] == true;
   }
+
   InventoryItem? at(String slot) {
     for (final item in catalog) {
       if (item.slot == slot && equipped(item.key)) return item;
@@ -105,7 +130,9 @@ class InventoryService extends ChangeNotifier {
 
   Map<String, InventoryItem> get loadout => {
     for (final i in catalog)
-      if (equipped(i.key) && (_sharedLoadout == null || !['pet','room'].contains(i.scope))) i.slot: i,
+      if (equipped(i.key) &&
+          (_sharedLoadout == null || !['pet', 'room'].contains(i.scope)))
+        i.slot: i,
     if (_sharedLoadout != null)
       for (final entry in _sharedLoadout!.entries)
         entry.key: _withLocalAppearance(entry.value),
@@ -117,8 +144,9 @@ class InventoryService extends ChangeNotifier {
     coins = 0;
     _sharedLoadout = null;
     roomDraft.clear();
+    colorUnlocks.clear();
     catalog = [];
-    catalog=mergeAccessoryConcepts(catalog);
+    catalog = mergeAccessoryConcepts(catalog);
     owned = {};
     notifyListeners();
   }
@@ -139,17 +167,32 @@ class InventoryService extends ChangeNotifier {
     }
     Map<String, InventoryItem>? shared = _sharedLoadout;
     try {
-      final pet = Map<String, dynamic>.from(await _db.rpc('shared_pet_snapshot') as Map);
-      shared = {for (final item in pet['equipment'] as List) (item as Map)['equip_slot'] as String: InventoryItem(Map<String, dynamic>.from(item))};
-    } catch (_) { /* Older servers retain personal equipment until migration. */ }
+      final pet = Map<String, dynamic>.from(
+        await _db.rpc('shared_pet_snapshot') as Map,
+      );
+      shared = {
+        for (final item in pet['equipment'] as List)
+          (item as Map)['equip_slot'] as String: InventoryItem(
+            Map<String, dynamic>.from(item),
+          ),
+      };
+    } catch (_) {
+      /* Older servers retain personal equipment until migration. */
+    }
     if (_uid != uid || generation != _generation) return;
     _sharedLoadout = shared;
     _account = uid;
     coins = raw['coins'] as int;
+    colorUnlocks = {};
+    for (final r in raw['colors'] as List? ?? []) {
+      colorUnlocks
+          .putIfAbsent(r['item_key'] as String, () => {})
+          .add(r['color_key'] as String);
+    }
     catalog = (raw['catalog'] as List)
         .map((r) => InventoryItem(Map<String, dynamic>.from(r as Map)))
         .toList();
-    catalog=mergeAccessoryConcepts(catalog);
+    catalog = mergeAccessoryConcepts(catalog);
     owned = {
       for (final r in raw['owned'] as List)
         r['item_key'] as String: Map<String, dynamic>.from(r as Map),
@@ -158,28 +201,65 @@ class InventoryService extends ChangeNotifier {
   }
 
   static InventoryItem _withLocalAppearance(InventoryItem item) {
-    final local = petAccessoryConcepts.where((row) => row['item_key'] == item.key).firstOrNull;
-    if (local == null || (local['appearance'] as Map?)?['fitted_model_space'] != true) return item;
-    return InventoryItem({...item.data, 'appearance': local['appearance']});
+    final local = petAccessoryConcepts
+        .where((row) => row['item_key'] == item.key)
+        .firstOrNull;
+    if (local == null ||
+        (local['appearance'] as Map?)?['fitted_model_space'] != true) {
+      return item;
+    }
+    final original = item.appearance;
+    return InventoryItem({
+      ...item.data,
+      'appearance': {
+        ...Map<String, dynamic>.from(local['appearance'] as Map),
+        if (original['garment_color'] != null)
+          'garment_color': original['garment_color'],
+      },
+    });
   }
 
-  static List<InventoryItem> mergeAccessoryConcepts(List<InventoryItem> published)=>[
-    for(final item in published)
-      [...petAccessoryConcepts,...roomConcepts].any((local)=>local['item_key']==item.key&&local['visible']==false)
-        ? InventoryItem({...item.data,'visible':false}) : _withLocalAppearance(item),
-    for(final data in [...petAccessoryConcepts,...roomConcepts])if(data['visible']!=false&&!published.any((i)=>i.key==data['item_key']))InventoryItem(data),
+  static List<InventoryItem> mergeAccessoryConcepts(
+    List<InventoryItem> published,
+  ) => [
+    for (final item in published)
+      [...petAccessoryConcepts, ...roomConcepts].any(
+            (local) =>
+                local['item_key'] == item.key && local['visible'] == false,
+          )
+          ? InventoryItem({...item.data, 'visible': false})
+          : _withLocalAppearance(item),
+    for (final data in [...petAccessoryConcepts, ...roomConcepts])
+      if (data['visible'] != false &&
+          !published.any((i) => i.key == data['item_key']))
+        InventoryItem(data),
   ];
 
   Future<void> purchase(InventoryItem item) async {
-    if(item.previewOnly)throw StateError('Este accesorio aun esta en preparacion.');
+    if (item.previewOnly) {
+      throw StateError('Este accesorio aun esta en preparacion.');
+    }
     await _db.rpc('inventory_purchase', params: {'p_item_key': item.key});
     await refresh();
   }
 
   Future<void> equip(InventoryItem item, bool enabled) async {
     await _db.rpc(
-      ['pet','room'].contains(item.scope) ? 'shared_pet_equip' : 'inventory_equip',
+      ['pet', 'room'].contains(item.scope)
+          ? 'shared_pet_equip'
+          : 'inventory_equip',
       params: {'p_item_key': item.key, 'p_equipped': enabled},
+    );
+    await refresh();
+  }
+
+  Future<void> selectColor(InventoryItem item, String colorKey) async {
+    if (!owns(item.key) || item.previewOnly) {
+      throw StateError('Primero adquiere la prenda.');
+    }
+    await _db.rpc(
+      'inventory_color_select',
+      params: {'p_item_key': item.key, 'p_color_key': colorKey},
     );
     await refresh();
   }

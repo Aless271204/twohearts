@@ -1,0 +1,9 @@
+{
+  "note": "Independent natural-rest tailoring. No transforms are applied to the supplied pet GLBs.",
+  "species": {
+    "penguin": {"collar_top": 0.540},
+    "bear": {"collar_top": 0.565, "neck_taper": 0.95},
+    "pig": {"collar_top": 0.520, "neck_taper": 0.89},
+    "chick": {"collar_top": 0.515, "neck_taper": 0.89}
+  }
+}

@@ -1,10 +1,14 @@
 import * as THREE from 'three';
-import {createAccessory, disposeAccessory} from './accessory-pieces.js';
+import {createAccessory, disposeAccessory} from './accessory-pieces.js?revision=wardrobe-colors-2';
 import {conformHeadAccessory} from './head-conform.js';
-import {restoreFootwearCoverage,coverClosedFootwear} from './pet-footwear-coverage.js';
-import {restoreSleeveCoverage,coverSleeveSkin} from './pet-sleeve-coverage.js?revision=sleeves-4';
+import {restoreFootwearCoverage,coverClosedFootwear} from './pet-footwear-coverage.js?revision=ankle-boundary-2';
+import {restoreSleeveCoverage,coverSleeveSkin} from './pet-sleeve-coverage.js?revision=sleeves-sewn-1';
+import {createSleeveAnchors} from './pet-sleeve-anchors.js?revision=surface-fit-4';
+import {prepareHeadwearOcclusion} from './pet-headwear-occlusion.js?revision=ear-seam-2';
+import {createClothWrap} from './pet-cloth-wrap.js?revision=3';
+import {createFootwearAnchors} from './pet-footwear-anchors.js?revision=paw-rigid-2';
 
-export {createAccessory} from './accessory-pieces.js';
+export {createAccessory} from './accessory-pieces.js?revision=wardrobe-colors-2';
 
 export function measureAccessoryFit(model) {
   model.updateMatrixWorld(true);
@@ -64,6 +68,7 @@ export function measureAccessoryFit(model) {
 export function equipRunnerCosmetics(model, loadout={}) {
   const previous=model.userData.cosmetics;
   if(previous){for(const part of previous.userData.slots??[])disposeAccessory(part);disposeAccessory(previous);}
+  model.userData.headwearOcclusion?.dispose();delete model.userData.headwearOcclusion;
   restoreSleeveCoverage(model);
   restoreFootwearCoverage(model);
   tuckCrownTuft(model,!!loadout?.pet_head?.tuck_crown_tuft);
@@ -71,6 +76,9 @@ export function equipRunnerCosmetics(model, loadout={}) {
   const fit=model.userData.accessoryFit??=measureAccessoryFit(model);
   coverClosedFootwear(model,fit,loadout?.pet_feet);
   coverSleeveSkin(model,loadout?.pet_body);
+  if(loadout?.pet_head?.headwear_occlusion){
+    const occlusion=prepareHeadwearOcclusion(model,model,loadout.pet_head.headwear_occlusion);occlusion.setEquipped(true);model.userData.headwearOcclusion=occlusion;
+  }
   const group=new THREE.Group();group.name='equipped-cosmetics';group.userData.slots=[];model.add(group);
   const h=fit.head.getSize(new THREE.Vector3()),hc=fit.head.getCenter(new THREE.Vector3());
   const b=fit.body.getSize(new THREE.Vector3()),bc=fit.body.getCenter(new THREE.Vector3());
@@ -87,15 +95,32 @@ export function equipRunnerCosmetics(model, loadout={}) {
   }
   for(const [slot,item] of Object.entries(loadout??{})){
     if(!item||typeof item!=='object'||!slot.startsWith('pet_'))continue;
+    if(item.preview_static_fit&&item.fitted_model_space&&new URLSearchParams(globalThis.location?.search??'').get('pet')==='1'){
+      const part=createAccessory(item,slot,model.userData.species);
+      if(item.preview_hide_finishes)part.traverse(mesh=>{if(/^(Dobladillo|Hilo)/.test(mesh.name))mesh.visible=false;});
+      if(item.preview_component)part.traverse(mesh=>{if(mesh.isMesh)mesh.visible=item.preview_component==='cloth'?mesh.name.replaceAll('_',' ').startsWith('Manga adaptada'):mesh.name.includes('Cuello');});
+      group.add(part);group.userData.slots.push(part);continue;
+    }
     if(item.skinned_model_space){
       const part=createAccessory(item,slot,model.userData.species);group.add(part);model.updateMatrixWorld(true);
+      let clothingBones=bones;
+      if(slot==='pet_feet'){
+        const anchors=createFootwearAnchors(model,group,/sandals/.test(item.style??'')?Math.PI:.80,fit);clothingBones={...bones,...anchors.bones};
+        const previous=group.userData.updateSleeves;group.userData.updateSleeves=()=>{previous?.();anchors.update();};
+      }
       const replacements=[];
+      const wrapped=[];
       const skeletons=new Map();
       part.traverse(mesh=>{if(mesh.isMesh)replacements.push(mesh);});
+      const sleeveProfile=replacements.find(mesh=>mesh.userData.nidoSleeveFit)?.userData.nidoSleeveFit;
+      if(sleeveProfile){
+        const anchors=createSleeveAnchors(model,sleeveProfile,group);Object.assign(bones,anchors.bones);
+        const previous=group.userData.updateSleeves;group.userData.updateSleeves=()=>{previous?.();anchors.update();};
+      }
       for(const mesh of replacements){
         const names=mesh.userData.nidoBoneNames;
         if(!Array.isArray(names)||!mesh.geometry.attributes.skinIndex||!mesh.geometry.attributes.skinWeight)throw Error('La prenda no tiene pesos de animación');
-        const joints=names.map(name=>bones[name.replace(/^mixamorig:?/,'')]);
+        const joints=names.map(name=>clothingBones[name.replace(/^mixamorig:?/,'')]);
         if(joints.some(joint=>!joint))throw Error('El esqueleto de la prenda no corresponde a la mascota');
         const key=names.join('|');
         let skeleton=skeletons.get(key);
@@ -103,9 +128,15 @@ export function equipRunnerCosmetics(model, loadout={}) {
         const garment=new THREE.SkinnedMesh(mesh.geometry,mesh.material);garment.name=mesh.name;garment.userData={...mesh.userData,cosmetic:true};
         // Pattern vertices are authored in the normalized resting model frame.
         mesh.updateWorldMatrix(true,false);garment.bind(skeleton,mesh.matrixWorld.clone());
+        if(mesh.userData.nidoSurfaceWrap){
+          const wrappedMesh=new THREE.Mesh(mesh.geometry.clone(),mesh.material);wrappedMesh.name=mesh.name;wrappedMesh.userData={...mesh.userData,cosmetic:true,nidoWrapSkin:garment};
+          wrappedMesh.position.copy(mesh.position);wrappedMesh.quaternion.copy(mesh.quaternion);wrappedMesh.scale.copy(mesh.scale);wrappedMesh.frustumCulled=false;
+          mesh.parent.add(wrappedMesh);mesh.parent.remove(mesh);wrapped.push(wrappedMesh);continue;
+        }
         garment.position.copy(mesh.position);garment.quaternion.copy(mesh.quaternion);garment.scale.copy(mesh.scale);
         garment.frustumCulled=false;mesh.parent.add(garment);mesh.parent.remove(mesh);
       }
+      if(wrapped.length){const wrap=createClothWrap(model,wrapped);const previous=group.userData.updateSleeves;group.userData.updateSleeves=()=>{previous?.();wrap.update();};if(globalThis.document)document.body.dataset.petClothDeformation='surface_cage';}
       part.userData.blenderTailored=true;part.userData.skinnedWardrobe=true;group.userData.slots.push(part);continue;
     }
     if(['pet_head','pet_eyes'].includes(slot)&&item.fitted_model_space){

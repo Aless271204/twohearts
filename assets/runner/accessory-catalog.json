@@ -1,31 +1,104 @@
 [
   {
     "item_key": "cap_pink",
-    "name": "Gorra corazón",
+    "name": "Gorra corazÃ³n",
     "scope": "pet",
     "equip_slot": "pet_head",
     "appearance": {
       "style": "cap",
       "color": "#F05280",
-      "model_asset": "assets/runner/accessories/cap_pink_penguin_pattern.glb",
+      "model_asset": "assets/runner/accessories/restart_cap_pink_penguin.glb",
       "species_models": {
-        "penguin": "assets/runner/accessories/cap_pink_penguin_pattern.glb",
-        "bear": "assets/runner/accessories/cap_pink_bear_pattern.glb",
-        "pig": "assets/runner/accessories/cap_pink_pig_pattern.glb",
-        "chick": "assets/runner/accessories/cap_pink_chick_pattern.glb"
+        "penguin": "assets/runner/accessories/restart_cap_pink_penguin.glb",
+        "bear": "assets/runner/accessories/restart_cap_pink_bear.glb",
+        "pig": "assets/runner/accessories/restart_cap_pink_pig.glb",
+        "chick": "assets/runner/accessories/restart_cap_pink_chick.glb"
       },
       "fitted_model_space": true,
       "tuck_crown_tuft": true,
-      "asset_revision": "6175314afd8fb9b6"
+      "asset_revision": "3ed36bbd7b06542ceceb",
+      "species_model_hashes": {
+        "penguin": "02075fd446b9f552c2baf7d027210fdacbb081e15ec7e94fbf5567d7b0f3d971",
+        "bear": "788f5ffc24d58b28ce8104e0767d54e581b70200b711b34dec262d0b9ebfd0e4",
+        "pig": "2b857b97e5f2e13f8c1a0518d15b0a340eb4d9614ee178c10ad5a6e15ba93faa",
+        "chick": "7405f8bc79c2583e8c6ee1c0a019814e4f091f064c5fd43ad0047f807ae84ce6"
+      },
+      "skinned_model_space": false,
+      "headwear_occlusions": {
+        "penguin": {
+          "center": [
+            0,
+            0.8,
+            -0.022
+          ],
+          "radius": [
+            0.34900000000000003,
+            0.28300000000000003,
+            0.334
+          ],
+          "hem_margin": 0.012,
+          "hide_inside_crown": true
+        },
+        "bear": {
+          "center": [
+            0,
+            0.82,
+            -0.018
+          ],
+          "radius": [
+            0.394,
+            0.303,
+            0.34900000000000003
+          ],
+          "hem_margin": -0.01,
+          "lateral_hem_margin": 0.027,
+          "hide_inside_crown": true
+        },
+        "pig": {
+          "center": [
+            0,
+            0.815,
+            0.012
+          ],
+          "radius": [
+            0.41400000000000003,
+            0.333,
+            0.384
+          ],
+          "hem_margin": -0.01,
+          "lateral_hem_margin": 0.027,
+          "hide_inside_crown": true
+        },
+        "chick": {
+          "center": [
+            0,
+            0.795,
+            -0.015
+          ],
+          "radius": [
+            0.359,
+            0.303,
+            0.359
+          ],
+          "hem_margin": -0.01,
+          "lateral_hem_margin": 0.027,
+          "hide_inside_crown": true
+        }
+      },
+      "color_materials": [
+        "Algodón coral"
+      ],
+      "color_base": "#F05280"
     },
     "collection": "Dulce",
-    "rarity": "Común",
-    "description": "Modelo 3D adaptado a pingüino, oso, cerdito y pollito.",
+    "rarity": "ComÃºn",
+    "description": "Modelo 3D adaptado a pingÃ¼ino, oso, cerdito y pollito.",
     "preview_only": true,
     "visible": true,
-    "price_coins": 110,
+    "price_coins": 70,
     "complexity": "Esencial",
-    "fabric": "cotton"
+    "fabric": "cotton",
+    "color_price_coins": 10
   },
   {
     "item_key": "beanie_cloud",
@@ -35,53 +108,77 @@
     "appearance": {
       "style": "beanie",
       "color": "#FFF2DF",
-      "model_asset": "assets/runner/accessories/beanie_cloud_penguin_pattern.glb",
+      "model_asset": "assets/runner/accessories/restart_headfinish_beanie_cloud_penguin.glb",
       "species_models": {
-        "penguin": "assets/runner/accessories/beanie_cloud_penguin_pattern.glb",
-        "bear": "assets/runner/accessories/beanie_cloud_bear_pattern.glb",
-        "pig": "assets/runner/accessories/beanie_cloud_pig_pattern.glb",
-        "chick": "assets/runner/accessories/beanie_cloud_chick_pattern.glb"
+        "penguin": "assets/runner/accessories/restart_headfinish_beanie_cloud_penguin.glb",
+        "bear": "assets/runner/accessories/restart_headfinish_beanie_cloud_bear.glb",
+        "pig": "assets/runner/accessories/restart_headfinish_beanie_cloud_pig.glb",
+        "chick": "assets/runner/accessories/restart_headfinish_beanie_cloud_chick.glb"
       },
       "fitted_model_space": true,
       "tuck_crown_tuft": true,
-      "asset_revision": "e1cddeac40c67ef7"
+      "asset_revision": "2311db37a9d1b605bba7",
+      "species_model_hashes": {
+        "penguin": "da6c88c7029a1f054febddb4b0b6a853842f631256b312640b318acb2a953dfc",
+        "bear": "2b21c3ac0fae1031c4cba26f7413111e75a6bd99ecdca889758e760b5364483f",
+        "pig": "dddb02c1eab976c2844a52e5f316867a46fd66847898e74c720c873740a1553b",
+        "chick": "6bca69f640aa643746f6e3e948dcc0fd918e22fac2bf591056a4d7c467ad23b8"
+      },
+      "skinned_model_space": false,
+      "color_materials": [
+        "knit · #FFF2DF"
+      ],
+      "color_base": "#FFF2DF"
     },
     "collection": "Dulce",
-    "rarity": "Común",
-    "description": "Modelo 3D adaptado a pingüino, oso, cerdito y pollito.",
+    "rarity": "ComÃºn",
+    "description": "Modelo 3D adaptado a pingÃ¼ino, oso, cerdito y pollito.",
     "preview_only": true,
     "visible": true,
-    "price_coins": 140,
+    "price_coins": 90,
     "complexity": "Esencial",
-    "fabric": "knit"
+    "fabric": "knit",
+    "color_price_coins": 10
   },
   {
     "item_key": "hat_garden",
-    "name": "Sombrero jardín",
+    "name": "Sombrero jardÃ­n",
     "scope": "pet",
     "equip_slot": "pet_head",
     "appearance": {
       "style": "garden_hat",
       "color": "#B8DCCB",
-      "model_asset": "assets/runner/accessories/hat_garden_penguin_pattern.glb",
+      "model_asset": "assets/runner/accessories/restart_headfinish_hat_garden_penguin.glb",
       "species_models": {
-        "penguin": "assets/runner/accessories/hat_garden_penguin_pattern.glb",
-        "bear": "assets/runner/accessories/hat_garden_bear_pattern.glb",
-        "pig": "assets/runner/accessories/hat_garden_pig_pattern.glb",
-        "chick": "assets/runner/accessories/hat_garden_chick_pattern.glb"
+        "penguin": "assets/runner/accessories/restart_headfinish_hat_garden_penguin.glb",
+        "bear": "assets/runner/accessories/restart_headfinish_hat_garden_bear.glb",
+        "pig": "assets/runner/accessories/restart_headfinish_hat_garden_pig.glb",
+        "chick": "assets/runner/accessories/restart_headfinish_hat_garden_chick.glb"
       },
       "fitted_model_space": true,
       "tuck_crown_tuft": true,
-      "asset_revision": "5248832251f09f89"
+      "asset_revision": "3873a825103a3957b904",
+      "species_model_hashes": {
+        "penguin": "bbf31849302fbe18c8089f2246a6c9eb69243f11b022103e20c953c260613e84",
+        "bear": "2c1411c89873484044234c570e6deb1c23b2fd10b13a9fc1504c653b27a7023b",
+        "pig": "d2bf9622db7074d2b5e990230bbaec6f198cd9ccf43795f01c3fff2f61662911",
+        "chick": "db60d1b29c9eb96ab84ef805695620c57515c8b4a1979bce6cdc4a374cba1845"
+      },
+      "skinned_model_space": false,
+      "color_materials": [
+        "straw · #B8DCCB"
+      ],
+      "color_base": "#B8DCCB"
     },
     "collection": "Dulce",
-    "rarity": "Común",
-    "description": "Modelo 3D adaptado a pingüino, oso, cerdito y pollito.",
+    "rarity": "ComÃºn",
+    "description": "Modelo 3D adaptado a pingÃ¼ino, oso, cerdito y pollito.",
     "preview_only": true,
     "visible": true,
-    "price_coins": 190,
+    "price_coins": 120,
     "complexity": "Detallado",
-    "fabric": "straw"
+    "fabric": "straw",
+    "color_price_coins": 10
   },
   {
     "item_key": "beret_chic",
@@ -91,25 +188,37 @@
     "appearance": {
       "style": "beret",
       "color": "#BAA2DB",
-      "model_asset": "assets/runner/accessories/beret_chic_penguin_pattern.glb",
+      "model_asset": "assets/runner/accessories/restart_headfinish_beret_chic_penguin.glb",
       "species_models": {
-        "penguin": "assets/runner/accessories/beret_chic_penguin_pattern.glb",
-        "bear": "assets/runner/accessories/beret_chic_bear_pattern.glb",
-        "pig": "assets/runner/accessories/beret_chic_pig_pattern.glb",
-        "chick": "assets/runner/accessories/beret_chic_chick_pattern.glb"
+        "penguin": "assets/runner/accessories/restart_headfinish_beret_chic_penguin.glb",
+        "bear": "assets/runner/accessories/restart_headfinish_beret_chic_bear.glb",
+        "pig": "assets/runner/accessories/restart_headfinish_beret_chic_pig.glb",
+        "chick": "assets/runner/accessories/restart_headfinish_beret_chic_chick.glb"
       },
       "fitted_model_space": true,
       "tuck_crown_tuft": true,
-      "asset_revision": "a33353b73f703b2d"
+      "asset_revision": "6263e5008ac84b88d551",
+      "species_model_hashes": {
+        "penguin": "c0b17962b4ce9dd9b540145cc73a1bbc49f9d03747a2160ebba9af5f97fdcc3f",
+        "bear": "47821e302ae416df3788e1e3ddd6de5ec03b7a1f6d46fe6ed04e678cc6d65155",
+        "pig": "ecc5d2af7fa676f5479e2e6963fec156bb924e0d6ea3cde136db3f5fb2e13003",
+        "chick": "447494bb801b09f003ac5e8beea1db7aee8b3d07c76bf009a310b832e5e33d1d"
+      },
+      "skinned_model_space": false,
+      "color_materials": [
+        "felt · #BAA2DB"
+      ],
+      "color_base": "#BAA2DB"
     },
     "collection": "Dulce",
-    "rarity": "Común",
-    "description": "Modelo 3D adaptado a pingüino, oso, cerdito y pollito.",
+    "rarity": "ComÃºn",
+    "description": "Modelo 3D adaptado a pingÃ¼ino, oso, cerdito y pollito.",
     "preview_only": true,
     "visible": true,
-    "price_coins": 170,
+    "price_coins": 80,
     "complexity": "Detallado",
-    "fabric": "felt"
+    "fabric": "felt",
+    "color_price_coins": 10
   },
   {
     "item_key": "wig_pastel",
@@ -122,7 +231,7 @@
       "model_asset": "assets/runner/accessories/wig_pastel.glb"
     },
     "collection": "Dulce",
-    "rarity": "Común",
+    "rarity": "ComÃºn",
     "description": "Adaptado a las cuatro mascotas.",
     "preview_only": true,
     "visible": false,
@@ -131,28 +240,35 @@
   },
   {
     "item_key": "glasses_heart",
-    "name": "Gafas corazón",
+    "name": "Gafas corazÃ³n",
     "scope": "pet",
     "equip_slot": "pet_eyes",
     "appearance": {
       "style": "heart_glasses",
       "color": "#f05280",
-      "model_asset": "assets/runner/accessories/glasses_heart_penguin_tailored.glb",
+      "model_asset": "assets/runner/accessories/restart_glasses_heart_penguin.glb",
       "fitted_model_space": true,
       "species_models": {
-        "penguin": "assets/runner/accessories/glasses_heart_penguin_tailored.glb",
-        "bear": "assets/runner/accessories/glasses_heart_bear_tailored.glb",
-        "pig": "assets/runner/accessories/glasses_heart_pig_tailored.glb",
-        "chick": "assets/runner/accessories/glasses_heart_chick_tailored.glb"
+        "penguin": "assets/runner/accessories/restart_glasses_heart_penguin.glb",
+        "bear": "assets/runner/accessories/restart_glasses_heart_bear.glb",
+        "pig": "assets/runner/accessories/restart_glasses_heart_pig.glb",
+        "chick": "assets/runner/accessories/restart_glasses_heart_chick.glb"
       },
-      "asset_revision": "bdb4613a51f8e4fa"
+      "asset_revision": "782be8ce870a3f33b727",
+      "species_model_hashes": {
+        "penguin": "de457aa52fd6375b062a345256426ebd3c56e1501e3ea55480bf57f99006799c",
+        "bear": "9df2194263a1265d062bcbefd58373a15ebe11d793d268a2686a7aba6b81920d",
+        "pig": "cdf1604054455565e967b48f14cd676c3222cbdcd63b9c22d710417aa53fadf4",
+        "chick": "69b33f62fd22a9919166feecf5d178bbc243228ac4f61ae4fcf7b936dcd9045d"
+      },
+      "skinned_model_space": false
     },
     "collection": "Dulce",
-    "rarity": "Común",
-    "description": "Modelo 3D adaptado a pingüino, oso, cerdito y pollito.",
+    "rarity": "ComÃºn",
+    "description": "Modelo 3D adaptado a pingÃ¼ino, oso, cerdito y pollito.",
     "preview_only": true,
     "visible": true,
-    "price_coins": 180,
+    "price_coins": 50,
     "complexity": "Detallado"
   },
   {
@@ -163,22 +279,29 @@
     "appearance": {
       "style": "round_glasses",
       "color": "#e2b957",
-      "model_asset": "assets/runner/accessories/glasses_round_penguin_tailored.glb",
+      "model_asset": "assets/runner/accessories/restart_glasses_round_penguin.glb",
       "fitted_model_space": true,
       "species_models": {
-        "penguin": "assets/runner/accessories/glasses_round_penguin_tailored.glb",
-        "bear": "assets/runner/accessories/glasses_round_bear_tailored.glb",
-        "pig": "assets/runner/accessories/glasses_round_pig_tailored.glb",
-        "chick": "assets/runner/accessories/glasses_round_chick_tailored.glb"
+        "penguin": "assets/runner/accessories/restart_glasses_round_penguin.glb",
+        "bear": "assets/runner/accessories/restart_glasses_round_bear.glb",
+        "pig": "assets/runner/accessories/restart_glasses_round_pig.glb",
+        "chick": "assets/runner/accessories/restart_glasses_round_chick.glb"
       },
-      "asset_revision": "312b8147d1267483"
+      "asset_revision": "112ead833109e11da647",
+      "species_model_hashes": {
+        "penguin": "bf9a927d754045bdb28c7217b63ddafbc8ffd526a220c26440be394475146a10",
+        "bear": "84ba1ab54b63be462fdbe989e5c88d8740a9444d8a2c6b7ff1d7f516bc702929",
+        "pig": "7342e16f112fed18edd5285bb3ab4361963e65d5c77dfa3242870dbc500eda58",
+        "chick": "a6d8f7a14803d1a1f82ddbbdd3b14db38958885425ce7ed84888332bf23d1e31"
+      },
+      "skinned_model_space": false
     },
     "collection": "Dulce",
-    "rarity": "Común",
-    "description": "Modelo 3D adaptado a pingüino, oso, cerdito y pollito.",
+    "rarity": "ComÃºn",
+    "description": "Modelo 3D adaptado a pingÃ¼ino, oso, cerdito y pollito.",
     "preview_only": true,
     "visible": true,
-    "price_coins": 200,
+    "price_coins": 60,
     "complexity": "Detallado"
   },
   {
@@ -189,22 +312,29 @@
     "appearance": {
       "style": "star_glasses",
       "color": "#baa2db",
-      "model_asset": "assets/runner/accessories/glasses_star_penguin_tailored.glb",
+      "model_asset": "assets/runner/accessories/restart_glasses_star_penguin.glb",
       "fitted_model_space": true,
       "species_models": {
-        "penguin": "assets/runner/accessories/glasses_star_penguin_tailored.glb",
-        "bear": "assets/runner/accessories/glasses_star_bear_tailored.glb",
-        "pig": "assets/runner/accessories/glasses_star_pig_tailored.glb",
-        "chick": "assets/runner/accessories/glasses_star_chick_tailored.glb"
+        "penguin": "assets/runner/accessories/restart_glasses_star_penguin.glb",
+        "bear": "assets/runner/accessories/restart_glasses_star_bear.glb",
+        "pig": "assets/runner/accessories/restart_glasses_star_pig.glb",
+        "chick": "assets/runner/accessories/restart_glasses_star_chick.glb"
       },
-      "asset_revision": "ee897efbe5a2949f"
+      "asset_revision": "c64ea12478aae0134bb4",
+      "species_model_hashes": {
+        "penguin": "36d4e4cfe24be05937523a28d8d32f5fc65cbd2d53218a0b230ed40a94605c94",
+        "bear": "4d201e6a898e8b3f82f2fc779bc566d25de014e0216ed46af7faac891c2bf538",
+        "pig": "f16cf529f818fc96b777bffb1b3edda1bd29b6543eac258b6b388e2b4d185860",
+        "chick": "fd76912f4dac71690124614aecf03af619f2ffc32a22ea981fb51dde7bfda6de"
+      },
+      "skinned_model_space": false
     },
     "collection": "Dulce",
-    "rarity": "Común",
-    "description": "Modelo 3D adaptado a pingüino, oso, cerdito y pollito.",
+    "rarity": "ComÃºn",
+    "description": "Modelo 3D adaptado a pingÃ¼ino, oso, cerdito y pollito.",
     "preview_only": true,
     "visible": true,
-    "price_coins": 220,
+    "price_coins": 75,
     "complexity": "Detallado"
   },
   {
@@ -215,49 +345,68 @@
     "appearance": {
       "style": "eyepatch",
       "color": "#30303d",
-      "model_asset": "assets/runner/accessories/patch_pirate_penguin_tailored.glb",
+      "model_asset": "assets/runner/accessories/restart_patch_pirate_penguin.glb",
       "fitted_model_space": true,
       "species_models": {
-        "penguin": "assets/runner/accessories/patch_pirate_penguin_tailored.glb",
-        "bear": "assets/runner/accessories/patch_pirate_bear_tailored.glb",
-        "pig": "assets/runner/accessories/patch_pirate_pig_tailored.glb",
-        "chick": "assets/runner/accessories/patch_pirate_chick_tailored.glb"
+        "penguin": "assets/runner/accessories/restart_patch_pirate_penguin.glb",
+        "bear": "assets/runner/accessories/restart_patch_pirate_bear.glb",
+        "pig": "assets/runner/accessories/restart_patch_pirate_pig.glb",
+        "chick": "assets/runner/accessories/restart_patch_pirate_chick.glb"
       },
-      "asset_revision": "3926d2a45c7c1950"
+      "asset_revision": "b20fc68f121065ce5917",
+      "species_model_hashes": {
+        "penguin": "c781afd23075152e5bb5264fea292439aa9d9ecba87b168d1694011dd54135fc",
+        "bear": "96f81ebe8a0f0cd862c8bb883158ad4f54b4e78a9a1a7f0855ae2ef213226e0a",
+        "pig": "12254b14d1616c9ed2524aa455c41772c80e38ec8d5edec7b27fa30663d43b83",
+        "chick": "c0aa64840f90a3d8352e66bcb13e5428fea412ae57892a9fdff9a16ee0e7a649"
+      },
+      "skinned_model_space": false
     },
     "collection": "Dulce",
-    "rarity": "Común",
-    "description": "Modelo 3D adaptado a pingüino, oso, cerdito y pollito.",
+    "rarity": "ComÃºn",
+    "description": "Modelo 3D adaptado a pingÃ¼ino, oso, cerdito y pollito.",
     "preview_only": true,
     "visible": true,
-    "price_coins": 120,
+    "price_coins": 50,
     "complexity": "Esencial"
   },
   {
     "item_key": "mask_sleep",
-    "name": "Antifaz sueño",
+    "name": "Antifaz sueÃ±o",
     "scope": "pet",
     "equip_slot": "pet_eyes",
     "appearance": {
       "style": "sleep_mask",
       "color": "#efa0ab",
-      "model_asset": "assets/runner/accessories/mask_sleep_penguin_tailored.glb",
+      "model_asset": "assets/runner/accessories/restart_mask_sleep_penguin.glb",
       "fitted_model_space": true,
       "species_models": {
-        "penguin": "assets/runner/accessories/mask_sleep_penguin_tailored.glb",
-        "bear": "assets/runner/accessories/mask_sleep_bear_tailored.glb",
-        "pig": "assets/runner/accessories/mask_sleep_pig_tailored.glb",
-        "chick": "assets/runner/accessories/mask_sleep_chick_tailored.glb"
+        "penguin": "assets/runner/accessories/restart_mask_sleep_penguin.glb",
+        "bear": "assets/runner/accessories/restart_mask_sleep_bear.glb",
+        "pig": "assets/runner/accessories/restart_mask_sleep_pig.glb",
+        "chick": "assets/runner/accessories/restart_mask_sleep_chick.glb"
       },
-      "asset_revision": "5814779354cec1ee"
+      "asset_revision": "43583cc095bf1c72757c",
+      "species_model_hashes": {
+        "penguin": "c25aef65a24980027407f6be891445c87c9d11bcecf64619aa29bd4f9897eb46",
+        "bear": "e09828dfcac59f933877e860f9b57bd02c4ff397b8c7c60db2ca59e48166c4c8",
+        "pig": "9945cd7ba4a3954a290783cb635aa2722cd20e6be462ee3f940409cd9844b231",
+        "chick": "66d0e46a192f12930165f0b51cbaf524c3b2227c9b6d3e19f91db283df5fb5b8"
+      },
+      "skinned_model_space": false,
+      "color_materials": [
+        "cotton · #EFA0AB"
+      ],
+      "color_base": "#EFA0AB"
     },
     "collection": "Dulce",
-    "rarity": "Común",
-    "description": "Modelo 3D adaptado a pingüino, oso, cerdito y pollito.",
+    "rarity": "ComÃºn",
+    "description": "Modelo 3D adaptado a pingÃ¼ino, oso, cerdito y pollito.",
     "preview_only": true,
     "visible": true,
-    "price_coins": 110,
-    "complexity": "Esencial"
+    "price_coins": 55,
+    "complexity": "Esencial",
+    "color_price_coins": 10
   },
   {
     "item_key": "scarf_hearts",
@@ -267,77 +416,105 @@
     "appearance": {
       "style": "scarf",
       "color": "#efa0ab",
-      "model_asset": "assets/runner/accessories/scarf_hearts_penguin_tailored.glb",
+      "model_asset": "assets/runner/accessories/restart_scarf_hearts_penguin.glb",
       "fitted_model_space": true,
       "species_models": {
-        "penguin": "assets/runner/accessories/scarf_hearts_penguin_tailored.glb",
-        "bear": "assets/runner/accessories/scarf_hearts_bear_tailored.glb",
-        "pig": "assets/runner/accessories/scarf_hearts_pig_tailored.glb",
-        "chick": "assets/runner/accessories/scarf_hearts_chick_tailored.glb"
+        "penguin": "assets/runner/accessories/restart_scarf_hearts_penguin.glb",
+        "bear": "assets/runner/accessories/restart_scarf_hearts_bear.glb",
+        "pig": "assets/runner/accessories/restart_scarf_hearts_pig.glb",
+        "chick": "assets/runner/accessories/restart_scarf_hearts_chick.glb"
       },
       "skinned_model_space": true,
-      "asset_revision": "1c2d7210cbfb198d"
+      "asset_revision": "f24c43f6b2cdfc248fcb",
+      "species_model_hashes": {
+        "penguin": "8cc65876bc60d3b4ba6130104cd8fb1840edc875a8d57978c175127c9865c102",
+        "bear": "1b28d5bacbab3ae5415641782220771666b726b37d3cc1311a6ec3e7eb374ad6",
+        "pig": "679826c2eee3b794f17cbbe9070b3cad46a529fff4bbcb87fdfab67e036938cd",
+        "chick": "506e9c6eb57239c861c7c8c8ec384e9e2dea53a2046bebd698c087301effa23c"
+      },
+      "color_materials": [
+        "knit · #EFA0AB"
+      ],
+      "color_base": "#EFA0AB"
     },
     "collection": "Dulce",
-    "rarity": "Común",
-    "description": "Modelo 3D adaptado a pingüino, oso, cerdito y pollito.",
+    "rarity": "ComÃºn",
+    "description": "Modelo 3D adaptado a pingÃ¼ino, oso, cerdito y pollito.",
     "preview_only": true,
     "visible": true,
-    "price_coins": 150,
-    "complexity": "Esencial"
+    "price_coins": 80,
+    "complexity": "Esencial",
+    "color_price_coins": 10
   },
   {
     "item_key": "bandana_sage",
-    "name": "Pañuelo salvia",
+    "name": "PaÃ±uelo salvia",
     "scope": "pet",
     "equip_slot": "pet_neck",
     "appearance": {
       "style": "bandana",
       "color": "#b8dccb",
-      "model_asset": "assets/runner/accessories/bandana_sage_penguin_tailored.glb",
+      "model_asset": "assets/runner/accessories/restart_bandana_sage_penguin.glb",
       "fitted_model_space": true,
       "species_models": {
-        "penguin": "assets/runner/accessories/bandana_sage_penguin_tailored.glb",
-        "bear": "assets/runner/accessories/bandana_sage_bear_tailored.glb",
-        "pig": "assets/runner/accessories/bandana_sage_pig_tailored.glb",
-        "chick": "assets/runner/accessories/bandana_sage_chick_tailored.glb"
+        "penguin": "assets/runner/accessories/restart_bandana_sage_penguin.glb",
+        "bear": "assets/runner/accessories/restart_bandana_sage_bear.glb",
+        "pig": "assets/runner/accessories/restart_bandana_sage_pig.glb",
+        "chick": "assets/runner/accessories/restart_bandana_sage_chick.glb"
       },
       "skinned_model_space": true,
-      "asset_revision": "45157d7b17651fe1"
+      "asset_revision": "adf6f23774315ef74b6f",
+      "species_model_hashes": {
+        "penguin": "10b5506b5a66f76b9bb7de5cf1842e0137154590a77e68516e243fa1910a211a",
+        "bear": "2b88c2ba8c15e574001e4ed22ad722554d3915847c12190e36d7ba71e4ce2780",
+        "pig": "a003600d983c21c95794e4ab519620385f172b4d41407688575ec10ce27ec8c3",
+        "chick": "535f62acab2e4cf7256ebe6ada841fef21b120b5508b8dd4abd5de3e235e6d9f"
+      },
+      "color_materials": [
+        "cotton · #B8DCCB"
+      ],
+      "color_base": "#B8DCCB"
     },
     "collection": "Dulce",
-    "rarity": "Común",
-    "description": "Modelo 3D adaptado a pingüino, oso, cerdito y pollito.",
+    "rarity": "ComÃºn",
+    "description": "Modelo 3D adaptado a pingÃ¼ino, oso, cerdito y pollito.",
     "preview_only": true,
     "visible": true,
-    "price_coins": 110,
-    "complexity": "Esencial"
+    "price_coins": 50,
+    "complexity": "Esencial",
+    "color_price_coins": 10
   },
   {
     "item_key": "necklace_heart",
-    "name": "Collar corazón",
+    "name": "Collar corazÃ³n",
     "scope": "pet",
     "equip_slot": "pet_neck",
     "appearance": {
       "style": "bead_necklace",
       "color": "#efa0ab",
-      "model_asset": "assets/runner/accessories/necklace_heart_penguin_tailored.glb",
+      "model_asset": "assets/runner/accessories/restart_necklace_heart_penguin.glb",
       "fitted_model_space": true,
       "species_models": {
-        "penguin": "assets/runner/accessories/necklace_heart_penguin_tailored.glb",
-        "bear": "assets/runner/accessories/necklace_heart_bear_tailored.glb",
-        "pig": "assets/runner/accessories/necklace_heart_pig_tailored.glb",
-        "chick": "assets/runner/accessories/necklace_heart_chick_tailored.glb"
+        "penguin": "assets/runner/accessories/restart_necklace_heart_penguin.glb",
+        "bear": "assets/runner/accessories/restart_necklace_heart_bear.glb",
+        "pig": "assets/runner/accessories/restart_necklace_heart_pig.glb",
+        "chick": "assets/runner/accessories/restart_necklace_heart_chick.glb"
       },
       "skinned_model_space": true,
-      "asset_revision": "6bfd887f9d5579ba"
+      "asset_revision": "76099db7ac4cd9d2debc",
+      "species_model_hashes": {
+        "penguin": "290de1d2550ea8c3eb9f85223b6fd6b0492a353f28cf38f5a38945c4cfa2b4a5",
+        "bear": "1a6aa79013087f7420c8f8e3914e817151761c21bd526235dad2585eec840f5d",
+        "pig": "2a4246e2133cda27643b3db380e9dfd2ae91feca3491a554e92a4021cfee5bcb",
+        "chick": "d7b251826a28d91c8469bf2d844b09869e93c697ac8044024b358beaa6919f9d"
+      }
     },
     "collection": "Dulce",
-    "rarity": "Común",
-    "description": "Modelo 3D adaptado a pingüino, oso, cerdito y pollito.",
+    "rarity": "ComÃºn",
+    "description": "Modelo 3D adaptado a pingÃ¼ino, oso, cerdito y pollito.",
     "preview_only": true,
     "visible": true,
-    "price_coins": 180,
+    "price_coins": 90,
     "complexity": "Detallado"
   },
   {
@@ -348,51 +525,68 @@
     "appearance": {
       "style": "gold_chain",
       "color": "#e2b957",
-      "model_asset": "assets/runner/accessories/chain_gold_penguin_tailored.glb",
+      "model_asset": "assets/runner/accessories/restart_chain_gold_penguin.glb",
       "fitted_model_space": true,
       "species_models": {
-        "penguin": "assets/runner/accessories/chain_gold_penguin_tailored.glb",
-        "bear": "assets/runner/accessories/chain_gold_bear_tailored.glb",
-        "pig": "assets/runner/accessories/chain_gold_pig_tailored.glb",
-        "chick": "assets/runner/accessories/chain_gold_chick_tailored.glb"
+        "penguin": "assets/runner/accessories/restart_chain_gold_penguin.glb",
+        "bear": "assets/runner/accessories/restart_chain_gold_bear.glb",
+        "pig": "assets/runner/accessories/restart_chain_gold_pig.glb",
+        "chick": "assets/runner/accessories/restart_chain_gold_chick.glb"
       },
       "skinned_model_space": true,
-      "asset_revision": "b9c66bf649182752"
+      "asset_revision": "4d71497df11c90283cc6",
+      "species_model_hashes": {
+        "penguin": "e9b71314db69d0504a8cbea7af50b91aeade5e1434c01fb62f08ea574b8568e0",
+        "bear": "dbda3cb628bee0064102e936eec651766eeb608d07bcb83ab7fc7a684e24065a",
+        "pig": "24e3df183a64120e676fe73dc12a6ac9772c2e47e70525cbd7100da06bb3c23f",
+        "chick": "bb773f97f86402d3b0b098cb0cee243eeb9e47941145b6aef3b64e4f3f08afaa"
+      }
     },
     "collection": "Dulce",
-    "rarity": "Común",
-    "description": "Modelo 3D adaptado a pingüino, oso, cerdito y pollito.",
+    "rarity": "ComÃºn",
+    "description": "Modelo 3D adaptado a pingÃ¼ino, oso, cerdito y pollito.",
     "preview_only": true,
     "visible": true,
-    "price_coins": 220,
+    "price_coins": 110,
     "complexity": "Detallado"
   },
   {
     "item_key": "bow_neck",
-    "name": "Moño elegante",
+    "name": "MoÃ±o elegante",
     "scope": "pet",
     "equip_slot": "pet_neck",
     "appearance": {
       "style": "bow_tie",
       "color": "#f05280",
-      "model_asset": "assets/runner/accessories/bow_neck_penguin_tailored.glb",
+      "model_asset": "assets/runner/accessories/restart_bow_neck_penguin.glb",
       "fitted_model_space": true,
       "species_models": {
-        "penguin": "assets/runner/accessories/bow_neck_penguin_tailored.glb",
-        "bear": "assets/runner/accessories/bow_neck_bear_tailored.glb",
-        "pig": "assets/runner/accessories/bow_neck_pig_tailored.glb",
-        "chick": "assets/runner/accessories/bow_neck_chick_tailored.glb"
+        "penguin": "assets/runner/accessories/restart_bow_neck_penguin.glb",
+        "bear": "assets/runner/accessories/restart_bow_neck_bear.glb",
+        "pig": "assets/runner/accessories/restart_bow_neck_pig.glb",
+        "chick": "assets/runner/accessories/restart_bow_neck_chick.glb"
       },
       "skinned_model_space": true,
-      "asset_revision": "06dbe124058b3742"
+      "asset_revision": "9ad79ea470fab1a0854a",
+      "species_model_hashes": {
+        "penguin": "70c7492d6459f505219cd66e14066bbe85df2b78e115020c5baf4b1985ecc330",
+        "bear": "c7c367b0a72c924597d32e9873ea1c1e50d21734186ed22326d101aab4497fd6",
+        "pig": "bd68c0c0be4d8ce4558217e69cf7e37f1dc17c82559711a6d3a7da809294f2da",
+        "chick": "63efee5b881cfd16fe5c96be1f2aa238db5148b089483a266afb6e8f77214011"
+      },
+      "color_materials": [
+        "Algodón coral nuevo"
+      ],
+      "color_base": "#EC6276"
     },
     "collection": "Dulce",
-    "rarity": "Común",
-    "description": "Modelo 3D adaptado a pingüino, oso, cerdito y pollito.",
+    "rarity": "ComÃºn",
+    "description": "Modelo 3D adaptado a pingÃ¼ino, oso, cerdito y pollito.",
     "preview_only": true,
     "visible": true,
-    "price_coins": 160,
-    "complexity": "Esencial"
+    "price_coins": 50,
+    "complexity": "Esencial",
+    "color_price_coins": 10
   },
   {
     "item_key": "shirt_love",
@@ -402,16 +596,16 @@
     "appearance": {
       "style": "shirt",
       "color": "#FFF2DF",
-      "model_asset": "assets/runner/accessories/shirt_love_penguin_pattern.glb",
+      "model_asset": "assets/runner/accessories/sewn_shirt_love_penguin.glb",
       "species_models": {
-        "penguin": "assets/runner/accessories/shirt_love_penguin_pattern.glb",
-        "bear": "assets/runner/accessories/shirt_love_bear_pattern.glb",
-        "pig": "assets/runner/accessories/shirt_love_pig_pattern.glb",
-        "chick": "assets/runner/accessories/shirt_love_chick_pattern.glb"
+        "penguin": "assets/runner/accessories/sewn_shirt_love_penguin.glb",
+        "bear": "assets/runner/accessories/sewn_shirt_love_bear.glb",
+        "pig": "assets/runner/accessories/sewn_shirt_love_pig.glb",
+        "chick": "assets/runner/accessories/sewn_shirt_love_chick.glb"
       },
       "fitted_model_space": true,
       "skinned_model_space": true,
-      "asset_revision": "29ce80a479a58f97",
+      "asset_revision": "5030b433ee4d1ff21223",
       "sleeve_coverage": {
         "penguin": {
           "min_y": 0.41660043558286364,
@@ -429,16 +623,33 @@
           "min_y": 0.37036480218482115,
           "max_y": 0.5023648021848212
         }
-      }
+      },
+      "species_model_hashes": {
+        "penguin": "4cea182e66c13c36ef8bdc5182312b2c6b9ec7c746bed4b9c05c839e0c6a27f5",
+        "bear": "eae819959f3d90d83b91596b3980b07b6e03fc6904bd1e1b35cee5ec65938425",
+        "pig": "920fabebb9d4f579e190df4a8c50dc9954ff06d6ca33e880a51b3ef02c17973b",
+        "chick": "9ab91cbf65ad5fe533efb951de1cc66a8e53dac3be7b9e15eff5f9fd00da2bfa"
+      },
+      "coverage_assets": {
+        "penguin": "assets/runner/restart/shirt-original-coverage-penguin.json",
+        "bear": "assets/runner/restart/shirt-original-coverage-bear.json",
+        "pig": "assets/runner/restart/shirt-original-coverage-pig.json",
+        "chick": "assets/runner/restart/shirt-original-coverage-chick.json"
+      },
+      "color_materials": [
+        "Algodón crema grueso"
+      ],
+      "color_base": "#FFF0D9"
     },
     "collection": "Dulce",
-    "rarity": "Común",
-    "description": "Modelo 3D adaptado a pingüino, oso, cerdito y pollito.",
+    "rarity": "ComÃºn",
+    "description": "Modelo 3D adaptado a pingÃ¼ino, oso, cerdito y pollito.",
     "preview_only": true,
     "visible": true,
-    "price_coins": 210,
+    "price_coins": 50,
     "complexity": "Detallado",
-    "fabric": "cotton"
+    "fabric": "cotton",
+    "color_price_coins": 10
   },
   {
     "item_key": "jacket_denim",
@@ -448,16 +659,16 @@
     "appearance": {
       "style": "denim_jacket",
       "color": "#91B6D6",
-      "model_asset": "assets/runner/accessories/jacket_denim_penguin_pattern.glb",
+      "model_asset": "assets/runner/accessories/sewn_jacket_denim_penguin.glb",
       "species_models": {
-        "penguin": "assets/runner/accessories/jacket_denim_penguin_pattern.glb",
-        "bear": "assets/runner/accessories/jacket_denim_bear_pattern.glb",
-        "pig": "assets/runner/accessories/jacket_denim_pig_pattern.glb",
-        "chick": "assets/runner/accessories/jacket_denim_chick_pattern.glb"
+        "penguin": "assets/runner/accessories/sewn_jacket_denim_penguin.glb",
+        "bear": "assets/runner/accessories/sewn_jacket_denim_bear.glb",
+        "pig": "assets/runner/accessories/sewn_jacket_denim_pig.glb",
+        "chick": "assets/runner/accessories/sewn_jacket_denim_chick.glb"
       },
       "fitted_model_space": true,
       "skinned_model_space": true,
-      "asset_revision": "2da0f937aa5fbec9",
+      "asset_revision": "af2f9b011221f68d98a1",
       "sleeve_coverage": {
         "penguin": {
           "min_y": 0.41660043558286364,
@@ -475,16 +686,33 @@
           "min_y": 0.37036480218482115,
           "max_y": 0.5023648021848212
         }
-      }
+      },
+      "species_model_hashes": {
+        "penguin": "22bc9283cecb61b69d7a733309b851eaebdd1ae027603b173f684fd9327d6439",
+        "bear": "fb12f230b78e0baa2d5bc8236629d2f1f2dfc09d86e4d8070ca5b85cfc0c5f77",
+        "pig": "11b340e9ddac98c762496660d00784a38df4a8f738df285a7151ea48c5ddab49",
+        "chick": "6e0e20a2c32d5df00d900d7259f50ea3a8874639081e54432e588f7fc98571e1"
+      },
+      "coverage_assets": {
+        "penguin": "assets/runner/restart/sewn-coverage-penguin-jacket_denim.json",
+        "bear": "assets/runner/restart/sewn-coverage-bear-jacket_denim.json",
+        "pig": "assets/runner/restart/sewn-coverage-pig-jacket_denim.json",
+        "chick": "assets/runner/restart/sewn-coverage-chick-jacket_denim.json"
+      },
+      "color_materials": [
+        "denim · #92B9D5"
+      ],
+      "color_base": "#92B9D5"
     },
     "collection": "Dulce",
-    "rarity": "Común",
-    "description": "Modelo 3D adaptado a pingüino, oso, cerdito y pollito.",
+    "rarity": "ComÃºn",
+    "description": "Modelo 3D adaptado a pingÃ¼ino, oso, cerdito y pollito.",
     "preview_only": true,
     "visible": true,
-    "price_coins": 290,
+    "price_coins": 140,
     "complexity": "Elaborado",
-    "fabric": "denim"
+    "fabric": "denim",
+    "color_price_coins": 10
   },
   {
     "item_key": "coat_cloud",
@@ -494,16 +722,16 @@
     "appearance": {
       "style": "coat",
       "color": "#B8DCCB",
-      "model_asset": "assets/runner/accessories/coat_cloud_penguin_pattern.glb",
+      "model_asset": "assets/runner/accessories/sewn_coat_cloud_penguin.glb",
       "species_models": {
-        "penguin": "assets/runner/accessories/coat_cloud_penguin_pattern.glb",
-        "bear": "assets/runner/accessories/coat_cloud_bear_pattern.glb",
-        "pig": "assets/runner/accessories/coat_cloud_pig_pattern.glb",
-        "chick": "assets/runner/accessories/coat_cloud_chick_pattern.glb"
+        "penguin": "assets/runner/accessories/sewn_coat_cloud_penguin.glb",
+        "bear": "assets/runner/accessories/sewn_coat_cloud_bear.glb",
+        "pig": "assets/runner/accessories/sewn_coat_cloud_pig.glb",
+        "chick": "assets/runner/accessories/sewn_coat_cloud_chick.glb"
       },
       "fitted_model_space": true,
       "skinned_model_space": true,
-      "asset_revision": "15bccb23d012e031",
+      "asset_revision": "a0285b79e700f6ae37c3",
       "sleeve_coverage": {
         "penguin": {
           "min_y": 0.3716004355828636,
@@ -521,35 +749,52 @@
           "min_y": 0.3253648021848211,
           "max_y": 0.5023648021848212
         }
-      }
+      },
+      "species_model_hashes": {
+        "penguin": "c5d47eac25416a9a63c4ad27a21f950be18e526e147352453a6770530d830eb7",
+        "bear": "ca37cce57880a29a7b7eba95b2b4e123b90dea378b536ac644a39d8030524034",
+        "pig": "5cc12830a9cf0c7c007aa945c337c415ebc2c9c10b0f3ab184919f0d09516e0d",
+        "chick": "c3f9cd8aacdfea5ba5024338c8282a48977caac8ec32f9a423380da5626f891d"
+      },
+      "coverage_assets": {
+        "penguin": "assets/runner/restart/sewn-coverage-penguin-coat_cloud.json",
+        "bear": "assets/runner/restart/sewn-coverage-bear-coat_cloud.json",
+        "pig": "assets/runner/restart/sewn-coverage-pig-coat_cloud.json",
+        "chick": "assets/runner/restart/sewn-coverage-chick-coat_cloud.json"
+      },
+      "color_materials": [
+        "wool · #B3C4A2"
+      ],
+      "color_base": "#B3C4A2"
     },
     "collection": "Dulce",
-    "rarity": "Común",
-    "description": "Modelo 3D adaptado a pingüino, oso, cerdito y pollito.",
+    "rarity": "ComÃºn",
+    "description": "Modelo 3D adaptado a pingÃ¼ino, oso, cerdito y pollito.",
     "preview_only": true,
     "visible": true,
-    "price_coins": 320,
+    "price_coins": 180,
     "complexity": "Elaborado",
-    "fabric": "wool"
+    "fabric": "wool",
+    "color_price_coins": 10
   },
   {
     "item_key": "dress_petal",
-    "name": "Vestido pétalo",
+    "name": "Vestido pÃ©talo",
     "scope": "pet",
     "equip_slot": "pet_body",
     "appearance": {
       "style": "dress",
       "color": "#EFA0AB",
-      "model_asset": "assets/runner/accessories/dress_petal_penguin_pattern.glb",
+      "model_asset": "assets/runner/accessories/sewn_dress_petal_penguin.glb",
       "species_models": {
-        "penguin": "assets/runner/accessories/dress_petal_penguin_pattern.glb",
-        "bear": "assets/runner/accessories/dress_petal_bear_pattern.glb",
-        "pig": "assets/runner/accessories/dress_petal_pig_pattern.glb",
-        "chick": "assets/runner/accessories/dress_petal_chick_pattern.glb"
+        "penguin": "assets/runner/accessories/sewn_dress_petal_penguin.glb",
+        "bear": "assets/runner/accessories/sewn_dress_petal_bear.glb",
+        "pig": "assets/runner/accessories/sewn_dress_petal_pig.glb",
+        "chick": "assets/runner/accessories/sewn_dress_petal_chick.glb"
       },
       "fitted_model_space": true,
       "skinned_model_space": true,
-      "asset_revision": "84391aef403a13ad",
+      "asset_revision": "a7b45911f7f7cd9cf5a9",
       "sleeve_coverage": {
         "penguin": {
           "min_y": 0.41660043558286364,
@@ -567,16 +812,33 @@
           "min_y": 0.37036480218482115,
           "max_y": 0.5023648021848212
         }
-      }
+      },
+      "species_model_hashes": {
+        "penguin": "6081cd5be46c0e2565ab01976bc93d9119539f381e1ea1f77839c0aad2ae9a0d",
+        "bear": "e3a802a9df13d21db6fde72ef0f11e3b0cffe150520906e65c8856b7a44a62be",
+        "pig": "2b794d2c400a700a6bab1a96c5d1e5d9a52eb80f30d82182a2b943e84e9662a9",
+        "chick": "968e2b03fe5434b6a0d4acb3defb2acb713af1b014a2b5846b690b56912eccb5"
+      },
+      "coverage_assets": {
+        "penguin": "assets/runner/restart/sewn-coverage-penguin-dress_petal.json",
+        "bear": "assets/runner/restart/sewn-coverage-bear-dress_petal.json",
+        "pig": "assets/runner/restart/sewn-coverage-pig-dress_petal.json",
+        "chick": "assets/runner/restart/sewn-coverage-chick-dress_petal.json"
+      },
+      "color_materials": [
+        "poplin · #F5A8B6"
+      ],
+      "color_base": "#F5A8B6"
     },
     "collection": "Dulce",
-    "rarity": "Común",
-    "description": "Modelo 3D adaptado a pingüino, oso, cerdito y pollito.",
+    "rarity": "ComÃºn",
+    "description": "Modelo 3D adaptado a pingÃ¼ino, oso, cerdito y pollito.",
     "preview_only": true,
     "visible": true,
-    "price_coins": 360,
+    "price_coins": 160,
     "complexity": "Elaborado",
-    "fabric": "poplin"
+    "fabric": "poplin",
+    "color_price_coins": 10
   },
   {
     "item_key": "hoodie_nido",
@@ -586,16 +848,16 @@
     "appearance": {
       "style": "hoodie",
       "color": "#BAA2DB",
-      "model_asset": "assets/runner/accessories/hoodie_nido_penguin_pattern.glb",
+      "model_asset": "assets/runner/accessories/sewn_hoodie_nido_penguin.glb",
       "species_models": {
-        "penguin": "assets/runner/accessories/hoodie_nido_penguin_pattern.glb",
-        "bear": "assets/runner/accessories/hoodie_nido_bear_pattern.glb",
-        "pig": "assets/runner/accessories/hoodie_nido_pig_pattern.glb",
-        "chick": "assets/runner/accessories/hoodie_nido_chick_pattern.glb"
+        "penguin": "assets/runner/accessories/sewn_hoodie_nido_penguin.glb",
+        "bear": "assets/runner/accessories/sewn_hoodie_nido_bear.glb",
+        "pig": "assets/runner/accessories/sewn_hoodie_nido_pig.glb",
+        "chick": "assets/runner/accessories/sewn_hoodie_nido_chick.glb"
       },
       "fitted_model_space": true,
       "skinned_model_space": true,
-      "asset_revision": "0728b979f714b4b3",
+      "asset_revision": "1be24c948c45bf4b6716",
       "sleeve_coverage": {
         "penguin": {
           "min_y": 0.3716004355828636,
@@ -613,43 +875,71 @@
           "min_y": 0.3253648021848211,
           "max_y": 0.5023648021848212
         }
-      }
+      },
+      "species_model_hashes": {
+        "penguin": "1ccea9a0b80a5580b8a7f69a2ba6dfac8507a475405cabce9e09847364aa05f1",
+        "bear": "479105b15d9cfb58576e1ccbc11d24997dd41228eb305bce9a6dadd2cd94ab11",
+        "pig": "7343ffbbb6a4bfa42f706e3735a4a5568c14703bea7846eaaf6f1df3b318d36e",
+        "chick": "24839521867880995fb1ccf671f58b09148a6bef3334ea06534c29b7d6331c44"
+      },
+      "coverage_assets": {
+        "penguin": "assets/runner/restart/sewn-coverage-penguin-hoodie_nido.json",
+        "bear": "assets/runner/restart/sewn-coverage-bear-hoodie_nido.json",
+        "pig": "assets/runner/restart/sewn-coverage-pig-hoodie_nido.json",
+        "chick": "assets/runner/restart/sewn-coverage-chick-hoodie_nido.json"
+      },
+      "color_materials": [
+        "cotton · #C1ADE2"
+      ],
+      "color_base": "#C1ADE2"
     },
     "collection": "Dulce",
-    "rarity": "Común",
-    "description": "Modelo 3D adaptado a pingüino, oso, cerdito y pollito.",
+    "rarity": "ComÃºn",
+    "description": "Modelo 3D adaptado a pingÃ¼ino, oso, cerdito y pollito.",
     "preview_only": true,
     "visible": true,
-    "price_coins": 260,
+    "price_coins": 120,
     "complexity": "Elaborado",
-    "fabric": "cotton"
+    "fabric": "cotton",
+    "color_price_coins": 10
   },
   {
     "item_key": "shoes_heart",
-    "name": "Zapatillas corazón",
+    "name": "Zapatillas corazÃ³n",
     "scope": "pet",
     "equip_slot": "pet_feet",
     "appearance": {
       "style": "sneakers",
       "color": "#efa0ab",
-      "model_asset": "assets/runner/accessories/shoes_heart_penguin_tailored.glb",
+      "model_asset": "assets/runner/accessories/restart_shoes_heart_penguin.glb",
       "fitted_model_space": true,
       "species_models": {
-        "penguin": "assets/runner/accessories/shoes_heart_penguin_tailored.glb",
-        "bear": "assets/runner/accessories/shoes_heart_bear_tailored.glb",
-        "pig": "assets/runner/accessories/shoes_heart_pig_tailored.glb",
-        "chick": "assets/runner/accessories/shoes_heart_chick_tailored.glb"
+        "penguin": "assets/runner/accessories/restart_shoes_heart_penguin.glb",
+        "bear": "assets/runner/accessories/restart_shoes_heart_bear.glb",
+        "pig": "assets/runner/accessories/restart_shoes_heart_pig.glb",
+        "chick": "assets/runner/accessories/restart_shoes_heart_chick.glb"
       },
       "skinned_model_space": true,
-      "asset_revision": "2e192116d227c816"
+      "asset_revision": "f908517b3c9449c8aae5",
+      "species_model_hashes": {
+        "penguin": "e45d7ee146f8419c7551e9d64b8d303b77acb49818238fa28214c0835cccd4c4",
+        "bear": "07424318d7ae6b31c05a6ef6fda30dc591156a3fce76522a5d940ded4126d609",
+        "pig": "2cf25dcd8113e6e8c18d98290bb48b690e5062c7d59c819e27866d80fb3d7e62",
+        "chick": "c5a68e0a9cb6496d3ee45a30e4d6bbc18f10a4f6ca3f58760f2e02d642167838"
+      },
+      "color_materials": [
+        "Algodón coral nuevo"
+      ],
+      "color_base": "#EC6276"
     },
     "collection": "Dulce",
-    "rarity": "Común",
-    "description": "Modelo 3D adaptado a pingüino, oso, cerdito y pollito.",
+    "rarity": "ComÃºn",
+    "description": "Modelo 3D adaptado a pingÃ¼ino, oso, cerdito y pollito.",
     "preview_only": true,
     "visible": true,
-    "price_coins": 220,
-    "complexity": "Detallado"
+    "price_coins": 130,
+    "complexity": "Detallado",
+    "color_price_coins": 10
   },
   {
     "item_key": "boots_rain",
@@ -659,24 +949,35 @@
     "appearance": {
       "style": "rain_boots",
       "color": "#b8dccb",
-      "model_asset": "assets/runner/accessories/boots_rain_penguin_tailored.glb",
+      "model_asset": "assets/runner/accessories/restart_boots_rain_penguin.glb",
       "fitted_model_space": true,
       "species_models": {
-        "penguin": "assets/runner/accessories/boots_rain_penguin_tailored.glb",
-        "bear": "assets/runner/accessories/boots_rain_bear_tailored.glb",
-        "pig": "assets/runner/accessories/boots_rain_pig_tailored.glb",
-        "chick": "assets/runner/accessories/boots_rain_chick_tailored.glb"
+        "penguin": "assets/runner/accessories/restart_boots_rain_penguin.glb",
+        "bear": "assets/runner/accessories/restart_boots_rain_bear.glb",
+        "pig": "assets/runner/accessories/restart_boots_rain_pig.glb",
+        "chick": "assets/runner/accessories/restart_boots_rain_chick.glb"
       },
       "skinned_model_space": true,
-      "asset_revision": "20278f8d76fa9839"
+      "asset_revision": "fe59adcf5fc6c83f8dc6",
+      "species_model_hashes": {
+        "penguin": "64230c05ef43040bc5a98f75c71f239271463d02a2232dbef214c9a79e0dcfdf",
+        "bear": "9f25b8262bea87f79cf4fec5286659a09e315a34a4b8416e9800a436eb640cc4",
+        "pig": "c5fc72484a9c80b09514146ca55a86e70ee6f5cb73f15b338fb5fede7c17925e",
+        "chick": "7f67043fe4a2e52ed17557942d552389bff72e40c2ca5e4702e30c7f9891ec60"
+      },
+      "color_materials": [
+        "plastic · #B8DCCB"
+      ],
+      "color_base": "#B8DCCB"
     },
     "collection": "Dulce",
-    "rarity": "Común",
-    "description": "Modelo 3D adaptado a pingüino, oso, cerdito y pollito.",
+    "rarity": "ComÃºn",
+    "description": "Modelo 3D adaptado a pingÃ¼ino, oso, cerdito y pollito.",
     "preview_only": true,
     "visible": true,
-    "price_coins": 200,
-    "complexity": "Detallado"
+    "price_coins": 140,
+    "complexity": "Detallado",
+    "color_price_coins": 10
   },
   {
     "item_key": "slippers_cloud",
@@ -686,24 +987,35 @@
     "appearance": {
       "style": "slippers",
       "color": "#fff2df",
-      "model_asset": "assets/runner/accessories/slippers_cloud_penguin_tailored.glb",
+      "model_asset": "assets/runner/accessories/restart_slippers_cloud_penguin.glb",
       "fitted_model_space": true,
       "species_models": {
-        "penguin": "assets/runner/accessories/slippers_cloud_penguin_tailored.glb",
-        "bear": "assets/runner/accessories/slippers_cloud_bear_tailored.glb",
-        "pig": "assets/runner/accessories/slippers_cloud_pig_tailored.glb",
-        "chick": "assets/runner/accessories/slippers_cloud_chick_tailored.glb"
+        "penguin": "assets/runner/accessories/restart_slippers_cloud_penguin.glb",
+        "bear": "assets/runner/accessories/restart_slippers_cloud_bear.glb",
+        "pig": "assets/runner/accessories/restart_slippers_cloud_pig.glb",
+        "chick": "assets/runner/accessories/restart_slippers_cloud_chick.glb"
       },
       "skinned_model_space": true,
-      "asset_revision": "c741e9a539b2cd35"
+      "asset_revision": "0df396b9a67a0614056a",
+      "species_model_hashes": {
+        "penguin": "2b1374af6aef790093211d43c63084b8fe7c8ed099f0a5c7cdd80481dbb7c976",
+        "bear": "1b2eb90dc63d41e298820cfa6ca4469ee46af65f119bb57bc3c91c2d13c87227",
+        "pig": "1baa832d82bb7aac04acbab8726c89c7e7a5d6f9f9a63c44a5b4b451fe656cb3",
+        "chick": "d8d38d119432ae92f5102efe70f36eba9f3f2945e588539ffb64c178829a0678"
+      },
+      "color_materials": [
+        "wool · #FFF2DF"
+      ],
+      "color_base": "#FFF2DF"
     },
     "collection": "Dulce",
-    "rarity": "Común",
-    "description": "Modelo 3D adaptado a pingüino, oso, cerdito y pollito.",
+    "rarity": "ComÃºn",
+    "description": "Modelo 3D adaptado a pingÃ¼ino, oso, cerdito y pollito.",
     "preview_only": true,
     "visible": true,
-    "price_coins": 140,
-    "complexity": "Esencial"
+    "price_coins": 100,
+    "complexity": "Esencial",
+    "color_price_coins": 10
   },
   {
     "item_key": "shoes_chic",
@@ -713,24 +1025,35 @@
     "appearance": {
       "style": "mary_jane",
       "color": "#f05280",
-      "model_asset": "assets/runner/accessories/shoes_chic_penguin_tailored.glb",
+      "model_asset": "assets/runner/accessories/restart_shoes_chic_penguin.glb",
       "fitted_model_space": true,
       "species_models": {
-        "penguin": "assets/runner/accessories/shoes_chic_penguin_tailored.glb",
-        "bear": "assets/runner/accessories/shoes_chic_bear_tailored.glb",
-        "pig": "assets/runner/accessories/shoes_chic_pig_tailored.glb",
-        "chick": "assets/runner/accessories/shoes_chic_chick_tailored.glb"
+        "penguin": "assets/runner/accessories/restart_shoes_chic_penguin.glb",
+        "bear": "assets/runner/accessories/restart_shoes_chic_bear.glb",
+        "pig": "assets/runner/accessories/restart_shoes_chic_pig.glb",
+        "chick": "assets/runner/accessories/restart_shoes_chic_chick.glb"
       },
       "skinned_model_space": true,
-      "asset_revision": "7ecbf99fdc1922e9"
+      "asset_revision": "54cfdbe2a438e74f3089",
+      "species_model_hashes": {
+        "penguin": "cd16728e81ac5155c1e1b92a17782b5363ecfad5d7859fe083d3784d33c62165",
+        "bear": "2a2606e8b6908b45384c60884b6a803ba604244c018b157c843044a7f449ad6a",
+        "pig": "3c50cffd7205003c39ed497b0e4ab68325bca1c33aa70a6fb17b6676e383440f",
+        "chick": "f60c1d17a8610ea1db29866535bc6000bd6cdb22013552ea960b611211a7b9d2"
+      },
+      "color_materials": [
+        "cotton · #F05280"
+      ],
+      "color_base": "#F05280"
     },
     "collection": "Dulce",
-    "rarity": "Común",
-    "description": "Modelo 3D adaptado a pingüino, oso, cerdito y pollito.",
+    "rarity": "ComÃºn",
+    "description": "Modelo 3D adaptado a pingÃ¼ino, oso, cerdito y pollito.",
     "preview_only": true,
     "visible": true,
-    "price_coins": 230,
-    "complexity": "Detallado"
+    "price_coins": 120,
+    "complexity": "Detallado",
+    "color_price_coins": 10
   },
   {
     "item_key": "sandals_summer",
@@ -740,23 +1063,34 @@
     "appearance": {
       "style": "sandals",
       "color": "#f2b29b",
-      "model_asset": "assets/runner/accessories/sandals_summer_penguin_tailored.glb",
+      "model_asset": "assets/runner/accessories/restart_sandals_summer_penguin.glb",
       "fitted_model_space": true,
       "species_models": {
-        "penguin": "assets/runner/accessories/sandals_summer_penguin_tailored.glb",
-        "bear": "assets/runner/accessories/sandals_summer_bear_tailored.glb",
-        "pig": "assets/runner/accessories/sandals_summer_pig_tailored.glb",
-        "chick": "assets/runner/accessories/sandals_summer_chick_tailored.glb"
+        "penguin": "assets/runner/accessories/restart_sandals_summer_penguin.glb",
+        "bear": "assets/runner/accessories/restart_sandals_summer_bear.glb",
+        "pig": "assets/runner/accessories/restart_sandals_summer_pig.glb",
+        "chick": "assets/runner/accessories/restart_sandals_summer_chick.glb"
       },
       "skinned_model_space": true,
-      "asset_revision": "d8c6bfc4b2849027"
+      "asset_revision": "eafe320bbff0217b95e3",
+      "species_model_hashes": {
+        "penguin": "980c43554d2c508c681e5d6e6ae4598cf9fe88dc895279212d2dbcd942229110",
+        "bear": "5740011c3604d2e545ddb32b471dd3735fb0889e17a7bd44410db8a601fba257",
+        "pig": "d0728228e670ea87a1dc1c7895701f0c9015142151661c0698a7be72539a0b41",
+        "chick": "224c25083b0062676fd478816a17093f454ad96822af2255cb3f6d787c0d4e75"
+      },
+      "color_materials": [
+        "cotton · #F2B29B"
+      ],
+      "color_base": "#F2B29B"
     },
     "collection": "Dulce",
-    "rarity": "Común",
-    "description": "Modelo 3D adaptado a pingüino, oso, cerdito y pollito.",
+    "rarity": "ComÃºn",
+    "description": "Modelo 3D adaptado a pingÃ¼ino, oso, cerdito y pollito.",
     "preview_only": true,
     "visible": true,
-    "price_coins": 150,
-    "complexity": "Esencial"
+    "price_coins": 100,
+    "complexity": "Esencial",
+    "color_price_coins": 10
   }
 ]

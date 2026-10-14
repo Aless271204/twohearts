@@ -2,7 +2,7 @@ import * as THREE from 'three';
 
 export function createNaturalRest(model) {
   const skeletons=new Set();
-  model.traverse(mesh=>{if(mesh.isSkinnedMesh)skeletons.add(mesh.skeleton);});
+  model.traverse(mesh=>{if(mesh.isSkinnedMesh&&!mesh.userData.cosmetic)skeletons.add(mesh.skeleton);});
   for(const skeleton of skeletons)skeleton.pose();
   model.updateMatrixWorld(true);
   const bones={};model.traverse(bone=>{if(bone.isBone)bones[bone.name.replace(/^mixamorig:?/,'')]=bone;});
