@@ -8,10 +8,11 @@ on:
 permissions:
   contents: read
 concurrency:
-  group: flutter-${{ github.event.pull_request.head.ref || github.ref_name }}
+  group: flutter-wardrobe-${{ github.event.pull_request.head.ref || github.ref_name }}
   cancel-in-progress: true
 jobs:
   verify:
+    timeout-minutes: 45
     outputs:
       production-signed: ${{ steps.signing.outputs.production }}
     runs-on: ubuntu-latest
@@ -21,6 +22,7 @@ jobs:
         with:
           node-version: '22'
       - run: node --test test/runner_replay_test.mjs test/runner_assets_test.mjs test/runner_feedback_test.mjs test/runner_mobile_test.mjs test/runner_art_test.mjs test/inventory_cosmetics_test.mjs test/runner_endless_test.mjs test/pet_accessory_fit_test.mjs test/runner_power_ups_test.mjs test/accessory_glb_test.mjs test/blender_head_fit_test.mjs test/imported_head_models_test.mjs test/room_3d_test.mjs
+        timeout-minutes: 5
       - run: node --test test/blender_wardrobe_test.mjs test/blender_complements_test.mjs test/pet_torso_rig_test.mjs test/pet_footwear_coverage_test.mjs test/pet_runner_jump_test.mjs test/pet_runner_run_test.mjs test/pet_sleeve_coverage_test.mjs
       - run: node --test test/admob_signature_test.mjs test/garment_colors_test.mjs test/original_wardrobe_coverage_test.mjs test/wardrobe_details_fit_test.mjs
       - run: python3 scripts/audit-wardrobe-topology.py --strict
