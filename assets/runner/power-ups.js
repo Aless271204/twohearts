@@ -1,4 +1,5 @@
 // Deterministic gameplay rules shared verbatim with the server.
+import {roll} from './patterns.js';
 export const POWER_UPS = Object.freeze({
   magnet: {label: 'Imán', icon: '🧲', seconds: 12, color: '#f05280'},
   shield: {label: 'Escudo', icon: '🛡', seconds: 20, color: '#6ddcca'},
@@ -11,7 +12,14 @@ export function tickPowers(powers, dt) { for (const key of Object.keys(POWER_UPS
 export function activatePower(powers, key) { if (!POWER_UPS[key]) throw Error('Unknown power-up'); powers[key] = POWER_UPS[key].seconds; }
 // First pickup after the introductory stretch, then every twelve rows.
 // Rotate types; put pickups in a safe lane ahead of the obstacle.
-export function powerForRow(row, distance, obstacleLane) {
+export function powerForRow(row, distance, obstacleLane, seed=null) {
+  if(seed!==null){
+    const block=Math.floor(row/10),cycle=Math.floor(block/5);
+    if(distance<180||row%10!==3+roll(seed,block,37)%5)return null;
+    const order=Object.keys(POWER_UPS);
+    for(let i=order.length-1;i>0;i--){const j=roll(seed,cycle*5+i,53)%(i+1);[order[i],order[j]]=[order[j],order[i]];}
+    return {kind:'power',power:order[block%5],lane:(obstacleLane+1+roll(seed,block,59)%2)%3,z:-56,y:.7};
+  }
   if (distance < 180 || row % 12 !== 8) return null;
   const key = Object.keys(POWER_UPS)[Math.floor(row / 12) % 5];
   return {kind: 'power', power: key, lane: (obstacleLane + 1) % 3, z: -56, y: .7};

@@ -330,7 +330,7 @@ class NidoWelcomeSurface extends StatelessWidget {
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
               colors: [
-                const Color(0xA6FFF9FA),
+                const Color(0x80FFF9FA),
                 const Color(0xEEFFF9FA),
                 const Color(0xFFFFF9FA),
               ],

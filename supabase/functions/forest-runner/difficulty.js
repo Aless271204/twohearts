@@ -1,5 +1,13 @@
 // One deterministic curve shared by rendering and reward validation.
 export function runnerDifficulty(distance, version = 5) {
+  if(version>=7){
+    const stages=[0,120,280,500,800,1200,1800,2500];
+    let level=0;for(let i=1;i<stages.length;i++)if(distance>=stages[i])level=i;
+    const target=10+level*2;
+    const t=level?Math.min(1,Math.max(0,(distance-stages[level])/35)):1;
+    const speed=level?target-2+2*t*t*(3-2*t):target;
+    return {speed,spacing:Math.max(22,speed*1.4),level:level+1};
+  }
   if (version >= 5) {
     if (distance <= 600) return runnerDifficulty(distance, 3);
     const speed = 14 + 10 * (1 - Math.exp(-(distance - 600) / 3000));

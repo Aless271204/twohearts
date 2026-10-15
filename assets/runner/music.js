@@ -1,4 +1,4 @@
-// Original tropical loop: marimba-like plucks, flute, bass and soft hand drums.
+// Adventure score: rising flute phrases, warm string pads, marimba and toms.
 export class AdventureMusic {
   constructor(){this.context=null;this.timer=null;this.muted=false;this.step=0;this.endTimer=null;this.generation=0;this.intensity=0;this.wantsPlayback=false;}
   async start(){
@@ -40,15 +40,15 @@ export class AdventureMusic {
     oscillators[0].onended=()=>{voice.disconnect();filter.disconnect();pan.disconnect();};
   }
   schedule(){
-    const eighth=60/(96+this.intensity*20)/2;
-    const chords=[[48,55,60,64,67],[43,55,59,62,67],[45,57,60,64,69],[41,53,57,60,65],[48,55,60,64,67],[45,57,60,64,69],[50,57,62,65,69],[43,55,59,62,67]];
-    const melody=[[72,76,79,76],[74,71,67,71],[72,76,81,79],[77,76,72,69],[76,79,84,79],[81,79,76,72],[74,77,81,77],[79,74,71,72]];
+    const eighth=60/(108+this.intensity*24)/2;
+    const chords=[[50,57,62,66,69],[45,57,61,64,69],[47,59,62,66,71],[43,55,59,62,67],[50,57,62,66,69],[47,59,62,66,71],[52,59,64,67,71],[45,57,61,64,69]];
+    const melody=[[74,78,81,86],[76,73,69,81],[74,78,83,81],[79,78,74,71],[78,81,86,88],[83,81,78,74],[76,79,83,86],[81,76,73,74]];
     while(this.next<this.context.currentTime+.25){
       const bar=Math.floor(this.step/8)%8,beat=this.step%8,chord=chords[bar];
       this.note(chord[[1,2,3,2,4,3,2,1][beat]],this.next,.75,.085);
       this.drum(this.next,beat%2===0?150:260,beat%2===0?.065:.035);
       if(beat===3||beat===6)this.drum(this.next+eighth*.5,340,.025);
-      if(beat===0){this.note(chord[0],this.next,2.5,.15);for(const note of chord.slice(2,4))this.note(note,this.next,2.7,.025,'pad');}
+      if(beat===0){this.drum(this.next,85,.085);this.note(chord[0],this.next,2.5,.15);for(const note of chord.slice(2,5))this.note(note,this.next,2.7,.035,'pad');}
       if(beat%2===0)this.note(melody[bar][beat/2],this.next,1.1,.07,'flute');
       this.step=(this.step+1)%64;this.next+=eighth;
     }

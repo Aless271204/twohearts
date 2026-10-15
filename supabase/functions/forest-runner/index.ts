@@ -1,4 +1,5 @@
 import { replayRun, replayChunk } from './replay.js';
+import {seedFromSession} from './patterns.js';
 
 const headers={'Access-Control-Allow-Origin':'*','Access-Control-Allow-Headers':'authorization, x-client-info, apikey, content-type','Access-Control-Allow-Methods':'POST, OPTIONS','Content-Type':'application/json'};
 const reply=(data:unknown,status=200)=>new Response(JSON.stringify(data),{status,headers});
@@ -21,10 +22,10 @@ Deno.serve(async req=>{
     if(!user.id)return reply({error:'Invalid user'},401);
     const raw=await req.text();if(raw.length>4000000)return reply({error:'Replay is too large'},413);
     const body=JSON.parse(raw);
-    if(body.action==='start')return reply({...await rpc('runner_start_session',{p_user_id:user.id}),powerup_version:6});
+    if(body.action==='start')return reply({...await rpc('runner_start_session',{p_user_id:user.id}),powerup_version:6,runner_version:7});
     if(body.action==='finish'||body.action==='checkpoint'){
       if(typeof body.session_id!=='string'||! /^[0-9a-f-]{36}$/i.test(body.session_id))return reply({error:'Invalid run'},400);
-      if([4,5,6].includes(body.replay_version)){
+      if([4,5,6,7].includes(body.replay_version)){
         if(!Number.isInteger(body.checkpoint_index)||body.checkpoint_index<1)return reply({error:'Invalid checkpoint'},400);
         const response=await fetch(`${url}/rest/v1/runner_sessions?id=eq.${body.session_id}&user_id=eq.${user.id}&select=status,checkpoint_state,checkpoint_index,checkpoint_result`,{headers:{apikey:serviceKey,Authorization:`Bearer ${serviceKey}`}});
         if(!response.ok)throw Error('Checkpoint unavailable');
@@ -32,7 +33,8 @@ Deno.serve(async req=>{
         if(body.checkpoint_index===saved.checkpoint_index)return reply(saved.checkpoint_result);
         if(saved.status!=='started'||body.checkpoint_index!==saved.checkpoint_index+1)throw Error('Checkpoint out of order');
         if(saved.checkpoint_state && (saved.checkpoint_state.version??4)!==body.replay_version)throw Error('Checkpoint version changed');
-        const result=replayChunk(body.frames,saved.checkpoint_state,body.replay_version);
+        const initial=saved.checkpoint_state??(body.replay_version>=7?{version:7,seed:seedFromSession(body.session_id.toLowerCase())}:null);
+        const result=replayChunk(body.frames,initial,body.replay_version);
         if((body.action==='finish')!==result.ended)throw Error('Terminal collision does not match checkpoint');
         return reply(await rpc('runner_save_checkpoint',{p_user_id:user.id,p_session_id:body.session_id,p_index:body.checkpoint_index,p_state:result.state,p_terminal:result.ended}));
       }

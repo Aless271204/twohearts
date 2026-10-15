@@ -10,7 +10,7 @@ import { createRunnerCoin } from './runner-coin.js';
 import { createBirds } from './forest-life.js';
 import { createLivingForest } from './living-forest.js';
 import { createBridgeBelt } from './loop-bridge.js';
-import {runnerRow} from './patterns.js';
+import {runnerRow,seedFromSession} from './patterns.js';
 import { runnerDifficulty } from './difficulty.js';
 import { AdventureMusic } from './music.js';
 import { limitTextureMemory } from './texture_budget.js';
@@ -83,8 +83,8 @@ let bestDistance=0;
 let sessionId=null,frames=[],pendingInputs=[],pendingSave=null,runElapsed=0;
 let lane=1,x=0,height=0,velocity=0,distance=0,coins=0,row=0,untilRow=0,last=performance.now();
 let toastUntil=0,animationId=0,needsRender=true;
-let replayVersion=6,powers=freshPowers();
-const speed=()=>runnerDifficulty(distance).speed*(replayVersion>=6?speedMultiplier(powers):1);
+let replayVersion=7,runSeed=0,powers=freshPowers();
+const speed=()=>runnerDifficulty(distance,replayVersion).speed*(replayVersion>=6?speedMultiplier(powers):1);
 // Read-only diagnostics for the standalone preview; absent in the app WebView.
 if(window.parent===window&&!window.RunnerBridge)window.runnerPreview=Object.freeze({stats:()=>({distance,height,lane,running,paused,coins,powers:{...powers},replayVersion,drawCalls:renderer.info.render.calls,triangles:renderer.info.render.triangles,textures:renderer.info.memory.textures,sceneryTime:visualTime,videoTime:backdrop.video?.currentTime??0,videoPaused:backdrop.video?.paused??true,fps:Math.round(measuredFps),renderScale}),rig:()=>{const bones=[];penguin?.traverse(o=>{if(o.isBone&&/(Head|Neck|Spine2|Hips|LeftUpLeg|RightUpLeg|LeftLeg|RightLeg|LeftFoot|RightFoot|LeftToeBase|RightToeBase|LeftToe_End|RightToe_End)$/.test(o.name))bones.push({name:o.name,position:penguin.worldToLocal(o.getWorldPosition(new THREE.Vector3())).toArray()});});const box=penguin?new THREE.Box3().setFromObject(penguin.children[0],true):null;return {bones,bounds:box?{min:box.min.toArray(),max:box.max.toArray()}:null};},screen:()=>{if(!penguin)return null;const b=new THREE.Box3().setFromObject(penguin,true),points=[];for(const x of [b.min.x,b.max.x])for(const y of [b.min.y,b.max.y])for(const z of [b.min.z,b.max.z])points.push(new THREE.Vector3(x,y,z).project(camera).toArray());return {points,feet:penguin.position.y,rotation:penguin.rotation.y};},replay:()=>({frames:frames.map(frame=>[frame[0],[...frame[1]]]),replay_version:replayVersion})});
 
@@ -128,16 +128,16 @@ function updatePowerHud(){
  host.hidden=active.length===0;
 }
 function spawnRow() {
-  const {obstacleLane,kind,coinLane,alternateLane}=runnerRow(row,distance);
+  const {obstacleLane,kind,coinLane,alternateLane,coins:coinPlan}=runnerRow(row,distance,replayVersion>=7?7:3,runSeed);
   const model=place(kind,[1.15,.85,.75],LANES[obstacleLane],-68,[]);model.position.y=floorY;
   objects.push({model,kind:'obstacle',x:LANES[obstacleLane],z:-68});
-  for(let i=0;i<5;i++)addCoin(coinLane,-60-i*4,i===2?1.8:.7);
+  for(const coin of coinPlan??Array.from({length:5},(_,i)=>({lane:coinLane,z:-60-i*4,y:i===2?1.8:.7})))addCoin(coin.lane,coin.z,coin.y);
   addCoin(alternateLane,-68,.7);
-  const pickup=replayVersion>=6?powerForRow(row,distance,obstacleLane):null;if(pickup)addPower(pickup);row++;
+  const pickup=replayVersion>=6?powerForRow(row,distance,obstacleLane,replayVersion>=7?runSeed:null):null;if(pickup)addPower(pickup);row++;
 }
 let hudKey='',lastMilestone=0,frameSample=0,frameCount=0,measuredFps=60,lastHudTime=0;
 function hud(){
- const level=runnerDifficulty(distance).level,m=Math.floor(distance),key=`${level}|${m}|${coins}|${bestDistance}`;
+ const level=runnerDifficulty(distance,replayVersion).level,m=Math.floor(distance),key=`${level}|${m}|${coins}|${bestDistance}`;
  if(key===hudKey)return;hudKey=key;
  $('difficulty').textContent=`Ritmo ${level}`;$('coins').textContent=`♥ ${coins} pts`;$('distance').textContent=`${m} m`;
  $('goal').textContent=`Siguiente hito · ${(Math.floor(distance/500)+1)*500} m`;
@@ -168,7 +168,7 @@ start.onclick=async()=>{
   if(pendingSave){await saveRun();return;}
   if(paused){togglePause();return;}
   start.disabled=true;
-  try{const session=await requestHost('start');sessionId=session.session_id??null;replayVersion=session.guest||session.powerup_version===6?6:5;bestDistance=session.best_distance??bestDistance;reset();}
+  try{const session=await requestHost('start');sessionId=session.session_id??null;replayVersion=session.guest?7:session.runner_version??session.powerup_version??5;runSeed=sessionId?seedFromSession(sessionId):crypto.getRandomValues(new Uint32Array(1))[0];bestDistance=session.best_distance??bestDistance;reset();}
   catch(error){showPanel('No pudimos iniciar la partida',error.message,'Volver a intentar');}
   finally{start.disabled=false;}
 };
@@ -241,7 +241,7 @@ function frame(now){
     const travel=speed()*dt;distance+=travel;[height,velocity]=jumpStep(height,velocity,dt);
     if(height===0)powers.jumps=0;
     if(previousHeight>0&&height===0){landingPulse=1;effects.burst(x,floorY+.05,0,true);music.effect('land');}
-    x+=(LANES[lane]-x)*(1-Math.exp(-dt*10));untilRow-=travel;if(untilRow<=0){spawnRow();untilRow+=runnerDifficulty(distance).spacing;}
+    x+=(LANES[lane]-x)*(1-Math.exp(-dt*10));untilRow-=travel;if(untilRow<=0){spawnRow();untilRow+=runnerDifficulty(distance,replayVersion).spacing;}
     for(const model of paths)model.position.z=distance%12;
     for(let i=objects.length-1;i>=0;i--){
       const item=objects[i],previous=item.z;item.z+=travel;item.model.position.z=item.z;
@@ -283,7 +283,7 @@ function frame(now){
       const next=actions[name];next.reset().fadeIn(.16).play();
       if(activeAction)actions[activeAction].fadeOut(.16);activeAction=name;
     }
-    if(!paused){music.intensity=Math.max(0,(speed()-14)/10);if(actions.Running)actions.Running.timeScale=Math.min(1.7,speed()/14);if(useTailoredMotion&&actions.Wardrobe_Run)actions.Wardrobe_Run.timeScale=Math.min(1.7,speed()/14);if(reviewPhase!==null){actions[reviewMotion].timeScale=1;mixer.setTime(actions[reviewMotion].getClip().duration*reviewPhase);}else mixer.update(dt);}
+    if(!paused){music.intensity=Math.max(0,Math.min(1,(speed()-10)/14));if(actions.Running)actions.Running.timeScale=Math.min(1.7,speed()/14);if(useTailoredMotion&&actions.Wardrobe_Run)actions.Wardrobe_Run.timeScale=Math.min(1.7,speed()/14);if(reviewPhase!==null){actions[reviewMotion].timeScale=1;mixer.setTime(actions[reviewMotion].getClip().duration*reviewPhase);}else mixer.update(dt);}
     if(petOnly){
       if(!petOrbit&&!petSuspended&&!reviewMotion)petMotion?.update(dt);
       const feet=[];penguin.traverse(o=>{if(o.isBone&&/(LeftToeBase|RightToeBase)$/.test(o.name))feet.push(o.getWorldPosition(new THREE.Vector3()).y);});

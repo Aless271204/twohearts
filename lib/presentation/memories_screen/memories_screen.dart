@@ -19,7 +19,7 @@ import './widgets/create_album_sheet.dart';
 
 class MemoriesScreen extends StatefulWidget {
   final List<MemoryAlbum>? previewAlbums;
-  const MemoriesScreen({super.key,this.previewAlbums});
+  const MemoriesScreen({super.key, this.previewAlbums});
 
   @override
   State<MemoriesScreen> createState() => _MemoriesScreenState();
@@ -48,7 +48,22 @@ class _MemoriesScreenState extends State<MemoriesScreen> {
   @override
   void initState() {
     super.initState();
-    if(widget.previewAlbums==null) _loadCoupleData(); else { _loadingProfile=false;_coupleData={..._coupleData,'myName':'Tú','partnerName':'Tu pareja','myNickname':'Tú','partnerNickname':'Tu pareja','startDate':DateTime.now().subtract(const Duration(days:365)),'myCity':'Quito, Ecuador','partnerCity':'Barcelona, España','distanceKm':9350}; }
+    if (widget.previewAlbums == null)
+      _loadCoupleData();
+    else {
+      _loadingProfile = false;
+      _coupleData = {
+        ..._coupleData,
+        'myName': 'Tú',
+        'partnerName': 'Tu pareja',
+        'myNickname': 'Tú',
+        'partnerNickname': 'Tu pareja',
+        'startDate': DateTime.now().subtract(const Duration(days: 365)),
+        'myCity': 'Quito, Ecuador',
+        'partnerCity': 'Barcelona, España',
+        'distanceKm': 9350,
+      };
+    }
     ProfileChangeNotifier.instance.addListener(_onProfileChanged);
   }
 
@@ -100,7 +115,12 @@ class _MemoriesScreenState extends State<MemoriesScreen> {
     }
   }
 
-  String _getDailyQuote(){final quotes=AppLanguage.instance.quotes;final now=DateTime.now();return quotes[now.difference(DateTime(now.year)).inDays%quotes.length]['text']!;}
+  String _getDailyQuote() {
+    final quotes = AppLanguage.instance.quotes;
+    final now = DateTime.now();
+    return quotes[now.difference(DateTime(now.year)).inDays %
+        quotes.length]['text']!;
+  }
 
   @override
   void dispose() {
@@ -117,17 +137,62 @@ class _MemoriesScreenState extends State<MemoriesScreen> {
         : (myNick.isNotEmpty ? myNick : '💑 Nosotros');
 
     return Scaffold(
-      backgroundColor: Colors.transparent,
+      backgroundColor: const Color(0xFFFFF9FA),
       body: SafeArea(
         bottom: false,
         child: Column(
           children: [
-            HeartHeader(title:'Nuestro Nido',subtitle:coupleLabel,leading:const Icon(Icons.cottage_rounded,color:AppTheme.primary,size:30),actions:[HeartIconButton(icon:Icons.settings_outlined,tooltip:'Ajustes',onPressed:()=>context.push(AppRoutes.profileScreen))]),
+            Container(
+              margin: const EdgeInsets.fromLTRB(12, 10, 12, 0),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(28),
+                gradient: const LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    Color(0xFFFFE9E5),
+                    Color(0xFFFFF2F7),
+                    Color(0xFFEEF7F1),
+                  ],
+                ),
+                border: Border.all(color: Colors.white),
+                boxShadow: const [
+                  BoxShadow(
+                    color: Color(0x0FBD8298),
+                    blurRadius: 20,
+                    offset: Offset(0, 5),
+                  ),
+                ],
+              ),
+              child: HeartHeader(
+                title: 'Nuestro Nido',
+                subtitle: coupleLabel,
+                leading: Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(
+                    Icons.cottage_rounded,
+                    color: AppTheme.primary,
+                    size: 28,
+                  ),
+                ),
+                actions: [
+                  HeartIconButton(
+                    icon: Icons.settings_outlined,
+                    tooltip: 'Ajustes',
+                    onPressed: () => context.push(AppRoutes.profileScreen),
+                  ),
+                ],
+              ),
+            ),
             const SizedBox(height: 16),
             Expanded(
               child: _AlbumJuntosTab(
                 coupleData: _coupleData,
-                previewAlbums:widget.previewAlbums,
+                previewAlbums: widget.previewAlbums,
                 daysTogether: _daysTogether,
                 realtimeDistance: _realtimeDistance,
                 onRealtimeToggle: (val) =>
@@ -178,12 +243,17 @@ class _AlbumJuntosTabState extends State<_AlbumJuntosTab> {
   @override
   void initState() {
     super.initState();
-    _albumsStream = widget.previewAlbums!=null?Stream.value(widget.previewAlbums!):MemoryAlbumService.instance.albumsStream();
-    _tripsStream = widget.previewAlbums!=null?Stream.value([]):SupabaseService.instance.tripsStream();
+    _albumsStream = widget.previewAlbums != null
+        ? Stream.value(widget.previewAlbums!)
+        : MemoryAlbumService.instance.albumsStream();
+    _tripsStream = widget.previewAlbums != null
+        ? Stream.value([])
+        : SupabaseService.instance.tripsStream();
   }
 
   void _showCreateAlbumSheet(BuildContext context) {
-    showModalBottomSheet(useRootNavigator: true,
+    showModalBottomSheet(
+      useRootNavigator: true,
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
@@ -230,54 +300,63 @@ class _AlbumJuntosTabState extends State<_AlbumJuntosTab> {
                 .where((c) => c.isNotEmpty)
                 .toList();
 
-            return NidoWelcomeSurface(child:SingleChildScrollView(
-              padding: const EdgeInsets.only(bottom: 24),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const DailyQuoteWidget(),
+            return NidoWelcomeSurface(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.only(bottom: 24),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const DailyQuoteWidget(),
 
-                  // Couple stats header
-                  CoupleHeaderWidget(
-                    myName: widget.coupleData['myName'] as String,
-                    partnerName: widget.coupleData['partnerName'] as String,
-                    daysTogether: widget.daysTogether,
-                    distanceKm: widget.coupleData['distanceKm'] as int,
-                    myCity: widget.coupleData['myCity'] as String,
-                    partnerCity: widget.coupleData['partnerCity'] as String,
-                  ),
+                    // Couple stats header
+                    CoupleHeaderWidget(
+                      myName: widget.coupleData['myName'] as String,
+                      partnerName: widget.coupleData['partnerName'] as String,
+                      daysTogether: widget.daysTogether,
+                      distanceKm: widget.coupleData['distanceKm'] as int,
+                      myCity: widget.coupleData['myCity'] as String,
+                      partnerCity: widget.coupleData['partnerCity'] as String,
+                    ),
 
-                  // Map
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
-                    child: Text(
-                      'Nuestro mapa',
-                      style: GoogleFonts.dmSans(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w700,
-                        color: const Color(0xFF1A1A1A),
+                    // Map
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+                      child: Text(
+                        'Nuestro mapa',
+                        style: GoogleFonts.dmSans(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w700,
+                          color: const Color(0xFF1A1A1A),
+                        ),
                       ),
                     ),
-                  ),
-                  CoupleMapWidget(
-                    myCity: widget.coupleData['myCity'] as String,
-                    partnerCity: widget.coupleData['partnerCity'] as String,
-                    travelCities: travelCities,
-                    realtimeEnabled: widget.realtimeDistance,
-                    onRealtimeToggle: widget.onRealtimeToggle,
-                  ),
+                    CoupleMapWidget(
+                      myCity: widget.coupleData['myCity'] as String,
+                      partnerCity: widget.coupleData['partnerCity'] as String,
+                      travelCities: travelCities,
+                      realtimeEnabled: widget.realtimeDistance,
+                      onRealtimeToggle: widget.onRealtimeToggle,
+                    ),
 
-                  // ── NUESTRO ÁLBUM JUNTOS ──────────────────────────────────
-                  const SizedBox(height: 24),
-                  _buildAlbumHeader(context),
-                  const SizedBox(height: 16),
-                  _buildViewFilterChips(),
-                  const SizedBox(height: 16),
-                  if (albumSnap.connectionState == ConnectionState.waiting && !albumSnap.hasData) const Padding(padding: EdgeInsets.all(20), child: RoseLoading(label: 'Preparamos su álbum…')) else _buildAlbumContent(context, albums, trips),
-                  if (_viewMode == _AlbumViewMode.todos) _legacyPhotos(),
-                ],
+                    // ── NUESTRO ÁLBUM JUNTOS ──────────────────────────────────
+                    const SizedBox(height: 24),
+                    _buildAlbumHeader(context),
+                    const SizedBox(height: 16),
+                    _buildViewFilterChips(),
+                    const SizedBox(height: 16),
+                    if (albumSnap.connectionState == ConnectionState.waiting &&
+                        !albumSnap.hasData)
+                      const Padding(
+                        padding: EdgeInsets.all(20),
+                        child: RoseLoading(label: 'Preparamos su álbum…'),
+                      )
+                    else
+                      _buildAlbumContent(context, albums, trips),
+                    if (_viewMode == _AlbumViewMode.todos) _legacyPhotos(),
+                  ],
+                ),
               ),
-            ));
+            );
           },
         );
       },
@@ -326,7 +405,24 @@ class _AlbumJuntosTabState extends State<_AlbumJuntosTab> {
     );
   }
 
-  Widget _buildAlbumHeader(BuildContext context)=>Padding(padding:const EdgeInsets.symmetric(horizontal:20),child:Row(children:[const Expanded(child:Text('Nuestro álbum',style:TextStyle(fontSize:18,fontWeight:FontWeight.w700))),HeartButton(label:'Crear',icon:Icons.add, onPressed:()=>_showCreateAlbumSheet(context))]));
+  Widget _buildAlbumHeader(BuildContext context) => Padding(
+    padding: const EdgeInsets.symmetric(horizontal: 20),
+    child: Row(
+      children: [
+        const Expanded(
+          child: Text(
+            'Nuestro álbum',
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
+          ),
+        ),
+        HeartButton(
+          label: 'Crear',
+          icon: Icons.add,
+          onPressed: () => _showCreateAlbumSheet(context),
+        ),
+      ],
+    ),
+  );
 
   Widget _buildViewFilterChips() {
     final filters = [
@@ -785,12 +881,23 @@ class _AlbumJuntosTabState extends State<_AlbumJuntosTab> {
 
   // ── Albums horizontal carousel ─────────────────────────────────────────────
 
-  Widget _buildAlbumsCarousel(BuildContext context, List<MemoryAlbum> albums) => Padding(
-    padding: const EdgeInsets.symmetric(horizontal: 20),
-    child: LayoutBuilder(builder: (context, constraints) => Wrap(spacing: 12, runSpacing: 12, children: [
-      for (final album in albums) SizedBox(width: (constraints.maxWidth - 12) / 2, child: _AlbumCarouselCard(album: album)),
-    ])),
-  );
+  Widget _buildAlbumsCarousel(BuildContext context, List<MemoryAlbum> albums) =>
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        child: LayoutBuilder(
+          builder: (context, constraints) => Wrap(
+            spacing: 12,
+            runSpacing: 12,
+            children: [
+              for (final album in albums)
+                SizedBox(
+                  width: (constraints.maxWidth - 12) / 2,
+                  child: _AlbumCarouselCard(album: album),
+                ),
+            ],
+          ),
+        ),
+      );
 
   // ── Trips horizontal carousel ──────────────────────────────────────────────
 
@@ -1049,7 +1156,8 @@ class _AlbumCarouselCardState extends State<_AlbumCarouselCard> {
   }
 
   void _showAlbumDetail(BuildContext context, MemoryAlbum album) {
-    showModalBottomSheet(useRootNavigator: true,
+    showModalBottomSheet(
+      useRootNavigator: true,
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,

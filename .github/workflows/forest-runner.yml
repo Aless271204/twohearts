@@ -21,7 +21,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - run: node --test test/runner_replay_test.mjs test/runner_assets_test.mjs test/runner_feedback_test.mjs test/runner_mobile_test.mjs test/runner_art_test.mjs test/inventory_cosmetics_test.mjs test/runner_endless_test.mjs test/pet_accessory_fit_test.mjs test/runner_power_ups_test.mjs test/accessory_glb_test.mjs test/blender_head_fit_test.mjs test/imported_head_models_test.mjs test/room_3d_test.mjs
+      - run: node --test test/runner_variety_test.mjs test/runner_replay_test.mjs test/runner_assets_test.mjs test/runner_feedback_test.mjs test/runner_mobile_test.mjs test/runner_art_test.mjs test/inventory_cosmetics_test.mjs test/runner_endless_test.mjs test/pet_accessory_fit_test.mjs test/runner_power_ups_test.mjs test/accessory_glb_test.mjs test/blender_head_fit_test.mjs test/imported_head_models_test.mjs test/room_3d_test.mjs
         timeout-minutes: 5
       - run: node --test test/blender_wardrobe_test.mjs test/blender_complements_test.mjs test/pet_torso_rig_test.mjs test/pet_footwear_coverage_test.mjs test/pet_runner_jump_test.mjs test/pet_runner_run_test.mjs test/pet_sleeve_coverage_test.mjs
       - run: node --test test/admob_signature_test.mjs test/garment_colors_test.mjs test/original_wardrobe_coverage_test.mjs test/wardrobe_details_fit_test.mjs
@@ -133,16 +133,16 @@ jobs:
           GH_REPO: ${{ github.repository }}
           SOURCE_SHA: ${{ github.sha }}
         run: |
-          mv apk/app-release.apk apk/NIDO-1.2.0-cofre.apk
-          sha256sum apk/NIDO-1.2.0-cofre.apk > apk/NIDO-1.2.0-cofre.apk.sha256
+          mv apk/app-release.apk apk/NIDO-1.2.1-aventura.apk
+          sha256sum apk/NIDO-1.2.1-aventura.apk > apk/NIDO-1.2.1-aventura.apk.sha256
           cat > release-notes.txt <<'NOTES'
-          NIDO 1.2.0: habitacion inmersiva y cofre, precios revisados, colores textiles por 10 de oro guardados en servidor.
+          NIDO 1.2.1: recorrido variable por partida, monedas y power-ups aleatorios, velocidad progresiva, musica original de aventura y hogar con fondos suaves.
           Paquetes de 1000/2000/5000 a US$1.99/2.99/4.99. Pagos reales pendientes de configurar las tiendas.
           SDK AdMob integrado: cinco videos cada doce horas, tres de oro por video confirmado mediante SSV.
           Este APK usa anuncios de prueba: no generan oro real ni ingresos.
           Mascaras corregidas para conservar el cuello original. Articulos pendientes siguen indicados como proximamente.
           Vestuario revisado en navegador: no certificamos igualdad exacta con la ilustracion ni ausencia de penetraciones en todas las fases.
-          Version: 1.2.0+15
+          Version: 1.2.1+16
           NOTES
           echo "Commit: $SOURCE_SHA" >> release-notes.txt
-          gh release create nido-1.2.0 apk/NIDO-1.2.0-cofre.apk apk/NIDO-1.2.0-cofre.apk.sha256 --target "$SOURCE_SHA" --title "NIDO 1.2.0 - Cofre y personalizacion" --notes-file release-notes.txt --prerelease
+          gh release create nido-1.2.1 apk/NIDO-1.2.1-aventura.apk apk/NIDO-1.2.1-aventura.apk.sha256 --target "$SOURCE_SHA" --title "NIDO 1.2.1 - Aventura y hogar" --notes-file release-notes.txt --prerelease
