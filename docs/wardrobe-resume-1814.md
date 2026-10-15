@@ -331,3 +331,5 @@ Entrega 1.2.1: corrida CI 38660699207 completada con éxito. Android smoke corre
 - 96 GLB optimizados comparten 43 texturas con bytes idénticos; auditoría de geometría, materiales, nodos, animaciones y texturas pasó. Históricos quedan en código pero fuera del APK.
 - No incorporar los experimentos locales de hombro ni la modificación local del movimiento. Están fuera de esta entrega.
 - Flutter: 22 pruebas de nuevas funciones y 3 del bot aprobadas. SQL online y retratos con dos cuentas y rechazo de tercero aprobado. Pendiente confirmar compilación Android y pruebas visuales de esta versión.
+
+Correcciones posteriores: el Stack de habitación se encogía a 52 px; se forzó expansión y una prueba real mide viewport y ambas mitades, conservando el mismo elemento de escena. Captura real: outputs/room-split-preview.png. Se añadió desactivación local persistente de GPS para no volver a publicar si falla la red o se reinicia. Cinco pruebas de ubicación/panel aprobadas. Primer CI falló por Maven 429, no por código; se añadió caché Gradle y un único reintento con espera. No reincorporar cambios locales de vestuario/movimiento.

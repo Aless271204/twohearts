@@ -48,6 +48,50 @@ void main() {
       expect(old.live, isFalse);
     },
   );
+  test(
+    'turning sharing off remains off after a network failure and app restart',
+    () async {
+      var online = false;
+      final point = {
+        'mine': {
+          'sharing': true,
+          'lat': 1,
+          'lon': 2,
+          'located_at': DateTime.now().toIso8601String(),
+        },
+        'partner': null,
+      };
+      Future<dynamic> request(String action, dynamic position) async {
+        if (!online) throw StateError('offline');
+        return point;
+      }
+
+      final service = CoupleLocationService(
+        accountResolver: () => 'offline-test',
+        request: request,
+      );
+      service.mine = SharedLocationPoint.parse(point['mine']);
+      await service.setSharing(false);
+      expect(service.sharing, isFalse);
+      expect(service.mine!.point!.latitude, 1);
+      expect(
+        (await SharedPreferences.getInstance()).getBool(
+          'location_enabled_offline-test',
+        ),
+        isFalse,
+      );
+      service.dispose();
+      online = true;
+      final restarted = CoupleLocationService(
+        accountResolver: () => 'offline-test',
+        request: request,
+      );
+      await restarted.start();
+      expect(restarted.sharing, isFalse);
+      expect(restarted.mine!.point!.longitude, 2);
+      restarted.dispose();
+    },
+  );
   testWidgets('the account code entry opens the linking section', (
     tester,
   ) async {

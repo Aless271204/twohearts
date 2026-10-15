@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/widgets.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'supabase_service.dart';
 
 class SharedLocationPoint {
@@ -41,6 +42,15 @@ class SharedLocationPoint {
 
 /// Foreground-only, mutual-partner sharing. Turning off keeps the last point.
 class CoupleLocationService extends ChangeNotifier with WidgetsBindingObserver {
+  CoupleLocationService({
+    String? Function()? accountResolver,
+    Future<dynamic> Function(String, Position?)? request,
+  }) : _resolveAccount = accountResolver ?? _account,
+       _rpc = request {
+    _uid = _resolveAccount();
+  }
+  final String? Function() _resolveAccount;
+  final Future<dynamic> Function(String, Position?)? _rpc;
   SharedLocationPoint? mine, partner;
   String? error;
   bool busy = false,
@@ -48,11 +58,12 @@ class CoupleLocationService extends ChangeNotifier with WidgetsBindingObserver {
       _refreshing = false,
       _publishing = false;
   bool _active = true;
+  bool _locallyDisabled = false, _stopPending = false;
   int _generation = 0;
   StreamSubscription<Position>? _positions;
   Timer? _poll, _fixTimer;
   DateTime _lastPublish = DateTime.fromMillisecondsSinceEpoch(0);
-  bool get sharing => mine?.sharing == true;
+  bool get sharing => !_locallyDisabled && mine?.sharing == true;
   static String? _account() {
     try {
       return SupabaseService.instance.currentUser?.id;
@@ -61,28 +72,41 @@ class CoupleLocationService extends ChangeNotifier with WidgetsBindingObserver {
     }
   }
 
-  final String? _uid = _account();
-  bool get _valid => !_disposed && _uid != null && _account() == _uid;
+  late final String? _uid;
+  bool get _valid => !_disposed && _uid != null && _resolveAccount() == _uid;
   Future<dynamic> _request(String action, {Position? position}) =>
-      SupabaseService.instance.client.rpc(
-        'couple_location',
-        params: {
-          'p_action': action,
-          if (position != null) ...{
-            'p_lat': position.latitude,
-            'p_lon': position.longitude,
-          },
-        },
-      );
+      (_rpc != null
+              ? _rpc!(action, position)
+              : SupabaseService.instance.client.rpc(
+                  'couple_location',
+                  params: {
+                    'p_action': action,
+                    if (position != null) ...{
+                      'p_lat': position.latitude,
+                      'p_lon': position.longitude,
+                    },
+                  },
+                ))
+          .timeout(const Duration(seconds: 12));
   void _accept(dynamic value) {
     if (!_valid) return;
     mine = SharedLocationPoint.parse(value['mine']);
+    if (mine?.sharing == false) _stopPending = false;
+    if (_locallyDisabled && mine?.sharing == true) _stopPending = true;
+    if (_locallyDisabled && mine != null) {
+      mine = SharedLocationPoint(mine!.point, false, mine!.at);
+    }
     partner = SharedLocationPoint.parse(value['partner']);
     notifyListeners();
   }
 
   Future<void> start() async {
     WidgetsBinding.instance.addObserver(this);
+    if (_uid != null) {
+      final prefs = await SharedPreferences.getInstance();
+      _locallyDisabled = prefs.getBool('location_enabled_$_uid') == false;
+      _stopPending = _locallyDisabled;
+    }
     await refresh();
     if (!_valid) return;
     if (sharing) await _track(prompt: false);
@@ -109,7 +133,7 @@ class CoupleLocationService extends ChangeNotifier with WidgetsBindingObserver {
     _refreshing = true;
     final generation = _generation;
     try {
-      final raw = await _request('snapshot');
+      final raw = await _request(_stopPending ? 'disable' : 'snapshot');
       if (!busy && generation == _generation) _accept(raw);
     } catch (_) {
       if (_valid) {
@@ -134,14 +158,40 @@ class CoupleLocationService extends ChangeNotifier with WidgetsBindingObserver {
     if (!_valid || busy) return;
     busy = true;
     error = null;
+    if (!enabled) {
+      // Stop locally before any storage/network wait. An offline failure must
+      // never let a later timer or app restart publish another position.
+      _locallyDisabled = true;
+      _stopPending = true;
+      ++_generation;
+      _positions?.cancel();
+      _positions = null;
+      if (mine != null)
+        mine = SharedLocationPoint(mine!.point, false, mine!.at);
+    }
     notifyListeners();
     try {
+      if (!enabled) {
+        await (await SharedPreferences.getInstance()).setBool(
+          'location_enabled_$_uid',
+          false,
+        );
+      }
       if (enabled && !await _permission(true))
         throw StateError('Activa el permiso de ubicación para compartirla.');
       ++_generation;
       await _positions?.cancel();
       _positions = null;
-      _accept(await _request(enabled ? 'enable' : 'disable'));
+      final result = await _request(enabled ? 'enable' : 'disable');
+      if (enabled) {
+        _locallyDisabled = false;
+        _stopPending = false;
+        await (await SharedPreferences.getInstance()).setBool(
+          'location_enabled_$_uid',
+          true,
+        );
+      }
+      _accept(result);
       if (enabled && _valid) await _track(prompt: false);
     } catch (_) {
       if (_valid)
