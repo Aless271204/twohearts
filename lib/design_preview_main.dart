@@ -207,7 +207,7 @@ class _DesignReviewState extends State<DesignReview> {
                             child: screen,
                           ),
                         ),
-                        bottomNavigationBar: HeartNavigation(
+                        bottomNavigationBar: selected == 3 ? null : HeartNavigation(
                           selected: selected,
                           onSelect: (i) {
                             SceneAudioPolicy.instance.update(tab: i);

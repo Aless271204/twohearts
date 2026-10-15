@@ -43,17 +43,7 @@ def verify(apk,previous=None):
         identity=manifest_identity(archive.read('AndroidManifest.xml'))
         expected=re.search(r'^version:\s*([^+\s]+)\+(\d+)',(ROOT/'pubspec.yaml').read_text(),re.M)
         assert identity=={'package':'com.example.twohearts','versionName':expected[1],'versionCode':int(expected[2])},identity
-        for filename in ('blender-wardrobe-models.json','blender-complement-models.json'):
-            name='assets/runner/'+filename
-            local=json.loads((ROOT/name).read_text(encoding='utf-8'))
-            packed=json.loads(archive.read('assets/flutter_assets/'+name))
-            assert packed==local,'Stale packaged catalog: '+filename
-            for item in local:
-                for variant in item['variants']:
-                    content=archive.read('assets/flutter_assets/'+variant['path'])
-                    assert hashlib.sha256(content).hexdigest()==variant['sha256'],variant['path']
-                    checked+=1
-        for file in ('game.js','cosmetics.js','pet-garment-rig.js','pet-garment-colors.js','pet-sleeve-coverage.js','pet-footwear-coverage.js','pet-runner-jump.js','pet-runner-run.js'):
+        for file in ('music.js','patterns.js','power-ups.js','difficulty.js','game.js','cosmetics.js','pet-garment-rig.js','pet-garment-colors.js','pet-sleeve-coverage.js','pet-footwear-coverage.js','pet-runner-jump.js','pet-runner-run.js'):
             name='assets/runner/'+file
             local=(ROOT/name).read_text(encoding='utf-8-sig').replace('\r\n','\n')
             packed=archive.read('assets/flutter_assets/'+name).decode('utf-8-sig').replace('\r\n','\n')
@@ -72,6 +62,16 @@ def verify(apk,previous=None):
             for species,asset in appearance.get('species_models',{}).items():
                 assert hashlib.sha256(archive.read('assets/flutter_assets/'+asset)).hexdigest()==appearance['species_model_hashes'][species],asset
                 checked+=1
+                raw=archive.read('assets/flutter_assets/'+asset)
+                length=struct.unpack_from('<I',raw,12)[0];model=json.loads(raw[20:20+length])
+                for image in model.get('images',[]):
+                    if 'uri' in image:
+                        path=(Path(asset).parent/image['uri']).as_posix()
+                        image_bytes=archive.read('assets/flutter_assets/'+path)
+                        assert hashlib.sha256(image_bytes).hexdigest()==Path(path).stem,path
+        models={path for item in canonical if item.get('visible',True) for path in item['appearance'].get('species_models',{}).values()}
+        packed_accessories={n.removeprefix('assets/flutter_assets/') for n in archive.namelist() if n.startswith('assets/flutter_assets/assets/runner/accessories/') and n.endswith('.glb')}
+        assert packed_accessories==models,'Retired or missing packaged accessories'
     certificate=signer(apk)
     if previous:assert certificate==signer(previous),'Signing identity changed'
     result={'apk':str(apk),'identity':identity,'bytes':apk.stat().st_size,'models_checked':checked,'thumbnails_checked':len(report),

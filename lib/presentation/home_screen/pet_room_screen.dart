@@ -1,3 +1,4 @@
+import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import '../../core/store_packages.dart';
 import '../../core/pet_model_catalog.dart';
@@ -24,6 +25,7 @@ class PetRoomScreen extends StatefulWidget {
 class _PetRoomScreenState extends State<PetRoomScreen> {
   final inventory = InventoryService.instance, pet = SharedPetService.instance;
   int reaction = 0;
+  bool decorating = false;
   @override
   void initState() {
     super.initState();
@@ -46,122 +48,284 @@ class _PetRoomScreenState extends State<PetRoomScreen> {
     super.dispose();
   }
 
-  Future<void> _shop({bool owned = false}) async {
-    await Navigator.of(context, rootNavigator: true).push(
-      MaterialPageRoute<void>(
-        builder: (_) => ShopScreen(
-          initialScope: 'room',
-          initialOwned: owned,
-          previewMode: widget.previewMode,
-        ),
-      ),
-    );
-  }
-
   Future<void> _chest() => showModalBottomSheet<void>(
     context: context,
     useRootNavigator: true,
     isScrollControlled: true,
+    backgroundColor: const Color(0xFFFFF9FA),
+    barrierColor: const Color(0x55756672),
     showDragHandle: true,
     builder: (_) => PetChest(previewMode: widget.previewMode),
+  );
+  Future<void> _family() => showModalBottomSheet<void>(
+    context: context,
+    useRootNavigator: true,
+    isScrollControlled: true,
+    backgroundColor: const Color(0xFFFFF9FA),
+    barrierColor: const Color(0x55756672),
+    showDragHandle: true,
+    builder: (_) => const PetFamilySheet(),
+  );
+  Widget _roomIcon(IconData icon, String label, VoidCallback action) => Padding(
+    padding: const EdgeInsets.only(right: 9),
+    child: DecoratedBox(
+      decoration: BoxDecoration(
+        color: Colors.white.withAlpha(240),
+        shape: BoxShape.circle,
+        boxShadow: const [
+          BoxShadow(
+            color: Color(0x167B5666),
+            blurRadius: 14,
+            offset: Offset(0, 4),
+          ),
+        ],
+      ),
+      child: IconButton(
+        tooltip: label,
+        color: const Color(0xFFB84266),
+        onPressed: action,
+        icon: Icon(icon),
+      ),
+    ),
   );
   @override
   Widget build(BuildContext context) => Scaffold(
     backgroundColor: const Color(0xFFFFF9FA),
-    body: SafeArea(
-      child: Column(
+    body: LayoutBuilder(
+      builder: (context, constraints) => Stack(
         children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
-            child: Row(
-              children: [
-                if (!widget.embedded)
-                  IconButton(
-                    tooltip: 'Volver',
-                    onPressed: () => Navigator.pop(context),
-                    icon: const Icon(Icons.arrow_back_rounded),
-                  ),
-                Expanded(
-                  child: InkWell(
-                    onTap: () => showModalBottomSheet<void>(
-                      context: context,
-                      useRootNavigator: true,
-                      isScrollControlled: true,
-                      builder: (_) => const PetFamilySheet(),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          pet.displayName,
-                          style: const TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.w800,
-                          ),
-                        ),
-                        const Text(
-                          'Un rincón para los dos',
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: Color(0xFF716B78),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                if (widget.embedded)
-                  IconButton(
-                    tooltip: 'Habitación a pantalla completa',
-                    icon: const Icon(Icons.open_in_full_rounded),
-                    onPressed: () =>
-                        Navigator.of(context, rootNavigator: true).push(
-                          MaterialPageRoute<void>(
-                            builder: (_) =>
-                                PetRoomScreen(previewMode: widget.previewMode),
-                          ),
-                        ),
-                  ),
-              ],
-            ),
-          ),
-          Expanded(
+          AnimatedPositioned(
+            duration: const Duration(milliseconds: 420),
+            curve: Curves.easeInOutCubic,
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: decorating ? constraints.maxHeight / 2 : 0,
             child: Pet3DViewer(
               modelPath: PetModelCatalog.modelPathFor(pet.species),
               petLevel: pet.level,
               room: true,
               previewLoadout: inventory.loadout,
               petReaction: reaction,
-              onPetStroke: () {
-                setState(() => reaction++);
-              },
+              onPetStroke: () => setState(() => reaction++),
               autoPlay: true,
               cameraControls: false,
               animationName: 'Natural_Rest',
               altText: '${pet.displayName} en su habitación',
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(14, 10, 14, 12),
-            child: Row(
+          SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(16, 12, 7, 0),
+              child: Row(
+                children: [
+                  _roomIcon(Icons.inventory_2_rounded, 'Nuestro cofre', _chest),
+                  _roomIcon(Icons.pets_rounded, 'Nuestras mascotas', _family),
+                  _roomIcon(
+                    Icons.chair_rounded,
+                    'Personalizar habitación',
+                    () => setState(() => decorating = !decorating),
+                  ),
+                  const Spacer(),
+                  _roomIcon(Icons.close_rounded, 'Volver al nido', () {
+                    if (!widget.embedded) {
+                      Navigator.pop(context);
+                    } else {
+                      context.go(widget.previewMode ? '/' : '/memories-screen');
+                    }
+                  }),
+                ],
+              ),
+            ),
+          ),
+          AnimatedPositioned(
+            duration: const Duration(milliseconds: 420),
+            curve: Curves.easeInOutCubic,
+            left: 0,
+            right: 0,
+            top: decorating ? constraints.maxHeight / 2 : constraints.maxHeight,
+            height: constraints.maxHeight / 2,
+            child: RoomDecorationPanel(
+              previewMode: widget.previewMode,
+              onClose: () => setState(() => decorating = false),
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
+}
+
+class RoomDecorationPanel extends StatefulWidget {
+  const RoomDecorationPanel({
+    super.key,
+    required this.onClose,
+    this.previewMode = false,
+  });
+  final VoidCallback onClose;
+  final bool previewMode;
+  @override
+  State<RoomDecorationPanel> createState() => _RoomDecorationPanelState();
+}
+
+class _RoomDecorationPanelState extends State<RoomDecorationPanel> {
+  String category = 'Todos';
+  String? busy;
+  Future<void> _apply(InventoryItem item) async {
+    if (busy != null) return;
+    final inventory = InventoryService.instance;
+    if (!inventory.owns(item.key)) {
+      final confirmed = await showDialog<bool>(
+        context: context,
+        builder: (context) => AlertDialog(
+          backgroundColor: const Color(0xFFFFF9FA),
+          title: Text('Comprar ${item.name}'),
+          content: Text(
+            'Se descontarán ${item.price} de oro. El artículo quedará en vuestro cofre.',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: const Text('Cancelar'),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.pop(context, true),
+              child: const Text('Comprar'),
+            ),
+          ],
+        ),
+      );
+      if (confirmed != true || !mounted) return;
+    }
+    setState(() => busy = item.key);
+    try {
+      if (!inventory.owns(item.key)) await inventory.purchase(item);
+      await inventory.equip(item, !inventory.equipped(item.key));
+    } catch (_) {
+      if (mounted)
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+              'No se guardó el cambio. Revisa tu oro y tu conexión.',
+            ),
+          ),
+        );
+    } finally {
+      if (mounted) setState(() => busy = null);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) => Material(
+    color: const Color(0xFFFFF9FA),
+    borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+    clipBehavior: Clip.antiAlias,
+    child: SafeArea(
+      top: false,
+      child: Column(
+        children: [
+          ListTile(
+            title: const Text(
+              'Decorar',
+              style: TextStyle(fontWeight: FontWeight.w700),
+            ),
+            subtitle: const Text('Tu habitación cambia mientras eliges'),
+            trailing: IconButton(
+              onPressed: widget.onClose,
+              tooltip: 'Cerrar decoración',
+              icon: const Icon(Icons.close),
+            ),
+          ),
+          SizedBox(
+            height: 44,
+            child: ListView(
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.symmetric(horizontal: 16),
               children: [
-                Expanded(
-                  child: HeartButton(
-                    label: 'Mi cofre',
-                    icon: Icons.inventory_2_outlined,
-                    onPressed: _chest,
+                for (final label in [
+                  'Todos',
+                  'Techo',
+                  'Pared',
+                  'Suelo',
+                  'Muebles',
+                ])
+                  Padding(
+                    padding: const EdgeInsets.only(right: 8),
+                    child: ChoiceChip(
+                      label: Text(label),
+                      selected: category == label,
+                      onSelected: (_) => setState(() => category = label),
+                    ),
                   ),
-                ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: HeartButton(
-                    label: 'Decorar',
-                    icon: Icons.chair_outlined,
-                    outlined: true,
-                    onPressed: _shop,
-                  ),
-                ),
               ],
+            ),
+          ),
+          Expanded(
+            child: ListenableBuilder(
+              listenable: InventoryService.instance,
+              builder: (context, _) {
+                final inventory = InventoryService.instance;
+                final items = inventory.catalog
+                    .where(
+                      (i) =>
+                          i.visible &&
+                          i.scope == 'room' &&
+                          (category == 'Todos' || i.roomCategory == category),
+                    )
+                    .toList();
+                if (items.isEmpty)
+                  return const Center(
+                    child: Text(
+                      'Los artículos aparecerán al cargar el catálogo.',
+                    ),
+                  );
+                return GridView.builder(
+                  padding: const EdgeInsets.all(12),
+                  gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                    maxCrossAxisExtent: 190,
+                    mainAxisExtent: 184,
+                    crossAxisSpacing: 10,
+                    mainAxisSpacing: 10,
+                  ),
+                  itemCount: items.length,
+                  itemBuilder: (context, index) {
+                    final item = items[index];
+                    return Card(
+                      color: Colors.white,
+                      elevation: 0,
+                      child: Column(
+                        children: [
+                          Expanded(child: ProductThumbnail(item: item)),
+                          Text(
+                            item.name,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          TextButton(
+                            onPressed:
+                                widget.previewMode ||
+                                    busy != null ||
+                                    item.previewOnly
+                                ? null
+                                : () => _apply(item),
+                            child: Text(
+                              busy == item.key
+                                  ? 'Guardando…'
+                                  : item.previewOnly
+                                  ? 'Próximamente'
+                                  : inventory.equipped(item.key)
+                                  ? 'Quitar'
+                                  : inventory.owns(item.key)
+                                  ? 'Colocar'
+                                  : '${item.price} de oro',
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                );
+              },
             ),
           ),
         ],

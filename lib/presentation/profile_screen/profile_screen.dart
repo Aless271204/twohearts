@@ -1,3 +1,6 @@
+import '../../widgets/private_memory_image.dart';
+import '../../services/profile_avatar_service.dart';
+import '../../widgets/partner_link_card.dart';
 import '../../widgets/place_search_sheet.dart';
 import '../../services/geographic_location_service.dart';
 import 'package:flutter/material.dart';
@@ -24,7 +27,9 @@ class _ProfileScreenState extends State<ProfileScreen>
   final TextEditingController _bioCtrl = TextEditingController();
 
   bool _loading = true;
-  bool _saving = false;
+  bool _saving = false, _uploadingAvatar = false;
+  String? _avatarUrl;
+  String _portraitStyle = 'masculine';
   String _currentNickname = '';
   String _currentCity = '';
   String _currentBio = '';
@@ -80,6 +85,9 @@ class _ProfileScreenState extends State<ProfileScreen>
               (profile?['nickname'] as String?)?.isNotEmpty == true
               ? profile!['nickname'] as String
               : (profile?['full_name'] as String? ?? '');
+          _avatarUrl = profile?['avatar_url'] as String?;
+          _portraitStyle =
+              profile?['pet_portrait_style'] as String? ?? 'masculine';
           _currentCity = profile?['city'] as String? ?? '';
           _currentBio = profile?['bio'] as String? ?? '';
           _email = user?.email ?? '';
@@ -165,19 +173,79 @@ class _ProfileScreenState extends State<ProfileScreen>
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       _buildAvatarSection(),
+                      const SizedBox(height: 16),
+                      DropdownButtonFormField<String>(
+                        initialValue: _portraitStyle,
+                        decoration: const InputDecoration(
+                          labelText: 'Miniatura de la mascota en los juegos',
+                        ),
+                        items: const [
+                          DropdownMenuItem(
+                            value: 'masculine',
+                            child: Text('Apariencia masculina'),
+                          ),
+                          DropdownMenuItem(
+                            value: 'feminine',
+                            child: Text('Apariencia femenina'),
+                          ),
+                        ],
+                        onChanged: (value) async {
+                          if (value == null) return;
+                          final previous = _portraitStyle;
+                          setState(() => _portraitStyle = value);
+                          try {
+                            await SupabaseService.instance.updateProfile({
+                              'pet_portrait_style': value,
+                            });
+                            ProfileChangeNotifier.instance.notify();
+                          } catch (_) {
+                            if (mounted) {
+                              setState(() => _portraitStyle = previous);
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text(
+                                    'No se pudo guardar la apariencia. Reintenta.',
+                                  ),
+                                ),
+                              );
+                            }
+                          }
+                        },
+                      ),
                       const SizedBox(height: 24),
                       _buildProfileForm(),
                       const SizedBox(height: 24),
+                      const PartnerLinkCard(),
+                      const SizedBox(height: 16),
                       _buildConnectionInfo(),
                       const SizedBox(height: 24),
                       _buildSocialSection(),
                       const SizedBox(height: 32),
-                      ListenableBuilder(listenable: AppLanguage.instance, builder: (context, _) => DropdownButtonFormField<String>(
-                        initialValue: AppLanguage.instance.code,
-                        decoration: InputDecoration(labelText: AppLanguage.instance.text('Idioma de la aplicación','App language','Idioma do aplicativo')),
-                        items: [for(final entry in AppLanguage.names.entries) DropdownMenuItem(value: entry.key, child: Text(entry.value))],
-                        onChanged: (value) { if(value != null) AppLanguage.instance.select(value); },
-                      )),
+                      ListenableBuilder(
+                        listenable: AppLanguage.instance,
+                        builder: (context, _) =>
+                            DropdownButtonFormField<String>(
+                              initialValue: AppLanguage.instance.code,
+                              decoration: InputDecoration(
+                                labelText: AppLanguage.instance.text(
+                                  'Idioma de la aplicación',
+                                  'App language',
+                                  'Idioma do aplicativo',
+                                ),
+                              ),
+                              items: [
+                                for (final entry in AppLanguage.names.entries)
+                                  DropdownMenuItem(
+                                    value: entry.key,
+                                    child: Text(entry.value),
+                                  ),
+                              ],
+                              onChanged: (value) {
+                                if (value != null)
+                                  AppLanguage.instance.select(value);
+                              },
+                            ),
+                      ),
                       const SizedBox(height: 24),
                       _buildSaveButton(),
                     ],
@@ -258,6 +326,25 @@ class _ProfileScreenState extends State<ProfileScreen>
     );
   }
 
+  Future<void> _chooseAvatar() async {
+    setState(() => _uploadingAvatar = true);
+    try {
+      final url = await ProfileAvatarService.chooseAndUpload();
+      if (mounted && url != null) setState(() => _avatarUrl = url);
+    } catch (_) {
+      if (mounted)
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+              'No pudimos guardar la foto. Revisa tu conexión y vuelve a intentarlo.',
+            ),
+          ),
+        );
+    } finally {
+      if (mounted) setState(() => _uploadingAvatar = false);
+    }
+  }
+
   Widget _buildAvatarSection() {
     final initials = _currentNickname.isNotEmpty
         ? _currentNickname.substring(0, 1).toUpperCase()
@@ -283,15 +370,42 @@ class _ProfileScreenState extends State<ProfileScreen>
                 ),
               ],
             ),
-            child: Center(
-              child: Text(
-                initials,
-                style: GoogleFonts.dmSans(
-                  fontSize: 32,
-                  fontWeight: FontWeight.w700,
-                  color: Colors.white,
-                ),
-              ),
+            child: ClipOval(
+              child: _avatarUrl == null || _avatarUrl!.isEmpty
+                  ? Center(
+                      child: Text(
+                        initials,
+                        style: const TextStyle(
+                          fontSize: 32,
+                          color: Colors.white,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    )
+                  : PrivateMemoryImage(
+                      _avatarUrl!,
+                      fit: BoxFit.cover,
+                      errorBuilder: (_, __, ___) => Center(
+                        child: Text(
+                          initials,
+                          style: const TextStyle(
+                            fontSize: 32,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+            ),
+          ),
+          TextButton.icon(
+            onPressed: _uploadingAvatar ? null : _chooseAvatar,
+            icon: Icon(
+              _uploadingAvatar
+                  ? Icons.hourglass_top
+                  : Icons.add_a_photo_outlined,
+            ),
+            label: Text(
+              _uploadingAvatar ? 'Guardando foto…' : 'Cambiar foto de perfil',
             ),
           ),
           const SizedBox(height: 8),
@@ -355,12 +469,28 @@ class _ProfileScreenState extends State<ProfileScreen>
             hint: 'Ciudad, país o dirección',
             controller: _cityCtrl,
             icon: Icons.location_on_outlined,
-            helperText: 'Elige el lugar para ubicarlo correctamente en Nuestro Nido.',
+            helperText:
+                'Elige el lugar para ubicarlo correctamente en Nuestro Nido.',
           ),
-          Align(alignment:Alignment.centerLeft,child:TextButton.icon(icon:const Icon(Icons.travel_explore_rounded),label:const Text('Buscar en el mapa'),onPressed:()async{
-            final place=await showModalBottomSheet<GeoPlace>(context:context,useRootNavigator:true,isScrollControlled:true,showDragHandle:true,builder:(_)=>PlaceSearchSheet(initialQuery:_cityCtrl.text));
-            if(place!=null&&mounted)setState(()=>_cityCtrl.text=place.label);
-          })),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: TextButton.icon(
+              icon: const Icon(Icons.travel_explore_rounded),
+              label: const Text('Buscar en el mapa'),
+              onPressed: () async {
+                final place = await showModalBottomSheet<GeoPlace>(
+                  context: context,
+                  useRootNavigator: true,
+                  isScrollControlled: true,
+                  showDragHandle: true,
+                  builder: (_) =>
+                      PlaceSearchSheet(initialQuery: _cityCtrl.text),
+                );
+                if (place != null && mounted)
+                  setState(() => _cityCtrl.text = place.label);
+              },
+            ),
+          ),
           const SizedBox(height: 12),
           _buildField(
             label: 'Bio',

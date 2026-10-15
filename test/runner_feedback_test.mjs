@@ -73,3 +73,16 @@ test('an older audio start cannot suspend a newer start, while leaving still can
   resumes.shift()();await pending;
   assert.equal(music.context.state,'suspended');assert.equal(music.timer,null);
 });
+
+test('expedition theme combines a moving fanfare with strings and percussion',()=>{
+ const music=new AdventureMusic(),notes=[],drums=[],shakers=[];
+ music.context={currentTime:0};music.next=.08;
+ music.note=(m,t,d,v,type)=>notes.push({m,t,d,v,type});
+ music.drum=(...args)=>drums.push(args);music.shaker=(...args)=>shakers.push(args);
+ for(let i=0;i<120;i++){music.context.currentTime=i*.2;music.schedule();}
+ assert.ok(notes.filter(n=>n.type==='brass').length>50);
+ assert.ok(notes.some(n=>n.type==='pad'));
+ assert.ok(new Set(notes.filter(n=>n.type==='brass').map(n=>n.m)).size>8);
+ assert.ok(drums.length>40&&shakers.length>80);
+ assert.ok(notes.every(n=>Number.isFinite(n.t)&&n.v>0&&n.d>0));
+});

@@ -49,6 +49,74 @@ class _GameHubScreenState extends State<GameHubScreen> {
     if (mounted) await _load();
   }
 
+  Future<void> _choosePlayers(String game) async {
+    final mode = await showModalBottomSheet<String>(
+      context: context,
+      backgroundColor: const Color(0xFFFFF9FA),
+      showDragHandle: true,
+      builder: (context) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const ListTile(title: Text('¿Con quién quieres jugar?')),
+            for (final option in const [
+              ('partner', 'Con mi pareja', Icons.favorite_outline),
+              (
+                'train',
+                'Entrenar con Nube · Bot de práctica',
+                Icons.smart_toy_outlined,
+              ),
+              ('create', 'Crear sala para amigos', Icons.add_circle_outline),
+              ('join', 'Entrar con código de sala', Icons.key_outlined),
+              ('random', 'Buscar rival online', Icons.public),
+            ])
+              ListTile(
+                leading: Icon(option.$3),
+                title: Text(option.$2),
+                onTap: () => Navigator.pop(context, option.$1),
+              ),
+          ],
+        ),
+      ),
+    );
+    if (mode == null || !mounted) return;
+    String code = '';
+    if (mode == 'join') {
+      final input = TextEditingController();
+      final result = await showDialog<String>(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('Código de sala'),
+          content: TextField(
+            controller: input,
+            maxLength: 8,
+            textCapitalization: TextCapitalization.characters,
+            decoration: const InputDecoration(
+              hintText: 'Código de 8 caracteres',
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Cancelar'),
+            ),
+            FilledButton(
+              onPressed: () =>
+                  Navigator.pop(context, input.text.trim().toUpperCase()),
+              child: const Text('Entrar'),
+            ),
+          ],
+        ),
+      );
+      // Dialog exit transitions finish before disposing the text controller.
+      await Future<void>.delayed(const Duration(milliseconds: 300));
+      input.dispose();
+      if (result == null || result.length != 8 || !mounted) return;
+      code = result;
+    }
+    await _open(DuoGameScreen(game: game, mode: mode, roomCode: code));
+  }
+
   @override
   Widget build(BuildContext context) => Scaffold(
     backgroundColor: Colors.transparent,
@@ -71,7 +139,7 @@ class _GameHubScreenState extends State<GameHubScreen> {
                 child: _tile(
                   'Ping pong\nen pareja',
                   1,
-                  () => _open(const DuoGameScreen(game: 'pong')),
+                  () => _choosePlayers('pong'),
                 ),
               ),
               const SizedBox(width: 10),
@@ -79,7 +147,7 @@ class _GameHubScreenState extends State<GameHubScreen> {
                 child: _tile(
                   '¿Quién nos\nconoce mejor?',
                   2,
-                  () => _open(const DuoGameScreen(game: 'quiz')),
+                  () => _choosePlayers('quiz'),
                 ),
               ),
             ],

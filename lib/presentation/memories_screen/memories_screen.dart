@@ -1,3 +1,4 @@
+import '../../widgets/partner_link_card.dart';
 import '../../services/app_language.dart';
 import '../../widgets/twohearts_ui.dart';
 import '../../widgets/private_memory_image.dart';
@@ -306,6 +307,7 @@ class _AlbumJuntosTabState extends State<_AlbumJuntosTab> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    const Padding(padding: EdgeInsets.symmetric(horizontal: 16), child: PartnerLinkCard()),
                     const DailyQuoteWidget(),
 
                     // Couple stats header

@@ -12,7 +12,7 @@ import { createLivingForest } from './living-forest.js';
 import { createBridgeBelt } from './loop-bridge.js';
 import {runnerRow,seedFromSession} from './patterns.js';
 import { runnerDifficulty } from './difficulty.js';
-import { AdventureMusic } from './music.js';
+import { AdventureMusic } from './music.js?v=expedition-2';
 import { limitTextureMemory } from './texture_budget.js';
 import {createWardrobeJump,createWardrobeRun} from './pet-wardrobe-jump.js?revision=ankles-dynamic-6';
 import { showRunnerError } from './diagnostics.js';

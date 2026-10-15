@@ -308,3 +308,26 @@ implementados. El usuario pidió expresamente APK: compilación en GitHub autori
 con anuncios de prueba y pagos desactivados. No prometer todos los ajustes finales;
 el hombro del pollito muestra piel que todavía debe cubrir el patrón. Registrar
 el APK verificado y el resultado de Android antes de entregar su QR.
+
+Entrega posterior verificada: NIDO1.2.0+15, commit96673d7, ejecución38627026593
+correcta incluyendo Android offline. APK yQR están enoutputs; enlace ySHA en el
+último bloque dewardrobe-restart.md. Peso547MB: incluye96 prendas actuales y96
+anteriores para referencia. Mantener pendientes artísticos y monetización de
+producción explícitos; no interpretar el APK de prueba como aprobación de todos
+los artículos. Continuar con hombro del pollito y revisión de contactos móviles.
+## Entrega acotada 1.2.1 — 2026-10-14
+El usuario pidió ahorrar créditos y publicar únicamente recorrido, música y home. Commit 005b556. CI 38659138046. Supabase forest-runner versión 8 desplegada con JWT obligatorio: semillas derivadas de sesión, compatibilidad previa conservada. Pruebas locales 18 casos exitosos. Cambios textiles, selección de mascotas y optimización de assets permanecen locales, fuera de esta entrega. No considerar terminado el vestuario. El APK aún compila; comprobar firma y seis módulos JS contra este commit antes de entregar. No publicar en tiendas como listo para cobros: falta configuración de las cuentas y billing.
+
+Entrega 1.2.1: corrida CI 38660699207 completada con éxito. Android smoke corregido con semilla de prueba 7; producción mantiene aleatoriedad. Instalación, recogida de monedas, sonido, pausa/reanudación y colisión pasan. APK publicado firmado: https://github.com/Aless271204/twohearts/releases/download/nido-1.2.1/NIDO-1.2.1-aventura.apk . Cambios de vestuario locales fuera de este APK.
+
+## 1.2.2 — cambios de hogar, conexión y tamaño
+- Usuario confirmó resuelto el arranque en Pixel 6. No cambiar arranque ni mascotas originales.
+- Decorar: división animada 50/50, habitación arriba y panel claro abajo, categorías y equipamiento real; compras con confirmación.
+- Código de pareja visible desde Nido y Perfil, flujo RPC existente. Foto con PNG sin metadatos y bucket privado; acceso propio/pareja con URL temporal.
+- Ubicación de ambos en primer plano: permisos individuales, instantánea privada cada 8 s y GPS cada 15 m/30 s. Desactivar conserva el último punto; fuera de primer plano no rastrea. Prueba SQL rollback pasó lectura por pareja y rechazo de tercero.
+- Mismos ping pong y preguntas: pareja, sala por código, aleatorio y práctica local sin oro. Nube tiene reacción limitada y no lee respuestas. Música original ligera y efectos para todos esos modos.
+- Ocho retratos reales de las cuatro mascotas con atuendos masculino/femenino, elegibles en Perfil. No cambian anatomía ni mascota seleccionada.
+- 96 miniaturas renderizadas de GLB reales en estudio blanco, con leve animación de tarjeta respetando reducir movimiento.
+- 96 GLB optimizados comparten 43 texturas con bytes idénticos; auditoría de geometría, materiales, nodos, animaciones y texturas pasó. Históricos quedan en código pero fuera del APK.
+- No incorporar los experimentos locales de hombro ni la modificación local del movimiento. Están fuera de esta entrega.
+- Flutter: 22 pruebas de nuevas funciones y 3 del bot aprobadas. SQL online y retratos con dos cuentas y rechazo de tercero aprobado. Pendiente confirmar compilación Android y pruebas visuales de esta versión.

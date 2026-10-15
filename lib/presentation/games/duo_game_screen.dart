@@ -1,4 +1,9 @@
+import '../../services/shared_pet_service.dart';
+import '../../core/pet_model_catalog.dart';
+import '../../core/duo_training.dart';
+import '../../services/duo_audio.dart';
 import 'dart:async';
+import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../services/supabase_service.dart';
@@ -7,8 +12,13 @@ import '../../core/duo_pong.dart';
 import '../../widgets/immersive_game.dart';
 
 class DuoGameScreen extends StatefulWidget {
-  final String game;
-  const DuoGameScreen({super.key, required this.game});
+  final String game, mode, roomCode;
+  const DuoGameScreen({
+    super.key,
+    required this.game,
+    this.mode = 'partner',
+    this.roomCode = '',
+  });
   @override
   State<DuoGameScreen> createState() => _DuoGameScreenState();
 }
@@ -16,6 +26,10 @@ class DuoGameScreen extends StatefulWidget {
 class _DuoGameScreenState extends State<DuoGameScreen>
     with WidgetsBindingObserver, SingleTickerProviderStateMixin {
   final inventory = InventoryService.instance;
+  final audio = DuoAudio();
+  DuoTraining? practice;
+  int practiceAt = 0;
+  String practiceStyle = 'masculine';
   Timer? poll;
   late final AnimationController frames;
   Map<String, dynamic>? match;
@@ -23,7 +37,8 @@ class _DuoGameScreenState extends State<DuoGameScreen>
       Map<String, dynamic>.from(match?['state'] as Map? ?? {});
   bool get sideB => match?['side'] == 'b';
   bool inFlight = false, active = true, answerBusy = false;
-  String? failure;
+  String? failure, lobbyCode;
+  bool waitingOnline = false;
   double paddle = .5;
   int? pendingChoice;
   DateTime received = DateTime.now();
@@ -47,6 +62,7 @@ class _DuoGameScreenState extends State<DuoGameScreen>
     inventory.removeListener(_changed);
     poll?.cancel();
     frames.dispose();
+    audio.dispose();
     super.dispose();
   }
 
@@ -57,12 +73,30 @@ class _DuoGameScreenState extends State<DuoGameScreen>
   @override
   void didChangeAppLifecycleState(AppLifecycleState lifecycle) {
     active = lifecycle == AppLifecycleState.resumed;
-    if (active) _tick();
+    if (active) {
+      if (match?['status'] == 'playing') audio.start();
+      _tick();
+    } else {
+      audio.pause();
+    }
   }
 
   void _accept(dynamic raw) {
     if (!mounted) return;
     final next = Map<String, dynamic>.from(raw as Map);
+    if (next['status'] == 'playing' && match?['status'] != 'playing')
+      audio.start();
+    if (widget.mode != 'train' && match != null) {
+      final old = Map<String, dynamic>.from(match!['state'] as Map);
+      final nextState = Map<String, dynamic>.from(next['state'] as Map);
+      if (nextState['score_a'] != old['score_a'] ||
+          nextState['score_b'] != old['score_b']) {
+        audio.effect('score');
+      } else if (widget.game == 'pong' &&
+          (nextState['vy'] as num? ?? 0) * (old['vy'] as num? ?? 0) < 0) {
+        audio.effect('hit');
+      }
+    }
     if (next['state']['question_no'] != match?['state']?['question_no'] ||
         next['state']['phase'] != match?['state']?['phase']) {
       pendingChoice = null;
@@ -76,24 +110,59 @@ class _DuoGameScreenState extends State<DuoGameScreen>
     });
     if (next['status'] == 'finished' || next['status'] == 'cancelled') {
       poll?.cancel();
-      inventory.refresh().catchError((Object _) {});
+      audio.pause();
+      if (widget.mode != 'train') inventory.refresh().catchError((Object _) {});
     }
   }
 
   Future<void> _join() async {
+    if (widget.mode == 'train') {
+      SupabaseService.instance
+          .getMyProfile()
+          .then((profile) {
+            if (mounted)
+              setState(
+                () => practiceStyle =
+                    profile?['pet_portrait_style'] as String? ?? 'masculine',
+              );
+          })
+          .catchError((Object _) {});
+      poll?.cancel();
+      practice = DuoTraining(widget.game);
+      practiceAt = elapsed.elapsedMilliseconds;
+      _accept(practice!.snapshot(DateTime.now().millisecondsSinceEpoch / 1000));
+      poll = Timer.periodic(
+        const Duration(milliseconds: 33),
+        (_) => _practiceTick(),
+      );
+      return;
+    }
     try {
       inventory.refresh().catchError((Object _) {});
-      _accept(
-        await SupabaseService.instance.client.rpc(
-          'duo_join',
-          params: {'p_game': widget.game},
-        ),
+      final raw = await SupabaseService.instance.client.rpc(
+        widget.mode == 'partner' ? 'duo_join' : 'duo_lobby',
+        params: widget.mode == 'partner'
+            ? {'p_game': widget.game}
+            : {
+                'p_action': widget.mode,
+                'p_game': widget.game,
+                'p_code': widget.roomCode,
+              },
       );
+      if (!mounted) return;
       poll?.cancel();
-      poll = Timer.periodic(
-        Duration(milliseconds: widget.game == 'pong' ? 120 : 650),
-        (_) => _tick(),
-      );
+      if (raw['lobby'] == true) {
+        setState(() {
+          waitingOnline = true;
+          lobbyCode = raw['code'] as String?;
+          failure = null;
+        });
+        poll = Timer.periodic(const Duration(seconds: 1), (_) => _pollLobby());
+      } else {
+        waitingOnline = false;
+        _accept(raw);
+        _startPolling();
+      }
     } catch (e) {
       if (mounted) {
         setState(
@@ -105,7 +174,52 @@ class _DuoGameScreenState extends State<DuoGameScreen>
     }
   }
 
+  void _practiceTick() {
+    if (!mounted || !active || practice == null || practice!.finished) return;
+    final now = elapsed.elapsedMilliseconds;
+    practice!.step((now - practiceAt) / 1000, paddle);
+    practiceAt = now;
+    if (practice!.event != null) audio.effect(practice!.event!);
+    _accept(practice!.snapshot(DateTime.now().millisecondsSinceEpoch / 1000));
+  }
+
+  void _startPolling() {
+    poll?.cancel();
+    poll = Timer.periodic(
+      Duration(milliseconds: widget.game == 'pong' ? 120 : 650),
+      (_) => _tick(),
+    );
+  }
+
+  Future<void> _pollLobby() async {
+    if (!mounted || !active || inFlight) return;
+    inFlight = true;
+    try {
+      final raw = await SupabaseService.instance.client.rpc(
+        'duo_lobby',
+        params: {'p_action': 'poll', 'p_game': widget.game},
+      );
+      if (!mounted) return;
+      if (raw['lobby'] != true) {
+        waitingOnline = false;
+        _accept(raw);
+        _startPolling();
+      } else if (failure != null) {
+        setState(() => failure = null);
+      }
+    } catch (_) {
+      if (mounted)
+        setState(
+          () =>
+              failure = 'La sala no está disponible. Reintenta para conectar.',
+        );
+    } finally {
+      inFlight = false;
+    }
+  }
+
   Future<void> _tick({int? choice}) async {
+    if (widget.mode == 'train') return;
     if (!mounted || !active || inFlight || match == null) return;
     inFlight = true;
     try {
@@ -139,6 +253,13 @@ class _DuoGameScreenState extends State<DuoGameScreen>
   }
 
   Future<void> _choose(int value) async {
+    audio.effect('hit');
+    if (widget.mode == 'train') {
+      practice?.choose(value);
+      if (practice?.event != null) audio.effect(practice!.event!);
+      _accept(practice!.snapshot(DateTime.now().millisecondsSinceEpoch / 1000));
+      return;
+    }
     if (inFlight ||
         answerBusy ||
         state['my_choice'] != null ||
@@ -153,6 +274,17 @@ class _DuoGameScreenState extends State<DuoGameScreen>
   }
 
   Future<bool> _leave() async {
+    if (widget.mode == 'train') return true;
+    if (match == null && waitingOnline) {
+      poll?.cancel();
+      try {
+        await SupabaseService.instance.client.rpc(
+          'duo_lobby',
+          params: {'p_action': 'leave', 'p_game': widget.game},
+        );
+      } catch (_) {}
+      return true;
+    }
     if (match == null || ['finished', 'cancelled'].contains(match!['status'])) {
       return true;
     }
@@ -194,6 +326,56 @@ class _DuoGameScreenState extends State<DuoGameScreen>
     }
   }
 
+  Widget _mascotBadge(String side) {
+    final players = List<Map<String, dynamic>>.from(
+      (match?['players'] as List? ?? []).map(
+        (p) => Map<String, dynamic>.from(p as Map),
+      ),
+    );
+    final person = players.where((p) => p['side'] == side).firstOrNull;
+    final own = side == (sideB ? 'b' : 'a');
+    final species = PetModelCatalog.speciesFor(
+      person?['species'] as String? ?? SharedPetService.instance.species,
+    );
+    final style =
+        person?['style'] == 'feminine' ||
+            (person == null && (own ? practiceStyle == 'feminine' : true))
+        ? 'feminine'
+        : 'masculine';
+    return SizedBox(
+      width: 64,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(18),
+            child: Image.asset(
+              'assets/images/pet_portraits/$species-$style.png',
+              width: 58,
+              height: 68,
+              fit: BoxFit.contain,
+              errorBuilder: (_, __, ___) => Text(
+                PetModelCatalog.emojis[species]!,
+                style: const TextStyle(fontSize: 34),
+              ),
+            ),
+          ),
+          Text(
+            person?['name'] as String? ??
+                (own
+                    ? 'Tú'
+                    : widget.mode == 'train'
+                    ? 'Nube · Bot'
+                    : 'Rival'),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(fontSize: 11),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final s = state;
@@ -201,186 +383,278 @@ class _DuoGameScreenState extends State<DuoGameScreen>
     final other = sideB ? 'a' : 'b';
     final status = match?['status'];
     final dark = widget.game == 'pong';
-    return ImmersiveGame(child: PopScope(
-      canPop: match == null || ['finished', 'cancelled'].contains(status),
-      onPopInvokedWithResult: (popped, result) async {
-        if (!popped && await _leave() && context.mounted)
-          Navigator.pop(context);
-      },
-      child: Scaffold(
-        backgroundColor: dark
-            ? const Color(0xFFFFF9FA)
-            : inventory.at('quiz_table')?.color.withAlpha(80) ??
-                  const Color(0xFFFFF4F7),
-        appBar: status == 'playing' ? null : AppBar(
-          title: Text(
-            dark ? 'Ping pong en pareja' : '¿Quién conoce mejor al otro?',
-          ),
-        ),
-        body: match == null
-            ? Center(
-                child: failure == null
-                    ? const CircularProgressIndicator()
-                    : Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(24),
-                            child: Text(failure!, textAlign: TextAlign.center),
-                          ),
-                          FilledButton(
-                            onPressed: _join,
+    return ImmersiveGame(
+      child: PopScope(
+        canPop:
+            (match == null && !waitingOnline) ||
+            ['finished', 'cancelled'].contains(status),
+        onPopInvokedWithResult: (popped, result) async {
+          if (!popped && await _leave() && context.mounted)
+            Navigator.pop(context);
+        },
+        child: Scaffold(
+          backgroundColor: dark
+              ? const Color(0xFFFFF9FA)
+              : inventory.at('quiz_table')?.color.withAlpha(80) ??
+                    const Color(0xFFFFF4F7),
+          appBar: status == 'playing'
+              ? null
+              : AppBar(
+                  actions: [
+                    IconButton(
+                      tooltip: audio.muted
+                          ? 'Activar música y sonidos'
+                          : 'Silenciar música y sonidos',
+                      onPressed: () => setState(audio.toggle),
+                      icon: Icon(
+                        audio.muted
+                            ? Icons.volume_off_rounded
+                            : Icons.volume_up_rounded,
+                      ),
+                    ),
+                  ],
+                  title: Text(
+                    dark
+                        ? (widget.mode == 'train'
+                              ? 'Ping pong · Entrenar'
+                              : 'Ping pong')
+                        : '¿Quién conoce mejor al otro?',
+                  ),
+                ),
+          body: match == null
+              ? Center(
+                  child: failure == null
+                      ? Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const CircularProgressIndicator(),
+                            const SizedBox(height: 20),
+                            Text(
+                              lobbyCode == null
+                                  ? 'Buscando alguien para jugar…'
+                                  : 'Comparte tu código de sala',
+                            ),
+                            if (lobbyCode != null) ...[
+                              SelectableText(
+                                lobbyCode!,
+                                style: const TextStyle(
+                                  fontSize: 30,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              TextButton.icon(
+                                onPressed: () => Clipboard.setData(
+                                  ClipboardData(text: lobbyCode!),
+                                ),
+                                icon: const Icon(Icons.copy),
+                                label: const Text('Copiar código'),
+                              ),
+                            ],
+                            const SizedBox(height: 12),
+                            TextButton(
+                              onPressed: () async {
+                                if (await _leave() && mounted)
+                                  Navigator.pop(context);
+                              },
+                              child: const Text('Cancelar'),
+                            ),
+                          ],
+                        )
+                      : Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(24),
+                              child: Text(
+                                failure!,
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                            FilledButton(
+                              onPressed: _join,
+                              child: const Text('Reintentar'),
+                            ),
+                          ],
+                        ),
+                )
+              : Column(
+                  children: [
+                    if (failure != null)
+                      MaterialBanner(
+                        content: Text(failure!),
+                        actions: [
+                          TextButton(
+                            onPressed: () => _tick(),
                             child: const Text('Reintentar'),
                           ),
                         ],
                       ),
-              )
-            : Column(
-                children: [
-                  if (failure != null)
-                    MaterialBanner(
-                      content: Text(failure!),
-                      actions: [
-                        TextButton(
-                          onPressed: () => _tick(),
-                          child: const Text('Reintentar'),
-                        ),
-                      ],
-                    ),
-                  Padding(
-                    padding: const EdgeInsets.all(14),
-                    child: Text(
-                      'Tú ${s['score_$mine'] ?? 0}  ·  ${s['score_$other'] ?? 0} Tu pareja\nRondas ${s['wins_$mine'] ?? 0} – ${s['wins_$other'] ?? 0} · Gana quien consiga 2',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Colors.black87,
-                        fontWeight: FontWeight.bold,
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 4,
                       ),
-                    ),
-                  ),
-                  if (status == 'finished' || status == 'cancelled')
-                    Expanded(
-                      child: Center(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(
-                              status == 'cancelled'
-                                  ? 'Partida terminada'
-                                  : match!['winner'] ==
-                                        SupabaseService.instance.currentUser?.id
-                                  ? '¡Ganaste la partida!'
-                                  : '¡Tu pareja ganó!',
-                              style: TextStyle(
-                                color: Colors.black87,
-                                fontSize: 24,
+                      child: Row(
+                        children: [
+                          _mascotBadge(mine),
+                          Expanded(
+                            child: Text(
+                              'Tú ${s['score_$mine'] ?? 0}  ·  ${s['score_$other'] ?? 0} ${widget.mode == 'train' ? 'Nube' : 'Rival'}\n${widget.mode == 'train' && widget.game == 'quiz' ? 'Práctica de preguntas' : 'Rondas ${s['wins_$mine'] ?? 0} – ${s['wins_$other'] ?? 0} · Al mejor de 3'}',
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.w700,
+                                color: Color(0xFF292633),
                               ),
                             ),
-                            if (status == 'finished')
-                              Text(
-                                '+${match!['reward'] ?? 0} LoveCoins',
-                                style: TextStyle(
-                                  color: dark ? Colors.amber : Colors.pink,
-                                ),
-                              ),
-                            const SizedBox(height: 16),
-                            TextButton(onPressed: () => Navigator.pop(context), child: const Text('Salir')),
-                            FilledButton(
-                              onPressed: () {
-                                match = null;
-                                _join();
-                                setState(() {});
-                              },
-                              child: const Text('Continuar'),
-                            ),
-                          ],
-                        ),
+                          ),
+                          _mascotBadge(other),
+                        ],
                       ),
-                    )
-                  else if (status == 'waiting')
-                    const Expanded(
-                      child: Center(
-                        child: Padding(
-                          padding: EdgeInsets.all(24),
-                          child: Text(
-                            'Esperando a tu pareja…\nAbre este mismo juego desde su celular con la cuenta vinculada.',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(color: Colors.grey, fontSize: 18),
-                          ),
-                        ),
-                      ),
-                    )
-                  else if (dark)
-                    Expanded(
-                      child: LayoutBuilder(
-                        builder: (context, box) => GestureDetector(
-                          behavior: HitTestBehavior.opaque,
-                          onPanDown: (d) => setState(
-                            () => paddle = (d.localPosition.dx / box.maxWidth)
-                                .clamp(.11, .89)
-                                .toDouble(),
-                          ),
-                          onPanUpdate: (d) => setState(
-                            () => paddle = (d.localPosition.dx / box.maxWidth)
-                                .clamp(.11, .89)
-                                .toDouble(),
-                          ),
-                          child: Stack(
+                    ),
+                    if (status == 'finished' || status == 'cancelled')
+                      Expanded(
+                        child: Center(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
                             children: [
-                              Positioned.fill(
-                                child: AnimatedBuilder(
-                                  animation: frames,
-                                  builder: (context, _) => CustomPaint(
-                                    painter: _PongPainter(
-                                      s,
-                                      sideB,
-                                      paddle,
-                                      (elapsed.elapsedMilliseconds -
-                                              receivedAt) /
-                                          1000,
-                                      inventory.loadout,
-                                    ),
-                                  ),
+                              Text(
+                                status == 'cancelled'
+                                    ? 'Partida terminada'
+                                    : match!['winner'] == 'practice-draw'
+                                    ? '¡Empate!'
+                                    : (widget.mode == 'train' &&
+                                              match!['winner'] ==
+                                                  'practice-player') ||
+                                          match!['winner'] ==
+                                              SupabaseService
+                                                  .instance
+                                                  .currentUser
+                                                  ?.id
+                                    ? '¡Ganaste la partida!'
+                                    : '¡Tu rival ganó!',
+                                style: TextStyle(
+                                  color: Colors.black87,
+                                  fontSize: 24,
                                 ),
                               ),
-                              if (s['paused'] == true ||
-                                  s['phase'] == 'countdown')
-                                Center(
-                                  child: Text(
-                                    s['paused'] == true
-                                        ? 'Esperando la conexión\nde tu pareja…'
-                                        : '¡Prepárate!',
-                                    textAlign: TextAlign.center,
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 24,
-                                    ),
+                              if (status == 'finished')
+                                Text(
+                                  widget.mode == 'train'
+                                      ? 'Entrenamiento · Sin recompensas de oro'
+                                      : '+${match!['reward'] ?? 0} LoveCoins',
+                                  style: TextStyle(
+                                    color: dark ? Colors.amber : Colors.pink,
                                   ),
                                 ),
+                              const SizedBox(height: 16),
+                              TextButton(
+                                onPressed: () => Navigator.pop(context),
+                                child: const Text('Salir'),
+                              ),
+                              FilledButton(
+                                onPressed: () {
+                                  if (![
+                                    'partner',
+                                    'train',
+                                  ].contains(widget.mode)) {
+                                    Navigator.pop(context);
+                                    return;
+                                  }
+                                  match = null;
+                                  _join();
+                                  setState(() {});
+                                },
+                                child: const Text('Continuar'),
+                              ),
                             ],
                           ),
                         ),
-                      ),
-                    )
-                  else
-                    Expanded(child: _quiz(s, mine, other)),
-                  Padding(
-                    padding: const EdgeInsets.all(12),
-                    child: Text(
-                      dark
-                          ? 'Desliza tu paleta · 7 puntos por ronda'
-                          : 'Responde sobre ti en secreto, luego adivina la respuesta de tu pareja.',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Colors.black54,
-                        fontSize: 12,
+                      )
+                    else if (status == 'waiting')
+                      const Expanded(
+                        child: Center(
+                          child: Padding(
+                            padding: EdgeInsets.all(24),
+                            child: Text(
+                              'Esperando a tu pareja…\nAbre este mismo juego desde su celular con la cuenta vinculada.',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: Colors.grey,
+                                fontSize: 18,
+                              ),
+                            ),
+                          ),
+                        ),
+                      )
+                    else if (dark)
+                      Expanded(
+                        child: LayoutBuilder(
+                          builder: (context, box) => GestureDetector(
+                            behavior: HitTestBehavior.opaque,
+                            onPanDown: (d) => setState(
+                              () => paddle = (d.localPosition.dx / box.maxWidth)
+                                  .clamp(.11, .89)
+                                  .toDouble(),
+                            ),
+                            onPanUpdate: (d) => setState(
+                              () => paddle = (d.localPosition.dx / box.maxWidth)
+                                  .clamp(.11, .89)
+                                  .toDouble(),
+                            ),
+                            child: Stack(
+                              children: [
+                                Positioned.fill(
+                                  child: AnimatedBuilder(
+                                    animation: frames,
+                                    builder: (context, _) => CustomPaint(
+                                      painter: _PongPainter(
+                                        s,
+                                        sideB,
+                                        paddle,
+                                        (elapsed.elapsedMilliseconds -
+                                                receivedAt) /
+                                            1000,
+                                        inventory.loadout,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                if (s['paused'] == true ||
+                                    s['phase'] == 'countdown')
+                                  Center(
+                                    child: Text(
+                                      s['paused'] == true
+                                          ? 'Esperando la conexión\nde tu pareja…'
+                                          : '¡Prepárate!',
+                                      textAlign: TextAlign.center,
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 24,
+                                      ),
+                                    ),
+                                  ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      )
+                    else
+                      Expanded(child: _quiz(s, mine, other)),
+                    Padding(
+                      padding: const EdgeInsets.all(12),
+                      child: Text(
+                        dark
+                            ? 'Desliza tu paleta · 7 puntos por ronda'
+                            : 'Responde sobre ti en secreto, luego adivina la respuesta de tu pareja.',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(color: Colors.black54, fontSize: 12),
                       ),
                     ),
-                  ),
-                ],
-              ),
+                  ],
+                ),
+        ),
       ),
-    ));
+    );
   }
 
   Widget _quiz(Map<String, dynamic> s, String mine, String other) {
@@ -391,7 +665,9 @@ class _DuoGameScreenState extends State<DuoGameScreen>
         i is int && i >= 0 && i < options.length ? options[i] : 'Sin respuesta';
     final border = inventory.at('quiz_card')?.color ?? const Color(0xFFE69FBB);
     if (s['paused'] == true) {
-      return const Center(child: Text('Esperando la conexión de tu pareja…'));
+      return const Center(
+        child: Text('Esperando la conexión del otro jugador…'),
+      );
     }
     return ListView(
       padding: const EdgeInsets.all(20),
@@ -423,7 +699,9 @@ class _DuoGameScreenState extends State<DuoGameScreen>
             '${inventory.at('quiz_badge')?.emoji ?? '💌'} ${phase == 'self'
                 ? 'Elige tu respuesta secreta'
                 : phase == 'guess'
-                ? '¿Qué crees que eligió tu pareja?'
+                ? widget.mode == 'train'
+                      ? '¿Qué crees que eligió Nube?'
+                      : '¿Qué crees que eligió el otro jugador?'
                 : phase == 'reveal'
                 ? '¡Así nos conocemos!'
                 : '¡Prepárense!'}',
@@ -480,7 +758,7 @@ class _DuoGameScreenState extends State<DuoGameScreen>
               child: Column(
                 children: [
                   Text(
-                    'Tu pareja eligió: ${label(s['answer_$other'])}',
+                    'Tu rival eligió: ${label(s['answer_$other'])}',
                     style: const TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -495,7 +773,7 @@ class _DuoGameScreenState extends State<DuoGameScreen>
                   ),
                   const Divider(),
                   Text('Tú elegiste: ${label(s['answer_$mine'])}'),
-                  Text('Tu pareja pensó: ${label(s['guess_$other'])}'),
+                  Text('Tu rival pensó: ${label(s['guess_$other'])}'),
                 ],
               ),
             ),

@@ -2,8 +2,7 @@
 import 'dart:convert';
 import 'package:flutter/services.dart';
 
-final petAccessoryConcepts =
-    (jsonDecode(r'''[
+final petAccessoryConcepts = (jsonDecode(r'''[
   {
     "item_key": "cap_pink",
     "name": "Gorra corazÃ³n",
@@ -21,12 +20,12 @@ final petAccessoryConcepts =
       },
       "fitted_model_space": true,
       "tuck_crown_tuft": true,
-      "asset_revision": "3ed36bbd7b06542ceceb",
+      "asset_revision": "379b034c5078bdd7c89a",
       "species_model_hashes": {
-        "penguin": "02075fd446b9f552c2baf7d027210fdacbb081e15ec7e94fbf5567d7b0f3d971",
-        "bear": "788f5ffc24d58b28ce8104e0767d54e581b70200b711b34dec262d0b9ebfd0e4",
-        "pig": "2b857b97e5f2e13f8c1a0518d15b0a340eb4d9614ee178c10ad5a6e15ba93faa",
-        "chick": "7405f8bc79c2583e8c6ee1c0a019814e4f091f064c5fd43ad0047f807ae84ce6"
+        "penguin": "9593aba6a0a234b980f57b3522ccd42afbfb23a51ee07e796783cc6fa096ebf3",
+        "bear": "cd21928be72fa8ee1b509b3bb0a562073424d7276dc22887cdf142108b20aef9",
+        "pig": "599833e0f6a3adc08346a9cc0d061b360f3dab19ce98a94ea9c881a2ec299567",
+        "chick": "9c2f08d8e4752463b0d11c736408ff977659402e590ea59af494bff1cac9a860"
       },
       "skinned_model_space": false,
       "headwear_occlusions": {
@@ -122,12 +121,12 @@ final petAccessoryConcepts =
       },
       "fitted_model_space": true,
       "tuck_crown_tuft": true,
-      "asset_revision": "2311db37a9d1b605bba7",
+      "asset_revision": "a94e119b1d0d6b9af616",
       "species_model_hashes": {
-        "penguin": "da6c88c7029a1f054febddb4b0b6a853842f631256b312640b318acb2a953dfc",
-        "bear": "2b21c3ac0fae1031c4cba26f7413111e75a6bd99ecdca889758e760b5364483f",
-        "pig": "dddb02c1eab976c2844a52e5f316867a46fd66847898e74c720c873740a1553b",
-        "chick": "6bca69f640aa643746f6e3e948dcc0fd918e22fac2bf591056a4d7c467ad23b8"
+        "penguin": "9cbfeb0f59f7482c2281393e133e3ef8bf65d6511d27d82b608f655929d877da",
+        "bear": "fde01f11c624e519ec81df3e454c467dc99f4cf4b08d02e4bee505fe2d3d9921",
+        "pig": "f0b4780c23acec33111b3f0cbbae3319ed9860ff1c49339357198c3da18e7731",
+        "chick": "4283cb2ba7832423dea3afbabdb2b07cce3997c5979c8e4d33c362ef71c0d745"
       },
       "skinned_model_space": false,
       "color_materials": [
@@ -162,12 +161,12 @@ final petAccessoryConcepts =
       },
       "fitted_model_space": true,
       "tuck_crown_tuft": true,
-      "asset_revision": "3873a825103a3957b904",
+      "asset_revision": "6a6e225ff41a0ec6bd59",
       "species_model_hashes": {
-        "penguin": "bbf31849302fbe18c8089f2246a6c9eb69243f11b022103e20c953c260613e84",
-        "bear": "2c1411c89873484044234c570e6deb1c23b2fd10b13a9fc1504c653b27a7023b",
-        "pig": "d2bf9622db7074d2b5e990230bbaec6f198cd9ccf43795f01c3fff2f61662911",
-        "chick": "db60d1b29c9eb96ab84ef805695620c57515c8b4a1979bce6cdc4a374cba1845"
+        "penguin": "fcb0e3f9eff74ff5f7bba7a59f3859232b957f62b212be60987126ff31ae30dd",
+        "bear": "7311d102ea70d05cd6007c721cf32eb6c24f0e60ea2b6d0088e547d9cc3c838d",
+        "pig": "51af4865130d82707d3ee77636d4d038569da02f95ad0957490a3f9fe348585f",
+        "chick": "8aaf993b70e162610c6b2160ab4c231a0dfd317e3425ff6309a73fc6861b5539"
       },
       "skinned_model_space": false,
       "color_materials": [
@@ -202,12 +201,12 @@ final petAccessoryConcepts =
       },
       "fitted_model_space": true,
       "tuck_crown_tuft": true,
-      "asset_revision": "6263e5008ac84b88d551",
+      "asset_revision": "81374cf21e7569c18d8f",
       "species_model_hashes": {
-        "penguin": "c0b17962b4ce9dd9b540145cc73a1bbc49f9d03747a2160ebba9af5f97fdcc3f",
-        "bear": "47821e302ae416df3788e1e3ddd6de5ec03b7a1f6d46fe6ed04e678cc6d65155",
-        "pig": "ecc5d2af7fa676f5479e2e6963fec156bb924e0d6ea3cde136db3f5fb2e13003",
-        "chick": "447494bb801b09f003ac5e8beea1db7aee8b3d07c76bf009a310b832e5e33d1d"
+        "penguin": "3d160230e42ecfe0478e25df4824648ec70934d087deedcbdde4a909f25a655a",
+        "bear": "6a305f782233ee0776dbff1f5c4035f3f6bc1193304a6118ed7e4739968133c1",
+        "pig": "bd944e018495c5216c6828bb45205d0d8cbe2bccd2e1d7e826813ff0188f7eb3",
+        "chick": "64a2c7266ab69fef171da8d490976dbd44d3fd770bc764b6b004a7239fa4a600"
       },
       "skinned_model_space": false,
       "color_materials": [
@@ -358,12 +357,12 @@ final petAccessoryConcepts =
         "pig": "assets/runner/accessories/restart_patch_pirate_pig.glb",
         "chick": "assets/runner/accessories/restart_patch_pirate_chick.glb"
       },
-      "asset_revision": "b20fc68f121065ce5917",
+      "asset_revision": "5739296b9490caf1dec3",
       "species_model_hashes": {
-        "penguin": "c781afd23075152e5bb5264fea292439aa9d9ecba87b168d1694011dd54135fc",
-        "bear": "96f81ebe8a0f0cd862c8bb883158ad4f54b4e78a9a1a7f0855ae2ef213226e0a",
-        "pig": "12254b14d1616c9ed2524aa455c41772c80e38ec8d5edec7b27fa30663d43b83",
-        "chick": "c0aa64840f90a3d8352e66bcb13e5428fea412ae57892a9fdff9a16ee0e7a649"
+        "penguin": "45092fc9d2be226aa55bc07ded190c2d850af2174d319ae4093b921245a75dea",
+        "bear": "5499873f6a551406878f03127f7a40da9bf15b6c24f9bca93c4f9f8efc9b4f36",
+        "pig": "31c2ffda61d24cf1a4fb848ad09196794cb4a879cb2418114335f4fba4c1e73d",
+        "chick": "996c618c66dcf1fcc0f764dc7df1ce00998bf241a1a1749d3f604b936fe271ae"
       },
       "skinned_model_space": false
     },
@@ -391,12 +390,12 @@ final petAccessoryConcepts =
         "pig": "assets/runner/accessories/restart_mask_sleep_pig.glb",
         "chick": "assets/runner/accessories/restart_mask_sleep_chick.glb"
       },
-      "asset_revision": "43583cc095bf1c72757c",
+      "asset_revision": "7314241a3ab01453d0fe",
       "species_model_hashes": {
-        "penguin": "c25aef65a24980027407f6be891445c87c9d11bcecf64619aa29bd4f9897eb46",
-        "bear": "e09828dfcac59f933877e860f9b57bd02c4ff397b8c7c60db2ca59e48166c4c8",
-        "pig": "9945cd7ba4a3954a290783cb635aa2722cd20e6be462ee3f940409cd9844b231",
-        "chick": "66d0e46a192f12930165f0b51cbaf524c3b2227c9b6d3e19f91db283df5fb5b8"
+        "penguin": "cf3a046a21a89b051bba12331e2f598c3349398030dcaabf96c65873dcbc777e",
+        "bear": "632557e77d6b3618c60da3fdcdd408da8a0538d237f83de879aabc8fc3d8d396",
+        "pig": "bd24034c0dc6f28e1905028f2bf350a44b5d4297fa8bc9f730690d9ef60ad7c7",
+        "chick": "acd066906b3586e4f69703bcf5402b3bb0c26771bd672bb963d1f0dc2541a148"
       },
       "skinned_model_space": false,
       "color_materials": [
@@ -430,12 +429,12 @@ final petAccessoryConcepts =
         "chick": "assets/runner/accessories/restart_scarf_hearts_chick.glb"
       },
       "skinned_model_space": true,
-      "asset_revision": "f24c43f6b2cdfc248fcb",
+      "asset_revision": "4b39e5110bfcfba85464",
       "species_model_hashes": {
-        "penguin": "8cc65876bc60d3b4ba6130104cd8fb1840edc875a8d57978c175127c9865c102",
-        "bear": "1b28d5bacbab3ae5415641782220771666b726b37d3cc1311a6ec3e7eb374ad6",
-        "pig": "679826c2eee3b794f17cbbe9070b3cad46a529fff4bbcb87fdfab67e036938cd",
-        "chick": "506e9c6eb57239c861c7c8c8ec384e9e2dea53a2046bebd698c087301effa23c"
+        "penguin": "c30205b30cae4658b044a12ee365cf0ea9bf8901b338b93e55e3b1bf97856197",
+        "bear": "633b1dea0a2c0c11a314192c36470ae27951041b29fa86408dd8130e53c11240",
+        "pig": "593084698acb6c0709d41f7bba971480c18247452d5cff604d8517a9e7d79658",
+        "chick": "c064dbbcc7fe3630a546b977aad6d0742cc5ed6e86405d52e3a9cf4aca4df170"
       },
       "color_materials": [
         "knit · #EFA0AB"
@@ -468,12 +467,12 @@ final petAccessoryConcepts =
         "chick": "assets/runner/accessories/restart_bandana_sage_chick.glb"
       },
       "skinned_model_space": true,
-      "asset_revision": "adf6f23774315ef74b6f",
+      "asset_revision": "67a1f669c71bd7ed329d",
       "species_model_hashes": {
-        "penguin": "10b5506b5a66f76b9bb7de5cf1842e0137154590a77e68516e243fa1910a211a",
-        "bear": "2b88c2ba8c15e574001e4ed22ad722554d3915847c12190e36d7ba71e4ce2780",
-        "pig": "a003600d983c21c95794e4ab519620385f172b4d41407688575ec10ce27ec8c3",
-        "chick": "535f62acab2e4cf7256ebe6ada841fef21b120b5508b8dd4abd5de3e235e6d9f"
+        "penguin": "aa8d9ea590be69b878f75b6d70ca6c65c0c806eac6fbc80096ef4f1a1e18bd05",
+        "bear": "0900009b850838c536fbdbcd62149822cdf4fc2dbfd1f2c402497c1ac534cb10",
+        "pig": "3c1f519683d8db0bbc473477935a3f53ebf4277e039c9a2402d505792808f3eb",
+        "chick": "707fc6d44a348e45837fc2d7ee851b1938a54607d4da37490f56c37d6afce55e"
       },
       "color_materials": [
         "cotton · #B8DCCB"
@@ -572,12 +571,12 @@ final petAccessoryConcepts =
         "chick": "assets/runner/accessories/restart_bow_neck_chick.glb"
       },
       "skinned_model_space": true,
-      "asset_revision": "9ad79ea470fab1a0854a",
+      "asset_revision": "65b4f76318941359061a",
       "species_model_hashes": {
-        "penguin": "70c7492d6459f505219cd66e14066bbe85df2b78e115020c5baf4b1985ecc330",
-        "bear": "c7c367b0a72c924597d32e9873ea1c1e50d21734186ed22326d101aab4497fd6",
-        "pig": "bd68c0c0be4d8ce4558217e69cf7e37f1dc17c82559711a6d3a7da809294f2da",
-        "chick": "63efee5b881cfd16fe5c96be1f2aa238db5148b089483a266afb6e8f77214011"
+        "penguin": "8007c158c3b4fbc5337374eb208e82604e1b23cfb055a32ccc013c652e67529b",
+        "bear": "ecc431bc3774cf155b05857a8ccda529cc53d54940d36fa22713ca1411a32753",
+        "pig": "cd3bcea1e13a6db58461093f0cd2f339f3d2aa32dbb87ff00ae9d3c8cadcdf20",
+        "chick": "e92ecf4c72c306629e5bdd67176d5d7388ead9c65b51d976402bceaf4c7ce3e9"
       },
       "color_materials": [
         "Algodón coral nuevo"
@@ -610,7 +609,7 @@ final petAccessoryConcepts =
       },
       "fitted_model_space": true,
       "skinned_model_space": true,
-      "asset_revision": "5030b433ee4d1ff21223",
+      "asset_revision": "c7a1f6ca3e7484c61fe7",
       "sleeve_coverage": {
         "penguin": {
           "min_y": 0.41660043558286364,
@@ -630,10 +629,10 @@ final petAccessoryConcepts =
         }
       },
       "species_model_hashes": {
-        "penguin": "4cea182e66c13c36ef8bdc5182312b2c6b9ec7c746bed4b9c05c839e0c6a27f5",
-        "bear": "eae819959f3d90d83b91596b3980b07b6e03fc6904bd1e1b35cee5ec65938425",
-        "pig": "920fabebb9d4f579e190df4a8c50dc9954ff06d6ca33e880a51b3ef02c17973b",
-        "chick": "9ab91cbf65ad5fe533efb951de1cc66a8e53dac3be7b9e15eff5f9fd00da2bfa"
+        "penguin": "709ba5c8f0d6cbdd54690019aa54722ce1f3ef07721b9a052ae4f98cc55b6c48",
+        "bear": "e192c914f95a6d9142621d328e150e360ac1731f33fab4c828c6ebd8122565cb",
+        "pig": "6c987a9002a52b986ea092e85b6fa44ecd275dca98e22c6976a2ad41221b607f",
+        "chick": "5f433f0b6d925fb23193836966464682a78aeed14a34a4de97edcf78b8218370"
       },
       "coverage_assets": {
         "penguin": "assets/runner/restart/shirt-original-coverage-penguin.json",
@@ -673,7 +672,7 @@ final petAccessoryConcepts =
       },
       "fitted_model_space": true,
       "skinned_model_space": true,
-      "asset_revision": "af2f9b011221f68d98a1",
+      "asset_revision": "98b3953a6ae7966e0522",
       "sleeve_coverage": {
         "penguin": {
           "min_y": 0.41660043558286364,
@@ -693,10 +692,10 @@ final petAccessoryConcepts =
         }
       },
       "species_model_hashes": {
-        "penguin": "22bc9283cecb61b69d7a733309b851eaebdd1ae027603b173f684fd9327d6439",
-        "bear": "fb12f230b78e0baa2d5bc8236629d2f1f2dfc09d86e4d8070ca5b85cfc0c5f77",
-        "pig": "11b340e9ddac98c762496660d00784a38df4a8f738df285a7151ea48c5ddab49",
-        "chick": "6e0e20a2c32d5df00d900d7259f50ea3a8874639081e54432e588f7fc98571e1"
+        "penguin": "2c81ee668884e847b85e48cf64a6d85119a49ebb55d68579b32a501dae012882",
+        "bear": "ce6f633a1c20b29b34cec987ef56113a4add9558b5310e0da48ed7e5d27466c3",
+        "pig": "5e4299a7376222926152df5f921e31dd35ddf7a34946830de9656904ba699619",
+        "chick": "c973e40d533af257b4129e19ea40d6316b43c644c56aa64c2c85e2533064d1b5"
       },
       "coverage_assets": {
         "penguin": "assets/runner/restart/sewn-coverage-penguin-jacket_denim.json",
@@ -736,7 +735,7 @@ final petAccessoryConcepts =
       },
       "fitted_model_space": true,
       "skinned_model_space": true,
-      "asset_revision": "a0285b79e700f6ae37c3",
+      "asset_revision": "807111d362f8206f35ae",
       "sleeve_coverage": {
         "penguin": {
           "min_y": 0.3716004355828636,
@@ -756,10 +755,10 @@ final petAccessoryConcepts =
         }
       },
       "species_model_hashes": {
-        "penguin": "c5d47eac25416a9a63c4ad27a21f950be18e526e147352453a6770530d830eb7",
-        "bear": "ca37cce57880a29a7b7eba95b2b4e123b90dea378b536ac644a39d8030524034",
-        "pig": "5cc12830a9cf0c7c007aa945c337c415ebc2c9c10b0f3ab184919f0d09516e0d",
-        "chick": "c3f9cd8aacdfea5ba5024338c8282a48977caac8ec32f9a423380da5626f891d"
+        "penguin": "c0d759a007cb83b7b1eb023703f9d5b06582f41cbfd859368b116c5de9af9e1f",
+        "bear": "eeddc8db57ea2b8f2022bc113d8ab6920e39a1a76040eeec82ef7fa4a0b2baec",
+        "pig": "d0d1ef9ba7f9d6b8821e7d3ea894753236c3ce2fad4381b1be8dade42088b779",
+        "chick": "2ebf4ebe14add12dacb225d862909b6feddf14d5acdfee614ea28c741413386c"
       },
       "coverage_assets": {
         "penguin": "assets/runner/restart/sewn-coverage-penguin-coat_cloud.json",
@@ -799,7 +798,7 @@ final petAccessoryConcepts =
       },
       "fitted_model_space": true,
       "skinned_model_space": true,
-      "asset_revision": "a7b45911f7f7cd9cf5a9",
+      "asset_revision": "dbd1d494196d5212db20",
       "sleeve_coverage": {
         "penguin": {
           "min_y": 0.41660043558286364,
@@ -819,10 +818,10 @@ final petAccessoryConcepts =
         }
       },
       "species_model_hashes": {
-        "penguin": "6081cd5be46c0e2565ab01976bc93d9119539f381e1ea1f77839c0aad2ae9a0d",
-        "bear": "e3a802a9df13d21db6fde72ef0f11e3b0cffe150520906e65c8856b7a44a62be",
-        "pig": "2b794d2c400a700a6bab1a96c5d1e5d9a52eb80f30d82182a2b943e84e9662a9",
-        "chick": "968e2b03fe5434b6a0d4acb3defb2acb713af1b014a2b5846b690b56912eccb5"
+        "penguin": "8a9bf927d13345a6c602bd0e71f198611b8288b0691851442d16db8bcc33dd69",
+        "bear": "4993adde12f38b5e8dd7053ce10a59ed9b234e6d1a022cf0a866a7f0ef0933ea",
+        "pig": "6259eaa642eefb4a37fe5e7fd0c73bea5c2d62466892be563e7c0fc3e7f597a4",
+        "chick": "7f0f28ee9770ecc24695a3775582379aff81f433756a36455d63745a8ec0991c"
       },
       "coverage_assets": {
         "penguin": "assets/runner/restart/sewn-coverage-penguin-dress_petal.json",
@@ -862,7 +861,7 @@ final petAccessoryConcepts =
       },
       "fitted_model_space": true,
       "skinned_model_space": true,
-      "asset_revision": "1be24c948c45bf4b6716",
+      "asset_revision": "aab93b1c9d9e82fb135b",
       "sleeve_coverage": {
         "penguin": {
           "min_y": 0.3716004355828636,
@@ -882,10 +881,10 @@ final petAccessoryConcepts =
         }
       },
       "species_model_hashes": {
-        "penguin": "1ccea9a0b80a5580b8a7f69a2ba6dfac8507a475405cabce9e09847364aa05f1",
-        "bear": "479105b15d9cfb58576e1ccbc11d24997dd41228eb305bce9a6dadd2cd94ab11",
-        "pig": "7343ffbbb6a4bfa42f706e3735a4a5568c14703bea7846eaaf6f1df3b318d36e",
-        "chick": "24839521867880995fb1ccf671f58b09148a6bef3334ea06534c29b7d6331c44"
+        "penguin": "4c5321261e550109809c6eb44f934c1a0f309e6c9e28d56b44529bb7bd200ef7",
+        "bear": "54dc42587e36ef0e9ea155f60f2f4d62012084eb48e2da55a21bcbf27ba24a2d",
+        "pig": "176b5a1bad248cc4be925944e62e6a974e250033e2ba0e008f54e9187b1c7622",
+        "chick": "d77cab6bdabd651de83a7b27fe3a1ea1865c8431c60e2f51d6fc639912637f3f"
       },
       "coverage_assets": {
         "penguin": "assets/runner/restart/sewn-coverage-penguin-hoodie_nido.json",
@@ -925,12 +924,12 @@ final petAccessoryConcepts =
         "chick": "assets/runner/accessories/restart_shoes_heart_chick.glb"
       },
       "skinned_model_space": true,
-      "asset_revision": "f908517b3c9449c8aae5",
+      "asset_revision": "d84e734b67f9111bdf42",
       "species_model_hashes": {
-        "penguin": "e45d7ee146f8419c7551e9d64b8d303b77acb49818238fa28214c0835cccd4c4",
-        "bear": "07424318d7ae6b31c05a6ef6fda30dc591156a3fce76522a5d940ded4126d609",
-        "pig": "2cf25dcd8113e6e8c18d98290bb48b690e5062c7d59c819e27866d80fb3d7e62",
-        "chick": "c5a68e0a9cb6496d3ee45a30e4d6bbc18f10a4f6ca3f58760f2e02d642167838"
+        "penguin": "27381cc13f1749547e9a5e0adf2d71acaa0a741359a53ef5477018f331915bff",
+        "bear": "15ad0fa4ce9dc7fd8aa53699c379bfaa300c811157dacbbfa81f1b06eb5d9947",
+        "pig": "9231645092f14edcad5f247cff6215db62016d7a737159f78c61f42f26ece985",
+        "chick": "2ff6db0d430033ca15962fe9efe5c5b5d49dd78a0622aca86d20da407bd2dbcc"
       },
       "color_materials": [
         "Algodón coral nuevo"
@@ -1001,12 +1000,12 @@ final petAccessoryConcepts =
         "chick": "assets/runner/accessories/restart_slippers_cloud_chick.glb"
       },
       "skinned_model_space": true,
-      "asset_revision": "0df396b9a67a0614056a",
+      "asset_revision": "ec6729b776b77755fb22",
       "species_model_hashes": {
-        "penguin": "2b1374af6aef790093211d43c63084b8fe7c8ed099f0a5c7cdd80481dbb7c976",
-        "bear": "1b2eb90dc63d41e298820cfa6ca4469ee46af65f119bb57bc3c91c2d13c87227",
-        "pig": "1baa832d82bb7aac04acbab8726c89c7e7a5d6f9f9a63c44a5b4b451fe656cb3",
-        "chick": "d8d38d119432ae92f5102efe70f36eba9f3f2945e588539ffb64c178829a0678"
+        "penguin": "00ea3068923830aa2e706e1c78df7d831aeac2fe3bba579d11afbb2ca6576ca3",
+        "bear": "238f1c5cdb27a4d65ab0ef6f2650a74184f46c2c06a73548b806bd901c846d81",
+        "pig": "724fbc6725717864ff483e18e988fdf8b1a41bd21946335e98ace138cf3b9f19",
+        "chick": "8ab4694f4b9fe712966621b58737e4be25cb87aa86170ac33ed7cb566d2efe91"
       },
       "color_materials": [
         "wool · #FFF2DF"
@@ -1039,12 +1038,12 @@ final petAccessoryConcepts =
         "chick": "assets/runner/accessories/restart_shoes_chic_chick.glb"
       },
       "skinned_model_space": true,
-      "asset_revision": "54cfdbe2a438e74f3089",
+      "asset_revision": "018e001e4934d7b05893",
       "species_model_hashes": {
-        "penguin": "cd16728e81ac5155c1e1b92a17782b5363ecfad5d7859fe083d3784d33c62165",
-        "bear": "2a2606e8b6908b45384c60884b6a803ba604244c018b157c843044a7f449ad6a",
-        "pig": "3c50cffd7205003c39ed497b0e4ab68325bca1c33aa70a6fb17b6676e383440f",
-        "chick": "f60c1d17a8610ea1db29866535bc6000bd6cdb22013552ea960b611211a7b9d2"
+        "penguin": "45042bf1880cc82ceead604bace6e01dc62ea44d121e14a31a448a7abbb7312b",
+        "bear": "5531cd8e611c1f7c5bde696d7645d2fcef13b037d44210fe665bcfc0b6fb51c0",
+        "pig": "756e7cb4270c7d7490af8c7fc1135d312d33fdd9b43b5bc10a1be776a332c439",
+        "chick": "10326ef9b4240d9e18a8d701eff89ea9af2611de13e0f8c9fad2face9927a965"
       },
       "color_materials": [
         "cotton · #F05280"
@@ -1077,12 +1076,12 @@ final petAccessoryConcepts =
         "chick": "assets/runner/accessories/restart_sandals_summer_chick.glb"
       },
       "skinned_model_space": true,
-      "asset_revision": "eafe320bbff0217b95e3",
+      "asset_revision": "61559dfaeba39581cece",
       "species_model_hashes": {
-        "penguin": "980c43554d2c508c681e5d6e6ae4598cf9fe88dc895279212d2dbcd942229110",
-        "bear": "5740011c3604d2e545ddb32b471dd3735fb0889e17a7bd44410db8a601fba257",
-        "pig": "d0728228e670ea87a1dc1c7895701f0c9015142151661c0698a7be72539a0b41",
-        "chick": "224c25083b0062676fd478816a17093f454ad96822af2255cb3f6d787c0d4e75"
+        "penguin": "4803222c2b980778d0749039936c2f130dc3728d8920c9bd05901e40acf319b3",
+        "bear": "57891f2328cd6e47016dd8190b2193ead40cf703853ad5a38006a33af4c93ac4",
+        "pig": "77cc04dc8b97413eed39de63a4947f270b267bb4f4950363db569815e8a712dd",
+        "chick": "a061f404ca694ae8158b25bd4e2db202722a7d7553df98ef18e66935b22674a6"
       },
       "color_materials": [
         "cotton · #F2B29B"
@@ -1098,24 +1097,13 @@ final petAccessoryConcepts =
     "complexity": "Esencial",
     "color_price_coins": 10
   }
-]''')
-            as List)
-        .map((e) => Map<String, dynamic>.from(e))
-        .toList();
+]''') as List).map((e) => Map<String, dynamic>.from(e)).toList();
 
 Future<void>? _loading;
 Future<void> loadPetAccessoryCatalog() => _loading ??= _load();
 Future<void> _load() async {
-  final data =
-      jsonDecode(
-            await rootBundle.loadString('assets/runner/accessory-catalog.json'),
-          )
-          as List;
-  final items = data.map((e) => Map<String, dynamic>.from(e as Map)).toList();
-  if (items.map((e) => e['item_key']).toSet().length != items.length) {
-    throw StateError('Duplicate accessory key');
-  }
-  petAccessoryConcepts
-    ..clear()
-    ..addAll(items);
+ final data=jsonDecode(await rootBundle.loadString('assets/runner/accessory-catalog.json')) as List;
+ final items=data.map((e)=>Map<String,dynamic>.from(e as Map)).toList();
+ if(items.map((e)=>e['item_key']).toSet().length!=items.length) { throw StateError('Duplicate accessory key'); }
+ petAccessoryConcepts..clear()..addAll(items);
 }

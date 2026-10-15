@@ -18,6 +18,18 @@ class SharedPetService extends ChangeNotifier {
   Map<String, dynamic> data = {};
   String? _account;
   int _generation = 0;
+  bool _changing = false;
+  int get revision => _generation;
+  void acceptSnapshot(Map<String, dynamic> snapshot, int revision) {
+    if (_changing ||
+        revision != _generation ||
+        SupabaseService.instance.currentUser?.id == null)
+      return;
+    data = snapshot;
+    _account = SupabaseService.instance.currentUser?.id;
+    notifyListeners();
+  }
+
   bool get ready => data.isNotEmpty;
   int get hunger => data['hunger'] as int? ?? 0;
   int get energy => data['energy'] as int? ?? 0;
@@ -34,17 +46,32 @@ class SharedPetService extends ChangeNotifier {
       .map((p) => Map<String, dynamic>.from(p as Map))
       .toList();
   Future<void> change(String action, String species, String name) async {
-    final uid = SupabaseService.instance.currentUser?.id;
-    final result = await SupabaseService.instance.client.rpc(
-      'shared_pet_change',
-      params: {'p_action': action, 'p_species': species, 'p_name': name.trim()},
-    );
-    if (SupabaseService.instance.currentUser?.id != uid) return;
-    data = Map<String, dynamic>.from(result as Map);
-    notifyListeners();
+    if (_changing) throw StateError('Cambio en curso');
+    _changing = true;
+    try {
+      final uid = SupabaseService.instance.currentUser?.id;
+      final generation = ++_generation;
+      final result = await SupabaseService.instance.client.rpc(
+        'shared_pet_change',
+        params: {
+          'p_action': action,
+          'p_species': species,
+          'p_name': name.trim(),
+        },
+      );
+      if (SupabaseService.instance.currentUser?.id != uid ||
+          generation != _generation)
+        return;
+      data = Map<String, dynamic>.from(result as Map);
+      _generation++;
+      notifyListeners();
+    } finally {
+      _changing = false;
+    }
   }
 
   Future<void> refresh() async {
+    if (_changing) return;
     final uid = SupabaseService.instance.currentUser?.id;
     if (uid == null) {
       data = {};

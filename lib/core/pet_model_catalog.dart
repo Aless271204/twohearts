@@ -2,7 +2,7 @@ import 'feature_flags.dart';
 
 class PetModelCatalog {
   static const penguinModelPath =
-      'assets/models/Meshy_AI_Pip_the_Penguin_All_Animations.glb';
+      'assets/runner/play-models/Meshy_AI_Pip_the_Penguin_All_Animations.glb';
   static const defaultModelPath = penguinModelPath;
   static const models = {
     'penguin': penguinModelPath,

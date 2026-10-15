@@ -109,18 +109,20 @@ class ProductThumbnail extends StatelessWidget {
       final file = '${item.slot}-${item.style}-$color.png';
       final variantFile = '${item.slot}-${item.style}-$color-$species.png';
       return ColoredBox(
-        color: const Color(0xFFFFF5F7),
-        child: Image.asset(
-          'assets/images/products/$variantFile',
-          fit: BoxFit.contain,
-          errorBuilder: (_, __, ___) => Image.asset(
-            'assets/images/products/$file',
+        color: Colors.white,
+        child: _AnimatedProductPreview(
+          child: Image.asset(
+            'assets/images/products/$variantFile',
             fit: BoxFit.contain,
-            errorBuilder: (_, __, ___) => Center(
-              child: Text(
-                'Vista previa disponible al abrir',
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.bodySmall,
+            errorBuilder: (_, __, ___) => Image.asset(
+              'assets/images/products/$file',
+              fit: BoxFit.contain,
+              errorBuilder: (_, __, ___) => Center(
+                child: Text(
+                  'Vista previa disponible al abrir',
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
               ),
             ),
           ),
@@ -162,6 +164,54 @@ class StoryArt extends StatelessWidget {
           fit: BoxFit.cover,
         ),
       ),
+    ),
+  );
+}
+
+/// A restrained showroom motion; image and equipped product share the same model.
+class _AnimatedProductPreview extends StatefulWidget {
+  const _AnimatedProductPreview({required this.child});
+  final Widget child;
+  @override
+  State<_AnimatedProductPreview> createState() =>
+      _AnimatedProductPreviewState();
+}
+
+class _AnimatedProductPreviewState extends State<_AnimatedProductPreview>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController motion = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 3200),
+  );
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (MediaQuery.disableAnimationsOf(context)) {
+      motion.stop();
+      motion.value = .5;
+    } else if (!motion.isAnimating) {
+      motion.repeat(reverse: true);
+    }
+  }
+
+  @override
+  void dispose() {
+    motion.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => RepaintBoundary(
+    child: AnimatedBuilder(
+      animation: motion,
+      child: widget.child,
+      builder: (context, child) {
+        final t = Curves.easeInOut.transform(motion.value) - .5;
+        return Transform.translate(
+          offset: Offset(0, t * 5),
+          child: Transform.rotate(angle: t * .035, child: child),
+        );
+      },
     ),
   );
 }

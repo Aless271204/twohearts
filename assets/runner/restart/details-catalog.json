@@ -3,49 +3,49 @@
     "item_key": "bow_neck",
     "species": "penguin",
     "asset": "assets/runner/accessories/restart_bow_neck_penguin.glb",
-    "sha256": "70c7492d6459f505219cd66e14066bbe85df2b78e115020c5baf4b1985ecc330"
+    "sha256": "8007c158c3b4fbc5337374eb208e82604e1b23cfb055a32ccc013c652e67529b"
   },
   {
     "item_key": "bow_neck",
     "species": "bear",
     "asset": "assets/runner/accessories/restart_bow_neck_bear.glb",
-    "sha256": "c7c367b0a72c924597d32e9873ea1c1e50d21734186ed22326d101aab4497fd6"
+    "sha256": "ecc431bc3774cf155b05857a8ccda529cc53d54940d36fa22713ca1411a32753"
   },
   {
     "item_key": "bow_neck",
     "species": "pig",
     "asset": "assets/runner/accessories/restart_bow_neck_pig.glb",
-    "sha256": "bd68c0c0be4d8ce4558217e69cf7e37f1dc17c82559711a6d3a7da809294f2da"
+    "sha256": "cd3bcea1e13a6db58461093f0cd2f339f3d2aa32dbb87ff00ae9d3c8cadcdf20"
   },
   {
     "item_key": "bow_neck",
     "species": "chick",
     "asset": "assets/runner/accessories/restart_bow_neck_chick.glb",
-    "sha256": "63efee5b881cfd16fe5c96be1f2aa238db5148b089483a266afb6e8f77214011"
+    "sha256": "e92ecf4c72c306629e5bdd67176d5d7388ead9c65b51d976402bceaf4c7ce3e9"
   },
   {
     "item_key": "sandals_summer",
     "species": "penguin",
     "asset": "assets/runner/accessories/restart_sandals_summer_penguin.glb",
-    "sha256": "980c43554d2c508c681e5d6e6ae4598cf9fe88dc895279212d2dbcd942229110"
+    "sha256": "4803222c2b980778d0749039936c2f130dc3728d8920c9bd05901e40acf319b3"
   },
   {
     "item_key": "sandals_summer",
     "species": "bear",
     "asset": "assets/runner/accessories/restart_sandals_summer_bear.glb",
-    "sha256": "5740011c3604d2e545ddb32b471dd3735fb0889e17a7bd44410db8a601fba257"
+    "sha256": "57891f2328cd6e47016dd8190b2193ead40cf703853ad5a38006a33af4c93ac4"
   },
   {
     "item_key": "sandals_summer",
     "species": "pig",
     "asset": "assets/runner/accessories/restart_sandals_summer_pig.glb",
-    "sha256": "d0728228e670ea87a1dc1c7895701f0c9015142151661c0698a7be72539a0b41"
+    "sha256": "77cc04dc8b97413eed39de63a4947f270b267bb4f4950363db569815e8a712dd"
   },
   {
     "item_key": "sandals_summer",
     "species": "chick",
     "asset": "assets/runner/accessories/restart_sandals_summer_chick.glb",
-    "sha256": "224c25083b0062676fd478816a17093f454ad96822af2255cb3f6d787c0d4e75"
+    "sha256": "a061f404ca694ae8158b25bd4e2db202722a7d7553df98ef18e66935b22674a6"
   },
   {
     "item_key": "boots_rain",
@@ -57,13 +57,13 @@
     "item_key": "slippers_cloud",
     "species": "penguin",
     "asset": "assets/runner/accessories/restart_slippers_cloud_penguin.glb",
-    "sha256": "2b1374af6aef790093211d43c63084b8fe7c8ed099f0a5c7cdd80481dbb7c976"
+    "sha256": "00ea3068923830aa2e706e1c78df7d831aeac2fe3bba579d11afbb2ca6576ca3"
   },
   {
     "item_key": "shoes_chic",
     "species": "penguin",
     "asset": "assets/runner/accessories/restart_shoes_chic_penguin.glb",
-    "sha256": "cd16728e81ac5155c1e1b92a17782b5363ecfad5d7859fe083d3784d33c62165"
+    "sha256": "45042bf1880cc82ceead604bace6e01dc62ea44d121e14a31a448a7abbb7312b"
   },
   {
     "item_key": "boots_rain",
@@ -75,13 +75,13 @@
     "item_key": "slippers_cloud",
     "species": "bear",
     "asset": "assets/runner/accessories/restart_slippers_cloud_bear.glb",
-    "sha256": "1b2eb90dc63d41e298820cfa6ca4469ee46af65f119bb57bc3c91c2d13c87227"
+    "sha256": "238f1c5cdb27a4d65ab0ef6f2650a74184f46c2c06a73548b806bd901c846d81"
   },
   {
     "item_key": "shoes_chic",
     "species": "bear",
     "asset": "assets/runner/accessories/restart_shoes_chic_bear.glb",
-    "sha256": "2a2606e8b6908b45384c60884b6a803ba604244c018b157c843044a7f449ad6a"
+    "sha256": "5531cd8e611c1f7c5bde696d7645d2fcef13b037d44210fe665bcfc0b6fb51c0"
   },
   {
     "item_key": "boots_rain",
@@ -93,13 +93,13 @@
     "item_key": "slippers_cloud",
     "species": "pig",
     "asset": "assets/runner/accessories/restart_slippers_cloud_pig.glb",
-    "sha256": "1baa832d82bb7aac04acbab8726c89c7e7a5d6f9f9a63c44a5b4b451fe656cb3"
+    "sha256": "724fbc6725717864ff483e18e988fdf8b1a41bd21946335e98ace138cf3b9f19"
   },
   {
     "item_key": "shoes_chic",
     "species": "pig",
     "asset": "assets/runner/accessories/restart_shoes_chic_pig.glb",
-    "sha256": "3c50cffd7205003c39ed497b0e4ab68325bca1c33aa70a6fb17b6676e383440f"
+    "sha256": "756e7cb4270c7d7490af8c7fc1135d312d33fdd9b43b5bc10a1be776a332c439"
   },
   {
     "item_key": "boots_rain",
@@ -111,13 +111,13 @@
     "item_key": "slippers_cloud",
     "species": "chick",
     "asset": "assets/runner/accessories/restart_slippers_cloud_chick.glb",
-    "sha256": "d8d38d119432ae92f5102efe70f36eba9f3f2945e588539ffb64c178829a0678"
+    "sha256": "8ab4694f4b9fe712966621b58737e4be25cb87aa86170ac33ed7cb566d2efe91"
   },
   {
     "item_key": "shoes_chic",
     "species": "chick",
     "asset": "assets/runner/accessories/restart_shoes_chic_chick.glb",
-    "sha256": "f60c1d17a8610ea1db29866535bc6000bd6cdb22013552ea960b611211a7b9d2"
+    "sha256": "10326ef9b4240d9e18a8d701eff89ea9af2611de13e0f8c9fad2face9927a965"
   },
   {
     "item_key": "glasses_star",
@@ -179,84 +179,84 @@
     "item_key": "beanie_cloud",
     "species": "penguin",
     "asset": "assets/runner/accessories/restart_headfinish_beanie_cloud_penguin.glb",
-    "sha256": "da6c88c7029a1f054febddb4b0b6a853842f631256b312640b318acb2a953dfc",
+    "sha256": "9cbfeb0f59f7482c2281393e133e3ef8bf65d6511d27d82b608f655929d877da",
     "skinned_model_space": false
   },
   {
     "item_key": "beanie_cloud",
     "species": "bear",
     "asset": "assets/runner/accessories/restart_headfinish_beanie_cloud_bear.glb",
-    "sha256": "2b21c3ac0fae1031c4cba26f7413111e75a6bd99ecdca889758e760b5364483f",
+    "sha256": "fde01f11c624e519ec81df3e454c467dc99f4cf4b08d02e4bee505fe2d3d9921",
     "skinned_model_space": false
   },
   {
     "item_key": "beanie_cloud",
     "species": "pig",
     "asset": "assets/runner/accessories/restart_headfinish_beanie_cloud_pig.glb",
-    "sha256": "dddb02c1eab976c2844a52e5f316867a46fd66847898e74c720c873740a1553b",
+    "sha256": "f0b4780c23acec33111b3f0cbbae3319ed9860ff1c49339357198c3da18e7731",
     "skinned_model_space": false
   },
   {
     "item_key": "beanie_cloud",
     "species": "chick",
     "asset": "assets/runner/accessories/restart_headfinish_beanie_cloud_chick.glb",
-    "sha256": "6bca69f640aa643746f6e3e948dcc0fd918e22fac2bf591056a4d7c467ad23b8",
+    "sha256": "4283cb2ba7832423dea3afbabdb2b07cce3997c5979c8e4d33c362ef71c0d745",
     "skinned_model_space": false
   },
   {
     "item_key": "hat_garden",
     "species": "penguin",
     "asset": "assets/runner/accessories/restart_headfinish_hat_garden_penguin.glb",
-    "sha256": "bbf31849302fbe18c8089f2246a6c9eb69243f11b022103e20c953c260613e84",
+    "sha256": "fcb0e3f9eff74ff5f7bba7a59f3859232b957f62b212be60987126ff31ae30dd",
     "skinned_model_space": false
   },
   {
     "item_key": "hat_garden",
     "species": "bear",
     "asset": "assets/runner/accessories/restart_headfinish_hat_garden_bear.glb",
-    "sha256": "2c1411c89873484044234c570e6deb1c23b2fd10b13a9fc1504c653b27a7023b",
+    "sha256": "7311d102ea70d05cd6007c721cf32eb6c24f0e60ea2b6d0088e547d9cc3c838d",
     "skinned_model_space": false
   },
   {
     "item_key": "hat_garden",
     "species": "pig",
     "asset": "assets/runner/accessories/restart_headfinish_hat_garden_pig.glb",
-    "sha256": "d2bf9622db7074d2b5e990230bbaec6f198cd9ccf43795f01c3fff2f61662911",
+    "sha256": "51af4865130d82707d3ee77636d4d038569da02f95ad0957490a3f9fe348585f",
     "skinned_model_space": false
   },
   {
     "item_key": "hat_garden",
     "species": "chick",
     "asset": "assets/runner/accessories/restart_headfinish_hat_garden_chick.glb",
-    "sha256": "db60d1b29c9eb96ab84ef805695620c57515c8b4a1979bce6cdc4a374cba1845",
+    "sha256": "8aaf993b70e162610c6b2160ab4c231a0dfd317e3425ff6309a73fc6861b5539",
     "skinned_model_space": false
   },
   {
     "item_key": "beret_chic",
     "species": "penguin",
     "asset": "assets/runner/accessories/restart_headfinish_beret_chic_penguin.glb",
-    "sha256": "c0b17962b4ce9dd9b540145cc73a1bbc49f9d03747a2160ebba9af5f97fdcc3f",
+    "sha256": "3d160230e42ecfe0478e25df4824648ec70934d087deedcbdde4a909f25a655a",
     "skinned_model_space": false
   },
   {
     "item_key": "beret_chic",
     "species": "bear",
     "asset": "assets/runner/accessories/restart_headfinish_beret_chic_bear.glb",
-    "sha256": "47821e302ae416df3788e1e3ddd6de5ec03b7a1f6d46fe6ed04e678cc6d65155",
+    "sha256": "6a305f782233ee0776dbff1f5c4035f3f6bc1193304a6118ed7e4739968133c1",
     "skinned_model_space": false
   },
   {
     "item_key": "beret_chic",
     "species": "pig",
     "asset": "assets/runner/accessories/restart_headfinish_beret_chic_pig.glb",
-    "sha256": "ecc5d2af7fa676f5479e2e6963fec156bb924e0d6ea3cde136db3f5fb2e13003",
+    "sha256": "bd944e018495c5216c6828bb45205d0d8cbe2bccd2e1d7e826813ff0188f7eb3",
     "skinned_model_space": false
   },
   {
     "item_key": "beret_chic",
     "species": "chick",
     "asset": "assets/runner/accessories/restart_headfinish_beret_chic_chick.glb",
-    "sha256": "447494bb801b09f003ac5e8beea1db7aee8b3d07c76bf009a310b832e5e33d1d",
+    "sha256": "64a2c7266ab69fef171da8d490976dbd44d3fd770bc764b6b004a7239fa4a600",
     "skinned_model_space": false
   },
   {
@@ -277,28 +277,28 @@
     "item_key": "patch_pirate",
     "species": "penguin",
     "asset": "assets/runner/accessories/restart_patch_pirate_penguin.glb",
-    "sha256": "c781afd23075152e5bb5264fea292439aa9d9ecba87b168d1694011dd54135fc",
+    "sha256": "45092fc9d2be226aa55bc07ded190c2d850af2174d319ae4093b921245a75dea",
     "skinned_model_space": false
   },
   {
     "item_key": "mask_sleep",
     "species": "penguin",
     "asset": "assets/runner/accessories/restart_mask_sleep_penguin.glb",
-    "sha256": "c25aef65a24980027407f6be891445c87c9d11bcecf64619aa29bd4f9897eb46",
+    "sha256": "cf3a046a21a89b051bba12331e2f598c3349398030dcaabf96c65873dcbc777e",
     "skinned_model_space": false
   },
   {
     "item_key": "scarf_hearts",
     "species": "penguin",
     "asset": "assets/runner/accessories/restart_scarf_hearts_penguin.glb",
-    "sha256": "8cc65876bc60d3b4ba6130104cd8fb1840edc875a8d57978c175127c9865c102",
+    "sha256": "c30205b30cae4658b044a12ee365cf0ea9bf8901b338b93e55e3b1bf97856197",
     "skinned_model_space": true
   },
   {
     "item_key": "bandana_sage",
     "species": "penguin",
     "asset": "assets/runner/accessories/restart_bandana_sage_penguin.glb",
-    "sha256": "10b5506b5a66f76b9bb7de5cf1842e0137154590a77e68516e243fa1910a211a",
+    "sha256": "aa8d9ea590be69b878f75b6d70ca6c65c0c806eac6fbc80096ef4f1a1e18bd05",
     "skinned_model_space": true
   },
   {
@@ -326,28 +326,28 @@
     "item_key": "patch_pirate",
     "species": "bear",
     "asset": "assets/runner/accessories/restart_patch_pirate_bear.glb",
-    "sha256": "96f81ebe8a0f0cd862c8bb883158ad4f54b4e78a9a1a7f0855ae2ef213226e0a",
+    "sha256": "5499873f6a551406878f03127f7a40da9bf15b6c24f9bca93c4f9f8efc9b4f36",
     "skinned_model_space": false
   },
   {
     "item_key": "mask_sleep",
     "species": "bear",
     "asset": "assets/runner/accessories/restart_mask_sleep_bear.glb",
-    "sha256": "e09828dfcac59f933877e860f9b57bd02c4ff397b8c7c60db2ca59e48166c4c8",
+    "sha256": "632557e77d6b3618c60da3fdcdd408da8a0538d237f83de879aabc8fc3d8d396",
     "skinned_model_space": false
   },
   {
     "item_key": "scarf_hearts",
     "species": "bear",
     "asset": "assets/runner/accessories/restart_scarf_hearts_bear.glb",
-    "sha256": "1b28d5bacbab3ae5415641782220771666b726b37d3cc1311a6ec3e7eb374ad6",
+    "sha256": "633b1dea0a2c0c11a314192c36470ae27951041b29fa86408dd8130e53c11240",
     "skinned_model_space": true
   },
   {
     "item_key": "bandana_sage",
     "species": "bear",
     "asset": "assets/runner/accessories/restart_bandana_sage_bear.glb",
-    "sha256": "2b88c2ba8c15e574001e4ed22ad722554d3915847c12190e36d7ba71e4ce2780",
+    "sha256": "0900009b850838c536fbdbcd62149822cdf4fc2dbfd1f2c402497c1ac534cb10",
     "skinned_model_space": true
   },
   {
@@ -375,28 +375,28 @@
     "item_key": "patch_pirate",
     "species": "pig",
     "asset": "assets/runner/accessories/restart_patch_pirate_pig.glb",
-    "sha256": "12254b14d1616c9ed2524aa455c41772c80e38ec8d5edec7b27fa30663d43b83",
+    "sha256": "31c2ffda61d24cf1a4fb848ad09196794cb4a879cb2418114335f4fba4c1e73d",
     "skinned_model_space": false
   },
   {
     "item_key": "mask_sleep",
     "species": "pig",
     "asset": "assets/runner/accessories/restart_mask_sleep_pig.glb",
-    "sha256": "9945cd7ba4a3954a290783cb635aa2722cd20e6be462ee3f940409cd9844b231",
+    "sha256": "bd24034c0dc6f28e1905028f2bf350a44b5d4297fa8bc9f730690d9ef60ad7c7",
     "skinned_model_space": false
   },
   {
     "item_key": "scarf_hearts",
     "species": "pig",
     "asset": "assets/runner/accessories/restart_scarf_hearts_pig.glb",
-    "sha256": "679826c2eee3b794f17cbbe9070b3cad46a529fff4bbcb87fdfab67e036938cd",
+    "sha256": "593084698acb6c0709d41f7bba971480c18247452d5cff604d8517a9e7d79658",
     "skinned_model_space": true
   },
   {
     "item_key": "bandana_sage",
     "species": "pig",
     "asset": "assets/runner/accessories/restart_bandana_sage_pig.glb",
-    "sha256": "a003600d983c21c95794e4ab519620385f172b4d41407688575ec10ce27ec8c3",
+    "sha256": "3c1f519683d8db0bbc473477935a3f53ebf4277e039c9a2402d505792808f3eb",
     "skinned_model_space": true
   },
   {
@@ -424,28 +424,28 @@
     "item_key": "patch_pirate",
     "species": "chick",
     "asset": "assets/runner/accessories/restart_patch_pirate_chick.glb",
-    "sha256": "c0aa64840f90a3d8352e66bcb13e5428fea412ae57892a9fdff9a16ee0e7a649",
+    "sha256": "996c618c66dcf1fcc0f764dc7df1ce00998bf241a1a1749d3f604b936fe271ae",
     "skinned_model_space": false
   },
   {
     "item_key": "mask_sleep",
     "species": "chick",
     "asset": "assets/runner/accessories/restart_mask_sleep_chick.glb",
-    "sha256": "66d0e46a192f12930165f0b51cbaf524c3b2227c9b6d3e19f91db283df5fb5b8",
+    "sha256": "acd066906b3586e4f69703bcf5402b3bb0c26771bd672bb963d1f0dc2541a148",
     "skinned_model_space": false
   },
   {
     "item_key": "scarf_hearts",
     "species": "chick",
     "asset": "assets/runner/accessories/restart_scarf_hearts_chick.glb",
-    "sha256": "506e9c6eb57239c861c7c8c8ec384e9e2dea53a2046bebd698c087301effa23c",
+    "sha256": "c064dbbcc7fe3630a546b977aad6d0742cc5ed6e86405d52e3a9cf4aca4df170",
     "skinned_model_space": true
   },
   {
     "item_key": "bandana_sage",
     "species": "chick",
     "asset": "assets/runner/accessories/restart_bandana_sage_chick.glb",
-    "sha256": "535f62acab2e4cf7256ebe6ada841fef21b120b5508b8dd4abd5de3e235e6d9f",
+    "sha256": "707fc6d44a348e45837fc2d7ee851b1938a54607d4da37490f56c37d6afce55e",
     "skinned_model_space": true
   },
   {
@@ -459,24 +459,24 @@
     "item_key": "shoes_heart",
     "species": "penguin",
     "asset": "assets/runner/accessories/restart_shoes_heart_penguin.glb",
-    "sha256": "e45d7ee146f8419c7551e9d64b8d303b77acb49818238fa28214c0835cccd4c4"
+    "sha256": "27381cc13f1749547e9a5e0adf2d71acaa0a741359a53ef5477018f331915bff"
   },
   {
     "item_key": "shoes_heart",
     "species": "bear",
     "asset": "assets/runner/accessories/restart_shoes_heart_bear.glb",
-    "sha256": "07424318d7ae6b31c05a6ef6fda30dc591156a3fce76522a5d940ded4126d609"
+    "sha256": "15ad0fa4ce9dc7fd8aa53699c379bfaa300c811157dacbbfa81f1b06eb5d9947"
   },
   {
     "item_key": "shoes_heart",
     "species": "pig",
     "asset": "assets/runner/accessories/restart_shoes_heart_pig.glb",
-    "sha256": "2cf25dcd8113e6e8c18d98290bb48b690e5062c7d59c819e27866d80fb3d7e62"
+    "sha256": "9231645092f14edcad5f247cff6215db62016d7a737159f78c61f42f26ece985"
   },
   {
     "item_key": "shoes_heart",
     "species": "chick",
     "asset": "assets/runner/accessories/restart_shoes_heart_chick.glb",
-    "sha256": "c5a68e0a9cb6496d3ee45a30e4d6bbc18f10a4f6ca3f58760f2e02d642167838"
+    "sha256": "2ff6db0d430033ca15962fe9efe5c5b5d49dd78a0622aca86d20da407bd2dbcc"
   }
 ]

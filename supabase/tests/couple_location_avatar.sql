@@ -1,0 +1,25 @@
+begin;
+create temporary table location_fixture(a uuid,b uuid,c uuid);
+insert into location_fixture values(gen_random_uuid(),gen_random_uuid(),gen_random_uuid());
+insert into auth.users(id,email,raw_user_meta_data) select a,'location-a@invalid.example','{}'::jsonb from location_fixture union all select b,'location-b@invalid.example','{}'::jsonb from location_fixture union all select c,'location-c@invalid.example','{}'::jsonb from location_fixture;
+update public.user_profiles set partner_id=(select b from location_fixture) where id=(select a from location_fixture);
+update public.user_profiles set partner_id=(select a from location_fixture) where id=(select b from location_fixture);
+select set_config('request.jwt.claim.sub',(select a::text from location_fixture),true);
+select public.couple_location('enable');select public.couple_location('publish',-0.2,-78.5);
+select public.couple_location('disable');select public.couple_location('publish',40,20);
+do $$declare r jsonb;begin r:=public.couple_location();if (r->'mine'->>'lat')::float8<>-0.2 or (r->'mine'->>'sharing')::boolean then raise exception 'Off must preserve last location';end if;end $$;
+select set_config('request.jwt.claim.sub',(select b::text from location_fixture),true);
+do $$declare r jsonb;begin r:=public.couple_location();if (r->'partner'->>'lat')::float8<>-0.2 then raise exception 'Partner cannot see last position';end if;end $$;
+select set_config('request.jwt.claim.sub',(select c::text from location_fixture),true);
+do $$declare r jsonb;begin r:=public.couple_location();if r->'partner'<>'null'::jsonb then raise exception 'Stranger received location';end if;if has_function_privilege('anon','public.couple_location(text,double precision,double precision)','execute') then raise exception 'Anonymous API open';end if;if (select public from storage.buckets where id='profile-avatars') then raise exception 'Public avatar bucket';end if;end $$;
+-- No real files are uploaded: verify row visibility for synthetic avatar metadata.
+insert into storage.objects(bucket_id,name) select 'profile-avatars',a::text||'/123.png' from location_fixture;
+select set_config('request.jwt.claim.sub',(select b::text from location_fixture),true);
+set local role authenticated;
+do $$begin if (select count(*) from storage.objects where bucket_id='profile-avatars' and name like '%/123.png')<>1 then raise exception 'Partner avatar access failed';end if;end $$;
+reset role;
+select set_config('request.jwt.claim.sub',(select c::text from location_fixture),true);
+set local role authenticated;
+do $$begin if exists(select 1 from storage.objects where bucket_id='profile-avatars' and name like '%/123.png') then raise exception 'Stranger avatar access';end if;end $$;
+reset role;
+rollback;

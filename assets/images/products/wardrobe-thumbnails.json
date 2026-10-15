@@ -3,37 +3,37 @@
     "item_key": "cap_pink",
     "species": "penguin",
     "model": "assets/runner/accessories/restart_cap_pink_penguin.glb",
-    "model_sha256": "02075fd446b9f552c2baf7d027210fdacbb081e15ec7e94fbf5567d7b0f3d971",
+    "model_sha256": "9593aba6a0a234b980f57b3522ccd42afbfb23a51ee07e796783cc6fa096ebf3",
     "thumbnail": "assets/images/products/pet_head-cap-f05280-penguin.png",
-    "thumbnail_sha256": "5949f15fd84db8b76ef1c396f5404cd416081045abe16550904aac742aa1a48a",
-    "render_style": "warm_studio_v2"
+    "thumbnail_sha256": "03b519db7f5479b30718a6cf044c97a3b089c49b2ab2fa6a79a1fc536c6ecb48",
+    "render_style": "white_studio_v3"
   },
   {
     "item_key": "beanie_cloud",
     "species": "penguin",
     "model": "assets/runner/accessories/restart_headfinish_beanie_cloud_penguin.glb",
-    "model_sha256": "da6c88c7029a1f054febddb4b0b6a853842f631256b312640b318acb2a953dfc",
+    "model_sha256": "9cbfeb0f59f7482c2281393e133e3ef8bf65d6511d27d82b608f655929d877da",
     "thumbnail": "assets/images/products/pet_head-beanie-fff2df-penguin.png",
-    "thumbnail_sha256": "40b4956a527035e5d8a50f7978521f1cb12d5c194828c0dce67f3a180fbcd36f",
-    "render_style": "warm_studio_v2"
+    "thumbnail_sha256": "e9006f68dfe38da89152405420df92512d21ebb4fa8635ddc2bb98205a4b62a9",
+    "render_style": "white_studio_v3"
   },
   {
     "item_key": "hat_garden",
     "species": "penguin",
     "model": "assets/runner/accessories/restart_headfinish_hat_garden_penguin.glb",
-    "model_sha256": "bbf31849302fbe18c8089f2246a6c9eb69243f11b022103e20c953c260613e84",
+    "model_sha256": "fcb0e3f9eff74ff5f7bba7a59f3859232b957f62b212be60987126ff31ae30dd",
     "thumbnail": "assets/images/products/pet_head-garden_hat-b8dccb-penguin.png",
-    "thumbnail_sha256": "bd557c3a2d814435f33bca263f7175f1c0336aa013c42af53abaf1da6aca85d7",
-    "render_style": "warm_studio_v2"
+    "thumbnail_sha256": "de5bfae2ab2dea77d49594c1378cfb3b6db662e535442dd601850e7da5469216",
+    "render_style": "white_studio_v3"
   },
   {
     "item_key": "beret_chic",
     "species": "penguin",
     "model": "assets/runner/accessories/restart_headfinish_beret_chic_penguin.glb",
-    "model_sha256": "c0b17962b4ce9dd9b540145cc73a1bbc49f9d03747a2160ebba9af5f97fdcc3f",
+    "model_sha256": "3d160230e42ecfe0478e25df4824648ec70934d087deedcbdde4a909f25a655a",
     "thumbnail": "assets/images/products/pet_head-beret-baa2db-penguin.png",
-    "thumbnail_sha256": "df7625f701d9b6879b4eacfb83682e70b349828cf5cd7918b6d5032d642babe0",
-    "render_style": "warm_studio_v2"
+    "thumbnail_sha256": "3e93583136133697a96dfc33082c9ff6a7abdb1a1ba386ef558e828833b855db",
+    "render_style": "white_studio_v3"
   },
   {
     "item_key": "glasses_heart",
@@ -41,8 +41,8 @@
     "model": "assets/runner/accessories/restart_glasses_heart_penguin.glb",
     "model_sha256": "de457aa52fd6375b062a345256426ebd3c56e1501e3ea55480bf57f99006799c",
     "thumbnail": "assets/images/products/pet_eyes-heart_glasses-f05280-penguin.png",
-    "thumbnail_sha256": "6e8dcec2165a16cc1959c8c1e5ca4e99194f9300a553330062a48cb5adfb13b5",
-    "render_style": "warm_studio_v2"
+    "thumbnail_sha256": "0f50c7df4923c5cf70da3aa0aa3b0e31edc65064df9e1bba8ed555e8f2620f88",
+    "render_style": "white_studio_v3"
   },
   {
     "item_key": "glasses_round",
@@ -50,8 +50,8 @@
     "model": "assets/runner/accessories/restart_glasses_round_penguin.glb",
     "model_sha256": "bf9a927d754045bdb28c7217b63ddafbc8ffd526a220c26440be394475146a10",
     "thumbnail": "assets/images/products/pet_eyes-round_glasses-e2b957-penguin.png",
-    "thumbnail_sha256": "06b9b7103c84c5648e966c23070322d67c3cf0deadf97470247ed7471bc3fd09",
-    "render_style": "warm_studio_v2"
+    "thumbnail_sha256": "5faaea5a381b89d5daedec72ad246c2bdce806bf8088fa0e07d82707a3651334",
+    "render_style": "white_studio_v3"
   },
   {
     "item_key": "glasses_star",
@@ -59,44 +59,44 @@
     "model": "assets/runner/accessories/restart_glasses_star_penguin.glb",
     "model_sha256": "36d4e4cfe24be05937523a28d8d32f5fc65cbd2d53218a0b230ed40a94605c94",
     "thumbnail": "assets/images/products/pet_eyes-star_glasses-baa2db-penguin.png",
-    "thumbnail_sha256": "8dd1d5dbb8526e3792cdd15421e44036b7d7d2821b7f7c1c4f59f78b92557385",
-    "render_style": "warm_studio_v2"
+    "thumbnail_sha256": "6b4b0d73e86d2d5cd92f07412373a4bca1dc390745c5049508a7bc9ffb2e1ed3",
+    "render_style": "white_studio_v3"
   },
   {
     "item_key": "patch_pirate",
     "species": "penguin",
     "model": "assets/runner/accessories/restart_patch_pirate_penguin.glb",
-    "model_sha256": "c781afd23075152e5bb5264fea292439aa9d9ecba87b168d1694011dd54135fc",
+    "model_sha256": "45092fc9d2be226aa55bc07ded190c2d850af2174d319ae4093b921245a75dea",
     "thumbnail": "assets/images/products/pet_eyes-eyepatch-30303d-penguin.png",
-    "thumbnail_sha256": "cc2ad8c26d3e34f730fb9001ccad8a1107ab1a61b7867fd506db81e05f769647",
-    "render_style": "warm_studio_v2"
+    "thumbnail_sha256": "69636827c9882e85e4388ed858d66ac408ce2d0ad52f6d37b8c87cd9129d5388",
+    "render_style": "white_studio_v3"
   },
   {
     "item_key": "mask_sleep",
     "species": "penguin",
     "model": "assets/runner/accessories/restart_mask_sleep_penguin.glb",
-    "model_sha256": "c25aef65a24980027407f6be891445c87c9d11bcecf64619aa29bd4f9897eb46",
+    "model_sha256": "cf3a046a21a89b051bba12331e2f598c3349398030dcaabf96c65873dcbc777e",
     "thumbnail": "assets/images/products/pet_eyes-sleep_mask-efa0ab-penguin.png",
-    "thumbnail_sha256": "360a19631fe8230b5e4a5229104bad8692cd25ee0f5c33b43b56f3e5b799fc03",
-    "render_style": "warm_studio_v2"
+    "thumbnail_sha256": "95dc4b61d231e7a886b510b6f2f0fb3a237a3783633f7faee837afe5d1e3ca8f",
+    "render_style": "white_studio_v3"
   },
   {
     "item_key": "scarf_hearts",
     "species": "penguin",
     "model": "assets/runner/accessories/restart_scarf_hearts_penguin.glb",
-    "model_sha256": "8cc65876bc60d3b4ba6130104cd8fb1840edc875a8d57978c175127c9865c102",
+    "model_sha256": "c30205b30cae4658b044a12ee365cf0ea9bf8901b338b93e55e3b1bf97856197",
     "thumbnail": "assets/images/products/pet_neck-scarf-efa0ab-penguin.png",
-    "thumbnail_sha256": "b843e972f4645d0ff441a5e3cfc08db3184d3cf0495a255e618a76df193ce678",
-    "render_style": "warm_studio_v2"
+    "thumbnail_sha256": "377678a0a1eb2230aedc0cf0878e51baa984306fd2f587941483588f0cd0b086",
+    "render_style": "white_studio_v3"
   },
   {
     "item_key": "bandana_sage",
     "species": "penguin",
     "model": "assets/runner/accessories/restart_bandana_sage_penguin.glb",
-    "model_sha256": "10b5506b5a66f76b9bb7de5cf1842e0137154590a77e68516e243fa1910a211a",
+    "model_sha256": "aa8d9ea590be69b878f75b6d70ca6c65c0c806eac6fbc80096ef4f1a1e18bd05",
     "thumbnail": "assets/images/products/pet_neck-bandana-b8dccb-penguin.png",
-    "thumbnail_sha256": "593683335c981d9ccf9dabd0f2d19f1aa9e22d9248510e62a5491693e960290c",
-    "render_style": "warm_studio_v2"
+    "thumbnail_sha256": "fa8760ae9830b495ec35b285f89aa30108dd7ee85265fa484479099ec152eccb",
+    "render_style": "white_studio_v3"
   },
   {
     "item_key": "necklace_heart",
@@ -104,8 +104,8 @@
     "model": "assets/runner/accessories/restart_necklace_heart_penguin.glb",
     "model_sha256": "290de1d2550ea8c3eb9f85223b6fd6b0492a353f28cf38f5a38945c4cfa2b4a5",
     "thumbnail": "assets/images/products/pet_neck-bead_necklace-efa0ab-penguin.png",
-    "thumbnail_sha256": "5aaca07a1d2071606772779ddfdb65985afc2542427f92940badf456a42cc7d5",
-    "render_style": "warm_studio_v2"
+    "thumbnail_sha256": "ff5bb87725341aac717e780bc4552b5044791f7ad0dfb65e65fece903cd081c5",
+    "render_style": "white_studio_v3"
   },
   {
     "item_key": "chain_gold",
@@ -113,62 +113,71 @@
     "model": "assets/runner/accessories/restart_chain_gold_penguin.glb",
     "model_sha256": "e9b71314db69d0504a8cbea7af50b91aeade5e1434c01fb62f08ea574b8568e0",
     "thumbnail": "assets/images/products/pet_neck-gold_chain-e2b957-penguin.png",
-    "thumbnail_sha256": "b6a6dc29246f44db0f9bea74d788e71d1de76da37bd3ae81f8e14e0d6254408a",
-    "render_style": "warm_studio_v2"
+    "thumbnail_sha256": "5b776d96e290d2ab7b54a310e3d4bfce865d41800c18577bd1aedcf3f02710c6",
+    "render_style": "white_studio_v3"
+  },
+  {
+    "item_key": "bow_neck",
+    "species": "penguin",
+    "model": "assets/runner/accessories/restart_bow_neck_penguin.glb",
+    "model_sha256": "8007c158c3b4fbc5337374eb208e82604e1b23cfb055a32ccc013c652e67529b",
+    "thumbnail": "assets/images/products/pet_neck-bow_tie-f05280-penguin.png",
+    "thumbnail_sha256": "c9c69dafa35e345710e64ea80b3b2dabf7aaf7209b5310ce463539ff295368b7",
+    "render_style": "white_studio_v3"
   },
   {
     "item_key": "shirt_love",
     "species": "penguin",
     "model": "assets/runner/accessories/sewn_shirt_love_penguin.glb",
-    "model_sha256": "4cea182e66c13c36ef8bdc5182312b2c6b9ec7c746bed4b9c05c839e0c6a27f5",
+    "model_sha256": "709ba5c8f0d6cbdd54690019aa54722ce1f3ef07721b9a052ae4f98cc55b6c48",
     "thumbnail": "assets/images/products/pet_body-shirt-fff2df-penguin.png",
-    "thumbnail_sha256": "7a3a8128b864a314ecfce046fcbbc3d12b6528c942bd180a6c0d30bf7516d26c",
-    "render_style": "warm_studio_v2"
+    "thumbnail_sha256": "1e252477c915ddfd99ba420a02a1d7b8a85861aca1f55bba9cf07d429c9d6bee",
+    "render_style": "white_studio_v3"
   },
   {
     "item_key": "jacket_denim",
     "species": "penguin",
     "model": "assets/runner/accessories/sewn_jacket_denim_penguin.glb",
-    "model_sha256": "22bc9283cecb61b69d7a733309b851eaebdd1ae027603b173f684fd9327d6439",
+    "model_sha256": "2c81ee668884e847b85e48cf64a6d85119a49ebb55d68579b32a501dae012882",
     "thumbnail": "assets/images/products/pet_body-denim_jacket-91b6d6-penguin.png",
-    "thumbnail_sha256": "d79c81eaa3ac0e19d82f259b2024f5a1d30d8512dfd2b83502da43db634ced11",
-    "render_style": "warm_studio_v2"
+    "thumbnail_sha256": "71e9cbacc2b1013285af879c0c01d46d7aa601c441982a8051b964b427d8ae16",
+    "render_style": "white_studio_v3"
   },
   {
     "item_key": "coat_cloud",
     "species": "penguin",
     "model": "assets/runner/accessories/sewn_coat_cloud_penguin.glb",
-    "model_sha256": "c5d47eac25416a9a63c4ad27a21f950be18e526e147352453a6770530d830eb7",
+    "model_sha256": "c0d759a007cb83b7b1eb023703f9d5b06582f41cbfd859368b116c5de9af9e1f",
     "thumbnail": "assets/images/products/pet_body-coat-b8dccb-penguin.png",
-    "thumbnail_sha256": "108ec0df8de228dcdea0832c2d06968b8d59a9bebd193b543c20a2482c5efcb3",
-    "render_style": "warm_studio_v2"
+    "thumbnail_sha256": "8414a64f523e5b1d5e6a72745f8481279894e95c912c493d0bdd2adfdc17b73b",
+    "render_style": "white_studio_v3"
   },
   {
     "item_key": "dress_petal",
     "species": "penguin",
     "model": "assets/runner/accessories/sewn_dress_petal_penguin.glb",
-    "model_sha256": "6081cd5be46c0e2565ab01976bc93d9119539f381e1ea1f77839c0aad2ae9a0d",
+    "model_sha256": "8a9bf927d13345a6c602bd0e71f198611b8288b0691851442d16db8bcc33dd69",
     "thumbnail": "assets/images/products/pet_body-dress-efa0ab-penguin.png",
-    "thumbnail_sha256": "f676f7cbf32a73c8ac89cc0dd309f88121e67867e60684ad067848b5ee709b12",
-    "render_style": "warm_studio_v2"
+    "thumbnail_sha256": "de5579b7a57ba359312e41b834178a95b60c2e896383fa06a387a205cb5abf15",
+    "render_style": "white_studio_v3"
   },
   {
     "item_key": "hoodie_nido",
     "species": "penguin",
     "model": "assets/runner/accessories/sewn_hoodie_nido_penguin.glb",
-    "model_sha256": "1ccea9a0b80a5580b8a7f69a2ba6dfac8507a475405cabce9e09847364aa05f1",
+    "model_sha256": "4c5321261e550109809c6eb44f934c1a0f309e6c9e28d56b44529bb7bd200ef7",
     "thumbnail": "assets/images/products/pet_body-hoodie-baa2db-penguin.png",
-    "thumbnail_sha256": "3902ad1344c3eda6ae8f6475a5ac833058cc64c4aee9d21d08aa53d4562e5f7e",
-    "render_style": "warm_studio_v2"
+    "thumbnail_sha256": "e5ba319bf95dd6373659d9e337a50e39a780a63fba44599c65c4acde0a0cddc3",
+    "render_style": "white_studio_v3"
   },
   {
     "item_key": "shoes_heart",
     "species": "penguin",
     "model": "assets/runner/accessories/restart_shoes_heart_penguin.glb",
-    "model_sha256": "e45d7ee146f8419c7551e9d64b8d303b77acb49818238fa28214c0835cccd4c4",
+    "model_sha256": "27381cc13f1749547e9a5e0adf2d71acaa0a741359a53ef5477018f331915bff",
     "thumbnail": "assets/images/products/pet_feet-sneakers-efa0ab-penguin.png",
-    "thumbnail_sha256": "2636b3694b8cabbbf9cdf29aead7e34ce38efbc9735e71afebbe06a47785c39b",
-    "render_style": "warm_studio_v2"
+    "thumbnail_sha256": "529dd63eaee3c5fe8b78fb620c637528063f41555672f00bf5a81ba355053eb4",
+    "render_style": "white_studio_v3"
   },
   {
     "item_key": "boots_rain",
@@ -176,62 +185,71 @@
     "model": "assets/runner/accessories/restart_boots_rain_penguin.glb",
     "model_sha256": "64230c05ef43040bc5a98f75c71f239271463d02a2232dbef214c9a79e0dcfdf",
     "thumbnail": "assets/images/products/pet_feet-rain_boots-b8dccb-penguin.png",
-    "thumbnail_sha256": "2a2bcf578b4951c7aa424387ac6d2e2498238219b34e1aa37bd6b790e2a31642",
-    "render_style": "warm_studio_v2"
+    "thumbnail_sha256": "9e53b394be18024448a722cec470cfecdec6e8ed6d5caab745b9c33cf8f573ee",
+    "render_style": "white_studio_v3"
   },
   {
     "item_key": "slippers_cloud",
     "species": "penguin",
     "model": "assets/runner/accessories/restart_slippers_cloud_penguin.glb",
-    "model_sha256": "2b1374af6aef790093211d43c63084b8fe7c8ed099f0a5c7cdd80481dbb7c976",
+    "model_sha256": "00ea3068923830aa2e706e1c78df7d831aeac2fe3bba579d11afbb2ca6576ca3",
     "thumbnail": "assets/images/products/pet_feet-slippers-fff2df-penguin.png",
-    "thumbnail_sha256": "e578034dc34677310b35b1202c5f9e33e99444f75f5cbe90a60714a64b8be997",
-    "render_style": "warm_studio_v2"
+    "thumbnail_sha256": "400a92fec2e6760b3cb2d5b2c5d19516785173ab5334d0343f87d98e74899b32",
+    "render_style": "white_studio_v3"
   },
   {
     "item_key": "shoes_chic",
     "species": "penguin",
     "model": "assets/runner/accessories/restart_shoes_chic_penguin.glb",
-    "model_sha256": "cd16728e81ac5155c1e1b92a17782b5363ecfad5d7859fe083d3784d33c62165",
+    "model_sha256": "45042bf1880cc82ceead604bace6e01dc62ea44d121e14a31a448a7abbb7312b",
     "thumbnail": "assets/images/products/pet_feet-mary_jane-f05280-penguin.png",
-    "thumbnail_sha256": "9755d0e70eb780a85c5a648b9a8883daf914056b3b1d3aec8e3188a7ab06bfcd",
-    "render_style": "warm_studio_v2"
+    "thumbnail_sha256": "d8266149fe7ea626ed0a9fcda816de39f414a7bdc3b4a0b4f028450037612396",
+    "render_style": "white_studio_v3"
+  },
+  {
+    "item_key": "sandals_summer",
+    "species": "penguin",
+    "model": "assets/runner/accessories/restart_sandals_summer_penguin.glb",
+    "model_sha256": "4803222c2b980778d0749039936c2f130dc3728d8920c9bd05901e40acf319b3",
+    "thumbnail": "assets/images/products/pet_feet-sandals-f2b29b-penguin.png",
+    "thumbnail_sha256": "5fb35822f2d333d9e086770bfb5ad475c6d46a92eb246ec0d934a707cc0f52f8",
+    "render_style": "white_studio_v3"
   },
   {
     "item_key": "cap_pink",
     "species": "bear",
     "model": "assets/runner/accessories/restart_cap_pink_bear.glb",
-    "model_sha256": "788f5ffc24d58b28ce8104e0767d54e581b70200b711b34dec262d0b9ebfd0e4",
+    "model_sha256": "cd21928be72fa8ee1b509b3bb0a562073424d7276dc22887cdf142108b20aef9",
     "thumbnail": "assets/images/products/pet_head-cap-f05280-bear.png",
-    "thumbnail_sha256": "14f759ae7549b2e1349f1fb5179d0b96e0fcdf871230228f6594ee60f563ecc0",
-    "render_style": "warm_studio_v2"
+    "thumbnail_sha256": "088414acd6e1423c7f592b5485d28d4495e1d475a89a12176501ac9c57b19eed",
+    "render_style": "white_studio_v3"
   },
   {
     "item_key": "beanie_cloud",
     "species": "bear",
     "model": "assets/runner/accessories/restart_headfinish_beanie_cloud_bear.glb",
-    "model_sha256": "2b21c3ac0fae1031c4cba26f7413111e75a6bd99ecdca889758e760b5364483f",
+    "model_sha256": "fde01f11c624e519ec81df3e454c467dc99f4cf4b08d02e4bee505fe2d3d9921",
     "thumbnail": "assets/images/products/pet_head-beanie-fff2df-bear.png",
-    "thumbnail_sha256": "7e007ecc8d9b4d588d7e906f629ef8f2e2601928dee7157586c1e60e8accbb59",
-    "render_style": "warm_studio_v2"
+    "thumbnail_sha256": "acd8b8f3996fd69992d87afe645bc0b65038d2c0399a2eeabc5053fbc98640a8",
+    "render_style": "white_studio_v3"
   },
   {
     "item_key": "hat_garden",
     "species": "bear",
     "model": "assets/runner/accessories/restart_headfinish_hat_garden_bear.glb",
-    "model_sha256": "2c1411c89873484044234c570e6deb1c23b2fd10b13a9fc1504c653b27a7023b",
+    "model_sha256": "7311d102ea70d05cd6007c721cf32eb6c24f0e60ea2b6d0088e547d9cc3c838d",
     "thumbnail": "assets/images/products/pet_head-garden_hat-b8dccb-bear.png",
-    "thumbnail_sha256": "21330d1d84b3ab478ae50b893efb42dd0b394d2d77cf0beb755d6cb0735c4b02",
-    "render_style": "warm_studio_v2"
+    "thumbnail_sha256": "592a85840486ef5a7b7767953a0b6141508e85bc12675954d50cf3999a0f4f10",
+    "render_style": "white_studio_v3"
   },
   {
     "item_key": "beret_chic",
     "species": "bear",
     "model": "assets/runner/accessories/restart_headfinish_beret_chic_bear.glb",
-    "model_sha256": "47821e302ae416df3788e1e3ddd6de5ec03b7a1f6d46fe6ed04e678cc6d65155",
+    "model_sha256": "6a305f782233ee0776dbff1f5c4035f3f6bc1193304a6118ed7e4739968133c1",
     "thumbnail": "assets/images/products/pet_head-beret-baa2db-bear.png",
-    "thumbnail_sha256": "5d777de41f1fe3eda7b5e141bdf21f14330544b52eb80bd056c05e415a54466c",
-    "render_style": "warm_studio_v2"
+    "thumbnail_sha256": "332521323ccff169d9c102a5785514dd109572047346d93f60dc9205bca9f2eb",
+    "render_style": "white_studio_v3"
   },
   {
     "item_key": "glasses_heart",
@@ -239,8 +257,8 @@
     "model": "assets/runner/accessories/restart_glasses_heart_bear.glb",
     "model_sha256": "9df2194263a1265d062bcbefd58373a15ebe11d793d268a2686a7aba6b81920d",
     "thumbnail": "assets/images/products/pet_eyes-heart_glasses-f05280-bear.png",
-    "thumbnail_sha256": "cc07cabf168f0c07ff46a8534b586813f02bf7f53224e66586765f8346bec9a2",
-    "render_style": "warm_studio_v2"
+    "thumbnail_sha256": "494e8723dc1a641096bf9f786e14cd5a75100d0ba5c2bc7014520910353e6204",
+    "render_style": "white_studio_v3"
   },
   {
     "item_key": "glasses_round",
@@ -248,8 +266,8 @@
     "model": "assets/runner/accessories/restart_glasses_round_bear.glb",
     "model_sha256": "84ba1ab54b63be462fdbe989e5c88d8740a9444d8a2c6b7ff1d7f516bc702929",
     "thumbnail": "assets/images/products/pet_eyes-round_glasses-e2b957-bear.png",
-    "thumbnail_sha256": "bb2e7c736e47b58376f046d8a696ea364280552ba270ecd422c6aac398721b7b",
-    "render_style": "warm_studio_v2"
+    "thumbnail_sha256": "0002937a59083a266af94d9cc98f923d65d3f4197ed3871a6ae2424e599b9804",
+    "render_style": "white_studio_v3"
   },
   {
     "item_key": "glasses_star",
@@ -257,44 +275,44 @@
     "model": "assets/runner/accessories/restart_glasses_star_bear.glb",
     "model_sha256": "4d201e6a898e8b3f82f2fc779bc566d25de014e0216ed46af7faac891c2bf538",
     "thumbnail": "assets/images/products/pet_eyes-star_glasses-baa2db-bear.png",
-    "thumbnail_sha256": "4abe6f9ba5a89f1a1b6817b0a246d115625fd301e46c96ba4f7cc8f75ec1df25",
-    "render_style": "warm_studio_v2"
+    "thumbnail_sha256": "25599f9ed54d5a8823c221ae56be3534d4009335883cecba89a58acf855978fa",
+    "render_style": "white_studio_v3"
   },
   {
     "item_key": "patch_pirate",
     "species": "bear",
     "model": "assets/runner/accessories/restart_patch_pirate_bear.glb",
-    "model_sha256": "96f81ebe8a0f0cd862c8bb883158ad4f54b4e78a9a1a7f0855ae2ef213226e0a",
+    "model_sha256": "5499873f6a551406878f03127f7a40da9bf15b6c24f9bca93c4f9f8efc9b4f36",
     "thumbnail": "assets/images/products/pet_eyes-eyepatch-30303d-bear.png",
-    "thumbnail_sha256": "22c62fee2b0d4e2284b8558fb9c738463794622b2a5f0e5ae2dd939bae492add",
-    "render_style": "warm_studio_v2"
+    "thumbnail_sha256": "fa2fdc02a9c3a104afdaffe2f2910ac55dbef06a46e097fedc0b7821d2098097",
+    "render_style": "white_studio_v3"
   },
   {
     "item_key": "mask_sleep",
     "species": "bear",
     "model": "assets/runner/accessories/restart_mask_sleep_bear.glb",
-    "model_sha256": "e09828dfcac59f933877e860f9b57bd02c4ff397b8c7c60db2ca59e48166c4c8",
+    "model_sha256": "632557e77d6b3618c60da3fdcdd408da8a0538d237f83de879aabc8fc3d8d396",
     "thumbnail": "assets/images/products/pet_eyes-sleep_mask-efa0ab-bear.png",
-    "thumbnail_sha256": "a991215d9f4ecb2a32962dff76c346085e48ee7759f8db406bf10aec9c162b8a",
-    "render_style": "warm_studio_v2"
+    "thumbnail_sha256": "0443bcdcac7403cee32334016084dd19f90759298c42bd9f9f9e12761ba5f805",
+    "render_style": "white_studio_v3"
   },
   {
     "item_key": "scarf_hearts",
     "species": "bear",
     "model": "assets/runner/accessories/restart_scarf_hearts_bear.glb",
-    "model_sha256": "1b28d5bacbab3ae5415641782220771666b726b37d3cc1311a6ec3e7eb374ad6",
+    "model_sha256": "633b1dea0a2c0c11a314192c36470ae27951041b29fa86408dd8130e53c11240",
     "thumbnail": "assets/images/products/pet_neck-scarf-efa0ab-bear.png",
-    "thumbnail_sha256": "d565c6b6af9143f91e34cb1a9136f1d79c8a7c037231ef0e4b1da117c7f5e77e",
-    "render_style": "warm_studio_v2"
+    "thumbnail_sha256": "9e581fafdcc36ed6bbf4b0fa88c6dc7ec90b7277b522789994ac0d3134156042",
+    "render_style": "white_studio_v3"
   },
   {
     "item_key": "bandana_sage",
     "species": "bear",
     "model": "assets/runner/accessories/restart_bandana_sage_bear.glb",
-    "model_sha256": "2b88c2ba8c15e574001e4ed22ad722554d3915847c12190e36d7ba71e4ce2780",
+    "model_sha256": "0900009b850838c536fbdbcd62149822cdf4fc2dbfd1f2c402497c1ac534cb10",
     "thumbnail": "assets/images/products/pet_neck-bandana-b8dccb-bear.png",
-    "thumbnail_sha256": "84cd5796fb455d63e1823c6f9c0ae9d536eaac1384824a551e888ec89d0a80d5",
-    "render_style": "warm_studio_v2"
+    "thumbnail_sha256": "37f2a4881bf2c841858d30b604f8735e5fdbb94025db9184898728611fc65910",
+    "render_style": "white_studio_v3"
   },
   {
     "item_key": "necklace_heart",
@@ -302,8 +320,8 @@
     "model": "assets/runner/accessories/restart_necklace_heart_bear.glb",
     "model_sha256": "1a6aa79013087f7420c8f8e3914e817151761c21bd526235dad2585eec840f5d",
     "thumbnail": "assets/images/products/pet_neck-bead_necklace-efa0ab-bear.png",
-    "thumbnail_sha256": "1c6d193cd4f1225c47e9d6867f0ea738ce854dfffe6ad20131e8baba0beb59f3",
-    "render_style": "warm_studio_v2"
+    "thumbnail_sha256": "15d3b4a5b3f3ad38c594626140e463214e3f743c1eb331ec98aba6df94389995",
+    "render_style": "white_studio_v3"
   },
   {
     "item_key": "chain_gold",
@@ -311,62 +329,71 @@
     "model": "assets/runner/accessories/restart_chain_gold_bear.glb",
     "model_sha256": "dbda3cb628bee0064102e936eec651766eeb608d07bcb83ab7fc7a684e24065a",
     "thumbnail": "assets/images/products/pet_neck-gold_chain-e2b957-bear.png",
-    "thumbnail_sha256": "62678df7f045dec81a16fa02ea7dd590d53431aaf75a743f3395719c6186f9dc",
-    "render_style": "warm_studio_v2"
+    "thumbnail_sha256": "c208a6d8d67ba6251632032314999d4b114567cd4c21d119de119cd1f4402160",
+    "render_style": "white_studio_v3"
+  },
+  {
+    "item_key": "bow_neck",
+    "species": "bear",
+    "model": "assets/runner/accessories/restart_bow_neck_bear.glb",
+    "model_sha256": "ecc431bc3774cf155b05857a8ccda529cc53d54940d36fa22713ca1411a32753",
+    "thumbnail": "assets/images/products/pet_neck-bow_tie-f05280-bear.png",
+    "thumbnail_sha256": "cfe8a1729e14a81af83001852c09a56f20b4cd846132168e26ca59a5be2aa922",
+    "render_style": "white_studio_v3"
   },
   {
     "item_key": "shirt_love",
     "species": "bear",
     "model": "assets/runner/accessories/sewn_shirt_love_bear.glb",
-    "model_sha256": "eae819959f3d90d83b91596b3980b07b6e03fc6904bd1e1b35cee5ec65938425",
+    "model_sha256": "e192c914f95a6d9142621d328e150e360ac1731f33fab4c828c6ebd8122565cb",
     "thumbnail": "assets/images/products/pet_body-shirt-fff2df-bear.png",
-    "thumbnail_sha256": "cb2086a6169541b872c9dba840d3d06440d625adbc88900eaa44dc4896dcd6f3",
-    "render_style": "warm_studio_v2"
+    "thumbnail_sha256": "4f76321b671da4fe5b994e06d94c66d291ca8f6d3ba037875ac3312023ee6341",
+    "render_style": "white_studio_v3"
   },
   {
     "item_key": "jacket_denim",
     "species": "bear",
     "model": "assets/runner/accessories/sewn_jacket_denim_bear.glb",
-    "model_sha256": "fb12f230b78e0baa2d5bc8236629d2f1f2dfc09d86e4d8070ca5b85cfc0c5f77",
+    "model_sha256": "ce6f633a1c20b29b34cec987ef56113a4add9558b5310e0da48ed7e5d27466c3",
     "thumbnail": "assets/images/products/pet_body-denim_jacket-91b6d6-bear.png",
-    "thumbnail_sha256": "4043514bb637392e0788db48d2fe4c9a925f44a1884575e78f81eef8d51f4dae",
-    "render_style": "warm_studio_v2"
+    "thumbnail_sha256": "9bc9a9108673edb255dc3650127773a6df2b05c8cf968bf831673abd9f7ffea3",
+    "render_style": "white_studio_v3"
   },
   {
     "item_key": "coat_cloud",
     "species": "bear",
     "model": "assets/runner/accessories/sewn_coat_cloud_bear.glb",
-    "model_sha256": "ca37cce57880a29a7b7eba95b2b4e123b90dea378b536ac644a39d8030524034",
+    "model_sha256": "eeddc8db57ea2b8f2022bc113d8ab6920e39a1a76040eeec82ef7fa4a0b2baec",
     "thumbnail": "assets/images/products/pet_body-coat-b8dccb-bear.png",
-    "thumbnail_sha256": "ba0a2f4c168860b9224f0f5f26bd9ab067af8cfbe0c13738562ac98bf730362c",
-    "render_style": "warm_studio_v2"
+    "thumbnail_sha256": "d090c0301d14cc932e68bed373333249fc4aedb6c3c79be780022334c6aa6161",
+    "render_style": "white_studio_v3"
   },
   {
     "item_key": "dress_petal",
     "species": "bear",
     "model": "assets/runner/accessories/sewn_dress_petal_bear.glb",
-    "model_sha256": "e3a802a9df13d21db6fde72ef0f11e3b0cffe150520906e65c8856b7a44a62be",
+    "model_sha256": "4993adde12f38b5e8dd7053ce10a59ed9b234e6d1a022cf0a866a7f0ef0933ea",
     "thumbnail": "assets/images/products/pet_body-dress-efa0ab-bear.png",
-    "thumbnail_sha256": "94649064e11184cd311d2cb978ac6c69648cd2261104cc089c1e3c162908a315",
-    "render_style": "warm_studio_v2"
+    "thumbnail_sha256": "89f1d4ed0dbfdf4d6492551e97c458d89b04f899a7a99ac9bda312544ee302e9",
+    "render_style": "white_studio_v3"
   },
   {
     "item_key": "hoodie_nido",
     "species": "bear",
     "model": "assets/runner/accessories/sewn_hoodie_nido_bear.glb",
-    "model_sha256": "479105b15d9cfb58576e1ccbc11d24997dd41228eb305bce9a6dadd2cd94ab11",
+    "model_sha256": "54dc42587e36ef0e9ea155f60f2f4d62012084eb48e2da55a21bcbf27ba24a2d",
     "thumbnail": "assets/images/products/pet_body-hoodie-baa2db-bear.png",
-    "thumbnail_sha256": "c6fe8b715521547771e355b6c7a3b80d9a27b3fd494819dc0e00111d0cb1e4e3",
-    "render_style": "warm_studio_v2"
+    "thumbnail_sha256": "5943979938bac641b6935d6126362f1ed25e639b51a022164163522b601b500f",
+    "render_style": "white_studio_v3"
   },
   {
     "item_key": "shoes_heart",
     "species": "bear",
     "model": "assets/runner/accessories/restart_shoes_heart_bear.glb",
-    "model_sha256": "07424318d7ae6b31c05a6ef6fda30dc591156a3fce76522a5d940ded4126d609",
+    "model_sha256": "15ad0fa4ce9dc7fd8aa53699c379bfaa300c811157dacbbfa81f1b06eb5d9947",
     "thumbnail": "assets/images/products/pet_feet-sneakers-efa0ab-bear.png",
-    "thumbnail_sha256": "28a5d0c2633595ca467ccf7b0a88fdd5a12b59d2a9364170e8332488acc29d8d",
-    "render_style": "warm_studio_v2"
+    "thumbnail_sha256": "a2a849a9de84b49fbfd4cea5649ad314f64b0cd4485a86c9b88ed64770cc47fa",
+    "render_style": "white_studio_v3"
   },
   {
     "item_key": "boots_rain",
@@ -374,62 +401,71 @@
     "model": "assets/runner/accessories/restart_boots_rain_bear.glb",
     "model_sha256": "9f25b8262bea87f79cf4fec5286659a09e315a34a4b8416e9800a436eb640cc4",
     "thumbnail": "assets/images/products/pet_feet-rain_boots-b8dccb-bear.png",
-    "thumbnail_sha256": "19cd1e12a1256f99369945941870f3fdf2cf3b2fe394a6680c1cd43910643afc",
-    "render_style": "warm_studio_v2"
+    "thumbnail_sha256": "a40f7cc730d868a18f58e6157d61a9240f80b6a2a2c6b0b89e57e8ee938d3ece",
+    "render_style": "white_studio_v3"
   },
   {
     "item_key": "slippers_cloud",
     "species": "bear",
     "model": "assets/runner/accessories/restart_slippers_cloud_bear.glb",
-    "model_sha256": "1b2eb90dc63d41e298820cfa6ca4469ee46af65f119bb57bc3c91c2d13c87227",
+    "model_sha256": "238f1c5cdb27a4d65ab0ef6f2650a74184f46c2c06a73548b806bd901c846d81",
     "thumbnail": "assets/images/products/pet_feet-slippers-fff2df-bear.png",
-    "thumbnail_sha256": "2352323b7fe5c25d38abd20e9a86dffdbd0c569e77573707d75c86074044d107",
-    "render_style": "warm_studio_v2"
+    "thumbnail_sha256": "c096fee71210caf8194afe0ae4a54eacb31b8552750aee9d22559e74ae31ebda",
+    "render_style": "white_studio_v3"
   },
   {
     "item_key": "shoes_chic",
     "species": "bear",
     "model": "assets/runner/accessories/restart_shoes_chic_bear.glb",
-    "model_sha256": "2a2606e8b6908b45384c60884b6a803ba604244c018b157c843044a7f449ad6a",
+    "model_sha256": "5531cd8e611c1f7c5bde696d7645d2fcef13b037d44210fe665bcfc0b6fb51c0",
     "thumbnail": "assets/images/products/pet_feet-mary_jane-f05280-bear.png",
-    "thumbnail_sha256": "9213ba6792de5d33d7bf915a7ebfa022d915765a25f6febea155884aa71495a6",
-    "render_style": "warm_studio_v2"
+    "thumbnail_sha256": "e26eb5e9400d4e2e5c67dec0a5dec333891be7d9ffa99a4bc30253fac38af3c2",
+    "render_style": "white_studio_v3"
+  },
+  {
+    "item_key": "sandals_summer",
+    "species": "bear",
+    "model": "assets/runner/accessories/restart_sandals_summer_bear.glb",
+    "model_sha256": "57891f2328cd6e47016dd8190b2193ead40cf703853ad5a38006a33af4c93ac4",
+    "thumbnail": "assets/images/products/pet_feet-sandals-f2b29b-bear.png",
+    "thumbnail_sha256": "12d10372b2233948dd0d874ab1c5bb53bf5b53a5b8bbd4c153a61e6c17aa41eb",
+    "render_style": "white_studio_v3"
   },
   {
     "item_key": "cap_pink",
     "species": "pig",
     "model": "assets/runner/accessories/restart_cap_pink_pig.glb",
-    "model_sha256": "2b857b97e5f2e13f8c1a0518d15b0a340eb4d9614ee178c10ad5a6e15ba93faa",
+    "model_sha256": "599833e0f6a3adc08346a9cc0d061b360f3dab19ce98a94ea9c881a2ec299567",
     "thumbnail": "assets/images/products/pet_head-cap-f05280-pig.png",
-    "thumbnail_sha256": "4df60a9100c3fe6d131b99c3fdda281fe7d7f944e80a93c966888fd9342a8dec",
-    "render_style": "warm_studio_v2"
+    "thumbnail_sha256": "713a2f06ea7f146dc08018364699997734f15ff0c49917af9555019d61065c30",
+    "render_style": "white_studio_v3"
   },
   {
     "item_key": "beanie_cloud",
     "species": "pig",
     "model": "assets/runner/accessories/restart_headfinish_beanie_cloud_pig.glb",
-    "model_sha256": "dddb02c1eab976c2844a52e5f316867a46fd66847898e74c720c873740a1553b",
+    "model_sha256": "f0b4780c23acec33111b3f0cbbae3319ed9860ff1c49339357198c3da18e7731",
     "thumbnail": "assets/images/products/pet_head-beanie-fff2df-pig.png",
-    "thumbnail_sha256": "3f3827ca84fa5c76e733497c5aaec2d8cb770ca69cebb13b10eb6daad0c4a257",
-    "render_style": "warm_studio_v2"
+    "thumbnail_sha256": "414f0c2532a3d4de1fabe6ee40852bbca5c5100146da79b04aee734a508d9951",
+    "render_style": "white_studio_v3"
   },
   {
     "item_key": "hat_garden",
     "species": "pig",
     "model": "assets/runner/accessories/restart_headfinish_hat_garden_pig.glb",
-    "model_sha256": "d2bf9622db7074d2b5e990230bbaec6f198cd9ccf43795f01c3fff2f61662911",
+    "model_sha256": "51af4865130d82707d3ee77636d4d038569da02f95ad0957490a3f9fe348585f",
     "thumbnail": "assets/images/products/pet_head-garden_hat-b8dccb-pig.png",
-    "thumbnail_sha256": "ebc23917f9b5c39fa6f7c57b6662799f670ef0724124b9e85e3a414fe35b4c7b",
-    "render_style": "warm_studio_v2"
+    "thumbnail_sha256": "973f4de293ca8234e8d4b65a65d63633ceef908466f282e951d90d3269ae1218",
+    "render_style": "white_studio_v3"
   },
   {
     "item_key": "beret_chic",
     "species": "pig",
     "model": "assets/runner/accessories/restart_headfinish_beret_chic_pig.glb",
-    "model_sha256": "ecc5d2af7fa676f5479e2e6963fec156bb924e0d6ea3cde136db3f5fb2e13003",
+    "model_sha256": "bd944e018495c5216c6828bb45205d0d8cbe2bccd2e1d7e826813ff0188f7eb3",
     "thumbnail": "assets/images/products/pet_head-beret-baa2db-pig.png",
-    "thumbnail_sha256": "232d56a025a516f5fa60c117b3dfb53c2ca5ed07669d789e2be2445bf05c0baa",
-    "render_style": "warm_studio_v2"
+    "thumbnail_sha256": "33906f810813df0f228272438bc581c9bd932472b908b9fe888ea9c4aa3770ae",
+    "render_style": "white_studio_v3"
   },
   {
     "item_key": "glasses_heart",
@@ -437,8 +473,8 @@
     "model": "assets/runner/accessories/restart_glasses_heart_pig.glb",
     "model_sha256": "cdf1604054455565e967b48f14cd676c3222cbdcd63b9c22d710417aa53fadf4",
     "thumbnail": "assets/images/products/pet_eyes-heart_glasses-f05280-pig.png",
-    "thumbnail_sha256": "8391873d44c96d8a2be0d8576d6d6dc340396f7fb5c061b2a8b6bbec67a81cff",
-    "render_style": "warm_studio_v2"
+    "thumbnail_sha256": "c86fce26635463ae6dc07d6dcd15e144b12af1eb9b4eb4bf8a6ec47dd57fdc8a",
+    "render_style": "white_studio_v3"
   },
   {
     "item_key": "glasses_round",
@@ -446,8 +482,8 @@
     "model": "assets/runner/accessories/restart_glasses_round_pig.glb",
     "model_sha256": "7342e16f112fed18edd5285bb3ab4361963e65d5c77dfa3242870dbc500eda58",
     "thumbnail": "assets/images/products/pet_eyes-round_glasses-e2b957-pig.png",
-    "thumbnail_sha256": "5541b4ff4d82ac2cd9bb8c7145a1aa0ade2e3d481669be73ea37f57c5336c306",
-    "render_style": "warm_studio_v2"
+    "thumbnail_sha256": "3850c7ea36129902e1c3e7e7c90a57d7da748539fb12b8c2f462383ef7d2d81c",
+    "render_style": "white_studio_v3"
   },
   {
     "item_key": "glasses_star",
@@ -455,44 +491,44 @@
     "model": "assets/runner/accessories/restart_glasses_star_pig.glb",
     "model_sha256": "f16cf529f818fc96b777bffb1b3edda1bd29b6543eac258b6b388e2b4d185860",
     "thumbnail": "assets/images/products/pet_eyes-star_glasses-baa2db-pig.png",
-    "thumbnail_sha256": "65c032da38d6be8693ef1664c6f67fd48fe6845906e8b121ebdca8926dc324b3",
-    "render_style": "warm_studio_v2"
+    "thumbnail_sha256": "8ea4ab9fdd6f32434e70900077a84c3586221cbc7139bcfb5cce7bf84954aa29",
+    "render_style": "white_studio_v3"
   },
   {
     "item_key": "patch_pirate",
     "species": "pig",
     "model": "assets/runner/accessories/restart_patch_pirate_pig.glb",
-    "model_sha256": "12254b14d1616c9ed2524aa455c41772c80e38ec8d5edec7b27fa30663d43b83",
+    "model_sha256": "31c2ffda61d24cf1a4fb848ad09196794cb4a879cb2418114335f4fba4c1e73d",
     "thumbnail": "assets/images/products/pet_eyes-eyepatch-30303d-pig.png",
-    "thumbnail_sha256": "133dcfbd40919f47ba7123de1edcd23c6b24b83529883a30763c0c19c1867838",
-    "render_style": "warm_studio_v2"
+    "thumbnail_sha256": "f6713775ae712ef5228e2ff3c34a27046702295f934c9c60deaf17e1bff79f69",
+    "render_style": "white_studio_v3"
   },
   {
     "item_key": "mask_sleep",
     "species": "pig",
     "model": "assets/runner/accessories/restart_mask_sleep_pig.glb",
-    "model_sha256": "9945cd7ba4a3954a290783cb635aa2722cd20e6be462ee3f940409cd9844b231",
+    "model_sha256": "bd24034c0dc6f28e1905028f2bf350a44b5d4297fa8bc9f730690d9ef60ad7c7",
     "thumbnail": "assets/images/products/pet_eyes-sleep_mask-efa0ab-pig.png",
-    "thumbnail_sha256": "335e7ad2e090fbab34fcba53b69fd9519ba38f77979ce55ec8e5f437285a5082",
-    "render_style": "warm_studio_v2"
+    "thumbnail_sha256": "e39b3ddd1c9aff0aadb162781f30cfe77444396cee63c31d041ee8943c83263d",
+    "render_style": "white_studio_v3"
   },
   {
     "item_key": "scarf_hearts",
     "species": "pig",
     "model": "assets/runner/accessories/restart_scarf_hearts_pig.glb",
-    "model_sha256": "679826c2eee3b794f17cbbe9070b3cad46a529fff4bbcb87fdfab67e036938cd",
+    "model_sha256": "593084698acb6c0709d41f7bba971480c18247452d5cff604d8517a9e7d79658",
     "thumbnail": "assets/images/products/pet_neck-scarf-efa0ab-pig.png",
-    "thumbnail_sha256": "5eb3a252750a72282bfd124709b4c20725e329a19435fb44bd3b90cb585f9b78",
-    "render_style": "warm_studio_v2"
+    "thumbnail_sha256": "61c3a0710065abf8bf65e6971a2578d3d1a60299c96d62ac169eac495ca61517",
+    "render_style": "white_studio_v3"
   },
   {
     "item_key": "bandana_sage",
     "species": "pig",
     "model": "assets/runner/accessories/restart_bandana_sage_pig.glb",
-    "model_sha256": "a003600d983c21c95794e4ab519620385f172b4d41407688575ec10ce27ec8c3",
+    "model_sha256": "3c1f519683d8db0bbc473477935a3f53ebf4277e039c9a2402d505792808f3eb",
     "thumbnail": "assets/images/products/pet_neck-bandana-b8dccb-pig.png",
-    "thumbnail_sha256": "a310d6570c47f1128ff6dbdb851c33820ebf6a3d0d600ae061fb490d3de17742",
-    "render_style": "warm_studio_v2"
+    "thumbnail_sha256": "93a59bf9e1af75d07536e1cd87b3501b6cf6b93505d064c34fadb935421162fe",
+    "render_style": "white_studio_v3"
   },
   {
     "item_key": "necklace_heart",
@@ -500,206 +536,8 @@
     "model": "assets/runner/accessories/restart_necklace_heart_pig.glb",
     "model_sha256": "2a4246e2133cda27643b3db380e9dfd2ae91feca3491a554e92a4021cfee5bcb",
     "thumbnail": "assets/images/products/pet_neck-bead_necklace-efa0ab-pig.png",
-    "thumbnail_sha256": "94bac6ddde35ad1562a87020420ba09ab9c7cb08abc874a61b037ae523e493e8",
-    "render_style": "warm_studio_v2"
-  },
-  {
-    "item_key": "cap_pink",
-    "species": "chick",
-    "model": "assets/runner/accessories/restart_cap_pink_chick.glb",
-    "model_sha256": "7405f8bc79c2583e8c6ee1c0a019814e4f091f064c5fd43ad0047f807ae84ce6",
-    "thumbnail": "assets/images/products/pet_head-cap-f05280-chick.png",
-    "thumbnail_sha256": "883841ab7d8b51c75453ac72c0984e772667a5546961ac6f7fc0ec56baefe0c0",
-    "render_style": "warm_studio_v2"
-  },
-  {
-    "item_key": "beanie_cloud",
-    "species": "chick",
-    "model": "assets/runner/accessories/restart_headfinish_beanie_cloud_chick.glb",
-    "model_sha256": "6bca69f640aa643746f6e3e948dcc0fd918e22fac2bf591056a4d7c467ad23b8",
-    "thumbnail": "assets/images/products/pet_head-beanie-fff2df-chick.png",
-    "thumbnail_sha256": "54f08a9e1ad9ed968d2d0c37510cddbb18ecb8a03f151c46877a340bf8eecfed",
-    "render_style": "warm_studio_v2"
-  },
-  {
-    "item_key": "hat_garden",
-    "species": "chick",
-    "model": "assets/runner/accessories/restart_headfinish_hat_garden_chick.glb",
-    "model_sha256": "db60d1b29c9eb96ab84ef805695620c57515c8b4a1979bce6cdc4a374cba1845",
-    "thumbnail": "assets/images/products/pet_head-garden_hat-b8dccb-chick.png",
-    "thumbnail_sha256": "36a2511feacb355175b4022dc0a7841de75e3421b18e1709ff1dc9204572d36e",
-    "render_style": "warm_studio_v2"
-  },
-  {
-    "item_key": "beret_chic",
-    "species": "chick",
-    "model": "assets/runner/accessories/restart_headfinish_beret_chic_chick.glb",
-    "model_sha256": "447494bb801b09f003ac5e8beea1db7aee8b3d07c76bf009a310b832e5e33d1d",
-    "thumbnail": "assets/images/products/pet_head-beret-baa2db-chick.png",
-    "thumbnail_sha256": "9ac3a485b5d14644326df61ff1564b4ffbbe78eb881f1daab9531487be354c32",
-    "render_style": "warm_studio_v2"
-  },
-  {
-    "item_key": "glasses_heart",
-    "species": "chick",
-    "model": "assets/runner/accessories/restart_glasses_heart_chick.glb",
-    "model_sha256": "69b33f62fd22a9919166feecf5d178bbc243228ac4f61ae4fcf7b936dcd9045d",
-    "thumbnail": "assets/images/products/pet_eyes-heart_glasses-f05280-chick.png",
-    "thumbnail_sha256": "c04d8dfbedc8b5bfe802271d3eeb8b5be9a107e1119a94a5d166aeeaed75e07e",
-    "render_style": "warm_studio_v2"
-  },
-  {
-    "item_key": "glasses_round",
-    "species": "chick",
-    "model": "assets/runner/accessories/restart_glasses_round_chick.glb",
-    "model_sha256": "a6d8f7a14803d1a1f82ddbbdd3b14db38958885425ce7ed84888332bf23d1e31",
-    "thumbnail": "assets/images/products/pet_eyes-round_glasses-e2b957-chick.png",
-    "thumbnail_sha256": "d279800ffd3a39b866544671a44e59b526d56abd63463903496e2842dc25237f",
-    "render_style": "warm_studio_v2"
-  },
-  {
-    "item_key": "glasses_star",
-    "species": "chick",
-    "model": "assets/runner/accessories/restart_glasses_star_chick.glb",
-    "model_sha256": "fd76912f4dac71690124614aecf03af619f2ffc32a22ea981fb51dde7bfda6de",
-    "thumbnail": "assets/images/products/pet_eyes-star_glasses-baa2db-chick.png",
-    "thumbnail_sha256": "15a6f69e1af5e24ae4aede4585c61c4aa57b7b1eb21aa4b1c2a6991a8ef2a80c",
-    "render_style": "warm_studio_v2"
-  },
-  {
-    "item_key": "patch_pirate",
-    "species": "chick",
-    "model": "assets/runner/accessories/restart_patch_pirate_chick.glb",
-    "model_sha256": "c0aa64840f90a3d8352e66bcb13e5428fea412ae57892a9fdff9a16ee0e7a649",
-    "thumbnail": "assets/images/products/pet_eyes-eyepatch-30303d-chick.png",
-    "thumbnail_sha256": "bc828634f6ea28f384fc4fafe59a434f751db8bbf0c94af57c8e3854ebc908de",
-    "render_style": "warm_studio_v2"
-  },
-  {
-    "item_key": "mask_sleep",
-    "species": "chick",
-    "model": "assets/runner/accessories/restart_mask_sleep_chick.glb",
-    "model_sha256": "66d0e46a192f12930165f0b51cbaf524c3b2227c9b6d3e19f91db283df5fb5b8",
-    "thumbnail": "assets/images/products/pet_eyes-sleep_mask-efa0ab-chick.png",
-    "thumbnail_sha256": "07ad2f89e385c666bf2a87920d65fc612e5c414c10b6e98b11dedcbdae8df15e",
-    "render_style": "warm_studio_v2"
-  },
-  {
-    "item_key": "scarf_hearts",
-    "species": "chick",
-    "model": "assets/runner/accessories/restart_scarf_hearts_chick.glb",
-    "model_sha256": "506e9c6eb57239c861c7c8c8ec384e9e2dea53a2046bebd698c087301effa23c",
-    "thumbnail": "assets/images/products/pet_neck-scarf-efa0ab-chick.png",
-    "thumbnail_sha256": "ac7c0f2a4785ecb5b5c75a4bef09cbad8822e6926c28fcce4b9fe07717f20b3f",
-    "render_style": "warm_studio_v2"
-  },
-  {
-    "item_key": "bandana_sage",
-    "species": "chick",
-    "model": "assets/runner/accessories/restart_bandana_sage_chick.glb",
-    "model_sha256": "535f62acab2e4cf7256ebe6ada841fef21b120b5508b8dd4abd5de3e235e6d9f",
-    "thumbnail": "assets/images/products/pet_neck-bandana-b8dccb-chick.png",
-    "thumbnail_sha256": "3227eff954963abcc0d6e3a70e6c8f664339cf6b1da8d579c9644ed93fd4a02d",
-    "render_style": "warm_studio_v2"
-  },
-  {
-    "item_key": "necklace_heart",
-    "species": "chick",
-    "model": "assets/runner/accessories/restart_necklace_heart_chick.glb",
-    "model_sha256": "d7b251826a28d91c8469bf2d844b09869e93c697ac8044024b358beaa6919f9d",
-    "thumbnail": "assets/images/products/pet_neck-bead_necklace-efa0ab-chick.png",
-    "thumbnail_sha256": "f85dc5fe50ee6d91bb7bc3e4032d2ed6f279fc995b6e842ec5cf5d1e1725c0c4",
-    "render_style": "warm_studio_v2"
-  },
-  {
-    "item_key": "chain_gold",
-    "species": "chick",
-    "model": "assets/runner/accessories/restart_chain_gold_chick.glb",
-    "model_sha256": "bb773f97f86402d3b0b098cb0cee243eeb9e47941145b6aef3b64e4f3f08afaa",
-    "thumbnail": "assets/images/products/pet_neck-gold_chain-e2b957-chick.png",
-    "thumbnail_sha256": "9beef3b8bafc13f470c8ff154a330f1f5eeacc91724ec728a9d5d4706a603332",
-    "render_style": "warm_studio_v2"
-  },
-  {
-    "item_key": "shirt_love",
-    "species": "chick",
-    "model": "assets/runner/accessories/sewn_shirt_love_chick.glb",
-    "model_sha256": "9ab91cbf65ad5fe533efb951de1cc66a8e53dac3be7b9e15eff5f9fd00da2bfa",
-    "thumbnail": "assets/images/products/pet_body-shirt-fff2df-chick.png",
-    "thumbnail_sha256": "68e3df12114adfcc79a4e35789451c2af93d76cd3d5adc01d575f91199d4eae1",
-    "render_style": "warm_studio_v2"
-  },
-  {
-    "item_key": "jacket_denim",
-    "species": "chick",
-    "model": "assets/runner/accessories/sewn_jacket_denim_chick.glb",
-    "model_sha256": "6e0e20a2c32d5df00d900d7259f50ea3a8874639081e54432e588f7fc98571e1",
-    "thumbnail": "assets/images/products/pet_body-denim_jacket-91b6d6-chick.png",
-    "thumbnail_sha256": "99165b9027a442809d5d0f0074a915fb04125cbfe24fad1bfa3a6f9eaa604b19",
-    "render_style": "warm_studio_v2"
-  },
-  {
-    "item_key": "coat_cloud",
-    "species": "chick",
-    "model": "assets/runner/accessories/sewn_coat_cloud_chick.glb",
-    "model_sha256": "c3f9cd8aacdfea5ba5024338c8282a48977caac8ec32f9a423380da5626f891d",
-    "thumbnail": "assets/images/products/pet_body-coat-b8dccb-chick.png",
-    "thumbnail_sha256": "9a8b05164493414d8f4f369671acd0ccea625a8e8218305a8fa4c1035b1ced0b",
-    "render_style": "warm_studio_v2"
-  },
-  {
-    "item_key": "dress_petal",
-    "species": "chick",
-    "model": "assets/runner/accessories/sewn_dress_petal_chick.glb",
-    "model_sha256": "968e2b03fe5434b6a0d4acb3defb2acb713af1b014a2b5846b690b56912eccb5",
-    "thumbnail": "assets/images/products/pet_body-dress-efa0ab-chick.png",
-    "thumbnail_sha256": "edae462af5a97bcacbba03f4a38c8c2dc840a74652ea9136208a97cb13141fe0",
-    "render_style": "warm_studio_v2"
-  },
-  {
-    "item_key": "hoodie_nido",
-    "species": "chick",
-    "model": "assets/runner/accessories/sewn_hoodie_nido_chick.glb",
-    "model_sha256": "24839521867880995fb1ccf671f58b09148a6bef3334ea06534c29b7d6331c44",
-    "thumbnail": "assets/images/products/pet_body-hoodie-baa2db-chick.png",
-    "thumbnail_sha256": "951d5bf4d260bccb6e7377a0a7106fef36e8f5a37dd48e8994f766a72466d053",
-    "render_style": "warm_studio_v2"
-  },
-  {
-    "item_key": "shoes_heart",
-    "species": "chick",
-    "model": "assets/runner/accessories/restart_shoes_heart_chick.glb",
-    "model_sha256": "c5a68e0a9cb6496d3ee45a30e4d6bbc18f10a4f6ca3f58760f2e02d642167838",
-    "thumbnail": "assets/images/products/pet_feet-sneakers-efa0ab-chick.png",
-    "thumbnail_sha256": "e328510796d6671d845659f64d195a2436e366247bcf48fcfc5df3159d0db42e",
-    "render_style": "warm_studio_v2"
-  },
-  {
-    "item_key": "boots_rain",
-    "species": "chick",
-    "model": "assets/runner/accessories/restart_boots_rain_chick.glb",
-    "model_sha256": "7f67043fe4a2e52ed17557942d552389bff72e40c2ca5e4702e30c7f9891ec60",
-    "thumbnail": "assets/images/products/pet_feet-rain_boots-b8dccb-chick.png",
-    "thumbnail_sha256": "8d9ea01c7233ba25f95f9d32bf58f40056b6ae336e851101529f77d369b2f75e",
-    "render_style": "warm_studio_v2"
-  },
-  {
-    "item_key": "slippers_cloud",
-    "species": "chick",
-    "model": "assets/runner/accessories/restart_slippers_cloud_chick.glb",
-    "model_sha256": "d8d38d119432ae92f5102efe70f36eba9f3f2945e588539ffb64c178829a0678",
-    "thumbnail": "assets/images/products/pet_feet-slippers-fff2df-chick.png",
-    "thumbnail_sha256": "d05cfc7d546c861f102d700ec8932070ab911a9e54b652c133601b806bf13976",
-    "render_style": "warm_studio_v2"
-  },
-  {
-    "item_key": "shoes_chic",
-    "species": "chick",
-    "model": "assets/runner/accessories/restart_shoes_chic_chick.glb",
-    "model_sha256": "f60c1d17a8610ea1db29866535bc6000bd6cdb22013552ea960b611211a7b9d2",
-    "thumbnail": "assets/images/products/pet_feet-mary_jane-f05280-chick.png",
-    "thumbnail_sha256": "a4930d6ba4d5b09846b11fcb003963a88833d9645774ecc14033686c231eb513",
-    "render_style": "warm_studio_v2"
+    "thumbnail_sha256": "f1d22588763cd8770f1ca84295ec4d83267343c19f964b652d1255bfc2c666bf",
+    "render_style": "white_studio_v3"
   },
   {
     "item_key": "chain_gold",
@@ -707,62 +545,71 @@
     "model": "assets/runner/accessories/restart_chain_gold_pig.glb",
     "model_sha256": "24e3df183a64120e676fe73dc12a6ac9772c2e47e70525cbd7100da06bb3c23f",
     "thumbnail": "assets/images/products/pet_neck-gold_chain-e2b957-pig.png",
-    "thumbnail_sha256": "555f011da3f603d4b436bddf2bef166b02056c405316929a135d4fdca6ec9298",
-    "render_style": "warm_studio_v2"
+    "thumbnail_sha256": "9a52c6446800420f77510b7d7e2d8f5474662c3f5ec843d66906e5cf85c1c37b",
+    "render_style": "white_studio_v3"
+  },
+  {
+    "item_key": "bow_neck",
+    "species": "pig",
+    "model": "assets/runner/accessories/restart_bow_neck_pig.glb",
+    "model_sha256": "cd3bcea1e13a6db58461093f0cd2f339f3d2aa32dbb87ff00ae9d3c8cadcdf20",
+    "thumbnail": "assets/images/products/pet_neck-bow_tie-f05280-pig.png",
+    "thumbnail_sha256": "65519c94df0d4ede36400552351d2d1af009ae2deeccc388343fb8d83c00db15",
+    "render_style": "white_studio_v3"
   },
   {
     "item_key": "shirt_love",
     "species": "pig",
     "model": "assets/runner/accessories/sewn_shirt_love_pig.glb",
-    "model_sha256": "920fabebb9d4f579e190df4a8c50dc9954ff06d6ca33e880a51b3ef02c17973b",
+    "model_sha256": "6c987a9002a52b986ea092e85b6fa44ecd275dca98e22c6976a2ad41221b607f",
     "thumbnail": "assets/images/products/pet_body-shirt-fff2df-pig.png",
-    "thumbnail_sha256": "2d3a0a6da44db37685d06408f07ad43ddb8994bbb09f1ed5f05d38ff298a6abd",
-    "render_style": "warm_studio_v2"
+    "thumbnail_sha256": "ed3aa288a445f23a50fd8ddc1a61111dd62ba415818484e131bc65f24933e982",
+    "render_style": "white_studio_v3"
   },
   {
     "item_key": "jacket_denim",
     "species": "pig",
     "model": "assets/runner/accessories/sewn_jacket_denim_pig.glb",
-    "model_sha256": "11b340e9ddac98c762496660d00784a38df4a8f738df285a7151ea48c5ddab49",
+    "model_sha256": "5e4299a7376222926152df5f921e31dd35ddf7a34946830de9656904ba699619",
     "thumbnail": "assets/images/products/pet_body-denim_jacket-91b6d6-pig.png",
-    "thumbnail_sha256": "0d36eccf66fa1e86c84a6a8cbb4f98b3f29f79815a382b035126ca8dea6ac877",
-    "render_style": "warm_studio_v2"
+    "thumbnail_sha256": "d5ab1f6e83bc429529fd189fd0189c0ce20690771ea2bd76c90733784e416441",
+    "render_style": "white_studio_v3"
   },
   {
     "item_key": "coat_cloud",
     "species": "pig",
     "model": "assets/runner/accessories/sewn_coat_cloud_pig.glb",
-    "model_sha256": "5cc12830a9cf0c7c007aa945c337c415ebc2c9c10b0f3ab184919f0d09516e0d",
+    "model_sha256": "d0d1ef9ba7f9d6b8821e7d3ea894753236c3ce2fad4381b1be8dade42088b779",
     "thumbnail": "assets/images/products/pet_body-coat-b8dccb-pig.png",
-    "thumbnail_sha256": "919b55fb4219e23f2cb57d3d4f0809ccea0c1f903d0fa7233ea52028db16e0cb",
-    "render_style": "warm_studio_v2"
+    "thumbnail_sha256": "a6fc451a8f76eda5aa79bd5b6971ccd466d34ca3475f4d458efcce279e4c10c6",
+    "render_style": "white_studio_v3"
   },
   {
     "item_key": "dress_petal",
     "species": "pig",
     "model": "assets/runner/accessories/sewn_dress_petal_pig.glb",
-    "model_sha256": "2b794d2c400a700a6bab1a96c5d1e5d9a52eb80f30d82182a2b943e84e9662a9",
+    "model_sha256": "6259eaa642eefb4a37fe5e7fd0c73bea5c2d62466892be563e7c0fc3e7f597a4",
     "thumbnail": "assets/images/products/pet_body-dress-efa0ab-pig.png",
-    "thumbnail_sha256": "79e0cee4aca0291e8afc091faed8e8cc168b985e35d32ed3d378dfb74bb0e147",
-    "render_style": "warm_studio_v2"
+    "thumbnail_sha256": "979064cbdc0a10a723c2084056c0741b8f47c2d3b7664dca1b04ef4ca237448e",
+    "render_style": "white_studio_v3"
   },
   {
     "item_key": "hoodie_nido",
     "species": "pig",
     "model": "assets/runner/accessories/sewn_hoodie_nido_pig.glb",
-    "model_sha256": "7343ffbbb6a4bfa42f706e3735a4a5568c14703bea7846eaaf6f1df3b318d36e",
+    "model_sha256": "176b5a1bad248cc4be925944e62e6a974e250033e2ba0e008f54e9187b1c7622",
     "thumbnail": "assets/images/products/pet_body-hoodie-baa2db-pig.png",
-    "thumbnail_sha256": "90acefced971676452e79b3177d57f8ede642bc01b9226b6137ecc4b098b8766",
-    "render_style": "warm_studio_v2"
+    "thumbnail_sha256": "47979fdd526255e3475b5ae6d120465d0ff61aea1f58942526cf27c9dc9136b8",
+    "render_style": "white_studio_v3"
   },
   {
     "item_key": "shoes_heart",
     "species": "pig",
     "model": "assets/runner/accessories/restart_shoes_heart_pig.glb",
-    "model_sha256": "2cf25dcd8113e6e8c18d98290bb48b690e5062c7d59c819e27866d80fb3d7e62",
+    "model_sha256": "9231645092f14edcad5f247cff6215db62016d7a737159f78c61f42f26ece985",
     "thumbnail": "assets/images/products/pet_feet-sneakers-efa0ab-pig.png",
-    "thumbnail_sha256": "42ede22c0c2458b4a700e863b8526caab81cf41caf355ebf5ecfdf9e82df36b0",
-    "render_style": "warm_studio_v2"
+    "thumbnail_sha256": "a4e7569b1086d872c08d460aaafd3069b4e373596db0d3e85b3dfff70652b057",
+    "render_style": "white_studio_v3"
   },
   {
     "item_key": "boots_rain",
@@ -770,97 +617,250 @@
     "model": "assets/runner/accessories/restart_boots_rain_pig.glb",
     "model_sha256": "c5fc72484a9c80b09514146ca55a86e70ee6f5cb73f15b338fb5fede7c17925e",
     "thumbnail": "assets/images/products/pet_feet-rain_boots-b8dccb-pig.png",
-    "thumbnail_sha256": "1c1404d377be2c3f30da1a2e350c92c07e42472a6d493e91f3a852ec48b1704a",
-    "render_style": "warm_studio_v2"
+    "thumbnail_sha256": "3911d215dacd336fdd4e581cad2479653de90171b76f7ef10033bc10ae2e4966",
+    "render_style": "white_studio_v3"
   },
   {
     "item_key": "slippers_cloud",
     "species": "pig",
     "model": "assets/runner/accessories/restart_slippers_cloud_pig.glb",
-    "model_sha256": "1baa832d82bb7aac04acbab8726c89c7e7a5d6f9f9a63c44a5b4b451fe656cb3",
+    "model_sha256": "724fbc6725717864ff483e18e988fdf8b1a41bd21946335e98ace138cf3b9f19",
     "thumbnail": "assets/images/products/pet_feet-slippers-fff2df-pig.png",
-    "thumbnail_sha256": "e8562e3a142962f3333d426911dc577302c6f0a32f3fac04ec024f3eaa6f8bf7",
-    "render_style": "warm_studio_v2"
+    "thumbnail_sha256": "3dad79442cfd7ceaee4d7ddbc90a49384fd449d79a70e951559b9b0fe66e2dd3",
+    "render_style": "white_studio_v3"
   },
   {
     "item_key": "shoes_chic",
     "species": "pig",
     "model": "assets/runner/accessories/restart_shoes_chic_pig.glb",
-    "model_sha256": "3c50cffd7205003c39ed497b0e4ab68325bca1c33aa70a6fb17b6676e383440f",
+    "model_sha256": "756e7cb4270c7d7490af8c7fc1135d312d33fdd9b43b5bc10a1be776a332c439",
     "thumbnail": "assets/images/products/pet_feet-mary_jane-f05280-pig.png",
-    "thumbnail_sha256": "9d6b63e75862ba637553b0c15d413e44d0d25823dc6cda284db313a82fdca25d",
-    "render_style": "warm_studio_v2"
-  },
-  {
-    "item_key": "sandals_summer",
-    "species": "penguin",
-    "model": "assets/runner/accessories/restart_sandals_summer_penguin.glb",
-    "model_sha256": "980c43554d2c508c681e5d6e6ae4598cf9fe88dc895279212d2dbcd942229110",
-    "thumbnail": "assets/images/products/pet_feet-sandals-f2b29b-penguin.png",
-    "thumbnail_sha256": "0b9a3e0611c164b57e09be968eba75896e97a683a2e992d782acbf9fe7f685e0",
-    "render_style": "warm_studio_v2"
-  },
-  {
-    "item_key": "sandals_summer",
-    "species": "bear",
-    "model": "assets/runner/accessories/restart_sandals_summer_bear.glb",
-    "model_sha256": "5740011c3604d2e545ddb32b471dd3735fb0889e17a7bd44410db8a601fba257",
-    "thumbnail": "assets/images/products/pet_feet-sandals-f2b29b-bear.png",
-    "thumbnail_sha256": "360fd066e64ff28d50145404808d3da4a449fd78b8f0aa2a55239419b7b17c47",
-    "render_style": "warm_studio_v2"
+    "thumbnail_sha256": "62b2c008c12cf018d78afb432ba34995b621bc990366f79335c628c4a327194f",
+    "render_style": "white_studio_v3"
   },
   {
     "item_key": "sandals_summer",
     "species": "pig",
     "model": "assets/runner/accessories/restart_sandals_summer_pig.glb",
-    "model_sha256": "d0728228e670ea87a1dc1c7895701f0c9015142151661c0698a7be72539a0b41",
+    "model_sha256": "77cc04dc8b97413eed39de63a4947f270b267bb4f4950363db569815e8a712dd",
     "thumbnail": "assets/images/products/pet_feet-sandals-f2b29b-pig.png",
-    "thumbnail_sha256": "1279cde0f75f0aab6595add855f90b8e6a56626f64317e7414e84be223f48b53",
-    "render_style": "warm_studio_v2"
+    "thumbnail_sha256": "2b75aa4e8d2fc175d23a720e5ae7678bf8a475bb00536ea5e3b531485a0ebdff",
+    "render_style": "white_studio_v3"
   },
   {
-    "item_key": "sandals_summer",
+    "item_key": "cap_pink",
     "species": "chick",
-    "model": "assets/runner/accessories/restart_sandals_summer_chick.glb",
-    "model_sha256": "224c25083b0062676fd478816a17093f454ad96822af2255cb3f6d787c0d4e75",
-    "thumbnail": "assets/images/products/pet_feet-sandals-f2b29b-chick.png",
-    "thumbnail_sha256": "100a41b0101b118e74681375ffcc316d33431516d1e076a75ef6cdcb3b2bb4d7",
-    "render_style": "warm_studio_v2"
+    "model": "assets/runner/accessories/restart_cap_pink_chick.glb",
+    "model_sha256": "9c2f08d8e4752463b0d11c736408ff977659402e590ea59af494bff1cac9a860",
+    "thumbnail": "assets/images/products/pet_head-cap-f05280-chick.png",
+    "thumbnail_sha256": "6c61ea46c08e783b1bc6bcf818a37fdaa26cf331381f89f87014af3399a9ab05",
+    "render_style": "white_studio_v3"
   },
   {
-    "item_key": "bow_neck",
-    "species": "penguin",
-    "model": "assets/runner/accessories/restart_bow_neck_penguin.glb",
-    "model_sha256": "70c7492d6459f505219cd66e14066bbe85df2b78e115020c5baf4b1985ecc330",
-    "thumbnail": "assets/images/products/pet_neck-bow_tie-f05280-penguin.png",
-    "thumbnail_sha256": "2121a9bfe8babd3e1561a8adb3702686bbe013c1ffd4829f01a626f318944910",
-    "render_style": "warm_studio_v2"
+    "item_key": "beanie_cloud",
+    "species": "chick",
+    "model": "assets/runner/accessories/restart_headfinish_beanie_cloud_chick.glb",
+    "model_sha256": "4283cb2ba7832423dea3afbabdb2b07cce3997c5979c8e4d33c362ef71c0d745",
+    "thumbnail": "assets/images/products/pet_head-beanie-fff2df-chick.png",
+    "thumbnail_sha256": "569f5591b278418e027d2c6827a431761cceb683aa409972c374442e1ccbb5b0",
+    "render_style": "white_studio_v3"
   },
   {
-    "item_key": "bow_neck",
-    "species": "bear",
-    "model": "assets/runner/accessories/restart_bow_neck_bear.glb",
-    "model_sha256": "c7c367b0a72c924597d32e9873ea1c1e50d21734186ed22326d101aab4497fd6",
-    "thumbnail": "assets/images/products/pet_neck-bow_tie-f05280-bear.png",
-    "thumbnail_sha256": "1b6f99905994032830123503a55e5a09877e8343b7c0aea396cb8d6d2745ecef",
-    "render_style": "warm_studio_v2"
+    "item_key": "hat_garden",
+    "species": "chick",
+    "model": "assets/runner/accessories/restart_headfinish_hat_garden_chick.glb",
+    "model_sha256": "8aaf993b70e162610c6b2160ab4c231a0dfd317e3425ff6309a73fc6861b5539",
+    "thumbnail": "assets/images/products/pet_head-garden_hat-b8dccb-chick.png",
+    "thumbnail_sha256": "c98dd2e27192861f6b4cdbef8936d67192d520e4a7848922b03c33a666769c24",
+    "render_style": "white_studio_v3"
   },
   {
-    "item_key": "bow_neck",
-    "species": "pig",
-    "model": "assets/runner/accessories/restart_bow_neck_pig.glb",
-    "model_sha256": "bd68c0c0be4d8ce4558217e69cf7e37f1dc17c82559711a6d3a7da809294f2da",
-    "thumbnail": "assets/images/products/pet_neck-bow_tie-f05280-pig.png",
-    "thumbnail_sha256": "27dd92a49ba95aff7625ab12fae22e55693f3f40f96ac46b8d4533c9059b517f",
-    "render_style": "warm_studio_v2"
+    "item_key": "beret_chic",
+    "species": "chick",
+    "model": "assets/runner/accessories/restart_headfinish_beret_chic_chick.glb",
+    "model_sha256": "64a2c7266ab69fef171da8d490976dbd44d3fd770bc764b6b004a7239fa4a600",
+    "thumbnail": "assets/images/products/pet_head-beret-baa2db-chick.png",
+    "thumbnail_sha256": "68db39c7c097d6a0fee8ff879e07a30c60bc7ad66a7d594b8176e955d34f4364",
+    "render_style": "white_studio_v3"
+  },
+  {
+    "item_key": "glasses_heart",
+    "species": "chick",
+    "model": "assets/runner/accessories/restart_glasses_heart_chick.glb",
+    "model_sha256": "69b33f62fd22a9919166feecf5d178bbc243228ac4f61ae4fcf7b936dcd9045d",
+    "thumbnail": "assets/images/products/pet_eyes-heart_glasses-f05280-chick.png",
+    "thumbnail_sha256": "fdb770a71fcff2894b80781e3d003a4174c4f08f2f12945d87b538d0f4ca4137",
+    "render_style": "white_studio_v3"
+  },
+  {
+    "item_key": "glasses_round",
+    "species": "chick",
+    "model": "assets/runner/accessories/restart_glasses_round_chick.glb",
+    "model_sha256": "a6d8f7a14803d1a1f82ddbbdd3b14db38958885425ce7ed84888332bf23d1e31",
+    "thumbnail": "assets/images/products/pet_eyes-round_glasses-e2b957-chick.png",
+    "thumbnail_sha256": "2791f83c1f0a22ea60128b951a5ffcaa7cd942e69040064cd66fcb3e6b2bf2c9",
+    "render_style": "white_studio_v3"
+  },
+  {
+    "item_key": "glasses_star",
+    "species": "chick",
+    "model": "assets/runner/accessories/restart_glasses_star_chick.glb",
+    "model_sha256": "fd76912f4dac71690124614aecf03af619f2ffc32a22ea981fb51dde7bfda6de",
+    "thumbnail": "assets/images/products/pet_eyes-star_glasses-baa2db-chick.png",
+    "thumbnail_sha256": "4d2aaac27b7549f2cd9ea1fad433e12a1fc11033cd2966fdaa6f48f7f2021163",
+    "render_style": "white_studio_v3"
+  },
+  {
+    "item_key": "patch_pirate",
+    "species": "chick",
+    "model": "assets/runner/accessories/restart_patch_pirate_chick.glb",
+    "model_sha256": "996c618c66dcf1fcc0f764dc7df1ce00998bf241a1a1749d3f604b936fe271ae",
+    "thumbnail": "assets/images/products/pet_eyes-eyepatch-30303d-chick.png",
+    "thumbnail_sha256": "530d45c6a14a527d103f2e580b1753364c93b2cb7b7df717d99b0bc6b53c7e6e",
+    "render_style": "white_studio_v3"
+  },
+  {
+    "item_key": "mask_sleep",
+    "species": "chick",
+    "model": "assets/runner/accessories/restart_mask_sleep_chick.glb",
+    "model_sha256": "acd066906b3586e4f69703bcf5402b3bb0c26771bd672bb963d1f0dc2541a148",
+    "thumbnail": "assets/images/products/pet_eyes-sleep_mask-efa0ab-chick.png",
+    "thumbnail_sha256": "7951ed40ef895c222ceffd61f8b50d84c164cef816e828d9dea7497fed097d19",
+    "render_style": "white_studio_v3"
+  },
+  {
+    "item_key": "scarf_hearts",
+    "species": "chick",
+    "model": "assets/runner/accessories/restart_scarf_hearts_chick.glb",
+    "model_sha256": "c064dbbcc7fe3630a546b977aad6d0742cc5ed6e86405d52e3a9cf4aca4df170",
+    "thumbnail": "assets/images/products/pet_neck-scarf-efa0ab-chick.png",
+    "thumbnail_sha256": "c2d540c80183024c73fcbb01441c49b3b29ac3f7a50aebeb77ade157d6e080bd",
+    "render_style": "white_studio_v3"
+  },
+  {
+    "item_key": "bandana_sage",
+    "species": "chick",
+    "model": "assets/runner/accessories/restart_bandana_sage_chick.glb",
+    "model_sha256": "707fc6d44a348e45837fc2d7ee851b1938a54607d4da37490f56c37d6afce55e",
+    "thumbnail": "assets/images/products/pet_neck-bandana-b8dccb-chick.png",
+    "thumbnail_sha256": "630d6b59f48e4f637fbf8cd39b06ee343acb7115f4485f8a81beab1dc552d9d5",
+    "render_style": "white_studio_v3"
+  },
+  {
+    "item_key": "necklace_heart",
+    "species": "chick",
+    "model": "assets/runner/accessories/restart_necklace_heart_chick.glb",
+    "model_sha256": "d7b251826a28d91c8469bf2d844b09869e93c697ac8044024b358beaa6919f9d",
+    "thumbnail": "assets/images/products/pet_neck-bead_necklace-efa0ab-chick.png",
+    "thumbnail_sha256": "98d846d39c92a1e959348b5e704d676497e942c422544363b5b54bac3c00fd2f",
+    "render_style": "white_studio_v3"
+  },
+  {
+    "item_key": "chain_gold",
+    "species": "chick",
+    "model": "assets/runner/accessories/restart_chain_gold_chick.glb",
+    "model_sha256": "bb773f97f86402d3b0b098cb0cee243eeb9e47941145b6aef3b64e4f3f08afaa",
+    "thumbnail": "assets/images/products/pet_neck-gold_chain-e2b957-chick.png",
+    "thumbnail_sha256": "0350de7fe6172556b9b6195366e3638cd7edfafa4d96a4d39965a534dd8b3b31",
+    "render_style": "white_studio_v3"
   },
   {
     "item_key": "bow_neck",
     "species": "chick",
     "model": "assets/runner/accessories/restart_bow_neck_chick.glb",
-    "model_sha256": "63efee5b881cfd16fe5c96be1f2aa238db5148b089483a266afb6e8f77214011",
+    "model_sha256": "e92ecf4c72c306629e5bdd67176d5d7388ead9c65b51d976402bceaf4c7ce3e9",
     "thumbnail": "assets/images/products/pet_neck-bow_tie-f05280-chick.png",
-    "thumbnail_sha256": "7f045693ef10c61f9021b6c19d43093a043415d927e44355bd28dd96d68a8d3d",
-    "render_style": "warm_studio_v2"
+    "thumbnail_sha256": "c775661f948db8d49aae5fdf7ef593fb130e1a52c56848010b939e2c06eedb23",
+    "render_style": "white_studio_v3"
+  },
+  {
+    "item_key": "shirt_love",
+    "species": "chick",
+    "model": "assets/runner/accessories/sewn_shirt_love_chick.glb",
+    "model_sha256": "5f433f0b6d925fb23193836966464682a78aeed14a34a4de97edcf78b8218370",
+    "thumbnail": "assets/images/products/pet_body-shirt-fff2df-chick.png",
+    "thumbnail_sha256": "43f1c59f1b8268416ec72180aa385bfce3ab49e24e2d97c22da79200eeaf434e",
+    "render_style": "white_studio_v3"
+  },
+  {
+    "item_key": "jacket_denim",
+    "species": "chick",
+    "model": "assets/runner/accessories/sewn_jacket_denim_chick.glb",
+    "model_sha256": "c973e40d533af257b4129e19ea40d6316b43c644c56aa64c2c85e2533064d1b5",
+    "thumbnail": "assets/images/products/pet_body-denim_jacket-91b6d6-chick.png",
+    "thumbnail_sha256": "06c335d5d99a13b7ac6af758ca9a59490da27982063026efc53b378afea1a7e7",
+    "render_style": "white_studio_v3"
+  },
+  {
+    "item_key": "coat_cloud",
+    "species": "chick",
+    "model": "assets/runner/accessories/sewn_coat_cloud_chick.glb",
+    "model_sha256": "2ebf4ebe14add12dacb225d862909b6feddf14d5acdfee614ea28c741413386c",
+    "thumbnail": "assets/images/products/pet_body-coat-b8dccb-chick.png",
+    "thumbnail_sha256": "6917bdf5762648fbf94368378ed37bee68fe61d5f010f64145a7bd32d7b361bd",
+    "render_style": "white_studio_v3"
+  },
+  {
+    "item_key": "dress_petal",
+    "species": "chick",
+    "model": "assets/runner/accessories/sewn_dress_petal_chick.glb",
+    "model_sha256": "7f0f28ee9770ecc24695a3775582379aff81f433756a36455d63745a8ec0991c",
+    "thumbnail": "assets/images/products/pet_body-dress-efa0ab-chick.png",
+    "thumbnail_sha256": "fd69a42a060088c6ab834053ab04c8d85d3104ab19af6561d02d491d0a9126c9",
+    "render_style": "white_studio_v3"
+  },
+  {
+    "item_key": "hoodie_nido",
+    "species": "chick",
+    "model": "assets/runner/accessories/sewn_hoodie_nido_chick.glb",
+    "model_sha256": "d77cab6bdabd651de83a7b27fe3a1ea1865c8431c60e2f51d6fc639912637f3f",
+    "thumbnail": "assets/images/products/pet_body-hoodie-baa2db-chick.png",
+    "thumbnail_sha256": "7f41f89e77ace073273817a0d81c0222d8afd62a5e376513ab0020e099828399",
+    "render_style": "white_studio_v3"
+  },
+  {
+    "item_key": "shoes_heart",
+    "species": "chick",
+    "model": "assets/runner/accessories/restart_shoes_heart_chick.glb",
+    "model_sha256": "2ff6db0d430033ca15962fe9efe5c5b5d49dd78a0622aca86d20da407bd2dbcc",
+    "thumbnail": "assets/images/products/pet_feet-sneakers-efa0ab-chick.png",
+    "thumbnail_sha256": "e42e61a7abeb69ef40b9be4cb6b11daa34a4e0033afc2cb188d06bb18dfa8703",
+    "render_style": "white_studio_v3"
+  },
+  {
+    "item_key": "boots_rain",
+    "species": "chick",
+    "model": "assets/runner/accessories/restart_boots_rain_chick.glb",
+    "model_sha256": "7f67043fe4a2e52ed17557942d552389bff72e40c2ca5e4702e30c7f9891ec60",
+    "thumbnail": "assets/images/products/pet_feet-rain_boots-b8dccb-chick.png",
+    "thumbnail_sha256": "df995f03351dc184f352ff3b01952c19b23f2ca3537d109307592817996a829e",
+    "render_style": "white_studio_v3"
+  },
+  {
+    "item_key": "slippers_cloud",
+    "species": "chick",
+    "model": "assets/runner/accessories/restart_slippers_cloud_chick.glb",
+    "model_sha256": "8ab4694f4b9fe712966621b58737e4be25cb87aa86170ac33ed7cb566d2efe91",
+    "thumbnail": "assets/images/products/pet_feet-slippers-fff2df-chick.png",
+    "thumbnail_sha256": "45bee46c36e8c436e98827ba1ac4bcc0d28200df79bfe3d2550435f127c9ea47",
+    "render_style": "white_studio_v3"
+  },
+  {
+    "item_key": "shoes_chic",
+    "species": "chick",
+    "model": "assets/runner/accessories/restart_shoes_chic_chick.glb",
+    "model_sha256": "10326ef9b4240d9e18a8d701eff89ea9af2611de13e0f8c9fad2face9927a965",
+    "thumbnail": "assets/images/products/pet_feet-mary_jane-f05280-chick.png",
+    "thumbnail_sha256": "557b9d705cae28ac4c36cb7ad10cac66cd917ab3018cd428f7b95c81e9f7e1a3",
+    "render_style": "white_studio_v3"
+  },
+  {
+    "item_key": "sandals_summer",
+    "species": "chick",
+    "model": "assets/runner/accessories/restart_sandals_summer_chick.glb",
+    "model_sha256": "a061f404ca694ae8158b25bd4e2db202722a7d7553df98ef18e66935b22674a6",
+    "thumbnail": "assets/images/products/pet_feet-sandals-f2b29b-chick.png",
+    "thumbnail_sha256": "bb11f8a716c743aea6b5c56f95cb67e5bbf7b82b039562b61c93c96dd91dd71e",
+    "render_style": "white_studio_v3"
   }
 ]

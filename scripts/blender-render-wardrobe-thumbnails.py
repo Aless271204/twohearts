@@ -30,7 +30,7 @@ for item in catalog:
  bpy.ops.mesh.primitive_plane_add(size=200,location=(0,0,floor_z))
  floor=bpy.context.object;floor.name='Fondo de estudio'
  backdrop=bpy.data.materials.new('Blanco cálido');backdrop.use_nodes=True
- shader=backdrop.node_tree.nodes.get('Principled BSDF');shader.inputs['Base Color'].default_value=(.72,.62,.65,1);shader.inputs['Roughness'].default_value=.86
+ shader=backdrop.node_tree.nodes.get('Principled BSDF');shader.inputs['Base Color'].default_value=(1,1,1,1);shader.inputs['Roughness'].default_value=.86
  floor.data.materials.append(backdrop)
  world=bpy.data.worlds.new('Estudio cálido');world.use_nodes=True;world.node_tree.nodes['Background'].inputs['Color'].default_value=(1,.96,.95,1);world.node_tree.nodes['Background'].inputs['Strength'].default_value=.35;scene.world=world
  for name,position,energy,size in [('Luz principal',(-2,-3,4),150,2.4),('Relleno',(4,-1,3),50,3.5),('Contorno',(-1,3,4),130,2.0)]:
@@ -38,9 +38,9 @@ for item in catalog:
  camera_data=bpy.data.cameras.new('Fotografía del producto');camera_data.type='ORTHO';camera_data.ortho_scale=1.08
  camera=bpy.data.objects.new('Cámara',camera_data);scene.collection.objects.link(camera);camera.location=(2.7,-6,2.6);camera.rotation_euler=(-camera.location).to_track_quat('-Z','Y').to_euler();scene.camera=camera
  # CPU rendering leaves the mobile/WebGL inspection usable on integrated GPUs.
- if engine=='eevee':scene.render.engine='BLENDER_EEVEE_NEXT';scene.eevee.taa_render_samples=48
- else:scene.render.engine='CYCLES';scene.cycles.device='CPU';scene.cycles.samples=24;scene.cycles.use_denoising=True;scene.cycles.max_bounces=6
- scene.render.resolution_x=512;scene.render.resolution_y=448;scene.render.resolution_percentage=100;scene.render.film_transparent=False
+ if engine=='eevee':scene.render.engine='BLENDER_EEVEE_NEXT';pass
+ else:scene.render.engine='CYCLES';scene.cycles.device='CPU';scene.cycles.samples=16;scene.cycles.use_denoising=True;scene.cycles.max_bounces=6
+ scene.render.resolution_x=512;scene.render.resolution_y=448;scene.render.resolution_percentage=100;scene.render.film_transparent=True
  scene.render.image_settings.file_format='PNG';scene.render.image_settings.color_mode='RGBA';scene.view_settings.view_transform='Standard'
  filename=item['equip_slot']+'-'+appearance['style']+'-'+appearance['color'].lstrip('#').lower()+'-'+species+'.png';destination=ROOT/'assets/images/products'/filename
  # Render to a sibling temporary file; UI/test readers may briefly hold the
@@ -54,7 +54,7 @@ for item in catalog:
    if attempt==19:raise
    time.sleep(.15)
  report=[r for r in report if not(r['item_key']==item['item_key'] and r.get('species','penguin')==species)]
- report.append({'item_key':item['item_key'],'species':species,'model':model_path,'model_sha256':model_hash,'thumbnail':'assets/images/products/'+filename,'thumbnail_sha256':hashlib.sha256(destination.read_bytes()).hexdigest(),'render_style':'warm_studio_v2'})
+ report.append({'item_key':item['item_key'],'species':species,'model':model_path,'model_sha256':model_hash,'thumbnail':'assets/images/products/'+filename,'thumbnail_sha256':hashlib.sha256(destination.read_bytes()).hexdigest(),'render_style':'white_studio_v3'})
  report_path.write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding='utf-8')
  print('THUMBNAIL',item['item_key'],flush=True)
 report_path.write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding='utf-8')

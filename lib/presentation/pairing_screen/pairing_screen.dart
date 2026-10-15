@@ -1,3 +1,4 @@
+import '../../services/profile_change_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -95,6 +96,7 @@ class _PairingScreenState extends State<PairingScreen>
   Future<void> _copyCode() async {
     if (_myInviteCode == null) return;
     await Clipboard.setData(ClipboardData(text: _myInviteCode!));
+    if (!mounted) return;
     setState(() => _codeCopied = true);
     await Future.delayed(const Duration(seconds: 2));
     if (mounted) setState(() => _codeCopied = false);
@@ -125,6 +127,7 @@ class _PairingScreenState extends State<PairingScreen>
           _isAlreadyPaired = true;
         });
         _loadPartnerName();
+        ProfileChangeNotifier.instance.notify();
         widget.onPaired?.call();
       }
     }
@@ -187,6 +190,7 @@ class _PairingScreenState extends State<PairingScreen>
           _partnerName = _foundUser!['full_name'] as String? ?? 'Tu pareja';
           _foundUser = null;
         });
+        ProfileChangeNotifier.instance.notify();
         widget.onPaired?.call();
       }
     }
@@ -434,7 +438,7 @@ class _MyCodeCard extends StatelessWidget {
               const Text('🔑', style: TextStyle(fontSize: 18)),
               const SizedBox(width: 8),
               Text(
-                'Tu código de invitación',
+                'Tu código único de cuenta',
                 style: GoogleFonts.dmSans(
                   fontSize: 13,
                   fontWeight: FontWeight.w600,
@@ -490,7 +494,7 @@ class _MyCodeCard extends StatelessWidget {
           ),
           const SizedBox(height: 10),
           Text(
-            'Comparte este código con tu pareja para que puedan enlazarse.',
+            'Comparte este código con tu pareja o introduce el suyo para enlazar sus cuentas.',
             style: GoogleFonts.dmSans(
               fontSize: 12,
               color: const Color(0xFF6B6B6B),

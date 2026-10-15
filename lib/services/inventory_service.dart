@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'supabase_service.dart';
+import 'shared_pet_service.dart';
 import '../core/pet_accessory_catalog.dart';
 import '../core/room_catalog.dart';
 
@@ -166,10 +167,14 @@ class InventoryService extends ChangeNotifier {
       return;
     }
     Map<String, InventoryItem>? shared = _sharedLoadout;
+    final petRevision = SharedPetService.instance.revision;
     try {
       final pet = Map<String, dynamic>.from(
         await _db.rpc('shared_pet_snapshot') as Map,
       );
+      if (_uid == uid && generation == _generation) {
+        SharedPetService.instance.acceptSnapshot(pet, petRevision);
+      }
       shared = {
         for (final item in pet['equipment'] as List)
           (item as Map)['equip_slot'] as String: InventoryItem(

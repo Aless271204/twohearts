@@ -13,8 +13,15 @@ class PrivateMemoryImage extends StatefulWidget {
   final BoxFit? fit;
   final ImageErrorWidgetBuilder? errorBuilder;
   final ImageLoadingBuilder? loadingBuilder;
-  const PrivateMemoryImage(this.source, {super.key, this.width, this.height,
-    this.fit, this.errorBuilder, this.loadingBuilder});
+  const PrivateMemoryImage(
+    this.source, {
+    super.key,
+    this.width,
+    this.height,
+    this.fit,
+    this.errorBuilder,
+    this.loadingBuilder,
+  });
   @override
   State<PrivateMemoryImage> createState() => _PrivateMemoryImageState();
 }
@@ -25,7 +32,8 @@ class _PrivateMemoryImageState extends State<PrivateMemoryImage> {
   StreamSubscription<dynamic>? _auth;
   @override
   void initState() {
-    super.initState(); _url = _resolve();
+    super.initState();
+    _url = _resolve();
     _refresh = Timer.periodic(const Duration(minutes: 4), (_) {
       if (mounted) setState(() => _url = _resolve());
     });
@@ -33,32 +41,76 @@ class _PrivateMemoryImageState extends State<PrivateMemoryImage> {
       if (mounted) setState(() => _url = _resolve());
     });
   }
+
   @override
-  void dispose() { _refresh?.cancel(); _auth?.cancel(); super.dispose(); }
+  void dispose() {
+    _refresh?.cancel();
+    _auth?.cancel();
+    super.dispose();
+  }
+
   @override
   void didUpdateWidget(PrivateMemoryImage oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.source != widget.source) _url = _resolve();
   }
+
   Future<String> _resolve() async {
+    if (widget.source.startsWith('profile-avatar:')) {
+      final path = widget.source.substring('profile-avatar:'.length);
+      if (!RegExp(r'^[0-9a-fA-F-]{36}/[0-9]+[.]png$').hasMatch(path))
+        throw StateError('Invalid avatar');
+      return SupabaseService.instance.client.storage
+          .from('profile-avatars')
+          .createSignedUrl(path, 300);
+    }
     final path = memoryPhotoPath(widget.source, SupabaseService.supabaseUrl);
     if (path == null) {
-      if (widget.source.startsWith('memory-photo:')) throw StateError('Invalid photo');
+      if (widget.source.startsWith('memory-photo:'))
+        throw StateError('Invalid photo');
       return widget.source;
     }
-    if (SupabaseService.instance.currentUser == null) throw StateError('Inicia sesión');
-    return SupabaseService.instance.client.storage.from('memory-photos').createSignedUrl(path, 300);
+    if (SupabaseService.instance.currentUser == null)
+      throw StateError('Inicia sesión');
+    return SupabaseService.instance.client.storage
+        .from('memory-photos')
+        .createSignedUrl(path, 300);
   }
+
   @override
-  Widget build(BuildContext context) => widget.source.startsWith("twohearts-preview:") ? SizedBox(width:widget.width,height:widget.height,child:StoryArt(panel:int.tryParse(widget.source.split(":").last)??0)) : FutureBuilder<String>(
-    future: _url,
-    builder: (context, state) {
-      if (state.hasError) return widget.errorBuilder?.call(context, state.error!, null)
-        ?? SizedBox(width: widget.width, height: widget.height, child: const Icon(Icons.lock_outline));
-      if (!state.hasData) return SizedBox(width: widget.width, height: widget.height,
-        child: const Center(child: CircularProgressIndicator()));
-      return Image.network(state.data!, width: widget.width, height: widget.height,
-        fit: widget.fit, errorBuilder: widget.errorBuilder, loadingBuilder: widget.loadingBuilder);
-    },
-  );
+  Widget build(BuildContext context) =>
+      widget.source.startsWith("twohearts-preview:")
+      ? SizedBox(
+          width: widget.width,
+          height: widget.height,
+          child: StoryArt(
+            panel: int.tryParse(widget.source.split(":").last) ?? 0,
+          ),
+        )
+      : FutureBuilder<String>(
+          future: _url,
+          builder: (context, state) {
+            if (state.hasError)
+              return widget.errorBuilder?.call(context, state.error!, null) ??
+                  SizedBox(
+                    width: widget.width,
+                    height: widget.height,
+                    child: const Icon(Icons.lock_outline),
+                  );
+            if (!state.hasData)
+              return SizedBox(
+                width: widget.width,
+                height: widget.height,
+                child: const Center(child: CircularProgressIndicator()),
+              );
+            return Image.network(
+              state.data!,
+              width: widget.width,
+              height: widget.height,
+              fit: widget.fit,
+              errorBuilder: widget.errorBuilder,
+              loadingBuilder: widget.loadingBuilder,
+            );
+          },
+        );
 }

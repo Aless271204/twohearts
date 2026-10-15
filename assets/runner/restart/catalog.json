@@ -9,7 +9,7 @@
       "pet": "assets/runner/restart/pet_rig_r2_penguin.glb",
       "cap": "assets/runner/restart/cap_coral_r2_penguin.glb",
       "pet_sha256": "d3ce180a0f70071761cada0a5c24612666fd46183796f3ac8f55c4baee37ebbf",
-      "cap_sha256": "02075fd446b9f552c2baf7d027210fdacbb081e15ec7e94fbf5567d7b0f3d971",
+      "cap_sha256": "9593aba6a0a234b980f57b3522ccd42afbfb23a51ee07e796783cc6fa096ebf3",
       "headwear_occlusion": {
         "center": [
           0,
@@ -32,7 +32,7 @@
       "pet": "assets/runner/restart/pet_rig_r2_bear.glb",
       "cap": "assets/runner/restart/cap_coral_r2_bear.glb",
       "pet_sha256": "771ba086f6269b4af9a874ba907d651a2ea4d10b3b13ba5091b17fc57baf734e",
-      "cap_sha256": "788f5ffc24d58b28ce8104e0767d54e581b70200b711b34dec262d0b9ebfd0e4",
+      "cap_sha256": "cd21928be72fa8ee1b509b3bb0a562073424d7276dc22887cdf142108b20aef9",
       "headwear_occlusion": {
         "center": [
           0,
@@ -56,7 +56,7 @@
       "pet": "assets/runner/restart/pet_rig_r2_pig.glb",
       "cap": "assets/runner/restart/cap_coral_r2_pig.glb",
       "pet_sha256": "3fa2604fec03bc522e6ecf5c58888f77a4df8ad1a1ebd303049c5ea09e71b0fb",
-      "cap_sha256": "2b857b97e5f2e13f8c1a0518d15b0a340eb4d9614ee178c10ad5a6e15ba93faa",
+      "cap_sha256": "599833e0f6a3adc08346a9cc0d061b360f3dab19ce98a94ea9c881a2ec299567",
       "headwear_occlusion": {
         "center": [
           0,
@@ -80,7 +80,7 @@
       "pet": "assets/runner/restart/pet_rig_r2_chick.glb",
       "cap": "assets/runner/restart/cap_coral_r2_chick.glb",
       "pet_sha256": "3d25a3f861f21a3d2e17bfa37b3b24b0691e23b47fdf3a3b59be4bfc0c5ceaeb",
-      "cap_sha256": "7405f8bc79c2583e8c6ee1c0a019814e4f091f064c5fd43ad0047f807ae84ce6",
+      "cap_sha256": "9c2f08d8e4752463b0d11c736408ff977659402e590ea59af494bff1cac9a860",
       "headwear_occlusion": {
         "center": [
           0,
@@ -115,7 +115,7 @@
             "faces": 102822
           },
           "original_asset": "assets/runner/accessories/sewn_shirt_love_penguin.glb",
-          "original_sha256": "4cea182e66c13c36ef8bdc5182312b2c6b9ec7c746bed4b9c05c839e0c6a27f5",
+          "original_sha256": "709ba5c8f0d6cbdd54690019aa54722ce1f3ef07721b9a052ae4f98cc55b6c48",
           "fit_status": "continuous_sewn_pattern_in_review",
           "coverage_asset": "assets/runner/restart/shirt-original-coverage-penguin.json",
           "approved_reference": "design/wardrobe-restart/camiseta-acabados-frente-r20.png",
@@ -124,21 +124,21 @@
         {
           "species": "bear",
           "original_asset": "assets/runner/accessories/sewn_shirt_love_bear.glb",
-          "original_sha256": "eae819959f3d90d83b91596b3980b07b6e03fc6904bd1e1b35cee5ec65938425",
+          "original_sha256": "e192c914f95a6d9142621d328e150e360ac1731f33fab4c828c6ebd8122565cb",
           "fit_status": "continuous_sewn_pattern_in_review",
           "coverage_asset": "assets/runner/restart/shirt-original-coverage-bear.json"
         },
         {
           "species": "pig",
           "original_asset": "assets/runner/accessories/sewn_shirt_love_pig.glb",
-          "original_sha256": "920fabebb9d4f579e190df4a8c50dc9954ff06d6ca33e880a51b3ef02c17973b",
+          "original_sha256": "6c987a9002a52b986ea092e85b6fa44ecd275dca98e22c6976a2ad41221b607f",
           "fit_status": "continuous_sewn_pattern_in_review",
           "coverage_asset": "assets/runner/restart/shirt-original-coverage-pig.json"
         },
         {
           "species": "chick",
           "original_asset": "assets/runner/accessories/sewn_shirt_love_chick.glb",
-          "original_sha256": "9ab91cbf65ad5fe533efb951de1cc66a8e53dac3be7b9e15eff5f9fd00da2bfa",
+          "original_sha256": "5f433f0b6d925fb23193836966464682a78aeed14a34a4de97edcf78b8218370",
           "fit_status": "continuous_sewn_pattern_in_review",
           "coverage_asset": "assets/runner/restart/shirt-original-coverage-chick.json"
         }
@@ -152,28 +152,28 @@
         {
           "species": "bear",
           "original_asset": "assets/runner/accessories/sewn_coat_cloud_bear.glb",
-          "original_sha256": "ca37cce57880a29a7b7eba95b2b4e123b90dea378b536ac644a39d8030524034",
+          "original_sha256": "eeddc8db57ea2b8f2022bc113d8ab6920e39a1a76040eeec82ef7fa4a0b2baec",
           "coverage_asset": "assets/runner/restart/sewn-coverage-bear-coat_cloud.json",
           "fit_status": "continuous_sewn_pattern_in_review"
         },
         {
           "species": "pig",
           "original_asset": "assets/runner/accessories/sewn_coat_cloud_pig.glb",
-          "original_sha256": "5cc12830a9cf0c7c007aa945c337c415ebc2c9c10b0f3ab184919f0d09516e0d",
+          "original_sha256": "d0d1ef9ba7f9d6b8821e7d3ea894753236c3ce2fad4381b1be8dade42088b779",
           "coverage_asset": "assets/runner/restart/sewn-coverage-pig-coat_cloud.json",
           "fit_status": "continuous_sewn_pattern_in_review"
         },
         {
           "species": "chick",
           "original_asset": "assets/runner/accessories/sewn_coat_cloud_chick.glb",
-          "original_sha256": "c3f9cd8aacdfea5ba5024338c8282a48977caac8ec32f9a423380da5626f891d",
+          "original_sha256": "2ebf4ebe14add12dacb225d862909b6feddf14d5acdfee614ea28c741413386c",
           "coverage_asset": "assets/runner/restart/sewn-coverage-chick-coat_cloud.json",
           "fit_status": "continuous_sewn_pattern_in_review"
         },
         {
           "species": "penguin",
           "original_asset": "assets/runner/accessories/sewn_coat_cloud_penguin.glb",
-          "original_sha256": "c5d47eac25416a9a63c4ad27a21f950be18e526e147352453a6770530d830eb7",
+          "original_sha256": "c0d759a007cb83b7b1eb023703f9d5b06582f41cbfd859368b116c5de9af9e1f",
           "coverage_asset": "assets/runner/restart/sewn-coverage-penguin-coat_cloud.json",
           "fit_status": "approved_shirt_derived_in_review"
         }
@@ -187,28 +187,28 @@
         {
           "species": "bear",
           "original_asset": "assets/runner/accessories/sewn_jacket_denim_bear.glb",
-          "original_sha256": "fb12f230b78e0baa2d5bc8236629d2f1f2dfc09d86e4d8070ca5b85cfc0c5f77",
+          "original_sha256": "ce6f633a1c20b29b34cec987ef56113a4add9558b5310e0da48ed7e5d27466c3",
           "coverage_asset": "assets/runner/restart/sewn-coverage-bear-jacket_denim.json",
           "fit_status": "continuous_sewn_pattern_in_review"
         },
         {
           "species": "pig",
           "original_asset": "assets/runner/accessories/sewn_jacket_denim_pig.glb",
-          "original_sha256": "11b340e9ddac98c762496660d00784a38df4a8f738df285a7151ea48c5ddab49",
+          "original_sha256": "5e4299a7376222926152df5f921e31dd35ddf7a34946830de9656904ba699619",
           "coverage_asset": "assets/runner/restart/sewn-coverage-pig-jacket_denim.json",
           "fit_status": "continuous_sewn_pattern_in_review"
         },
         {
           "species": "chick",
           "original_asset": "assets/runner/accessories/sewn_jacket_denim_chick.glb",
-          "original_sha256": "6e0e20a2c32d5df00d900d7259f50ea3a8874639081e54432e588f7fc98571e1",
+          "original_sha256": "c973e40d533af257b4129e19ea40d6316b43c644c56aa64c2c85e2533064d1b5",
           "coverage_asset": "assets/runner/restart/sewn-coverage-chick-jacket_denim.json",
           "fit_status": "continuous_sewn_pattern_in_review"
         },
         {
           "species": "penguin",
           "original_asset": "assets/runner/accessories/sewn_jacket_denim_penguin.glb",
-          "original_sha256": "22bc9283cecb61b69d7a733309b851eaebdd1ae027603b173f684fd9327d6439",
+          "original_sha256": "2c81ee668884e847b85e48cf64a6d85119a49ebb55d68579b32a501dae012882",
           "coverage_asset": "assets/runner/restart/sewn-coverage-penguin-jacket_denim.json",
           "fit_status": "approved_shirt_derived_in_review"
         }
@@ -222,28 +222,28 @@
         {
           "species": "bear",
           "original_asset": "assets/runner/accessories/sewn_dress_petal_bear.glb",
-          "original_sha256": "e3a802a9df13d21db6fde72ef0f11e3b0cffe150520906e65c8856b7a44a62be",
+          "original_sha256": "4993adde12f38b5e8dd7053ce10a59ed9b234e6d1a022cf0a866a7f0ef0933ea",
           "coverage_asset": "assets/runner/restart/sewn-coverage-bear-dress_petal.json",
           "fit_status": "continuous_sewn_pattern_in_review"
         },
         {
           "species": "pig",
           "original_asset": "assets/runner/accessories/sewn_dress_petal_pig.glb",
-          "original_sha256": "2b794d2c400a700a6bab1a96c5d1e5d9a52eb80f30d82182a2b943e84e9662a9",
+          "original_sha256": "6259eaa642eefb4a37fe5e7fd0c73bea5c2d62466892be563e7c0fc3e7f597a4",
           "coverage_asset": "assets/runner/restart/sewn-coverage-pig-dress_petal.json",
           "fit_status": "continuous_sewn_pattern_in_review"
         },
         {
           "species": "chick",
           "original_asset": "assets/runner/accessories/sewn_dress_petal_chick.glb",
-          "original_sha256": "968e2b03fe5434b6a0d4acb3defb2acb713af1b014a2b5846b690b56912eccb5",
+          "original_sha256": "7f0f28ee9770ecc24695a3775582379aff81f433756a36455d63745a8ec0991c",
           "coverage_asset": "assets/runner/restart/sewn-coverage-chick-dress_petal.json",
           "fit_status": "continuous_sewn_pattern_in_review"
         },
         {
           "species": "penguin",
           "original_asset": "assets/runner/accessories/sewn_dress_petal_penguin.glb",
-          "original_sha256": "6081cd5be46c0e2565ab01976bc93d9119539f381e1ea1f77839c0aad2ae9a0d",
+          "original_sha256": "8a9bf927d13345a6c602bd0e71f198611b8288b0691851442d16db8bcc33dd69",
           "coverage_asset": "assets/runner/restart/sewn-coverage-penguin-dress_petal.json",
           "fit_status": "approved_shirt_derived_in_review"
         }
@@ -257,28 +257,28 @@
         {
           "species": "bear",
           "original_asset": "assets/runner/accessories/sewn_hoodie_nido_bear.glb",
-          "original_sha256": "479105b15d9cfb58576e1ccbc11d24997dd41228eb305bce9a6dadd2cd94ab11",
+          "original_sha256": "54dc42587e36ef0e9ea155f60f2f4d62012084eb48e2da55a21bcbf27ba24a2d",
           "coverage_asset": "assets/runner/restart/sewn-coverage-bear-hoodie_nido.json",
           "fit_status": "continuous_sewn_pattern_in_review"
         },
         {
           "species": "pig",
           "original_asset": "assets/runner/accessories/sewn_hoodie_nido_pig.glb",
-          "original_sha256": "7343ffbbb6a4bfa42f706e3735a4a5568c14703bea7846eaaf6f1df3b318d36e",
+          "original_sha256": "176b5a1bad248cc4be925944e62e6a974e250033e2ba0e008f54e9187b1c7622",
           "coverage_asset": "assets/runner/restart/sewn-coverage-pig-hoodie_nido.json",
           "fit_status": "continuous_sewn_pattern_in_review"
         },
         {
           "species": "chick",
           "original_asset": "assets/runner/accessories/sewn_hoodie_nido_chick.glb",
-          "original_sha256": "24839521867880995fb1ccf671f58b09148a6bef3334ea06534c29b7d6331c44",
+          "original_sha256": "d77cab6bdabd651de83a7b27fe3a1ea1865c8431c60e2f51d6fc639912637f3f",
           "coverage_asset": "assets/runner/restart/sewn-coverage-chick-hoodie_nido.json",
           "fit_status": "continuous_sewn_pattern_in_review"
         },
         {
           "species": "penguin",
           "original_asset": "assets/runner/accessories/sewn_hoodie_nido_penguin.glb",
-          "original_sha256": "1ccea9a0b80a5580b8a7f69a2ba6dfac8507a475405cabce9e09847364aa05f1",
+          "original_sha256": "4c5321261e550109809c6eb44f934c1a0f309e6c9e28d56b44529bb7bd200ef7",
           "coverage_asset": "assets/runner/restart/sewn-coverage-penguin-hoodie_nido.json",
           "fit_status": "approved_shirt_derived_in_review"
         }

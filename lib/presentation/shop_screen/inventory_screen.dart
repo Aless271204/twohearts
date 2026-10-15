@@ -151,6 +151,8 @@ class _ShopScreenState extends State<ShopScreen> {
       context: context,
       useRootNavigator: true,
       isScrollControlled: true,
+      backgroundColor: const Color(0xFFFFF9FA),
+      barrierColor: const Color(0x55756672),
       showDragHandle: true,
       builder: (context) => StatefulBuilder(
         builder: (context, updateColor) => SafeArea(
@@ -270,7 +272,7 @@ class _ShopScreenState extends State<ShopScreen> {
       });
     }
     return Scaffold(
-      backgroundColor: Colors.transparent,
+      backgroundColor: const Color(0xFFFFF9FA),
       appBar: AppBar(
         toolbarHeight: 76,
         titleSpacing: 20,
