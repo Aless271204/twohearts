@@ -498,13 +498,48 @@ class _DuoGameScreenState extends State<DuoGameScreen>
                         children: [
                           _mascotBadge(mine),
                           Expanded(
-                            child: Text(
-                              'Tú ${s['score_$mine'] ?? 0}  ·  ${s['score_$other'] ?? 0} ${widget.mode == 'train' ? 'Nube' : 'Rival'}\n${widget.mode == 'train' && widget.game == 'quiz' ? 'Práctica de preguntas' : 'Rondas ${s['wins_$mine'] ?? 0} – ${s['wins_$other'] ?? 0} · Al mejor de 3'}',
-                              textAlign: TextAlign.center,
-                              style: const TextStyle(
-                                fontWeight: FontWeight.w700,
-                                color: Color(0xFF292633),
-                              ),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  'Tú ${s['score_$mine'] ?? 0}  ·  ${s['score_$other'] ?? 0} ${widget.mode == 'train' ? 'Nube' : 'Rival'}\n${widget.mode == 'train' && widget.game == 'quiz' ? 'Práctica de preguntas' : 'Rondas ${s['wins_$mine'] ?? 0} – ${s['wins_$other'] ?? 0} · Al mejor de 3'}',
+                                  textAlign: TextAlign.center,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.w700,
+                                    color: Color(0xFF292633),
+                                  ),
+                                ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    IconButton(
+                                      tooltip: audio.muted
+                                          ? 'Activar música y sonidos'
+                                          : 'Silenciar música y sonidos',
+                                      visualDensity: VisualDensity.compact,
+                                      onPressed: () => setState(audio.toggle),
+                                      icon: Icon(
+                                        audio.muted
+                                            ? Icons.volume_off_rounded
+                                            : Icons.volume_up_rounded,
+                                        size: 20,
+                                      ),
+                                    ),
+                                    IconButton(
+                                      tooltip: 'Salir de la partida',
+                                      visualDensity: VisualDensity.compact,
+                                      onPressed: () async {
+                                        if (await _leave() && context.mounted)
+                                          Navigator.pop(context);
+                                      },
+                                      icon: const Icon(
+                                        Icons.close_rounded,
+                                        size: 20,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
                             ),
                           ),
                           _mascotBadge(other),
@@ -624,11 +659,11 @@ class _DuoGameScreenState extends State<DuoGameScreen>
                                   Center(
                                     child: Text(
                                       s['paused'] == true
-                                          ? 'Esperando la conexión\nde tu pareja…'
+                                          ? 'Esperando conexión\ndel otro jugador…'
                                           : '¡Prepárate!',
                                       textAlign: TextAlign.center,
                                       style: const TextStyle(
-                                        color: Colors.white,
+                                        color: Color(0xFF5D4158),
                                         fontSize: 24,
                                       ),
                                     ),
@@ -645,7 +680,9 @@ class _DuoGameScreenState extends State<DuoGameScreen>
                       child: Text(
                         dark
                             ? 'Desliza tu paleta · 7 puntos por ronda'
-                            : 'Responde sobre ti en secreto, luego adivina la respuesta de tu pareja.',
+                            : widget.mode == 'train'
+                            ? 'Responde sobre ti y trata de conocer a Nube.'
+                            : 'Responde sobre ti y adivina la respuesta del otro jugador.',
                         textAlign: TextAlign.center,
                         style: TextStyle(color: Colors.black54, fontSize: 12),
                       ),
