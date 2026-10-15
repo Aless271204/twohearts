@@ -142,6 +142,8 @@ void main() {
     await waitForJavaScript(tester, controller,
       'window.runnerMediaRangeValid === true', 'Local video byte-range delivery');
     await controller.runJavaScript('''
+      // Deterministic practice seed for this smoke test only; production remains random.
+      window.crypto.getRandomValues = function(values) { values.fill(7); return values; };
       window.runnerEffectFrequencies = [];
       const audioPrototype = (window.AudioContext || window.webkitAudioContext).prototype;
       const originalOscillator = audioPrototype.createOscillator;
