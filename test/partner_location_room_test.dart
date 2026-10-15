@@ -10,7 +10,11 @@ void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   setUpAll(() async {
     SharedPreferences.setMockInitialValues({});
-    await Supabase.initialize(url: 'https://test.supabase.co', anonKey: 'test-key', authOptions: const FlutterAuthClientOptions(autoRefreshToken: false));
+    await Supabase.initialize(
+      url: 'https://test.supabase.co',
+      anonKey: 'test-key',
+      authOptions: const FlutterAuthClientOptions(autoRefreshToken: false),
+    );
   });
   tearDownAll(() => Supabase.instance.dispose());
   test(
@@ -56,6 +60,41 @@ void main() {
     await tester.tap(find.text('Código de pareja'));
     expect(opened, isTrue);
   });
+  testWidgets(
+    'room fills the viewport then divides evenly without recreating its scene',
+    (tester) async {
+      const sceneKey = ValueKey('room-scene');
+      await tester.pumpWidget(
+        const MaterialApp(
+          home: PetRoomScreen(
+            previewMode: true,
+            roomScene: ColoredBox(key: sceneKey, color: Colors.white),
+          ),
+        ),
+      );
+      final full = tester.getSize(find.byType(PetRoomScreen)).height;
+      expect(tester.getSize(find.byKey(sceneKey)).height, full);
+      final sceneElement = tester.element(find.byKey(sceneKey));
+      await tester.tap(find.byTooltip('Personalizar habitación'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 210));
+      expect(
+        tester.getSize(find.byKey(sceneKey)).height,
+        greaterThan(full / 2),
+      );
+      await tester.pump(const Duration(milliseconds: 230));
+      expect(
+        tester.getSize(find.byKey(sceneKey)).height,
+        closeTo(full / 2, .1),
+      );
+      expect(
+        tester.getTopLeft(find.byType(RoomDecorationPanel)).dy,
+        closeTo(full / 2, .1),
+      );
+      expect(tester.element(find.byKey(sceneKey)), same(sceneElement));
+      expect(tester.takeException(), isNull);
+    },
+  );
   testWidgets(
     'decoration stays in a light half-screen panel with room categories',
     (tester) async {

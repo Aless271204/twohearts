@@ -41,6 +41,8 @@ class ProfileAvatarService {
     );
     final url = 'profile-avatar:$path';
     try {
+      if (client.auth.currentUser?.id != uid)
+        throw StateError('Tu sesión cambió');
       await SupabaseService.instance.updateProfile({'avatar_url': url});
     } catch (_) {
       await bucket.remove([path]);

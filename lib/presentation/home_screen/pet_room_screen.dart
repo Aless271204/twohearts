@@ -13,10 +13,12 @@ import '../shop_screen/inventory_screen.dart';
 /// Room and pet share one real 3D scene; controls occupy dedicated safe areas.
 class PetRoomScreen extends StatefulWidget {
   final bool previewMode, embedded;
+  final Widget? roomScene;
   const PetRoomScreen({
     super.key,
     this.previewMode = false,
     this.embedded = false,
+    this.roomScene,
   });
   @override
   State<PetRoomScreen> createState() => _PetRoomScreenState();
@@ -92,65 +94,77 @@ class _PetRoomScreenState extends State<PetRoomScreen> {
   Widget build(BuildContext context) => Scaffold(
     backgroundColor: const Color(0xFFFFF9FA),
     body: LayoutBuilder(
-      builder: (context, constraints) => Stack(
-        children: [
-          AnimatedPositioned(
-            duration: const Duration(milliseconds: 420),
-            curve: Curves.easeInOutCubic,
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: decorating ? constraints.maxHeight / 2 : 0,
-            child: Pet3DViewer(
-              modelPath: PetModelCatalog.modelPathFor(pet.species),
-              petLevel: pet.level,
-              room: true,
-              previewLoadout: inventory.loadout,
-              petReaction: reaction,
-              onPetStroke: () => setState(() => reaction++),
-              autoPlay: true,
-              cameraControls: false,
-              animationName: 'Natural_Rest',
-              altText: '${pet.displayName} en su habitación',
-            ),
-          ),
-          SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(16, 12, 7, 0),
-              child: Row(
-                children: [
-                  _roomIcon(Icons.inventory_2_rounded, 'Nuestro cofre', _chest),
-                  _roomIcon(Icons.pets_rounded, 'Nuestras mascotas', _family),
-                  _roomIcon(
-                    Icons.chair_rounded,
-                    'Personalizar habitación',
-                    () => setState(() => decorating = !decorating),
+      builder: (context, constraints) => SizedBox.expand(
+        child: Stack(
+          children: [
+            AnimatedPositioned(
+              duration: const Duration(milliseconds: 420),
+              curve: Curves.easeInOutCubic,
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: decorating ? constraints.maxHeight / 2 : 0,
+              child:
+                  widget.roomScene ??
+                  Pet3DViewer(
+                    modelPath: PetModelCatalog.modelPathFor(pet.species),
+                    petLevel: pet.level,
+                    room: true,
+                    previewLoadout: inventory.loadout,
+                    petReaction: reaction,
+                    onPetStroke: () => setState(() => reaction++),
+                    autoPlay: true,
+                    cameraControls: false,
+                    animationName: 'Natural_Rest',
+                    altText: '${pet.displayName} en su habitación',
                   ),
-                  const Spacer(),
-                  _roomIcon(Icons.close_rounded, 'Volver al nido', () {
-                    if (!widget.embedded) {
-                      Navigator.pop(context);
-                    } else {
-                      context.go(widget.previewMode ? '/' : '/memories-screen');
-                    }
-                  }),
-                ],
+            ),
+            SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(16, 12, 7, 0),
+                child: Row(
+                  children: [
+                    _roomIcon(
+                      Icons.inventory_2_rounded,
+                      'Nuestro cofre',
+                      _chest,
+                    ),
+                    _roomIcon(Icons.pets_rounded, 'Nuestras mascotas', _family),
+                    _roomIcon(
+                      Icons.chair_rounded,
+                      'Personalizar habitación',
+                      () => setState(() => decorating = !decorating),
+                    ),
+                    const Spacer(),
+                    _roomIcon(Icons.close_rounded, 'Volver al nido', () {
+                      if (!widget.embedded) {
+                        Navigator.pop(context);
+                      } else {
+                        context.go(
+                          widget.previewMode ? '/' : '/memories-screen',
+                        );
+                      }
+                    }),
+                  ],
+                ),
               ),
             ),
-          ),
-          AnimatedPositioned(
-            duration: const Duration(milliseconds: 420),
-            curve: Curves.easeInOutCubic,
-            left: 0,
-            right: 0,
-            top: decorating ? constraints.maxHeight / 2 : constraints.maxHeight,
-            height: constraints.maxHeight / 2,
-            child: RoomDecorationPanel(
-              previewMode: widget.previewMode,
-              onClose: () => setState(() => decorating = false),
+            AnimatedPositioned(
+              duration: const Duration(milliseconds: 420),
+              curve: Curves.easeInOutCubic,
+              left: 0,
+              right: 0,
+              top: decorating
+                  ? constraints.maxHeight / 2
+                  : constraints.maxHeight,
+              height: constraints.maxHeight / 2,
+              child: RoomDecorationPanel(
+                previewMode: widget.previewMode,
+                onClose: () => setState(() => decorating = false),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     ),
   );
