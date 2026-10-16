@@ -80,7 +80,7 @@ jobs:
       - name: Build signed Android APK
         run: |
           for attempt in 1 2; do
-            if flutter build apk --release --no-pub --dart-define-from-file=build-env.json; then
+            if flutter build apk --release --target-platform android-arm64 --no-pub --dart-define-from-file=build-env.json; then
               exit 0
             fi
             if [ "$attempt" -eq 2 ]; then exit 1; fi
@@ -160,6 +160,7 @@ jobs:
           sha256sum apk/NIDO-1.2.3-ligera.apk > apk/NIDO-1.2.3-ligera.apk.sha256
           cat > release-notes.txt <<'NOTES'
           NIDO 1.2.3: habitacion integrada en Mascota con las cinco pestanas visibles.
+          APK para Android ARM64, compatible con Pixel 6; omite bibliotecas de otras arquitecturas.
           Cofre y decoracion en media pantalla, transicion suave e iconos de color a la izquierda.
           96 miniaturas transparentes; 24 accesorios adaptados disponibles por oro.
           Enlace del vestuario al esqueleto original para seguir carrera y salto.
