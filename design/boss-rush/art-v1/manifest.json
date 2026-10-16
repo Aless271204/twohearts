@@ -1,0 +1,26 @@
+{
+  "status": "concept_review",
+  "generator": "image_gen built-in",
+  "sources": {
+    "forest-background-v1.png": "exec-b6fd617a-d080-47d2-ad9e-ce35199ae6a8.png",
+    "penguin-actions-v1.png": "exec-a9730a62-55b3-441a-99fe-a086c3ac26b1.png",
+    "bear-actions-v1.png": "exec-83d722a0-5a58-4281-b43c-4e5a812a8019.png",
+    "pig-actions-v1.png": "exec-e6ad2930-bb4a-4354-b310-5ccb380bb1d2.png",
+    "chick-actions-v1.png": "exec-e0fc8f95-8efa-418f-ad02-00ae3d6fff83.png",
+    "moss-guardian-attacks-v1.png": "exec-c849cd70-fef7-4435-8e6c-e372be0ac65c.png",
+    "powerups-v1.png": "exec-77cde967-be06-4751-9f40-464b0ec3d602.png",
+    "forest-enemies-v1.png": "exec-df899603-01ab-444b-b559-30eb3ffe333e.png",
+    "moss-final-boss-shell-roll-v2.png": "exec-81f82ac3-4814-41ee-8658-d9fb4ceac0c4.png",
+    "bruma-river-attacks-v1.png": "exec-b0bc0033-8b9e-44ec-b2ec-ccb037cfc705.png",
+    "forest-tiles-v1.png": "exec-7771a2ac-c139-4028-b056-631ee0350ce6.png"
+  },
+  "not_integrated": true,
+  "final_boss_direction": "moss-final-boss-shell-roll-v2.png",
+  "difficulty_names": [
+    "Fácil",
+    "Medio",
+    "Difícil"
+  ],
+  "solo_reward_multiplier": 0.5,
+  "prototype_usage": "Referenced in isolated Canvas prototype; not integrated into released APK; poses are not full timed animation cycles."
+}

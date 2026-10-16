@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#173b39"><title>NIDO · Guardianes del Alba</title><link rel="stylesheet" href="style.css"></head>
+<body><main id="game">
+ <canvas id="scene" width="960" height="540" aria-label="Guardianes del Alba: aventura en el bosque"></canvas>
+ <div id="hud" hidden><div id="hearts"></div><div class="journey"><span id="stage">Bosque del Alba</span><div class="progress"><i id="progress"></i></div></div><div class="gold">✦ <b id="gold">0</b></div><button id="pause" aria-label="Pausar">Ⅱ</button></div>
+ <div id="bossbar" hidden><span>GUARDIÁN MUSGO</span><div><i></i></div></div>
+ <div id="notice" role="status" aria-live="polite"></div>
+ <div id="controls" hidden><div class="movement"><button data-key="left" aria-label="Izquierda">◀</button><button data-key="right" aria-label="Derecha">▶</button></div><div class="actions"><button data-key="dodge" aria-label="Esquivar">Esquiva</button><button data-key="jump" aria-label="Saltar">Salto</button><button data-key="pulse" class="pulse" aria-label="Pulso de luz">✦</button></div></div>
+ <button id="upgrade" hidden>Mejorar linterna · 15 ✦</button>
+ <section class="overlay" id="menu"><div class="panel">
+  <p class="eyebrow">NIDO · UNA AVENTURA JUNTOS</p><h1>Guardianes<br><em>del Alba</em></h1><p class="intro">Recupera la luz del bosque.<br>Aprende sus señales. Despierta el faro.</p>
+  <div id="portraits" class="portraits" role="group" aria-label="Elige tu mascota"></div>
+  <div class="choices" id="difficulty" role="group" aria-label="Dificultad"><button data-value="easy" aria-pressed="true">Fácil</button><button data-value="medium" aria-pressed="false">Medio</button><button data-value="hard" aria-pressed="false">Difícil</button></div>
+  <div class="choices modes" id="modes"><button data-value="solo" aria-pressed="true">Solitario</button><button data-value="partner" aria-pressed="false">Pareja local</button></div>
+  <p id="modehint">Solitario: la mitad del premio equivalente en pareja.</p><button id="start" class="primary" disabled>Preparando el bosque…</button>
+  <details><summary>Cómo jugar</summary><p>← → moverse · Espacio saltar · Mayús esquivar · J pulso · E mejorar en el farol.<br>Pareja local: A/D · W · Q · F. Mantén pulso junto a tu pareja caída para rescatarla. Los controles táctiles son para solitario.</p></details>
+  <small>Prueba de desarrollo · El botín todavía no se canjea por oro de la tienda.</small>
+ </div></section>
+ <section class="overlay" id="pausepanel" hidden><div class="panel compact"><p class="eyebrow">UN RESPIRO EN EL BOSQUE</p><h2>En pausa</h2><label>Música <input id="music" type="range" min="0" max="100" value="55"></label><label>Efectos <input id="effects" type="range" min="0" max="100" value="75"></label><button id="resume" class="primary">Continuar</button><button id="leave" class="secondary">Volver al inicio</button></div></section>
+ <section class="overlay" id="result" hidden><div class="panel compact"><p class="eyebrow" id="resultlabel"></p><h2 id="resulttitle"></h2><p id="resultbody"></p><button id="retry" class="primary">Otra aventura</button><button id="back" class="secondary">Cambiar mascota y dificultad</button><small>Premios provisionales de prueba. Sin movimientos en tu cuenta.</small></div></section>
+ <div id="loaderror" hidden role="alert"></div>
+</main><script type="module" src="main.js"></script></body></html>
