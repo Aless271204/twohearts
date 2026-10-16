@@ -8,6 +8,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:twohearts/core/art_document.dart';
 import 'package:twohearts/widgets/art_studio.dart';
+import 'package:twohearts/core/art_reference_catalog.dart';
 import 'package:twohearts/presentation/games/art_game_screen.dart';
 
 void main() {
@@ -95,6 +96,40 @@ void main() {
     image!.dispose();
     doc.dispose();
   });
+  testWidgets(
+    'personal photos keep square dimensions in original, pixel, 3D and sketch modes',
+    (tester) async {
+      final source = (await rootBundle.load(
+        'assets/images/art_references/rio.webp',
+      )).buffer.asUint8List();
+      final mascot = await tester.runAsync(() => loadArtPet(0));
+      for (final style in ReferenceStyle.values) {
+        final image = await tester.runAsync(
+          () => prepareArtReference(
+            source,
+            style: style,
+            difficulty: 1,
+            mascot: mascot,
+          ),
+        );
+        expect(image!.width, 512);
+        expect(image.height, 512);
+        if (Platform.environment['NIDO_CAPTURE_ART'] == '1')
+          await tester.runAsync(() async {
+            await Directory('outputs/art-review').create(recursive: true);
+            await File(
+              'outputs/art-review/reference-${style.name}.png',
+            ).writeAsBytes(
+              (await image.toByteData(
+                format: ui.ImageByteFormat.png,
+              ))!.buffer.asUint8List(),
+            );
+          });
+        image.dispose();
+      }
+      mascot!.dispose();
+    },
+  );
   testWidgets(
     'phone canvas has all tools, draws with touch and produces actual review PNG',
     (tester) async {

@@ -19,6 +19,12 @@ class PartnerArtService extends ChangeNotifier with WidgetsBindingObserver {
   SupabaseClient get client => SupabaseService.instance.client;
   void start() {
     if (_timer != null) return;
+    // The shell is also rendered standalone by offline previews and tests.
+    try {
+      if (client.auth.currentUser == null) return;
+    } catch (_) {
+      return;
+    }
     WidgetsBinding.instance.addObserver(this);
     _auth = client.auth.onAuthStateChange.listen((state) {
       if (state.event == AuthChangeEvent.signedOut) {
@@ -40,10 +46,18 @@ class PartnerArtService extends ChangeNotifier with WidgetsBindingObserver {
     final uid = client.auth.currentUser!.id;
     try {
       final value = Map<String, dynamic>.from(
-        await client.rpc('art_action', params: {'p_action': 'inbox'}) as Map,
+        await client.rpc(
+              'art_action',
+              params: {
+                'p_action': 'inbox',
+                'p_data': {'sent_at': latest['sent_at']},
+              },
+            )
+            as Map,
       );
       if (client.auth.currentUser?.id != uid) return;
-      if (jsonEncode(value) != jsonEncode(latest)) {
+      final unchanged = value['unchanged'] == true;
+      if (!unchanged && jsonEncode(value) != jsonEncode(latest)) {
         latest = value;
         notifyListeners();
       }
@@ -64,7 +78,7 @@ class PartnerArtService extends ChangeNotifier with WidgetsBindingObserver {
           });
           _configuredFor = uid;
         }
-        await channel.invokeMethod('updateNote', value);
+        if (!unchanged) await channel.invokeMethod('updateNote', value);
       }
     } on PostgrestException catch (e) {
       if (e.message.contains('Vincula')) {

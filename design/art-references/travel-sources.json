@@ -1,0 +1,58 @@
+[
+  {
+    "id": "paris",
+    "title": "París · Francia",
+    "asset": "assets/images/art_references/paris.webp",
+    "source": "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=640&h=640&fit=crop&q=85",
+    "license": "https://unsplash.com/license"
+  },
+  {
+    "id": "rio",
+    "title": "Río de Janeiro · Brasil",
+    "asset": "assets/images/art_references/rio.webp",
+    "source": "https://images.unsplash.com/photo-1483729558449-99ef09a8c325?w=640&h=640&fit=crop&q=85",
+    "license": "https://unsplash.com/license"
+  },
+  {
+    "id": "london",
+    "title": "Londres · Inglaterra",
+    "asset": "assets/images/art_references/london.webp",
+    "source": "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=640&h=640&fit=crop&q=85",
+    "license": "https://unsplash.com/license"
+  },
+  {
+    "id": "giza",
+    "title": "Guiza · Egipto",
+    "asset": "assets/images/art_references/giza.webp",
+    "source": "https://images.unsplash.com/photo-1539768942893-daf53e448371?w=640&h=640&fit=crop&q=85",
+    "license": "https://unsplash.com/license"
+  },
+  {
+    "id": "kyoto",
+    "title": "Kioto · Japón",
+    "asset": "assets/images/art_references/kyoto.webp",
+    "source": "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=640&h=640&fit=crop&q=85",
+    "license": "https://unsplash.com/license"
+  },
+  {
+    "id": "cinque-terre",
+    "title": "Cinque Terre · Italia",
+    "asset": "assets/images/art_references/cinque-terre.webp",
+    "source": "https://images.unsplash.com/photo-1516483638261-f4dbaf036963?w=640&h=640&fit=crop&q=85",
+    "license": "https://unsplash.com/license"
+  },
+  {
+    "id": "santorini",
+    "title": "Santorini · Grecia",
+    "asset": "assets/images/art_references/santorini.webp",
+    "source": "https://images.unsplash.com/photo-1613395877344-13d4a8e0d49e?w=640&h=640&fit=crop&q=85",
+    "license": "https://unsplash.com/license"
+  },
+  {
+    "id": "machu-picchu",
+    "title": "Machu Picchu · Perú",
+    "asset": "assets/images/art_references/machu-picchu.webp",
+    "source": "https://images.unsplash.com/photo-1526392060635-9d6019884377?w=640&h=640&fit=crop&q=85",
+    "license": "https://unsplash.com/license"
+  }
+]

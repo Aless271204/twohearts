@@ -43,6 +43,7 @@ class ArtLayer {
 /// Fixed logical coordinates keep exports and strokes independent of phone size.
 class ArtDocument extends ChangeNotifier {
   final Set<ui.Image> _images = {};
+  bool _disposed = false;
   static const side = 512.0;
   final List<ArtLayer> layers = [
     ArtLayer('Boceto'),
@@ -55,6 +56,10 @@ class ArtDocument extends ChangeNotifier {
   bool get canUndo => layers[active].marks.isNotEmpty;
   bool get canRedo => _redo.isNotEmpty;
   void add(ArtMark mark) {
+    if (_disposed) {
+      mark.image?.dispose();
+      return;
+    }
     if (mark.image != null) _images.add(mark.image!);
     layers[active].marks.add(mark);
     _redo.clear();
@@ -90,6 +95,7 @@ class ArtDocument extends ChangeNotifier {
 
   @override
   void dispose() {
+    _disposed = true;
     for (final image in _images) {
       image.dispose();
     }

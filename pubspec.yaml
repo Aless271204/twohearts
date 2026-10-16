@@ -57,6 +57,7 @@ flutter:
   assets:
     - assets/sounds/
     - assets/images/pet_portraits/
+    - assets/images/art_references/
     - assets/
     - assets/images/img_app_logo.svg
     - assets/images/nido_logo.png

@@ -11,13 +11,29 @@ const artScenes = ['Tarde de picnic', 'Pintando sueños', 'Bajo las estrellas'];
 
 class ArtReference extends CustomPainter {
   final ui.Image pet;
+  final ui.Image? custom;
   final int scene, difficulty;
-  ArtReference(this.pet, this.scene, this.difficulty);
+  ArtReference(this.pet, this.scene, this.difficulty, {this.custom});
   @override
   void paint(Canvas c, Size size) {
     c.save();
     c.clipRect(Offset.zero & size);
     c.scale(size.width / 512, size.height / 512);
+    if (custom != null) {
+      c.drawImageRect(
+        custom!,
+        Rect.fromLTWH(
+          0,
+          0,
+          custom!.width.toDouble(),
+          custom!.height.toDouble(),
+        ),
+        const Rect.fromLTWH(0, 0, 512, 512),
+        Paint()..filterQuality = FilterQuality.none,
+      );
+      c.restore();
+      return;
+    }
     c.drawColor(const Color(0xFFFFFFFF), BlendMode.src);
     final p = Paint();
     c.drawRRect(
@@ -146,7 +162,10 @@ class ArtReference extends CustomPainter {
 
   @override
   bool shouldRepaint(ArtReference old) =>
-      old.pet != pet || old.scene != scene || old.difficulty != difficulty;
+      old.custom != custom ||
+      old.pet != pet ||
+      old.scene != scene ||
+      old.difficulty != difficulty;
 }
 
 Future<ui.Image> loadArtPet(int scene) async {

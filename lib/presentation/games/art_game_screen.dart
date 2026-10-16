@@ -10,6 +10,8 @@ import '../../core/art_document.dart';
 import '../../services/supabase_service.dart';
 import '../../services/duo_audio.dart';
 import '../../widgets/art_studio.dart';
+import '../../widgets/art_reference_picker.dart';
+import '../../core/art_reference_catalog.dart';
 
 class ArtGameScreen extends StatefulWidget {
   final bool freeDraw;
@@ -27,6 +29,12 @@ class _ArtGameScreenState extends State<ArtGameScreen>
   Map<String, int>? score, otherScore;
   Timer? ticker;
   ui.Image? pet;
+  ui.Image? customReference;
+  Uint8List? sourceReference, referencePng;
+  String referenceTitle = 'Picnic en París · Mascotas 3D';
+  ReferenceStyle referenceStyle = ReferenceStyle.photo;
+  bool preparingReference = false;
+  int referenceGeneration = 0;
   int difficulty = 0, scene = 0, seconds = 300;
   DateTime? deadline;
   Duration clockOffset = Duration.zero;
@@ -42,13 +50,15 @@ class _ArtGameScreenState extends State<ArtGameScreen>
   String get uid => SupabaseService.instance.currentUser?.id ?? 'preview';
   String get draftKey =>
       'art-draft-$uid-${room?['id'] ?? (widget.freeDraw ? 'free' : 'solo')}';
-  ArtReference? get reference =>
-      pet == null ? null : ArtReference(pet!, scene, difficulty);
+  ArtReference? get reference => pet == null
+      ? null
+      : ArtReference(pet!, scene, difficulty, custom: customReference);
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     _loadPet();
+    if (!widget.freeDraw) _defaultReference();
     ticker = Timer.periodic(const Duration(seconds: 1), _tick);
     if (widget.freeDraw) {
       solo = true;
@@ -69,11 +79,107 @@ class _ArtGameScreenState extends State<ArtGameScreen>
     if (finished) _scoreBoth();
   }
 
+  Future<void> _defaultReference() async {
+    final bytes = (await rootBundle.load(
+      'assets/images/art_references/paris-mascots.webp',
+    )).buffer.asUint8List();
+    if (!mounted || sourceReference != null || room != null) return;
+    sourceReference = bytes;
+    await _prepareReference();
+  }
+
+  Future<void> _pickReference() async {
+    final choice = await showArtReferencePicker(context);
+    if (choice == null || !mounted) return;
+    setState(() {
+      sourceReference = choice.bytes;
+      referenceTitle = choice.title;
+      referenceStyle = ReferenceStyle.photo;
+    });
+    await _prepareReference();
+  }
+
+  Future<void> _prepareReference() async {
+    final source = sourceReference;
+    if (source == null || room != null) return;
+    final generation = ++referenceGeneration;
+    setState(() => preparingReference = true);
+    try {
+      final image = await prepareArtReference(
+        source,
+        style: referenceStyle,
+        difficulty: difficulty,
+        mascot: pet,
+      );
+      if (!mounted || generation != referenceGeneration) {
+        image.dispose();
+        return;
+      }
+      final png = (await image.toByteData(
+        format: ui.ImageByteFormat.png,
+      ))!.buffer.asUint8List();
+      if (!mounted || generation != referenceGeneration) {
+        image.dispose();
+        return;
+      }
+      final old = customReference;
+      setState(() {
+        customReference = image;
+        referencePng = png;
+      });
+      old?.dispose();
+    } catch (_) {
+      if (mounted)
+        setState(
+          () =>
+              error = 'No pudimos preparar esa referencia. Elige otra imagen.',
+        );
+    } finally {
+      if (mounted && generation == referenceGeneration)
+        setState(() => preparingReference = false);
+    }
+  }
+
+  Future<void> _loadRemoteReference(Map<String, dynamic> value) async {
+    final generation = ++referenceGeneration;
+    try {
+      final bytes = base64Decode(value['reference_image'] as String);
+      if (bytes.length < 24 || bytes.length > 1050000)
+        throw const FormatException();
+      final header = ByteData.sublistView(bytes);
+      if (header.getUint32(16) > 1024 || header.getUint32(20) > 1024)
+        throw const FormatException();
+      final codec = await ui.instantiateImageCodec(bytes),
+          image = (await codec.getNextFrame()).image;
+      codec.dispose();
+      if (!mounted || generation != referenceGeneration) {
+        image.dispose();
+        return;
+      }
+      final old = customReference;
+      setState(() {
+        customReference = image;
+        referencePng = bytes;
+        referenceTitle =
+            value['reference_title'] as String? ?? 'Nuestro recuerdo';
+      });
+      old?.dispose();
+      if (finished) _scoreBoth();
+    } catch (_) {
+      if (mounted)
+        setState(
+          () => error =
+              'La referencia no se pudo cargar. Reabre la partida antes de dibujar.',
+        );
+    }
+  }
+
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     ticker?.cancel();
     pet?.dispose();
+    customReference?.dispose();
     document.dispose();
     audio.dispose();
     super.dispose();
@@ -98,7 +204,10 @@ class _ArtGameScreenState extends State<ArtGameScreen>
   ]) async => Map<String, dynamic>.from(
     await SupabaseService.instance.client.rpc(
           'art_action',
-          params: {'p_action': action, 'p_data': data},
+          params: {
+            'p_action': action,
+            'p_data': {'compact': true, ...data},
+          },
         )
         as Map,
   );
@@ -132,8 +241,11 @@ class _ArtGameScreenState extends State<ArtGameScreen>
     final newScene = value['scene'] as int?;
     final changedScene = newScene != null && (newScene != scene || pet == null);
     final wasStarted = started;
+    final changedReference =
+        value['reference_image'] != null &&
+        value['reference_image'] != base64Encode(referencePng ?? Uint8List(0));
     setState(() {
-      room = value;
+      room = {...?room, ...value};
       difficulty = value['difficulty'] as int? ?? difficulty;
       if (newScene != null) scene = newScene;
       if (value['server_now'] != null)
@@ -149,11 +261,14 @@ class _ArtGameScreenState extends State<ArtGameScreen>
         submitted = true;
         frozen = base64Decode(value[ownKey] as String);
       }
-      finished = value['host_art'] != null && value['guest_art'] != null;
+      finished = room!['host_art'] != null && room!['guest_art'] != null;
     });
     if (changedScene) _loadPet();
     if (!wasStarted && started) audio.start();
-    if (finished && !changedScene) _scoreBoth();
+    if (finished && !changedScene && !changedReference) _scoreBoth();
+    if (value['reference_image'] != null &&
+        value['reference_image'] != base64Encode(referencePng ?? Uint8List(0)))
+      _loadRemoteReference(value);
   }
 
   void _tick(Timer? t) {
@@ -174,7 +289,11 @@ class _ArtGameScreenState extends State<ArtGameScreen>
     if (room == null || polling || finished || !mounted || !active) return;
     polling = true;
     try {
-      final v = await _rpc('status', {'id': room!['id']});
+      var v = await _rpc('status', {'id': room!['id']});
+      if (v['host_submitted'] == true &&
+          v['guest_submitted'] == true &&
+          !finished)
+        v = await _rpc('status', {'id': room!['id'], 'download': true});
       if (mounted) {
         _accept(v);
         if (error != null) setState(() => error = null);
@@ -193,11 +312,14 @@ class _ArtGameScreenState extends State<ArtGameScreen>
   Future<void> _saveDraft() async {
     if (!started || !mounted) return;
     try {
-      final png = await document.png();
+      final png = frozen ?? await document.png();
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString(draftKey, String.fromCharCodes(png));
       if (room != null)
-        await prefs.setString('art-active-$uid', jsonEncode(room));
+        await prefs.setString(
+          'art-active-$uid',
+          jsonEncode({'id': room!['id']}),
+        );
     } catch (_) {}
   }
 
@@ -210,7 +332,7 @@ class _ArtGameScreenState extends State<ArtGameScreen>
     }
     try {
       final v = jsonDecode(saved) as Map;
-      await _act('status', {'id': v['id']});
+      await _act('status', {'id': v['id'], 'download': true});
     } catch (_) {
       setState(() => error = 'No pudimos recuperar esa partida');
     }
@@ -425,7 +547,10 @@ class _ArtGameScreenState extends State<ArtGameScreen>
                       label: Text(['Fácil', 'Medio', 'Difícil'][i]),
                       selected: difficulty == i,
                       onSelected: room == null
-                          ? (_) => setState(() => difficulty = i)
+                          ? (_) {
+                              setState(() => difficulty = i);
+                              _prepareReference();
+                            }
                           : null,
                     ),
                 ],
@@ -439,10 +564,74 @@ class _ArtGameScreenState extends State<ArtGameScreen>
                   ),
                 ),
               if (room == null) ...[
+                Text(
+                  [
+                    'Fácil · formas grandes y colores simplificados',
+                    'Medio · más detalles y sombras',
+                    'Difícil · referencia completa y texturas',
+                  ][difficulty],
+                  style: const TextStyle(fontWeight: FontWeight.w700),
+                ),
+                FilledButton.tonalIcon(
+                  onPressed: preparingReference ? null : _pickReference,
+                  icon: const Icon(Icons.photo_library),
+                  label: const Text('Sus fotos, viajes y destinos'),
+                ),
+                if (sourceReference != null)
+                  Wrap(
+                    spacing: 5,
+                    children: [
+                      for (final style in ReferenceStyle.values)
+                        ChoiceChip(
+                          label: Text(referenceStyleLabels[style.index]),
+                          selected: referenceStyle == style,
+                          onSelected: preparingReference
+                              ? null
+                              : (_) {
+                                  setState(() => referenceStyle = style);
+                                  _prepareReference();
+                                },
+                        ),
+                    ],
+                  ),
+                if (preparingReference) const LinearProgressIndicator(),
+                if (sourceReference != null &&
+                    (referenceStyle == ReferenceStyle.mascot3d ||
+                        referenceStyle == ReferenceStyle.pixel))
+                  DropdownButtonFormField<int>(
+                    isExpanded: true,
+                    initialValue: scene ~/ 3,
+                    decoration: const InputDecoration(
+                      labelText: 'Mascota que viaja con ustedes',
+                    ),
+                    items: [
+                      for (var i = 0; i < 4; i++)
+                        DropdownMenuItem(value: i, child: Text(artPetNames[i])),
+                    ],
+                    onChanged: preparingReference
+                        ? null
+                        : (value) async {
+                            if (value == null) return;
+                            setState(() => scene = value * 3);
+                            await _loadPet();
+                            if (mounted) _prepareReference();
+                          },
+                  ),
+                Text(
+                  referenceTitle,
+                  style: const TextStyle(fontWeight: FontWeight.w600),
+                ),
                 FilledButton.icon(
-                  onPressed: busy
+                  onPressed: busy || preparingReference
                       ? null
-                      : () => _act('create', {'difficulty': difficulty}),
+                      : () => _act('create', {
+                          'difficulty': difficulty,
+                          'scene': scene,
+                          if (referencePng != null)
+                            'reference_image': base64Encode(referencePng!),
+                          'reference_title': referenceTitle,
+                          'reference_style': referenceStyle.name,
+                        }),
                   icon: const Icon(Icons.favorite),
                   label: const Text('Crear partida con mi pareja'),
                 ),
@@ -455,22 +644,25 @@ class _ArtGameScreenState extends State<ArtGameScreen>
                   child: const Text('Continuar partida guardada'),
                 ),
                 TextButton(
-                  onPressed: () {
-                    setState(() {
-                      solo = true;
-                      started = true;
-                      deadline = DateTime.now().toUtc().add(
-                        const Duration(minutes: 5),
-                      );
-                    });
-                    audio.start();
-                  },
+                  onPressed: preparingReference
+                      ? null
+                      : () {
+                          setState(() {
+                            solo = true;
+                            started = true;
+                            deadline = DateTime.now().toUtc().add(
+                              const Duration(minutes: 5),
+                            );
+                          });
+                          audio.start();
+                        },
                   child: const Text('Practicar a solas · 5 minutos'),
                 ),
                 DropdownButtonFormField<int>(
+                  isExpanded: true,
                   initialValue: scene,
                   decoration: const InputDecoration(
-                    labelText: 'Referencia para practicar',
+                    labelText: 'Escenas básicas de las mascotas',
                   ),
                   items: [
                     for (var i = 0; i < 12; i++)
@@ -481,12 +673,23 @@ class _ArtGameScreenState extends State<ArtGameScreen>
                         ),
                       ),
                   ],
-                  onChanged: (v) {
-                    if (v != null) {
-                      setState(() => scene = v);
-                      _loadPet();
-                    }
-                  },
+                  onChanged: preparingReference
+                      ? null
+                      : (v) {
+                          if (v != null) {
+                            setState(() {
+                              scene = v;
+                              sourceReference = null;
+                              referenceGeneration++;
+                              referencePng = null;
+                              customReference?.dispose();
+                              customReference = null;
+                              referenceTitle =
+                                  '${artPetNames[v ~/ 3]} · ${artScenes[v % 3]}';
+                            });
+                            _loadPet();
+                          }
+                        },
                 ),
               ] else ...[
                 Text(
@@ -522,16 +725,18 @@ class _ArtGameScreenState extends State<ArtGameScreen>
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                '${artPetNames[scene ~/ 3]} · ${artScenes[scene % 3]}',
+                                customReference != null
+                                    ? referenceTitle
+                                    : '${artPetNames[scene ~/ 3]} · ${artScenes[scene % 3]}',
                                 style: const TextStyle(
                                   fontWeight: FontWeight.w700,
                                 ),
                               ),
                               Text(
                                 [
-                                  'Fácil · forma y color',
-                                  'Medio · detalles de la escena',
-                                  'Difícil · escena completa',
+                                  'Fácil · formas y colores simplificados',
+                                  'Medio · más detalles y sombras',
+                                  'Difícil · escena completa y texturas',
                                 ][difficulty],
                               ),
                               TextButton(
@@ -564,7 +769,20 @@ class _ArtGameScreenState extends State<ArtGameScreen>
                 ArtStudio(
                   key: ValueKey(draftKey),
                   document: document,
-                  enabled: !sending && (widget.freeDraw || seconds > 0),
+                  enabled:
+                      !sending &&
+                      (widget.freeDraw ||
+                          seconds > 0 &&
+                              (room == null ||
+                                  deadline == null ||
+                                  !DateTime.now()
+                                      .toUtc()
+                                      .add(clockOffset)
+                                      .isBefore(
+                                        deadline!.subtract(
+                                          const Duration(minutes: 5),
+                                        ),
+                                      ))),
                   draftKey: draftKey,
                 ),
               if (frozen != null && submitted)
