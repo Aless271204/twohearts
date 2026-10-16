@@ -5,12 +5,14 @@ import 'dart:js_interop';
 import 'package:flutter/material.dart';
 import 'package:web/web.dart' as web;
 import 'runner_bridge.dart';
+import 'guardian_bridge.dart';
 
 class ForestRunnerView extends StatefulWidget {
   final VoidCallback? onExit;
   final VoidCallback? onPetStroke;
   final bool petOnly;
   final bool room;
+  final bool guardian;
   final int petReaction;
   final String petSpecies;
   final int petLevel;
@@ -23,6 +25,7 @@ class ForestRunnerView extends StatefulWidget {
     this.onPetStroke,
     this.petOnly = false,
     this.room = false,
+    this.guardian = false,
     this.petReaction = 0,
     this.petSpecies = 'penguin',
     this.petLevel = 10,
@@ -41,6 +44,7 @@ class _ForestRunnerViewState extends State<ForestRunnerView>
   late final web.HTMLIFrameElement _frame;
   late final JSFunction _listener;
   final _bridge = RunnerBridge();
+  final _guardianBridge = GuardianBridge();
   @override
   void initState() {
     super.initState();
@@ -48,7 +52,11 @@ class _ForestRunnerViewState extends State<ForestRunnerView>
     _viewType = 'forest-runner-${_nextId++}';
     _frame = web.HTMLIFrameElement()
       ..src = Uri.parse(web.document.baseURI)
-          .resolve('assets/assets/runner/index.html')
+          .resolve(
+            widget.guardian
+                ? 'assets/assets/runner/guardian/index.html'
+                : 'assets/assets/runner/index.html',
+          )
           .replace(
             queryParameters: widget.petOnly
                 ? {
@@ -83,10 +91,30 @@ class _ForestRunnerViewState extends State<ForestRunnerView>
       if (data is String) _handleMessage(data);
     }).toJS;
     web.window.addEventListener('message', _listener);
+    _guardianBridge.emit = (message) async {
+      if (mounted)
+        _frame.contentWindow?.postMessage(
+          jsonEncode(message).toJS,
+          Uri.base.origin.toJS,
+        );
+    };
   }
 
   Future<void> _handleMessage(String raw) async {
     try {
+      if (widget.guardian) {
+        if (jsonDecode(raw)['type'] == 'guardian-exit') {
+          widget.onExit?.call();
+          return;
+        }
+        final response = await _guardianBridge.handle(raw);
+        if (mounted)
+          _frame.contentWindow?.postMessage(
+            jsonEncode(response).toJS,
+            Uri.base.origin.toJS,
+          );
+        return;
+      }
       if (widget.petOnly && jsonDecode(raw)['type'] == 'pet-stroke') {
         widget.onPetStroke?.call();
         return;
@@ -136,6 +164,7 @@ class _ForestRunnerViewState extends State<ForestRunnerView>
 
   @override
   void dispose() {
+    _guardianBridge.dispose();
     WidgetsBinding.instance.removeObserver(this);
     _frame.contentWindow?.postMessage(
       'runner-suspend'.toJS,

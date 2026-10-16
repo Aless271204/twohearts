@@ -1,8 +1,8 @@
 // Original lightweight score. Every layer shares the same transport and harmony.
 // Intensities change at bar boundaries: exploration -> tension -> boss -> climax.
 export class GuardianAudio{
- constructor(){this.ctx=null;this.timer=null;this.step=0;this.level=0;this.pending=0;this.lastEvent=0;this.musicVolume=.55;this.effectsVolume=.75;}
- async start(){try{if(!this.ctx){const Context=globalThis.AudioContext??globalThis.webkitAudioContext;this.ctx=new Context();this.music=this.ctx.createGain();this.fx=this.ctx.createGain();this.music.connect(this.ctx.destination);this.fx.connect(this.ctx.destination);this.applyVolumes();}await this.ctx.resume();if(this.timer)return;this.next=this.ctx.currentTime+.06;this.timer=setInterval(()=>this.schedule(),80);}catch{ /* Silent play remains available if audio is denied. */ }}
+ constructor(){this.ctx=null;this.timer=null;this.step=0;this.level=0;this.pending=0;this.lastEvent=0;this.musicVolume=.55;this.effectsVolume=.75;this.voices=new Set();this.voiceBuffers=new Map();}
+ async start(){try{if(!this.ctx){const Context=globalThis.AudioContext??globalThis.webkitAudioContext;this.ctx=new Context();this.music=this.ctx.createGain();this.fx=this.ctx.createGain();this.music.connect(this.ctx.destination);this.fx.connect(this.ctx.destination);this.applyVolumes();}await this.ctx.resume();this.applyVolumes();if(this.timer)return;this.next=this.ctx.currentTime+.06;this.timer=setInterval(()=>this.schedule(),80);}catch{ /* Silent play remains available if audio is denied. */ }}
  applyVolumes(){if(!this.ctx)return;this.music.gain.setTargetAtTime(this.musicVolume*.24,this.ctx.currentTime,.08);this.fx.gain.setTargetAtTime(this.effectsVolume*.22,this.ctx.currentTime,.02);}
  tone(midi,time,duration,volume,type='triangle',destination=this.music){
   if(!this.ctx||!destination)return;const o=this.ctx.createOscillator(),g=this.ctx.createGain();o.type=type;o.frequency.value=440*2**((midi-69)/12);g.gain.setValueAtTime(.0001,time);g.gain.exponentialRampToValueAtTime(Math.max(.001,volume),time+.012);g.gain.exponentialRampToValueAtTime(.0001,time+duration);o.connect(g);g.connect(destination);o.start(time);o.stop(time+duration+.03);o.onended=()=>{o.disconnect();g.disconnect();};
@@ -28,6 +28,9 @@ export class GuardianAudio{
   for(const [i,n] of (notes[type]??[]).entries())this.tone(n,t+i*.075,type==='impact'?.25:.13,.3,type==='hurt'?'sawtooth':'triangle',this.fx);
   if(type==='warning'){this.music.gain.cancelScheduledValues(t);this.music.gain.setTargetAtTime(this.musicVolume*.09,t,.03);this.music.gain.setTargetAtTime(this.musicVolume*.24,t+.35,.12);}
  }
- pause(){clearInterval(this.timer);this.timer=null;this.ctx?.suspend().catch(()=>{});}
+ async preloadVoices(){if(!this.ctx)return;await Promise.all(['cry-penguin','cry-bear','cry-pig','cry-chick','musgo-laugh'].map(async name=>{if(this.voiceBuffers.has(name))return;try{const response=await fetch(new URL('./audio/'+name+'.mp3',import.meta.url));if(!response.ok)return;const decoded=await this.ctx.decodeAudioData(await response.arrayBuffer());this.voiceBuffers.set(name,decoded);}catch{ /* Audio failure never blocks the game. */ }}));}
+ stopVoices(){for(const source of this.voices){try{source.stop();}catch{}}this.voices.clear();}
+ defeat(species){if(!this.ctx||this.ctx.state!=='running')return;this.stopVoices();clearInterval(this.timer);this.timer=null;const t=this.ctx.currentTime;this.music.gain.cancelScheduledValues(t);this.music.gain.setTargetAtTime(0,t,.12);for(const [name,delay,level]of [['cry-'+species,.12,1.25],['musgo-laugh',2.35,.85]]){const buffer=this.voiceBuffers.get(name);if(!buffer)continue;const source=this.ctx.createBufferSource(),gain=this.ctx.createGain();source.buffer=buffer;gain.gain.value=level;source.connect(gain);gain.connect(this.fx);this.voices.add(source);source.start(t+delay);source.onended=()=>{this.voices.delete(source);source.disconnect();gain.disconnect();};}}
+ pause(){clearInterval(this.timer);this.timer=null;this.stopVoices();this.ctx?.suspend().catch(()=>{});}
  dispose(){this.pause();this.ctx?.close().catch(()=>{});this.ctx=null;}
 }

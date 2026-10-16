@@ -1,0 +1,156 @@
+[
+  {
+    "name": "pets-base",
+    "source": "design/boss-rush/art-v1/pets-base-modular-v1.png",
+    "asset": "assets/runner/guardian/pets-base.webp",
+    "size": [
+      768,
+      512
+    ],
+    "bytes": 649580,
+    "sha256": "62616b8c2f34a86691be3719e57e6b82e3262e8229ddf8114f303ccfe24b62d8"
+  },
+  {
+    "name": "wardrobe-atlas",
+    "source": "design/boss-rush/art-v1/inventory-clothing-atlas-v1.png",
+    "asset": "assets/runner/guardian/wardrobe-atlas.webp",
+    "size": [
+      768,
+      512
+    ],
+    "bytes": 636290,
+    "sha256": "e6c8486e498f91d12ca630b5e24f9b5696e7dd8026b772791d10a0d7142775ae"
+  },
+  {
+    "name": "musgo-laugh",
+    "source": "design/boss-rush/art-v1/musgo-laugh-v1.png",
+    "asset": "assets/runner/guardian/musgo-laugh.webp",
+    "size": [
+      1086,
+      362
+    ],
+    "bytes": 441158,
+    "sha256": "9802890fde56796dfc9ca72885e60413cb956d87656fd34ea8fb66e9dbdd7ca4"
+  },
+  {
+    "name": "body-shirt_love",
+    "source": "design/boss-rush/art-v1/fitted-shirt_love-v1.png",
+    "asset": "assets/runner/guardian/body-shirt_love.webp",
+    "size": [
+      768,
+      512
+    ],
+    "bytes": 669142,
+    "sha256": "2924581d69e5a42a8f71265e5f6ff555dbd05843e062d0ccf15d1c7919f241c5"
+  },
+  {
+    "name": "body-jacket_denim",
+    "source": "design/boss-rush/art-v1/fitted-jacket_denim-v1.png",
+    "asset": "assets/runner/guardian/body-jacket_denim.webp",
+    "size": [
+      768,
+      512
+    ],
+    "bytes": 682786,
+    "sha256": "9aba7e338abef7838024954bbb390ccbdc2ccba82919a89141f5f1af4cf52ffd"
+  },
+  {
+    "name": "body-coat_cloud",
+    "source": "design/boss-rush/art-v1/fitted-coat_cloud-v1.png",
+    "asset": "assets/runner/guardian/body-coat_cloud.webp",
+    "size": [
+      768,
+      512
+    ],
+    "bytes": 702050,
+    "sha256": "12f1dcc51b19f3ac80ba53dc5d904f8684d662763ae2a19fe3bfa7b195d0bfa7"
+  },
+  {
+    "name": "body-dress_petal",
+    "source": "design/boss-rush/art-v1/fitted-dress_petal-v1.png",
+    "asset": "assets/runner/guardian/body-dress_petal.webp",
+    "size": [
+      768,
+      512
+    ],
+    "bytes": 700666,
+    "sha256": "300a8b473e4cfc57b838a43d4a93e6518cc04c887ab0b61e0a5a995a7507baa0"
+  },
+  {
+    "name": "body-hoodie_nido",
+    "source": "design/boss-rush/art-v1/fitted-hoodie_nido-v1.png",
+    "asset": "assets/runner/guardian/body-hoodie_nido.webp",
+    "size": [
+      768,
+      512
+    ],
+    "bytes": 685018,
+    "sha256": "deba37c0f69a37009767df86f3ec8bea4e3d5be6b86aefdf6a08a05ef41104e0"
+  },
+  {
+    "name": "head-cap_pink",
+    "source": "design/boss-rush/art-v1/fitted-head-cap_pink-v1.png",
+    "asset": "assets/runner/guardian/head-cap_pink.webp",
+    "size": [
+      768,
+      512
+    ],
+    "bytes": 701700,
+    "sha256": "69b4b92b80808b72e1daaafd5032d66268ec965210a814a32687a14492d1f189"
+  },
+  {
+    "name": "feet-shoes_heart",
+    "source": "design/boss-rush/art-v1/integrated-feet-shoes_heart-v1.png",
+    "asset": "assets/runner/guardian/feet-shoes_heart.webp",
+    "size": [
+      768,
+      512
+    ],
+    "bytes": 672578,
+    "sha256": "bf25c65dfb1d57981affc72e7fb99dc7f01bd03918ea343c702921ba77936c7a"
+  },
+  {
+    "name": "feet-boots_rain",
+    "source": "design/boss-rush/art-v1/integrated-feet-boots_rain-v1.png",
+    "asset": "assets/runner/guardian/feet-boots_rain.webp",
+    "size": [
+      768,
+      512
+    ],
+    "bytes": 675058,
+    "sha256": "fde5174a94a68b6279ae1a7fdee4ce98cdfe8473e9392229c50bd95861a6d3ff"
+  },
+  {
+    "name": "feet-slippers_cloud",
+    "source": "design/boss-rush/art-v1/integrated-feet-slippers_cloud-v1.png",
+    "asset": "assets/runner/guardian/feet-slippers_cloud.webp",
+    "size": [
+      768,
+      512
+    ],
+    "bytes": 672542,
+    "sha256": "ffa79d6a827d2d1c6b38d1545bdeb4c29b08e39ecae376f65b270ea08f5e38b6"
+  },
+  {
+    "name": "feet-shoes_chic",
+    "source": "design/boss-rush/art-v1/integrated-feet-shoes_chic-v1.png",
+    "asset": "assets/runner/guardian/feet-shoes_chic.webp",
+    "size": [
+      768,
+      512
+    ],
+    "bytes": 670132,
+    "sha256": "c11fb1536b04dec21299081855bbc7be13148b9b6d1981f5f4189089f1b580ca"
+  },
+  {
+    "name": "feet-sandals_summer",
+    "source": "design/boss-rush/art-v1/integrated-feet-sandals_summer-v1.png",
+    "asset": "assets/runner/guardian/feet-sandals_summer.webp",
+    "size": [
+      768,
+      512
+    ],
+    "bytes": 674570,
+    "sha256": "00a983d9c86a9161d7e976f9d5f0000558215a7d4998643f334ba0119b911dc0"
+  }
+]

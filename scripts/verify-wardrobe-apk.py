@@ -42,13 +42,23 @@ def verify(apk,previous=None):
         assert archive.testzip() is None,'APK ZIP integrity failure'
         identity=manifest_identity(archive.read('AndroidManifest.xml'))
         expected=re.search(r'^version:\s*([^+\s]+)\+(\d+)',(ROOT/'pubspec.yaml').read_text(),re.M)
-        assert identity=={'package':'com.example.twohearts','versionName':expected[1],'versionCode':int(expected[2])},identity
+        abis={name.split('/')[1] for name in archive.namelist() if name.startswith('lib/') and name.endswith('.so')}
+        # Flutter split-per-abi reserves 1000 version codes per architecture.
+        offset=2000 if abis=={'arm64-v8a'} else 1000 if abis=={'armeabi-v7a'} else 0
+        assert identity=={'package':'com.example.twohearts','versionName':expected[1],'versionCode':int(expected[2])+offset},identity
         for file in ('music.js','patterns.js','power-ups.js','difficulty.js','game.js','cosmetics.js','pet-garment-rig.js','pet-garment-colors.js','pet-sleeve-coverage.js','pet-footwear-coverage.js','pet-runner-jump.js','pet-runner-run.js'):
             name='assets/runner/'+file
             local=(ROOT/name).read_text(encoding='utf-8-sig').replace('\r\n','\n')
             packed=archive.read('assets/flutter_assets/'+name).decode('utf-8-sig').replace('\r\n','\n')
             assert packed==local,'Stale packaged renderer: '+file
-        assert not any('/runner/guardian/' in name for name in archive.namelist()),'Unreleased prototype was packaged'
+        assert archive.read('assets/flutter_assets/assets/images/nido_logo.png')==(ROOT/'assets/images/nido_logo.png').read_bytes(),'Stale NIDO logo'
+        for asset in (ROOT/'assets/runner/guardian').rglob('*'):
+            if asset.is_file():
+                packed='assets/flutter_assets/'+asset.relative_to(ROOT).as_posix()
+                content=archive.read(packed);local=asset.read_bytes()
+                if asset.suffix in {'.js','.css','.html','.json'}:
+                    content=content.replace(b'\r\n',b'\n');local=local.replace(b'\r\n',b'\n')
+                assert content==local,'Stale Guardian asset: '+asset.name
         name='assets/runner/pet-garment-binding.js'
         assert archive.read('assets/flutter_assets/'+name).decode('utf-8-sig').replace('\r\n','\n')==(ROOT/name).read_text(encoding='utf-8-sig').replace('\r\n','\n'),'Stale garment binding'
         report=json.loads(archive.read('assets/flutter_assets/assets/images/products/wardrobe-thumbnails.json'))

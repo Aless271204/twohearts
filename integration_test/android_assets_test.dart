@@ -37,16 +37,25 @@ void main() {
     tester,
   ) async {
     await SupabaseService.initialize();
-    final voiceReady = await const MethodChannel('nido/pet_voice').invokeMethod<bool>('prepare').timeout(const Duration(seconds: 30));
+    final voiceReady = await const MethodChannel(
+      'nido/pet_voice',
+    ).invokeMethod<bool>('prepare').timeout(const Duration(seconds: 30));
     expect(voiceReady, isA<bool>());
     if (voiceReady == true) {
       try {
-        await const MethodChannel('nido/pet_voice').invokeMethod('speak', {'text': 'Hola, soy tu mascota.'}).timeout(const Duration(seconds: 20));
+        await const MethodChannel('nido/pet_voice')
+            .invokeMethod('speak', {'text': 'Hola, soy tu mascota.'})
+            .timeout(const Duration(seconds: 20));
       } on PlatformException catch (error) {
         // The offline emulator may advertise a voice without synthesis data.
         // Verify the recoverable error and stop path, then test the renderer.
         expect(error.code, 'voice');
-        expect(await const MethodChannel('nido/pet_voice').invokeMethod<bool>('stop'), isTrue);
+        expect(
+          await const MethodChannel(
+            'nido/pet_voice',
+          ).invokeMethod<bool>('stop'),
+          isTrue,
+        );
       }
     }
     final pet = Completer<WebViewController>();
@@ -80,23 +89,40 @@ void main() {
     await tester.pump(const Duration(seconds: 1));
 
     final fittedPet = Completer<WebViewController>();
-    await tester.pumpWidget(MaterialApp(home: Scaffold(body: ForestRunnerView(
-      petOnly: true,
-      petOrbit: true,
-      animationName: 'Running',
-      appearance: '{"pet_head":{"style":"crown","color":"#f6ce68"},"pet_neck":{"style":"scarf","color":"#e6546a"},"pet_back":{"style":"backpack","color":"#538ee5"}}',
-      onWebViewCreated: fittedPet.complete,
-    ))));
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: ForestRunnerView(
+            petOnly: true,
+            petOrbit: true,
+            animationName: 'Running',
+            appearance:
+                '{"pet_head":{"style":"crown","color":"#f6ce68"},"pet_neck":{"style":"scarf","color":"#e6546a"},"pet_back":{"style":"backpack","color":"#538ee5"}}',
+            onWebViewCreated: fittedPet.complete,
+          ),
+        ),
+      ),
+    );
     await tester.pump(const Duration(seconds: 1));
-    final fittedController = await fittedPet.future.timeout(const Duration(seconds: 30));
-    await waitForJavaScript(tester, fittedController,
+    final fittedController = await fittedPet.future.timeout(
+      const Duration(seconds: 30),
+    );
+    await waitForJavaScript(
+      tester,
+      fittedController,
       "document.body.classList.contains('pet-only') && ['Head','Neck','Spine2'].every(name => document.body.dataset.petAnchors?.includes(name)) && document.body.dataset.petAnimation === 'Running'",
-      'The actual pet renderer attaches accessories to the animated original rig offline');
-    final idleUrl = Uri.parse((await fittedController.currentUrl())!).replace(queryParameters: {'pet': '1', 'orbit': '0', 'animation': 'Idle_9'});
+      'The actual pet renderer attaches accessories to the animated original rig offline',
+    );
+    final idleUrl = Uri.parse((await fittedController.currentUrl())!).replace(
+      queryParameters: {'pet': '1', 'orbit': '0', 'animation': 'Idle_9'},
+    );
     await fittedController.loadRequest(idleUrl);
-    await waitForJavaScript(tester, fittedController,
+    await waitForJavaScript(
+      tester,
+      fittedController,
       "document.body.dataset.petAnimation === 'Natural_Rest' && document.body.dataset.petShape === 'original' && document.body.dataset.petPose === 'standing' && document.body.dataset.petGrounded === 'true'",
-      'The room preserves the original anatomy with a grounded pet');
+      'The room preserves the original anatomy with a grounded pet',
+    );
     await fittedController.runJavaScript("""
       const fixedPosition = document.body.dataset.petPosition;
       const canvas = document.querySelector('canvas');
@@ -105,8 +131,12 @@ void main() {
       canvas.dispatchEvent(new PointerEvent('pointerup', {clientX: 260, clientY: 400}));
       setTimeout(() => { window.petStableIdleValid = document.body.dataset.petPosition === fixedPosition && document.body.dataset.petAnimation === 'Natural_Rest'; }, 1500);
     """);
-    await waitForJavaScript(tester, fittedController, 'window.petStableIdleValid === true',
-      'Idle pose remains fixed after touch input and elapsed time');
+    await waitForJavaScript(
+      tester,
+      fittedController,
+      'window.petStableIdleValid === true',
+      'Idle pose remains fixed after touch input and elapsed time',
+    );
 
     await tester.pumpWidget(const SizedBox.shrink());
     await tester.pump(const Duration(seconds: 1));
@@ -127,9 +157,12 @@ void main() {
       "document.getElementById('title')?.textContent === 'Un paseo con tu mascota' && !document.getElementById('start').disabled",
       'The complete forest, including the model with spaces in its name',
     );
-    await waitForJavaScript(tester, controller,
+    await waitForJavaScript(
+      tester,
+      controller,
       "document.querySelector('canvas') !== null && document.getElementById('forest-background-video') === null",
-      'The unified 3D forest loads offline without a video layer');
+      'The unified 3D forest loads offline without a video layer',
+    );
     await controller.runJavaScript('''
       window.runnerMediaRangeValid = false;
       fetch('forest-kingdom-loop.mp4', {headers: {Range: 'bytes=0-31'}})
@@ -139,8 +172,12 @@ void main() {
             String.fromCharCode(...data.slice(4, 8)) === 'ftyp';
         });
     ''');
-    await waitForJavaScript(tester, controller,
-      'window.runnerMediaRangeValid === true', 'Local video byte-range delivery');
+    await waitForJavaScript(
+      tester,
+      controller,
+      'window.runnerMediaRangeValid === true',
+      'Local video byte-range delivery',
+    );
     await controller.runJavaScript('''
       // Deterministic practice seed for this smoke test only; production remains random.
       window.crypto.getRandomValues = function(values) { values.fill(7); return values; };
@@ -184,15 +221,21 @@ void main() {
       window.runnerResumeValid = true &&
         document.getElementById('panel').hidden;
     ''');
-    await waitForJavaScript(tester, controller,
+    await waitForJavaScript(
+      tester,
+      controller,
       'window.runnerResumeValid === true',
-      'Resuming restarts the scene');
+      'Resuming restarts the scene',
+    );
     tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.inactive);
     tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.hidden);
     tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.paused);
-    await waitForJavaScript(tester, controller,
+    await waitForJavaScript(
+      tester,
+      controller,
       "window.runnerAudioState() === 'suspended' && !document.getElementById('panel').hidden",
-      'Backgrounding the native app suspends music and pauses the run');
+      'Backgrounding the native app suspends music and pauses the run',
+    );
     tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.hidden);
     tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.inactive);
     tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
@@ -209,6 +252,65 @@ void main() {
       "window.runnerEffectFrequencies.includes(150) && document.getElementById('title').textContent === '¡Vuelve a intentarlo!'",
       'Collision plays its sound and ends the practice run',
     );
+    await tester.pumpWidget(const SizedBox.shrink());
+
+    final guardian = Completer<WebViewController>();
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: ForestRunnerView(
+            guardian: true,
+            onWebViewCreated: guardian.complete,
+          ),
+        ),
+      ),
+    );
+    await tester.pump(const Duration(seconds: 1));
+    final guardianController = await guardian.future.timeout(
+      const Duration(seconds: 30),
+    );
+    final guardianUrl = Uri.parse(
+      (await guardianController.currentUrl())!,
+    ).replace(queryParameters: {'preview': '1', 'outfit': 'dulce'});
+    await guardianController.loadRequest(guardianUrl);
+    await waitForJavaScript(
+      tester,
+      guardianController,
+      "document.getElementById('scene') !== null && document.getElementById('start')?.disabled === false",
+      'Guardianes Canvas, WebP sprites and modules load offline',
+    );
+    await guardianController.runJavaScript(
+      "document.getElementById('start').click(); document.dispatchEvent(new KeyboardEvent('keydown',{code:'ArrowRight'}));",
+    );
+    await waitForJavaScript(
+      tester,
+      guardianController,
+      "document.getElementById('menu').hidden && parseFloat(document.getElementById('progress').style.width)>1",
+      'Guardianes native controls advance the expedition',
+    );
+    await guardianController.runJavaScript(
+      "document.dispatchEvent(new KeyboardEvent('keyup',{code:'ArrowRight'}));document.getElementById('pause').click();",
+    );
+    await waitForJavaScript(
+      tester,
+      guardianController,
+      "document.getElementById('pausepanel').hidden === false",
+      'Guardianes can pause inside Android',
+    );
+    for (final layout in ['classic', 'split']) {
+      await guardianController.runJavaScript(
+        "document.querySelector('#layouts [data-layout=$layout]').click();document.getElementById('resume').click();",
+      );
+      await waitForJavaScript(
+        tester,
+        guardianController,
+        "(() => {const b=[...document.querySelectorAll('#controls [data-key]')].map(e=>e.getBoundingClientRect());return b.length===5&&b.every(r=>r.width>=44&&r.height>=44&&r.left>=0&&r.top>=0&&r.right<=innerWidth+1&&r.bottom<=innerHeight+1)&&b.every((a,i)=>b.every((c,j)=>i===j||a.right<=c.left||c.right<=a.left||a.bottom<=c.top||c.bottom<=a.top));})()",
+        'All five $layout touch controls fit without overlapping',
+      );
+      await guardianController.runJavaScript(
+        "document.getElementById('pause').click();",
+      );
+    }
     await tester.pumpWidget(const SizedBox.shrink());
   }, timeout: const Timeout(Duration(minutes: 7)));
 }

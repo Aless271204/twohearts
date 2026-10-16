@@ -1,0 +1,47 @@
+[
+  {
+    "name": "forest",
+    "source": "design/boss-rush/art-v1/forest-background-v1.png",
+    "asset": "assets/runner/guardian/forest.webp",
+    "original_bytes": 2683606,
+    "bytes": 2399958,
+    "rgba_sha256": "593fc02400ada731b08f9d31edc80411ad3fe6d433438b2f02bd7cf9cb164332",
+    "sha256": "c4a252347d235d8d8574cda26247e66c399335215d328bc8ee0dac3777fd62dc"
+  },
+  {
+    "name": "enemies",
+    "source": "design/boss-rush/art-v1/forest-enemies-v1.png",
+    "asset": "assets/runner/guardian/enemies.webp",
+    "original_bytes": 1813997,
+    "bytes": 1586838,
+    "rgba_sha256": "05722a21d4e929b577dc4d04a4e1ed5c7d55fdeb18eb686fad787db0e6810d84",
+    "sha256": "5a04695fdeaaa29bf3b0b82f95087693f59d9017f8568d504da1ae9698c2f6f4"
+  },
+  {
+    "name": "items",
+    "source": "design/boss-rush/art-v1/powerups-v1.png",
+    "asset": "assets/runner/guardian/items.webp",
+    "original_bytes": 1639357,
+    "bytes": 1511094,
+    "rgba_sha256": "5d6896ac3c84993be2ff668127fb38d1c1776210e452b85ac8523934ca452f83",
+    "sha256": "12cec423d3b10ef9b2864ee01ea5d5c7631e617cbb36e61b0578d8aa0b40fa10"
+  },
+  {
+    "name": "musgo",
+    "source": "design/boss-rush/art-v1/moss-isolated-poses-v1.png",
+    "asset": "assets/runner/guardian/musgo.webp",
+    "original_bytes": 2379986,
+    "bytes": 2076580,
+    "rgba_sha256": "a124d38f0c189a48ddf2127d25ac76546cd788bfc79ce01d53b062f71ac66a6d",
+    "sha256": "a7ccc2c2b380b575b919902f85c39026adbd5c3d7d891e7f98205aeb8a68722c"
+  },
+  {
+    "name": "tiles",
+    "source": "design/boss-rush/art-v1/forest-tiles-v1.png",
+    "asset": "assets/runner/guardian/tiles.webp",
+    "original_bytes": 2139157,
+    "bytes": 1923978,
+    "rgba_sha256": "63d430b01e41a759d3659d51de7aac053b75d22b4c70ee16ba7ecab5527a3802",
+    "sha256": "2f7f78690f05a98d971d6a8e919baf04b49024ab24242ad143be5e0aecf275da"
+  }
+]

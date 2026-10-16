@@ -1,10 +1,10 @@
-import {DIFFICULTIES,INPUT,FLOOR,ARENA,WORLD_END,SPECIES,RUNE_X,createLevel,rewardFor} from './config.js';
+import {DIFFICULTIES,INPUT,FLOOR,ARENA,WORLD_END,BOSS_HOME,SPECIES,RUNE_X,createLevel,rewardFor} from './config.js';
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 const near=(a,b,dx,dy)=>Math.abs(a.x-b.x)<dx&&Math.abs(a.y-b.y)<dy;
 export function createGame(seed=1,difficulty='easy',mode='solo',species=['penguin','bear']){
   if(!DIFFICULTIES[difficulty]||!['solo','partner'].includes(mode))throw Error('Configuración inválida');
   const d=DIFFICULTIES[difficulty],level=createLevel(seed,difficulty);
-  return {version:1,seed:seed>>>0,difficulty,mode,frame:0,status:'playing',stage:'path',gold:0,upgrades:0,checkpoint:90,level,shots:[],hazards:[],events:[],sigils:[-9999,-9999],boss:{x:6540,y:FLOOR,hp:d.bossHP*(mode==='partner'?1.6:1),maxHP:d.bossHP*(mode==='partner'?1.6:1),action:'sleep',timer:0,cycle:0,phase:1,rolls:0,vx:0},
+  return {version:2,seed:seed>>>0,difficulty,mode,frame:0,status:'playing',stage:'path',gold:0,upgrades:0,checkpoint:90,level,shots:[],hazards:[],events:[],sigils:[-9999,-9999],boss:{x:BOSS_HOME,y:FLOOR,hp:d.bossHP*(mode==='partner'?1.6:1),maxHP:d.bossHP*(mode==='partner'?1.6:1),action:'sleep',timer:0,cycle:0,phase:1,rolls:0,vx:0},
     players:Array.from({length:mode==='partner'?2:1},(_,i)=>({id:i,species:SPECIES.includes(species[i])?species[i]:SPECIES[i],x:90+i*48,y:FLOOR,vx:0,vy:0,facing:1,hp:d.hearts,maxHP:d.hearts,ground:true,coyote:7,buffer:0,previous:0,invulnerable:0,dash:0,dashCooldown:0,attackCooldown:0,buffs:{},rescue:0,revives:0}))};
 }
 function event(s,type,x,y){s.eventSeq=(s.eventSeq??0)+1;s.events.push({id:s.eventSeq,type,x,y,frame:s.frame});}
@@ -34,7 +34,7 @@ function pulse(s,p){
     if(Math.abs(p.x-RUNE_X[side])<100){
       s.sigils[side]=s.frame;
       // Solo keeps a rune lit long enough to cross via the upper ledges.
-      const window=s.mode==='solo'?420:80;
+      const window=s.players.filter(q=>q.hp>0).length===1?420:80;
       if(s.sigils.every(t=>s.frame-t<=window)){s.boss.wardLocked=false;s.boss.action='expose';s.boss.timer=DIFFICULTIES[s.difficulty].recovery+60;event(s,'link',s.boss.x,s.boss.y-100);}
     }
   }
@@ -54,27 +54,27 @@ function updatePlayer(s,p,mask){
   p.coyote=p.ground?7:Math.max(0,p.coyote-1);
   const direction=(mask&INPUT.right?1:0)-(mask&INPUT.left?1:0);
   if(direction)p.facing=direction;
-  const speed=(p.buffs.speed>0?4.5:3.1)*(p.buffs.sluggish>0?.58:1);
+  const speed=(p.buffs.speed>0?4.5:3.1)*(p.buffs.sluggish>0?.58:1)*(s.difficulty==='hard'?1.18:1);
   p.vx=direction*speed;
   if((pressed&INPUT.dodge)&&p.dashCooldown===0){p.dash=13;p.dashCooldown=52;event(s,'dash',p.x,p.y-14);}
-  if(p.dash>0){p.dash--;p.vx=p.facing*7.2;}
+  if(p.dash>0){p.dash--;p.vx=p.facing*7.2*(s.difficulty==='hard'?1.18:1);}
   if(p.buffer>0&&(p.coyote>0||p.buffs.jump>0&&!p.extraJump)){p.vy=-10.8;p.ground=false;p.buffer=0;p.extraJump=p.coyote<=0;p.coyote=0;event(s,'jump',p.x,p.y);}
   if(!(mask&INPUT.jump)&&p.vy<-4)p.vy=-4;
   const previousY=p.y;p.vy=Math.min(12,p.vy+.46);p.x=clamp(p.x+p.vx,s.stage==='boss'?ARENA:15,WORLD_END-25);p.y+=p.vy;p.ground=false;
   const teammate=s.players.find(q=>q.id!==p.id&&q.hp>0);
   if(teammate)p.x=clamp(p.x,teammate.x-680,teammate.x+680);
   for(const platform of s.level.platforms){if(p.vy>=0&&previousY<=platform.y+.01&&p.y>=platform.y&&p.x+11>platform.x&&p.x-11<platform.x+platform.w){p.y=platform.y;p.vy=0;p.ground=true;p.extraJump=false;}}
-  if(p.y>610){damage(s,p);p.x=s.stage==='boss'?6020:s.checkpoint;p.y=FLOOR-65;p.vy=0;}
+  if(p.y>610){damage(s,p);p.x=s.stage==='boss'?ARENA+120:s.checkpoint;p.y=FLOOR-65;p.vy=0;}
   if((mask&INPUT.pulse)&&p.attackCooldown===0){
     const down=s.players.find(q=>q.hp<=0&&Math.abs(q.x-p.x)<65&&Math.abs(q.y-p.y)<60&&q.revives<2);
     if(down){down.rescue++;if(down.rescue>=75){down.hp=1;down.rescue=0;down.revives++;down.invulnerable=150;event(s,'rescue',down.x,down.y-25);}}
-    else{pulse(s,p);p.attackCooldown=20;}
+    else{pulse(s,p);p.attackCooldown=s.difficulty==='hard'?17:20;}
   }
   const camp=p.ground&&Math.abs(p.y-FLOOR)<2?s.level.camps.find(x=>Math.abs(p.x-x)<90):undefined;
   if(camp&&s.stage==='path')s.checkpoint=camp;
   if((pressed&INPUT.upgrade)&&camp&&s.gold>=15&&s.upgrades<3){s.gold-=15;s.upgrades++;event(s,'upgrade',camp,FLOOR-30);}
   for(const coin of s.level.coins){if(!coin.used&&Math.abs(coin.x-p.x)<(p.buffs.magnet>0?125:22)&&Math.abs(coin.y-(p.y-20))<(p.buffs.magnet>0?100:32)){coin.used=true;pickup(s,p,{type:'coin'});if(s.frame%3===0)event(s,'coin',coin.x,coin.y);}}
-  for(const item of s.level.pickups){if(!item.used&&near({x:p.x,y:p.y-20},item,26,34)){item.used=true;pickup(s,p,item);}}
+  for(const item of s.level.pickups){if(!item.used&&!(item.type==='heal'&&p.hp>=p.maxHP)&&near({x:p.x,y:p.y-20},item,26,34)){item.used=true;pickup(s,p,item);}}
 }
 function bossAttack(s){
   const b=s.boss,d=DIFFICULTIES[s.difficulty];b.phase=b.hp<b.maxHP*.48?2:1;
@@ -122,9 +122,9 @@ export function stepGame(s,inputs=[0,0]){
       for(const p of living)if(near({x:p.x,y:p.y-20},{x:e.x,y:e.y-15},27,30))damage(s,p,e);
     }
     if(s.stage==='boss')bossAttack(s);
-    for(const h of s.hazards){h.x+=h.vx;h.y+=h.vy;h.life--;for(const p of living)if(near({x:p.x,y:p.y-17},h,h.type==='wave'?25:17,h.type==='wave'?24:17))damage(s,p);}
+    for(const h of s.hazards){h.x+=h.vx*(s.difficulty==='hard'?1.18:1);h.y+=h.vy*(s.difficulty==='hard'?1.18:1);h.life--;for(const p of living)if(near({x:p.x,y:p.y-17},h,h.type==='wave'?25:17,h.type==='wave'?24:17))damage(s,p);}
   }
-  for(const shot of s.shots){shot.x+=shot.vx;shot.y+=shot.vy;shot.life--;
+  for(const shot of s.shots){shot.x+=shot.vx*(s.difficulty==='hard'?1.18:1);shot.y+=shot.vy*(s.difficulty==='hard'?1.18:1);shot.life--;
     const enemy=s.level.enemies.find(e=>e.hp>0&&near(shot,{x:e.x,y:e.y-20},25,30));
     if(enemy){enemy.hp-=shot.power;shot.life=0;event(s,'hit',shot.x,shot.y);if(enemy.hp<=0){s.gold+=3+enemy.stolen;enemy.stolen=0;event(s,'enemy',enemy.x,enemy.y-15);}continue;}
     const b=s.boss;

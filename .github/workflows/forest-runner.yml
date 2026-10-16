@@ -24,7 +24,7 @@ jobs:
       - run: node --test test/runner_variety_test.mjs test/runner_replay_test.mjs test/runner_assets_test.mjs test/runner_feedback_test.mjs test/runner_mobile_test.mjs test/runner_art_test.mjs test/inventory_cosmetics_test.mjs test/runner_endless_test.mjs test/pet_accessory_fit_test.mjs test/runner_power_ups_test.mjs test/accessory_glb_test.mjs test/blender_head_fit_test.mjs test/imported_head_models_test.mjs test/room_3d_test.mjs
         timeout-minutes: 5
       - run: node --test test/blender_wardrobe_test.mjs test/blender_complements_test.mjs test/pet_torso_rig_test.mjs test/pet_footwear_coverage_test.mjs test/pet_runner_jump_test.mjs test/pet_runner_run_test.mjs test/pet_sleeve_coverage_test.mjs
-      - run: node --test test/admob_signature_test.mjs test/garment_colors_test.mjs test/original_wardrobe_coverage_test.mjs test/wardrobe_details_fit_test.mjs test/garment_original_binding_test.mjs test/pet_footwear_anchors_test.mjs test/wardrobe_equipment_order_test.mjs
+      - run: node --test test/admob_signature_test.mjs test/garment_colors_test.mjs test/original_wardrobe_coverage_test.mjs test/wardrobe_details_fit_test.mjs test/garment_original_binding_test.mjs test/pet_footwear_anchors_test.mjs test/wardrobe_equipment_order_test.mjs test/guardian_engine_test.mjs test/guardian_network_test.mjs test/guardian_wardrobe_test.mjs
       - run: python3 scripts/audit-wardrobe-topology.py --strict
       - run: python3 test/wardrobe_export_seams_test.py
       - uses: subosito/flutter-action@v2
@@ -158,18 +158,20 @@ jobs:
           GH_REPO: ${{ github.repository }}
           SOURCE_SHA: ${{ github.sha }}
         run: |
-          mv apk/app-arm64-v8a-release.apk apk/NIDO-1.2.3-ligera.apk
-          mv apk/app-armeabi-v7a-release.apk apk/NIDO-1.2.3-android-32.apk
-          sha256sum apk/NIDO-1.2.3-ligera.apk > apk/NIDO-1.2.3-ligera.apk.sha256
+          mv apk/app-arm64-v8a-release.apk apk/NIDO-1.2.4-ligera.apk
+          mv apk/app-armeabi-v7a-release.apk apk/NIDO-1.2.4-android-32.apk
+          sha256sum apk/NIDO-1.2.4-ligera.apk > apk/NIDO-1.2.4-ligera.apk.sha256
           cat > release-notes.txt <<'NOTES'
-          NIDO 1.2.3: habitacion integrada en Mascota con las cinco pestanas visibles.
-          APK ligera para Android ARM64, compatible con Pixel 6; descarga alternativa para Android de 32 bits.
-          Cofre y decoracion en media pantalla, transicion suave e iconos de color a la izquierda.
-          96 miniaturas transparentes; 24 accesorios adaptados disponibles por oro.
-          Enlace del vestuario al esqueleto original para seguir carrera y salto.
-          Guardianes del Alba se muestra como Proximamente; el prototipo no se incluye.
-          Version de prueba. Pagos de tiendas pendientes; anuncios de prueba sin ingresos ni oro.
-          Version: 1.2.3+18
+          NIDO 1.2.4: Guardianes del Alba para jugar en solitario y en pareja online desde dos celulares.
+          Crea una sala en Juegos > Guardianes y comparte su codigo; tu pareja se une desde su cuenta.
+          Recorrido ampliado, equipo del inventario en pixel art y seleccion de mascotas desbloqueadas.
+          Facil 5 corazones, medio 3 y dificil 1, sin corazones extra en dificil y con ritmo mas rapido.
+          Dos configuraciones tactiles, musica de ambiente y derrota animada con voces de las mascotas.
+          Nuevo logo de NIDO en el icono de Android y el acceso.
+          Incluye la habitacion con navegacion integrada y el cofre de las versiones anteriores.
+          APK ARM64 para Pixel 6 y telefonos actuales; alternativa para Android de 32 bits.
+          Version de prueba para compartir. No es una publicacion en Google Play. Pagos reales pendientes; anuncios de prueba.
+          Version: 1.2.4+19
           NOTES
           echo "Commit: $SOURCE_SHA" >> release-notes.txt
-          gh release create nido-1.2.3 apk/NIDO-1.2.3-ligera.apk apk/NIDO-1.2.3-android-32.apk apk/NIDO-1.2.3-ligera.apk.sha256 --target "$SOURCE_SHA" --title "NIDO 1.2.3 - Habitacion y vestuario" --notes-file release-notes.txt --prerelease
+          gh release create nido-1.2.4 apk/NIDO-1.2.4-ligera.apk apk/NIDO-1.2.4-android-32.apk apk/NIDO-1.2.4-ligera.apk.sha256 --target "$SOURCE_SHA" --title "NIDO 1.2.4 - Guardianes online y vestuario pixel art" --notes-file release-notes.txt --prerelease

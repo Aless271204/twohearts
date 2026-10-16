@@ -129,9 +129,13 @@ class _SignUpLoginScreenState extends State<SignUpLoginScreen>
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  const Text(
-                                    '🪺',
-                                    style: TextStyle(fontSize: 14),
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(8),
+                                    child: Image.asset(
+                                      'assets/images/nido_logo.png',
+                                      width: 30,
+                                      height: 30,
+                                    ),
                                   ),
                                   const SizedBox(width: 4),
                                   Text(

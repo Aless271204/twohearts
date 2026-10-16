@@ -56,3 +56,5 @@ build-env.json
 
 /supabase/.temp/
 /tools/bin/
+
+/tools/audio-runtime/

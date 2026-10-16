@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:webview_flutter_android/webview_flutter_android.dart';
 import 'runner_bridge.dart';
+import 'guardian_bridge.dart';
 import 'scene_status.dart';
 import '../core/local_asset_path.dart';
 import '../core/asset_byte_range.dart';
@@ -15,6 +16,7 @@ class ForestRunnerView extends StatefulWidget {
   final VoidCallback? onPetStroke;
   final bool petOnly;
   final bool room;
+  final bool guardian;
   final int petReaction;
   final String petSpecies;
   final int petLevel;
@@ -29,6 +31,7 @@ class ForestRunnerView extends StatefulWidget {
     this.onWebViewCreated,
     this.petOnly = false,
     this.room = false,
+    this.guardian = false,
     this.petReaction = 0,
     this.petSpecies = 'penguin',
     this.petLevel = 10,
@@ -46,6 +49,7 @@ class _ForestRunnerViewState extends State<ForestRunnerView>
   WebViewController? _controller;
   String? _error;
   final _bridge = RunnerBridge();
+  final _guardianBridge = GuardianBridge();
   @override
   void initState() {
     super.initState();
@@ -84,12 +88,18 @@ class _ForestRunnerViewState extends State<ForestRunnerView>
                 ? 'text/html; charset=utf-8'
                 : path.endsWith('.js')
                 ? 'text/javascript; charset=utf-8'
+                : path.endsWith('.css')
+                ? 'text/css; charset=utf-8'
                 : path.endsWith('.json')
                 ? 'application/json'
                 : path.endsWith('.jpg') || path.endsWith('.jpeg')
                 ? 'image/jpeg'
                 : path.endsWith('.png')
                 ? 'image/png'
+                : path.endsWith('.mp3')
+                ? 'audio/mpeg'
+                : path.endsWith('.webp')
+                ? 'image/webp'
                 : path.endsWith('.mp4')
                 ? 'video/mp4'
                 : 'model/gltf-binary',
@@ -165,6 +175,18 @@ class _ForestRunnerViewState extends State<ForestRunnerView>
         'RunnerBridge',
         onMessageReceived: (message) async {
           try {
+            if (widget.guardian) {
+              if (jsonDecode(message.message)['type'] == 'guardian-exit') {
+                widget.onExit?.call();
+                return;
+              }
+              final response = await _guardianBridge.handle(message.message);
+              if (mounted)
+                await controller.runJavaScript(
+                  'window.guardianBridgeResponse(${jsonEncode(response)});',
+                );
+              return;
+            }
             if (widget.petOnly &&
                 jsonDecode(message.message)['type'] == 'pet-stroke') {
               widget.onPetStroke?.call();
@@ -185,9 +207,15 @@ class _ForestRunnerViewState extends State<ForestRunnerView>
           }
         },
       );
+      _guardianBridge.emit = (message) async {
+        if (mounted)
+          await controller.runJavaScript(
+            'window.guardianBridgeResponse(${jsonEncode(message)});',
+          );
+      };
       await controller.loadRequest(
         Uri.parse(
-          'http://localhost:${server.port}/assets/runner/index.html',
+          'http://localhost:${server.port}/assets/runner/${widget.guardian ? 'guardian/index.html' : 'index.html'}',
         ).replace(
           queryParameters: widget.petOnly
               ? {
@@ -212,7 +240,8 @@ class _ForestRunnerViewState extends State<ForestRunnerView>
     } catch (error) {
       if (mounted)
         setState(
-          () => _error = 'No se pudo cargar esta escena. Vuelve a intentarlo.\n$error',
+          () => _error =
+              'No se pudo cargar esta escena. Vuelve a intentarlo.\n$error',
         );
     }
   }
@@ -239,6 +268,7 @@ class _ForestRunnerViewState extends State<ForestRunnerView>
 
   @override
   void dispose() {
+    _guardianBridge.dispose();
     WidgetsBinding.instance.removeObserver(this);
     _controller
         ?.runJavaScript('window.runnerSuspend?.();')
