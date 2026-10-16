@@ -236,7 +236,32 @@ class _PartnerArtCardState extends State<PartnerArtCard> {
                       }
                     },
               icon: const Icon(Icons.widgets_outlined),
-              label: const Text('Poner widget en mi teléfono'),
+              label: const Text('Widget de fotos y mensajes'),
+            ),
+            TextButton.icon(
+              onPressed: widget.preview
+                  ? null
+                  : () async {
+                      try {
+                        final ok = await PartnerArtService.instance.pin(
+                          history: true,
+                        );
+                        _message(
+                          ok
+                              ? 'Confirma añadir Nuestra historia'
+                              : 'Mantén pulsado el inicio → Widgets → NIDO → Nuestra historia',
+                        );
+                      } catch (_) {
+                        _message(
+                          'Añade Nuestra historia desde Widgets → NIDO.',
+                        );
+                      }
+                    },
+              icon: const Icon(Icons.favorite_outline),
+              label: const Text('Widget de aniversario y distancia'),
+            ),
+            const Text(
+              'En teléfonos compatibles puedes añadirlos también a la pantalla de bloqueo desde los ajustes de Android. La distancia muestra la última ubicación compartida; toca el widget para abrir NIDO y actualizarla.',
             ),
             const Text(
               'Tu pareja añade el widget en su teléfono. Se actualiza al abrir NIDO y periódicamente en segundo plano; Android puede retrasarlo para ahorrar batería.',

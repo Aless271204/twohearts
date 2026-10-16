@@ -75,6 +75,27 @@ object PartnerWidget {
         val manager = AppWidgetManager.getInstance(context)
         val ids = manager.getAppWidgetIds(ComponentName(context, NidoPartnerWidgetProvider::class.java))
         NidoPartnerWidgetProvider().onUpdate(context, manager, ids)
+        NidoCoupleWidgetProvider().onUpdate(context, manager, manager.getAppWidgetIds(ComponentName(context, NidoCoupleWidgetProvider::class.java)))
+    }
+}
+
+/** Uses saved, consented locations. Never represents a cached position as live. */
+class NidoCoupleWidgetProvider : AppWidgetProvider() {
+    override fun onUpdate(context: Context, manager: AppWidgetManager, ids: IntArray) {
+        val stats = try { JSONObject(PartnerWidget.prefs(context).getString("couple_stats", "{}").orEmpty()) } catch (_: Exception) { JSONObject() }
+        val start = try { java.time.LocalDate.parse(stats.optString("start").take(10)) } catch (_: Exception) { null }
+        val today = java.time.LocalDate.now()
+        val dateText = if (start != null && !start.isAfter(today)) "Desde ${start.format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy"))}\n${java.time.temporal.ChronoUnit.DAYS.between(start, today)} días juntos ♥" else "Añade su aniversario en NIDO ♥"
+        val located = try { java.time.OffsetDateTime.parse(stats.optString("located_at")).atZoneSameInstant(java.time.ZoneId.systemDefault()) } catch (_: Exception) { null }
+        val km = stats.optDouble("km", -1.0)
+        val distance = if (km.isFinite() && km >= 0 && located != null) "${String.format(java.util.Locale.getDefault(), "%.1f", km)} km de distancia\nÚltima ubicación · ${located.format(java.time.format.DateTimeFormatter.ofPattern("dd/MM HH:mm"))}" else "Distancia no disponible\nCompartan su ubicación desde NIDO"
+        ids.forEach { id ->
+            val views = RemoteViews(context.packageName, R.layout.couple_story_widget)
+            views.setTextViewText(R.id.couple_story_text, "$dateText\n\n$distance")
+            val launch = PendingIntent.getActivity(context, id, Intent(context, MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP), PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+            views.setOnClickPendingIntent(R.id.couple_story_root, launch)
+            manager.updateAppWidget(id, views)
+        }
     }
 }
 

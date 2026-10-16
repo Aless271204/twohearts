@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:id="@+id/couple_story_root" android:orientation="vertical" android:layout_width="match_parent" android:layout_height="match_parent" android:padding="16dp" android:background="@drawable/partner_note_background">
+    <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="NIDO · Nuestra historia ♥" android:textColor="#BE5477" android:textStyle="bold" android:textSize="16sp"/>
+    <TextView android:id="@+id/couple_story_text" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:gravity="center" android:textColor="#302831" android:textSize="17sp" android:maxLines="8" android:ellipsize="end"/>
+</LinearLayout>

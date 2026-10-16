@@ -320,6 +320,14 @@ void main() {
       const channel = MethodChannel('nido/art');
       expect(await channel.invokeMethod<bool>('clearWidget'), isTrue);
       expect(
+        await channel.invokeMethod<bool>('updateCoupleStats', {
+          'start': '2025-01-01',
+          'km': 12.5,
+          'located_at': DateTime.now().toUtc().toIso8601String(),
+        }),
+        isTrue,
+      );
+      expect(
         await channel.invokeMethod<bool>('updateNote', {
           'kind': 'text',
           'content': 'Nota de prueba privada',

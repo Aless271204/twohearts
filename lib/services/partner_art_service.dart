@@ -5,6 +5,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'supabase_service.dart';
+import 'couple_location_service.dart';
+import 'package:latlong2/latlong.dart';
 
 class PartnerArtService extends ChangeNotifier with WidgetsBindingObserver {
   PartnerArtService._();
@@ -16,6 +18,7 @@ class PartnerArtService extends ChangeNotifier with WidgetsBindingObserver {
   String? _configuredFor;
   bool _loading = false;
   bool _foreground = true;
+  DateTime? _statsAt;
   SupabaseClient get client => SupabaseService.instance.client;
   void start() {
     if (_timer != null) return;
@@ -29,6 +32,7 @@ class PartnerArtService extends ChangeNotifier with WidgetsBindingObserver {
     _auth = client.auth.onAuthStateChange.listen((state) {
       if (state.event == AuthChangeEvent.signedOut) {
         _configuredFor = null;
+        _statsAt = null;
         latest = {};
         notifyListeners();
         if (!kIsWeb)
@@ -62,6 +66,46 @@ class PartnerArtService extends ChangeNotifier with WidgetsBindingObserver {
         notifyListeners();
       }
       if (!kIsWeb) {
+        if (_statsAt == null ||
+            DateTime.now().difference(_statsAt!).inSeconds >= 60) {
+          final profile = await SupabaseService.instance.getMyProfile();
+          if (client.auth.currentUser?.id != uid) return;
+          if (profile?['partner_id'] == null) {
+            await channel.invokeMethod('clearWidget');
+            _configuredFor = null;
+            return;
+          }
+          final stats = <String, dynamic>{
+            'start': profile?['relationship_start']?.toString() ?? '',
+          };
+          try {
+            final locations = await client.rpc(
+              'couple_location',
+              params: {'p_action': 'snapshot'},
+            );
+            final mine = SharedLocationPoint.parse(locations['mine']);
+            final partner = SharedLocationPoint.parse(locations['partner']);
+            if (mine?.point != null &&
+                partner?.point != null &&
+                mine?.at != null &&
+                partner?.at != null) {
+              stats['km'] = const Distance().as(
+                LengthUnit.Kilometer,
+                mine!.point!,
+                partner!.point!,
+              );
+              stats['located_at'] =
+                  (mine.at!.isBefore(partner.at!) ? mine.at! : partner.at!)
+                      .toUtc()
+                      .toIso8601String();
+            }
+          } catch (_) {
+            /* Missing location stays explicitly unavailable. */
+          }
+          if (client.auth.currentUser?.id != uid) return;
+          await channel.invokeMethod('updateCoupleStats', stats);
+          _statsAt = DateTime.now();
+        }
         if (_configuredFor != uid) {
           final result =
               await client.rpc(
@@ -107,10 +151,13 @@ class PartnerArtService extends ChangeNotifier with WidgetsBindingObserver {
     );
   }
 
-  Future<bool> pin() async {
+  Future<bool> pin({bool history = false}) async {
     await refresh();
     if (kIsWeb) return false;
-    return await channel.invokeMethod<bool>('pinWidget') ?? false;
+    return await channel.invokeMethod<bool>('pinWidget', {
+          'history': history,
+        }) ??
+        false;
   }
 
   void pause() {

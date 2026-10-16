@@ -46,10 +46,12 @@ class MainActivity : FlutterFragmentActivity() {
                         else { PartnerWidget.configure(this, url, key, token, user); result.success(true) }
                     }
                     "updateNote" -> { PartnerWidget.store(this, JSONObject(call.arguments as? Map<*, *> ?: emptyMap<String,Any>())); result.success(true) }
+                    "updateCoupleStats" -> { PartnerWidget.prefs(this).edit().putString("couple_stats", JSONObject(call.arguments as? Map<*, *> ?: emptyMap<String,Any>()).toString()).apply(); PartnerWidget.redraw(this); result.success(true) }
                     "clearWidget" -> { PartnerWidget.clear(this); result.success(true) }
                     "pinWidget" -> {
                         val manager = AppWidgetManager.getInstance(this)
-                        result.success(if (Build.VERSION.SDK_INT >= 26 && manager.isRequestPinAppWidgetSupported) manager.requestPinAppWidget(ComponentName(this,NidoPartnerWidgetProvider::class.java),null,null) else false)
+                        val provider = if (call.argument<Boolean>("history") == true) NidoCoupleWidgetProvider::class.java else NidoPartnerWidgetProvider::class.java
+                        result.success(if (Build.VERSION.SDK_INT >= 26 && manager.isRequestPinAppWidgetSupported) manager.requestPinAppWidget(ComponentName(this,provider),null,null) else false)
                     }
                     "savePng" -> {
                         val bytes = call.argument<ByteArray>("bytes") ?: throw IllegalArgumentException("PNG vacío")
