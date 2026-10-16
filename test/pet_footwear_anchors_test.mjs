@@ -39,3 +39,12 @@ for(const [species,file] of Object.entries({penguin:'Meshy_AI_Pip_the_Penguin_Al
   }
  }
 });
+
+test('game shoes preserve the full ankle rotation instead of lagging behind it',async()=>{
+ const model=new THREE.Group(),foot=new THREE.Bone(),other=new THREE.Bone();foot.name='LeftFoot';other.name='RightFoot';model.add(foot,other);
+ const parent=new THREE.Group();model.add(parent);const anchors=createFootwearAnchors(model,parent,Infinity);
+ foot.rotation.x=1.1;foot.position.set(.1,.2,.3);anchors.update();
+ const p=new THREE.Vector3(),q=new THREE.Quaternion(),scale=new THREE.Vector3();anchors.bones.LeftFoot.matrix.decompose(p,q,scale);
+ assert.ok(q.angleTo(foot.quaternion)<1e-6,'shoe must follow the entire ankle turn');
+ assert.ok(p.distanceTo(foot.position)<1e-6);assert.ok(Math.abs(scale.x-1)<1e-6);
+});

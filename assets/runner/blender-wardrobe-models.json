@@ -19,7 +19,13 @@
       "model_asset": "assets/runner/accessories/cap_pink_penguin_pattern.glb",
       "fitted_model_space": true,
       "tuck_crown_tuft": true,
-      "asset_revision": "6175314afd8fb9b6"
+      "asset_revision": "6175314afd8fb9b6",
+      "species_model_hashes": {
+        "penguin": "7b701456ed7c94fea7a551bd101f833a0a03fdbb761a0c469b1a4bcba1b1c0a2",
+        "bear": "7ae74e57cbb1be50c7b70d3896dd09986a916266ca77b1382a0925fc9988e5b8",
+        "pig": "c8775b95b864857c68554354a5f172adbf0b4f71712623bd2764d7e134b92e57",
+        "chick": "0e3e724e5e3c2c99000bfc0e43fb6233b0106e8f6298bf0ed8d22e113d1ac801"
+      }
     },
     "preview_only": true,
     "variants": [
@@ -69,7 +75,13 @@
       "model_asset": "assets/runner/accessories/beanie_cloud_penguin_pattern.glb",
       "fitted_model_space": true,
       "tuck_crown_tuft": true,
-      "asset_revision": "e1cddeac40c67ef7"
+      "asset_revision": "e1cddeac40c67ef7",
+      "species_model_hashes": {
+        "penguin": "c2784b4efccb31da51910aee9c98cae8b55e8990adebef32e6d7b369e415e14f",
+        "bear": "034b9b5c7d54db8ee58dfa1e80f4b4d5d62c04e2dfb9b9960e78827f877bce9c",
+        "pig": "71759eb062d36ba8f4169e07614fe4d88f1e394baace69d9d588ffdd821550b9",
+        "chick": "4b7422e6671891c70a591eddf47ef139f28bc645359cc473dba55620cb364dd6"
+      }
     },
     "preview_only": true,
     "variants": [
@@ -119,7 +131,13 @@
       "model_asset": "assets/runner/accessories/hat_garden_penguin_pattern.glb",
       "fitted_model_space": true,
       "tuck_crown_tuft": true,
-      "asset_revision": "5248832251f09f89"
+      "asset_revision": "5248832251f09f89",
+      "species_model_hashes": {
+        "penguin": "da820b4fc7959967657ff59d7857abe514c86f4957f9a8c2e6c351122f0eedb2",
+        "bear": "98a135e7adb4757488f2287a846e7023722f741c8c4098a8a7d4e7b1ab3ea898",
+        "pig": "68448fb745d85d8cfc112bc2bac62985e59ff38811288cd262843398544b15c1",
+        "chick": "40ba83c2f98b4488030ff81f0c2c2f1749900a2e95c845c4207eb881b2b4705e"
+      }
     },
     "preview_only": true,
     "variants": [
@@ -169,7 +187,13 @@
       "model_asset": "assets/runner/accessories/beret_chic_penguin_pattern.glb",
       "fitted_model_space": true,
       "tuck_crown_tuft": true,
-      "asset_revision": "a33353b73f703b2d"
+      "asset_revision": "a33353b73f703b2d",
+      "species_model_hashes": {
+        "penguin": "aa25c3f26be5b06c12dc0a1aabf525104c29afb80b461787643db8a94f85f394",
+        "bear": "7720fbd7436dfd2ee41ebec87c97bc287b2fa0cdf5343254f90214066ce870c0",
+        "pig": "9c7197ddead7620c2c3cd7140e2b1993f6672f54e646dadc017c5307b337abba",
+        "chick": "a390a57ca86229001bc43d13ae13844164476912afa214ee20546ade129a3e0a"
+      }
     },
     "preview_only": true,
     "variants": [
@@ -237,6 +261,12 @@
           "min_y": 0.37036480218482115,
           "max_y": 0.5023648021848212
         }
+      },
+      "species_model_hashes": {
+        "penguin": "da6286291a54d75c6aaa125e50eb9b10db925bb2d7325e6a4212711ed393de66",
+        "bear": "c966d4a33da9f99d57045ce66109f3164fc59842b15dd5ec350a50ff6a5d0011",
+        "pig": "9cfb83b08ef67fbc0e6d233e2d8afb70ae6bedb0b1039e067e6114816b0c1891",
+        "chick": "0536bfd19a86ded0cef73120d328ee641c58c2b023102128709c3560f2f1afdf"
       }
     },
     "preview_only": true,
@@ -305,6 +335,12 @@
           "min_y": 0.37036480218482115,
           "max_y": 0.5023648021848212
         }
+      },
+      "species_model_hashes": {
+        "penguin": "a818de7bb6bf90480cf86967c85c09a268e579ae20c6e21fefdab0c324d74599",
+        "bear": "647afc5e2a32ba3bf0e1beb929b4e417b48a323d2c6a8623b68c69df8e4d0a08",
+        "pig": "aa164fd95314fb73216b99b3b3657fcc8b0880b39d004767913488e79fdb8dc1",
+        "chick": "b68d8713d9b147028f2b32af97c5069ad317b21a1e1f2de4133c7b41ee5cc2ec"
       }
     },
     "preview_only": true,
@@ -374,6 +410,12 @@
           "min_y": 0.3253648021848211,
           "max_y": 0.5023648021848212
         }
+      },
+      "species_model_hashes": {
+        "penguin": "387adf5fa7e49957cb2e748d67374c5b2262423c0bd9e3832f9b982a694fa188",
+        "bear": "9e75f7178a7fdaa63bd82a2944abf1a164a22460e188ae2acfcc16e30feed6e0",
+        "pig": "f8fd0fd67087937e998cf02c8b3b7c7cdf1ac988571ce5b3412eedfe527ef89b",
+        "chick": "c4eadf3a300a59f6d540e0c5bf19a35f86d980aa84913e84e91a76f8c8b108ca"
       }
     },
     "preview_only": true,
@@ -442,6 +484,12 @@
           "min_y": 0.37036480218482115,
           "max_y": 0.5023648021848212
         }
+      },
+      "species_model_hashes": {
+        "penguin": "af0f8519f309c9ce11c39229c20c6520a2e2d92bc2a719eea64aa85bca0baccc",
+        "bear": "7b5764ed41f889b1a5ed51ce7fdc1cccc42660853b2a4c2cbd6c4d81389658a2",
+        "pig": "2d54fc693507ea1b7466c94f08685d19e61120bf354089976613bdd2fb317d6b",
+        "chick": "9be6ad98b25ade144f90e54565d96aeff309104107a38c612bae0f042724748c"
       }
     },
     "preview_only": true,
@@ -511,6 +559,12 @@
           "min_y": 0.3253648021848211,
           "max_y": 0.5023648021848212
         }
+      },
+      "species_model_hashes": {
+        "penguin": "4467f194e6b3f350dc7efd0cc539c8dd8574a4ff09043cbb1bc7946bbf0ac85c",
+        "bear": "39e7cf4fb58bf59fa403bcee7ce990ac7886eb8a8f48dc18e64af767beff8fc3",
+        "pig": "685cc12d7befbbe9fd8152c9b1e00bec4543d2facb0179f3f0a654a6a58306db",
+        "chick": "f54d3e56b704c45834f7817c168e6b055c8f7c9af9e30f518484be1ab1819abf"
       }
     },
     "preview_only": true,

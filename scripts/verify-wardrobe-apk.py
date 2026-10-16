@@ -48,6 +48,9 @@ def verify(apk,previous=None):
             local=(ROOT/name).read_text(encoding='utf-8-sig').replace('\r\n','\n')
             packed=archive.read('assets/flutter_assets/'+name).decode('utf-8-sig').replace('\r\n','\n')
             assert packed==local,'Stale packaged renderer: '+file
+        assert not any('/runner/guardian/' in name for name in archive.namelist()),'Unreleased prototype was packaged'
+        name='assets/runner/pet-garment-binding.js'
+        assert archive.read('assets/flutter_assets/'+name).decode('utf-8-sig').replace('\r\n','\n')==(ROOT/name).read_text(encoding='utf-8-sig').replace('\r\n','\n'),'Stale garment binding'
         report=json.loads(archive.read('assets/flutter_assets/assets/images/products/wardrobe-thumbnails.json'))
         assert len(report)==96
         for entry in report:

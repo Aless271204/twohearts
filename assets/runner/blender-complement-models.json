@@ -15,7 +15,13 @@
         "pig": "assets/runner/accessories/glasses_heart_pig_tailored.glb",
         "chick": "assets/runner/accessories/glasses_heart_chick_tailored.glb"
       },
-      "asset_revision": "bdb4613a51f8e4fa"
+      "asset_revision": "bdb4613a51f8e4fa",
+      "species_model_hashes": {
+        "penguin": "30860fd0f9b0f021ce0c02225e493fea975cc5ff86a306779879f1ce246fb4de",
+        "bear": "36ef944367d6210f4cb6b9edbc86a5df54818b375c291ac2fd4c5d710da2d004",
+        "pig": "1092deb758666a94f1300ad5be3ea762297ea7ee601f84cfb29840a2cfe3f6a6",
+        "chick": "cd2b32a15c7b110ee7e3604d8af509295567a366c4ce80a9464645770caea54a"
+      }
     },
     "collection": "Dulce",
     "rarity": "Común",
@@ -67,7 +73,13 @@
         "pig": "assets/runner/accessories/glasses_round_pig_tailored.glb",
         "chick": "assets/runner/accessories/glasses_round_chick_tailored.glb"
       },
-      "asset_revision": "312b8147d1267483"
+      "asset_revision": "312b8147d1267483",
+      "species_model_hashes": {
+        "penguin": "5f910c600a1b260927f0e1b8ffeae552a4178c931fb8bfa8ca999840c3ec3e98",
+        "bear": "885113db3b1c65a1381d18248cae6b895bfdad1103786ea4529bac6caa99d194",
+        "pig": "447130d811fff56b6fdeaf277929952aca57d6b6ee431decb9290c38acad0ace",
+        "chick": "1a931a6bc80c6720e6b7f944d157cb19e6cb00f5d46c419559bf0f9947d4035a"
+      }
     },
     "collection": "Dulce",
     "rarity": "Común",
@@ -119,7 +131,13 @@
         "pig": "assets/runner/accessories/glasses_star_pig_tailored.glb",
         "chick": "assets/runner/accessories/glasses_star_chick_tailored.glb"
       },
-      "asset_revision": "ee897efbe5a2949f"
+      "asset_revision": "ee897efbe5a2949f",
+      "species_model_hashes": {
+        "penguin": "339935bc99df65cf38f44cf33ac18ddeb56675c80626095c2b6c6eac06ac90a1",
+        "bear": "7eace14a2be77f9f2d9e84569f1924a1799946ffc738630a9646671ab1b7c8bc",
+        "pig": "a7fc2bb4ecb588ab66cbc2f15a53f6045c5f715b9d926defa6791edf698a133c",
+        "chick": "05da1611bba014afa90cf2a2b5892960b8dd625e9c22d859d29c67226faef9e4"
+      }
     },
     "collection": "Dulce",
     "rarity": "Común",
@@ -171,7 +189,13 @@
         "pig": "assets/runner/accessories/patch_pirate_pig_tailored.glb",
         "chick": "assets/runner/accessories/patch_pirate_chick_tailored.glb"
       },
-      "asset_revision": "3926d2a45c7c1950"
+      "asset_revision": "3926d2a45c7c1950",
+      "species_model_hashes": {
+        "penguin": "a95647f2601564c620870b88a77f1f211c67c8669cfc049954343ec32105046e",
+        "bear": "ecdffab5adc2d8733befeaa97cf5c5ae5e8af72e31d1194930937110cce46fb8",
+        "pig": "ae205e26374a4a61705b2a3763003649fe0608115aaa20a1bb3e863e17947f37",
+        "chick": "ff817252677431f87a0d350d24f53410c75e502f848bd5bc614f5f1d163904ba"
+      }
     },
     "collection": "Dulce",
     "rarity": "Común",
@@ -223,7 +247,13 @@
         "pig": "assets/runner/accessories/mask_sleep_pig_tailored.glb",
         "chick": "assets/runner/accessories/mask_sleep_chick_tailored.glb"
       },
-      "asset_revision": "5814779354cec1ee"
+      "asset_revision": "5814779354cec1ee",
+      "species_model_hashes": {
+        "penguin": "5bd8177c66ffa2b3e699aca4963914a8c26d586a051d0d724abba77c2f130f97",
+        "bear": "25b156db7f033f91197f085e1976a31c7784ebf1a3d78bd92e7f63c48ef56728",
+        "pig": "3a95c3ba06451762f3608114df0b4aeabab31ed8d133d23b34d15513dc5b3ad3",
+        "chick": "d052d2d354bec8d4630439d092af7969459617bd3fa04fbcb3bde07769d1c752"
+      }
     },
     "collection": "Dulce",
     "rarity": "Común",
@@ -276,7 +306,13 @@
         "chick": "assets/runner/accessories/scarf_hearts_chick_tailored.glb"
       },
       "skinned_model_space": true,
-      "asset_revision": "1c2d7210cbfb198d"
+      "asset_revision": "1c2d7210cbfb198d",
+      "species_model_hashes": {
+        "penguin": "22ee7c0b59e26f9f226e91eb510ec92e4e10334c48c25d8347894cbd267343ff",
+        "bear": "6b052da503f544b0c3c941b3004a04d7232e00245f62647324d1d9bd7c816694",
+        "pig": "a03a875bc68e5a6e889a6f7d131ff122fcbd4d52eec19172ace3466528a1b9ec",
+        "chick": "75dff27e377616990e56fe25c9809eefa3de3f849b9e7169e6bfa21cade33287"
+      }
     },
     "collection": "Dulce",
     "rarity": "Común",
@@ -329,7 +365,13 @@
         "chick": "assets/runner/accessories/bandana_sage_chick_tailored.glb"
       },
       "skinned_model_space": true,
-      "asset_revision": "45157d7b17651fe1"
+      "asset_revision": "45157d7b17651fe1",
+      "species_model_hashes": {
+        "penguin": "5725c7021a9bcd4be9a82dd0ea18a427aca133db82827717847a8a1055e5bd7e",
+        "bear": "1319dee453be13347af3cbe0d838bc5748e1384625cb036cf8400a6ffbe2a6a6",
+        "pig": "572228e8fbe86af29bf7c9a4212d682ebc43c2f37e696e3e3ed2e6021e0eb4d2",
+        "chick": "7c4c4bce8c4000cd53a073721879dea6c398713e1bb22d4f60b0b7d02d671cb8"
+      }
     },
     "collection": "Dulce",
     "rarity": "Común",
@@ -382,7 +424,13 @@
         "chick": "assets/runner/accessories/necklace_heart_chick_tailored.glb"
       },
       "skinned_model_space": true,
-      "asset_revision": "6bfd887f9d5579ba"
+      "asset_revision": "6bfd887f9d5579ba",
+      "species_model_hashes": {
+        "penguin": "aaa1361e30332305880d97df2b2aea60a14e546ef4b11309d7d683b7e8db2e66",
+        "bear": "31182c8517c89dea28698d40cc7c5106c025b5d18bbbeaf3b83455e341aeeae8",
+        "pig": "67d871743a40ccb9dd0afa9e8f5d1a7b031ead770b65db83a75b9c7c21d4cfe2",
+        "chick": "c1200abe726427f29e968828cfa1cb53a7bcdc301a97f94f01bb9bb7aeac9e29"
+      }
     },
     "collection": "Dulce",
     "rarity": "Común",
@@ -435,7 +483,13 @@
         "chick": "assets/runner/accessories/chain_gold_chick_tailored.glb"
       },
       "skinned_model_space": true,
-      "asset_revision": "b9c66bf649182752"
+      "asset_revision": "b9c66bf649182752",
+      "species_model_hashes": {
+        "penguin": "3167c31d44115dd670724c639567642326823223a9f7453182782a8dc7907642",
+        "bear": "466f86c6c8afc98822b95a1b3efa91398ad1efc9fd40a75dca7d68aed73fb45e",
+        "pig": "1a91b22d1ba7a0b2fbc691242d45a8e6b87d5c2df4407f2e667e64ccede7700d",
+        "chick": "c542107c228e9be90332e3dbc84facb5ea085529e862d0d7f271ad3673480cb1"
+      }
     },
     "collection": "Dulce",
     "rarity": "Común",
@@ -488,7 +542,13 @@
         "chick": "assets/runner/accessories/bow_neck_chick_tailored.glb"
       },
       "skinned_model_space": true,
-      "asset_revision": "06dbe124058b3742"
+      "asset_revision": "06dbe124058b3742",
+      "species_model_hashes": {
+        "penguin": "f005bac6742921d85c47f3fa197b691b57d2a1730a09f941d38593e3c7a48429",
+        "bear": "8869cd76d418ae9f40e9dd00660bfefc42732f06dc8620885be48b5209078f83",
+        "pig": "044151e135d433e72dfaac30562a6dd768f3667ab653f893d707185fb50a8ad4",
+        "chick": "289f306743d5391d80890921e589e55b242502cca9add8e6c6b43c4ad6f5e2a3"
+      }
     },
     "collection": "Dulce",
     "rarity": "Común",
@@ -541,7 +601,13 @@
         "chick": "assets/runner/accessories/shoes_heart_chick_tailored.glb"
       },
       "skinned_model_space": true,
-      "asset_revision": "2e192116d227c816"
+      "asset_revision": "2e192116d227c816",
+      "species_model_hashes": {
+        "penguin": "514b0b0167b88c0daa34da2cfaf397cc29be71f2835e66c9e91fb3d15a537ca4",
+        "bear": "3c2c2bdd9d4227c36ae6db5ce2e0a9659cbaf50ae91418eebb46226b99151062",
+        "pig": "ccb9e4b283cdfdc23cf2d43ebfc5252d2a817c0a53c3c6d55711efb9b90a9363",
+        "chick": "89b93e53ceb7f39b0bdf2ece2e53e25d7b2e63177e5c63eb7f53606401dee0d4"
+      }
     },
     "collection": "Dulce",
     "rarity": "Común",
@@ -594,7 +660,13 @@
         "chick": "assets/runner/accessories/boots_rain_chick_tailored.glb"
       },
       "skinned_model_space": true,
-      "asset_revision": "20278f8d76fa9839"
+      "asset_revision": "20278f8d76fa9839",
+      "species_model_hashes": {
+        "penguin": "b487a129f6380b085000be4f8956a7e12865f242714f679dbeea0cef9da4633b",
+        "bear": "048bebf7ff73113543fa29c879731b93d5f1f0d234eb151764eac156eee3dc98",
+        "pig": "0fa4e111d7af82f8f3f4006d3db80d80dc0dcb9580051a95faab1c15a431f76f",
+        "chick": "c85d1cd30bf46b05f9d4caeb14cfacd08d460b766f49c319dcc5a8c780338728"
+      }
     },
     "collection": "Dulce",
     "rarity": "Común",
@@ -647,7 +719,13 @@
         "chick": "assets/runner/accessories/slippers_cloud_chick_tailored.glb"
       },
       "skinned_model_space": true,
-      "asset_revision": "c741e9a539b2cd35"
+      "asset_revision": "c741e9a539b2cd35",
+      "species_model_hashes": {
+        "penguin": "947b5b578d3f468472ba751a17875800c32e99201048e54d1d7a2221af11862d",
+        "bear": "6809095091c3d4d0add6a0e954c2da756d87b79cd3592ea3aaebeb7fc7a9e06a",
+        "pig": "4989fb318ec4207272aa4b2afccde05c834acaca572edc7ebe53c673fe0feda9",
+        "chick": "98dcb160adaf641897b89f2b8f87cf6672ee88b3c9de056eeeca392cfe7102c5"
+      }
     },
     "collection": "Dulce",
     "rarity": "Común",
@@ -700,7 +778,13 @@
         "chick": "assets/runner/accessories/shoes_chic_chick_tailored.glb"
       },
       "skinned_model_space": true,
-      "asset_revision": "7ecbf99fdc1922e9"
+      "asset_revision": "7ecbf99fdc1922e9",
+      "species_model_hashes": {
+        "penguin": "af1199007197ee8ff1bc2426c0249a2cd13debbcf3fb88052216abd7bad68466",
+        "bear": "ace4758eb1c75fe6c897c0097a70312bc4f3b2377abd294ae0440c8d4e5c4f52",
+        "pig": "561b56e66246419ccf7b4135d4251fd982fbab42c48b1c5a54e905927c1ad630",
+        "chick": "d0f85350169ca0836d63ac14014d7e0dca94bc1579654be71d8596a82ec93c88"
+      }
     },
     "collection": "Dulce",
     "rarity": "Común",
@@ -753,7 +837,13 @@
         "chick": "assets/runner/accessories/sandals_summer_chick_tailored.glb"
       },
       "skinned_model_space": true,
-      "asset_revision": "d8c6bfc4b2849027"
+      "asset_revision": "d8c6bfc4b2849027",
+      "species_model_hashes": {
+        "penguin": "72191b5d55b633a0e6df49615dbbb58e23acdc23f5395471fb5c0d68b2b95d94",
+        "bear": "c771d57c7b339e5ee733c2ad317d508be2665135757a17e61e08690bb72e3616",
+        "pig": "39b441e4f3a664abaea7513f7015f8ea0e0677282bc68f7cbf8fca14f81a4e7f",
+        "chick": "9a31eee15a5476d5c47834c6b607f25ae4da2e031f2211b528f504bbbcf17291"
+      }
     },
     "collection": "Dulce",
     "rarity": "Común",

@@ -28,7 +28,7 @@ for item in catalog:
  # three-quarter framing reveal its thickness, folds and material relief.
  floor_z=(lo.z-center.z)*scale-.012
  bpy.ops.mesh.primitive_plane_add(size=200,location=(0,0,floor_z))
- floor=bpy.context.object;floor.name='Fondo de estudio'
+ floor=bpy.context.object;floor.name='Fondo de estudio';floor.hide_render=True
  backdrop=bpy.data.materials.new('Blanco cálido');backdrop.use_nodes=True
  shader=backdrop.node_tree.nodes.get('Principled BSDF');shader.inputs['Base Color'].default_value=(1,1,1,1);shader.inputs['Roughness'].default_value=.86
  floor.data.materials.append(backdrop)
@@ -54,7 +54,7 @@ for item in catalog:
    if attempt==19:raise
    time.sleep(.15)
  report=[r for r in report if not(r['item_key']==item['item_key'] and r.get('species','penguin')==species)]
- report.append({'item_key':item['item_key'],'species':species,'model':model_path,'model_sha256':model_hash,'thumbnail':'assets/images/products/'+filename,'thumbnail_sha256':hashlib.sha256(destination.read_bytes()).hexdigest(),'render_style':'white_studio_v3'})
+ report.append({'item_key':item['item_key'],'species':species,'model':model_path,'model_sha256':model_hash,'thumbnail':'assets/images/products/'+filename,'thumbnail_sha256':hashlib.sha256(destination.read_bytes()).hexdigest(),'render_style':'transparent_studio_v4'})
  report_path.write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding='utf-8')
  print('THUMBNAIL',item['item_key'],flush=True)
 report_path.write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding='utf-8')

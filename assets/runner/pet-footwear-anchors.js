@@ -55,7 +55,7 @@ export function createFootwearAnchors(model,parent,maxAngle=.80,fit=null){
    }
    if(delta.w<0)delta.set(-delta.x,-delta.y,-delta.z,-delta.w);
    const angle=2*Math.acos(THREE.MathUtils.clamp(delta.w,-1,1));
-   const eased=angle>1e-7?new THREE.Quaternion().slerp(delta,maxAngle*Math.tanh(angle/maxAngle)/angle):delta;
+   const eased=Number.isFinite(maxAngle)&&angle>1e-7?new THREE.Quaternion().slerp(delta,maxAngle*Math.tanh(angle/maxAngle)/angle):delta;
    state.bone.matrix.makeTranslation(position.x,position.y,position.z)
     .multiply(new THREE.Matrix4().makeRotationFromQuaternion(eased))
     .multiply(new THREE.Matrix4().makeTranslation(-state.point.x,-state.point.y,-state.point.z));

@@ -136,6 +136,19 @@ void main() {
         closeTo(full / 2, .1),
       );
       expect(tester.element(find.byKey(sceneKey)), same(sceneElement));
+      await tester.tap(find.byTooltip('Nuestro cofre'));
+      await tester.pumpAndSettle();
+      expect(
+        tester.getSize(find.byKey(sceneKey)).height,
+        closeTo(full / 2, .1),
+      );
+      expect(tester.element(find.byKey(sceneKey)), same(sceneElement));
+      expect(find.byType(PetChest), findsOneWidget);
+      expect(find.byTooltip('Volver al nido'), findsNothing);
+      await tester.tap(find.byTooltip('Cerrar cofre'));
+      await tester.pumpAndSettle();
+      expect(tester.getSize(find.byKey(sceneKey)).height, full);
+      expect(tester.element(find.byKey(sceneKey)), same(sceneElement));
       expect(tester.takeException(), isNull);
     },
   );

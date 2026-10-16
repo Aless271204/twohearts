@@ -126,6 +126,8 @@ class _GameHubScreenState extends State<GameHubScreen> {
         padding: const EdgeInsets.all(20),
         children: [
           _featuredForest(),
+          const SizedBox(height: 16),
+          _guardianComingSoon(),
           const SizedBox(height: 20),
           const Text(
             'Todos los juegos',
@@ -175,6 +177,74 @@ class _GameHubScreenState extends State<GameHubScreen> {
           const SizedBox(height: 12),
           RewardedGoldCard(previewMode: widget.previewMode),
         ],
+      ),
+    ),
+  );
+  Widget _guardianComingSoon() => Semantics(
+    label: 'Guardianes del Alba. Aventura pixel art. Próximamente.',
+    child: ClipRRect(
+      borderRadius: BorderRadius.circular(22),
+      child: ColoredBox(
+        color: const Color(0xFFFFF9FA),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Image.asset(
+              'assets/images/ui/guardian-coming-soon.png',
+              height: 145,
+              width: double.infinity,
+              fit: BoxFit.cover,
+            ),
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Row(
+                children: [
+                  const Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Guardianes del Alba',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w800,
+                            color: Color(0xFF292633),
+                          ),
+                        ),
+                        SizedBox(height: 4),
+                        Text(
+                          'Aventura pixel art · Solo o en pareja',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Color(0xFF716B78),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 7,
+                    ),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFEAF3ED),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: const Text(
+                      'Próximamente',
+                      style: TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w700,
+                        color: Color(0xFF3D7259),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     ),
   );

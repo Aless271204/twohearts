@@ -1,3 +1,4 @@
+import {bindGarmentToOriginalSkin} from './pet-garment-binding.js?revision=original-skin-1';
 import * as THREE from 'three';
 import {createAccessory, disposeAccessory} from './accessory-pieces.js?revision=wardrobe-colors-2';
 import {conformHeadAccessory} from './head-conform.js';
@@ -6,7 +7,7 @@ import {restoreSleeveCoverage,coverSleeveSkin} from './pet-sleeve-coverage.js?re
 import {createSleeveAnchors} from './pet-sleeve-anchors.js?revision=surface-fit-4';
 import {prepareHeadwearOcclusion} from './pet-headwear-occlusion.js?revision=ear-seam-2';
 import {createClothWrap} from './pet-cloth-wrap.js?revision=3';
-import {createFootwearAnchors} from './pet-footwear-anchors.js?revision=paw-rigid-2';
+import {createFootwearAnchors} from './pet-footwear-anchors.js?revision=paw-contact-3';
 
 export {createAccessory} from './accessory-pieces.js?revision=wardrobe-colors-2';
 
@@ -105,19 +106,24 @@ export function equipRunnerCosmetics(model, loadout={}) {
       const part=createAccessory(item,slot,model.userData.species);group.add(part);model.updateMatrixWorld(true);
       let clothingBones=bones;
       if(slot==='pet_feet'){
-        const anchors=createFootwearAnchors(model,group,/sandals/.test(item.style??'')?Math.PI:.80,fit);clothingBones={...bones,...anchors.bones};
+        const anchors=createFootwearAnchors(model,group,Infinity,fit);clothingBones={...bones,...anchors.bones};
         const previous=group.userData.updateSleeves;group.userData.updateSleeves=()=>{previous?.();anchors.update();};
       }
       const replacements=[];
       const wrapped=[];
       const skeletons=new Map();
       part.traverse(mesh=>{if(mesh.isMesh)replacements.push(mesh);});
-      const sleeveProfile=replacements.find(mesh=>mesh.userData.nidoSleeveFit)?.userData.nidoSleeveFit;
+      const sleeveProfile=replacements.find(mesh=>!mesh.userData.nidoMotionTransfer&&mesh.userData.nidoSleeveFit)?.userData.nidoSleeveFit;
       if(sleeveProfile){
         const anchors=createSleeveAnchors(model,sleeveProfile,group);Object.assign(bones,anchors.bones);
         const previous=group.userData.updateSleeves;group.userData.updateSleeves=()=>{previous?.();anchors.update();};
       }
       for(const mesh of replacements){
+        if(mesh.userData.nidoMotionTransfer){
+          let source;model.traverse(candidate=>{if(candidate.isSkinnedMesh&&!candidate.userData.cosmetic&&candidate.name===(mesh.userData.nidoMotionTransfer.source_mesh??'Mesh_0'))source=candidate;});
+          if(!source)throw Error('No se encontró el cuerpo original para enlazar la ropa');
+          bindGarmentToOriginalSkin(mesh,source,skeletons);continue;
+        }
         const names=mesh.userData.nidoBoneNames;
         if(!Array.isArray(names)||!mesh.geometry.attributes.skinIndex||!mesh.geometry.attributes.skinWeight)throw Error('La prenda no tiene pesos de animación');
         const joints=names.map(name=>clothingBones[name.replace(/^mixamorig:?/,'')]);

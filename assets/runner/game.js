@@ -17,7 +17,7 @@ import { limitTextureMemory } from './texture_budget.js';
 import {createWardrobeJump,createWardrobeRun} from './pet-wardrobe-jump.js?revision=ankles-dynamic-6';
 import { showRunnerError } from './diagnostics.js';
 import { requestHost, exitGame, notifyPetStroke } from './bridge.js';
-import { equipRunnerCosmetics, measureAccessoryFit } from './cosmetics.js?revision=wardrobe-neck-colors-8';
+import { equipRunnerCosmetics, measureAccessoryFit } from './cosmetics.js?revision=original-skin-1';
 import { measurePetSoles, createNaturalRest } from './pet-rest-pose.js';
 import { createPetMotion } from './pet-motion.js';
 import {keepJumpFacingForward} from './pet-jump-heading.js';

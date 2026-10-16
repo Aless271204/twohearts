@@ -3,25 +3,25 @@
     "item_key": "bow_neck",
     "species": "penguin",
     "asset": "assets/runner/accessories/restart_bow_neck_penguin.glb",
-    "sha256": "8007c158c3b4fbc5337374eb208e82604e1b23cfb055a32ccc013c652e67529b"
+    "sha256": "b00531f5c8e15f505582811121cda69c58d9048b2e399ea897548f601bd84283"
   },
   {
     "item_key": "bow_neck",
     "species": "bear",
     "asset": "assets/runner/accessories/restart_bow_neck_bear.glb",
-    "sha256": "ecc431bc3774cf155b05857a8ccda529cc53d54940d36fa22713ca1411a32753"
+    "sha256": "854f9e1203b0fbba4272a4925ae39267da860223cbdb6b0db7e268533311d1ab"
   },
   {
     "item_key": "bow_neck",
     "species": "pig",
     "asset": "assets/runner/accessories/restart_bow_neck_pig.glb",
-    "sha256": "cd3bcea1e13a6db58461093f0cd2f339f3d2aa32dbb87ff00ae9d3c8cadcdf20"
+    "sha256": "eb30b47e9bfd8c23f8eacf8b25846fdb1f84e741344272dbda28e48968f6c006"
   },
   {
     "item_key": "bow_neck",
     "species": "chick",
     "asset": "assets/runner/accessories/restart_bow_neck_chick.glb",
-    "sha256": "e92ecf4c72c306629e5bdd67176d5d7388ead9c65b51d976402bceaf4c7ce3e9"
+    "sha256": "ac7ff125137b2815a36a198d35586c9c4071db063f7099f43647fa59e45514fb"
   },
   {
     "item_key": "sandals_summer",
@@ -130,7 +130,7 @@
     "item_key": "necklace_heart",
     "species": "penguin",
     "asset": "assets/runner/accessories/restart_necklace_heart_penguin.glb",
-    "sha256": "290de1d2550ea8c3eb9f85223b6fd6b0492a353f28cf38f5a38945c4cfa2b4a5",
+    "sha256": "2395f04f6049b99286ede7c497cb45f3e46b472cd2c115659bc72a8a41535b43",
     "skinned_model_space": true
   },
   {
@@ -144,7 +144,7 @@
     "item_key": "necklace_heart",
     "species": "bear",
     "asset": "assets/runner/accessories/restart_necklace_heart_bear.glb",
-    "sha256": "1a6aa79013087f7420c8f8e3914e817151761c21bd526235dad2585eec840f5d",
+    "sha256": "16817f1223c852fa64153d149e12885c093f0d679e099257c975a08ee2a67743",
     "skinned_model_space": true
   },
   {
@@ -158,7 +158,7 @@
     "item_key": "necklace_heart",
     "species": "pig",
     "asset": "assets/runner/accessories/restart_necklace_heart_pig.glb",
-    "sha256": "2a4246e2133cda27643b3db380e9dfd2ae91feca3491a554e92a4021cfee5bcb",
+    "sha256": "a28650706e18f7285ea94532c2f77e89abc905f6a6e88a9d9f2a284bcbe82907",
     "skinned_model_space": true
   },
   {
@@ -172,7 +172,7 @@
     "item_key": "necklace_heart",
     "species": "chick",
     "asset": "assets/runner/accessories/restart_necklace_heart_chick.glb",
-    "sha256": "d7b251826a28d91c8469bf2d844b09869e93c697ac8044024b358beaa6919f9d",
+    "sha256": "d530a558f4840f6c910ce0658fcd5a42ed64548bd6620e103e2470ae41316a4f",
     "skinned_model_space": true
   },
   {
@@ -291,21 +291,21 @@
     "item_key": "scarf_hearts",
     "species": "penguin",
     "asset": "assets/runner/accessories/restart_scarf_hearts_penguin.glb",
-    "sha256": "c30205b30cae4658b044a12ee365cf0ea9bf8901b338b93e55e3b1bf97856197",
+    "sha256": "313e98443920a544028b60b7840334696cd9b9f63cb861496a8d5b9828c03461",
     "skinned_model_space": true
   },
   {
     "item_key": "bandana_sage",
     "species": "penguin",
     "asset": "assets/runner/accessories/restart_bandana_sage_penguin.glb",
-    "sha256": "aa8d9ea590be69b878f75b6d70ca6c65c0c806eac6fbc80096ef4f1a1e18bd05",
+    "sha256": "14c11e770ad91a6b4b894bfbc801df660bc029e603a60217d24702025368e3c7",
     "skinned_model_space": true
   },
   {
     "item_key": "chain_gold",
     "species": "penguin",
     "asset": "assets/runner/accessories/restart_chain_gold_penguin.glb",
-    "sha256": "e9b71314db69d0504a8cbea7af50b91aeade5e1434c01fb62f08ea574b8568e0",
+    "sha256": "02b6c01acd17f71a5b05c4f1c073b5ffb11e8836b1fa75cffd41111b7213c823",
     "skinned_model_space": true
   },
   {
@@ -340,21 +340,21 @@
     "item_key": "scarf_hearts",
     "species": "bear",
     "asset": "assets/runner/accessories/restart_scarf_hearts_bear.glb",
-    "sha256": "633b1dea0a2c0c11a314192c36470ae27951041b29fa86408dd8130e53c11240",
+    "sha256": "6a55f2a04f25bc32a25b2eb411caf49cc168b5ad175e1243d746f72599394e37",
     "skinned_model_space": true
   },
   {
     "item_key": "bandana_sage",
     "species": "bear",
     "asset": "assets/runner/accessories/restart_bandana_sage_bear.glb",
-    "sha256": "0900009b850838c536fbdbcd62149822cdf4fc2dbfd1f2c402497c1ac534cb10",
+    "sha256": "63a2a27ba259e0403baa5c783829a13944a2a8605f9e0da5352eedc89d10aa3f",
     "skinned_model_space": true
   },
   {
     "item_key": "chain_gold",
     "species": "bear",
     "asset": "assets/runner/accessories/restart_chain_gold_bear.glb",
-    "sha256": "dbda3cb628bee0064102e936eec651766eeb608d07bcb83ab7fc7a684e24065a",
+    "sha256": "dbec322262c9fdff8db7fceb582452dbdbc5da47b9fe0ff2ec39c5dba1ce8855",
     "skinned_model_space": true
   },
   {
@@ -389,21 +389,21 @@
     "item_key": "scarf_hearts",
     "species": "pig",
     "asset": "assets/runner/accessories/restart_scarf_hearts_pig.glb",
-    "sha256": "593084698acb6c0709d41f7bba971480c18247452d5cff604d8517a9e7d79658",
+    "sha256": "ad4f945deb83bd9ccd34787b4d6bb55942cd492ce6982aced5cb13a53d8ed6c2",
     "skinned_model_space": true
   },
   {
     "item_key": "bandana_sage",
     "species": "pig",
     "asset": "assets/runner/accessories/restart_bandana_sage_pig.glb",
-    "sha256": "3c1f519683d8db0bbc473477935a3f53ebf4277e039c9a2402d505792808f3eb",
+    "sha256": "fa0bb6675d6c62409a8045238027bab73f6dafbd66a15dacc09180c2db8a72b1",
     "skinned_model_space": true
   },
   {
     "item_key": "chain_gold",
     "species": "pig",
     "asset": "assets/runner/accessories/restart_chain_gold_pig.glb",
-    "sha256": "24e3df183a64120e676fe73dc12a6ac9772c2e47e70525cbd7100da06bb3c23f",
+    "sha256": "5b50181476d5ee1cf54d4c721b9fae9a7ebf22a0e51a3fe205003a0a0a9e663f",
     "skinned_model_space": true
   },
   {
@@ -438,21 +438,21 @@
     "item_key": "scarf_hearts",
     "species": "chick",
     "asset": "assets/runner/accessories/restart_scarf_hearts_chick.glb",
-    "sha256": "c064dbbcc7fe3630a546b977aad6d0742cc5ed6e86405d52e3a9cf4aca4df170",
+    "sha256": "0858e9c1600c3b4a88acf98de3ca5a8c1f017fb41a496122617649f79dddaaff",
     "skinned_model_space": true
   },
   {
     "item_key": "bandana_sage",
     "species": "chick",
     "asset": "assets/runner/accessories/restart_bandana_sage_chick.glb",
-    "sha256": "707fc6d44a348e45837fc2d7ee851b1938a54607d4da37490f56c37d6afce55e",
+    "sha256": "fc1472e371b4b781933ae9a277a3dd7c05ce8c2c4eea7457f5a7cd783d37c7ae",
     "skinned_model_space": true
   },
   {
     "item_key": "chain_gold",
     "species": "chick",
     "asset": "assets/runner/accessories/restart_chain_gold_chick.glb",
-    "sha256": "bb773f97f86402d3b0b098cb0cee243eeb9e47941145b6aef3b64e4f3f08afaa",
+    "sha256": "865dc7081bbb9b363e29814a5775ea8b33bf1d9595ac24b58973ab3c32d0179e",
     "skinned_model_space": true
   },
   {

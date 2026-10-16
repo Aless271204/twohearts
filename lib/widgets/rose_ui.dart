@@ -109,7 +109,7 @@ class ProductThumbnail extends StatelessWidget {
       final file = '${item.slot}-${item.style}-$color.png';
       final variantFile = '${item.slot}-${item.style}-$color-$species.png';
       return ColoredBox(
-        color: Colors.white,
+        color: Colors.transparent,
         child: _AnimatedProductPreview(
           child: Image.asset(
             'assets/images/products/$variantFile',
@@ -208,8 +208,11 @@ class _AnimatedProductPreviewState extends State<_AnimatedProductPreview>
       builder: (context, child) {
         final t = Curves.easeInOut.transform(motion.value) - .5;
         return Transform.translate(
-          offset: Offset(0, t * 5),
-          child: Transform.rotate(angle: t * .035, child: child),
+          offset: Offset(t * 3, t * 10),
+          child: Transform.scale(
+            scale: 1.03 + t * .06,
+            child: Transform.rotate(angle: t * .09, child: child),
+          ),
         );
       },
     ),

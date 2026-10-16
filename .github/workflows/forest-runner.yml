@@ -24,7 +24,7 @@ jobs:
       - run: node --test test/runner_variety_test.mjs test/runner_replay_test.mjs test/runner_assets_test.mjs test/runner_feedback_test.mjs test/runner_mobile_test.mjs test/runner_art_test.mjs test/inventory_cosmetics_test.mjs test/runner_endless_test.mjs test/pet_accessory_fit_test.mjs test/runner_power_ups_test.mjs test/accessory_glb_test.mjs test/blender_head_fit_test.mjs test/imported_head_models_test.mjs test/room_3d_test.mjs
         timeout-minutes: 5
       - run: node --test test/blender_wardrobe_test.mjs test/blender_complements_test.mjs test/pet_torso_rig_test.mjs test/pet_footwear_coverage_test.mjs test/pet_runner_jump_test.mjs test/pet_runner_run_test.mjs test/pet_sleeve_coverage_test.mjs
-      - run: node --test test/admob_signature_test.mjs test/garment_colors_test.mjs test/original_wardrobe_coverage_test.mjs test/wardrobe_details_fit_test.mjs
+      - run: node --test test/admob_signature_test.mjs test/garment_colors_test.mjs test/original_wardrobe_coverage_test.mjs test/wardrobe_details_fit_test.mjs test/garment_original_binding_test.mjs test/pet_footwear_anchors_test.mjs test/wardrobe_equipment_order_test.mjs
       - run: python3 scripts/audit-wardrobe-topology.py --strict
       - run: python3 test/wardrobe_export_seams_test.py
       - uses: subosito/flutter-action@v2
@@ -156,21 +156,16 @@ jobs:
           GH_REPO: ${{ github.repository }}
           SOURCE_SHA: ${{ github.sha }}
         run: |
-          mv apk/app-release.apk apk/NIDO-1.2.2-ligera.apk
-          sha256sum apk/NIDO-1.2.2-ligera.apk > apk/NIDO-1.2.2-ligera.apk.sha256
+          mv apk/app-release.apk apk/NIDO-1.2.3-ligera.apk
+          sha256sum apk/NIDO-1.2.3-ligera.apk > apk/NIDO-1.2.3-ligera.apk.sha256
           cat > release-notes.txt <<'NOTES'
-          NIDO 1.2.2: paquete sin archivos historicos y texturas compartidas sin perdida de calidad.
-          Decoracion en media pantalla, foto privada de perfil, codigo de pareja visible y ultimas ubicaciones.
-          Los juegos 2D existentes admiten entrenamiento sin oro, pareja, sala por codigo y busqueda online.
-          Miniaturas masculinas y femeninas seleccionables y audio en todos los modos.
-          La ubicacion se actualiza mientras la app esta abierta, y conserva el ultimo punto al desactivarla.
-          Nueva musica original de expedicion y miniaturas 3D sobre fondo blanco.
-          Paquetes de 1000/2000/5000 a US$1.99/2.99/4.99. Pagos reales pendientes de configurar las tiendas.
-          SDK AdMob integrado: cinco videos cada doce horas, tres de oro por video confirmado mediante SSV.
-          Este APK usa anuncios de prueba: no generan oro real ni ingresos.
-          Mascaras corregidas para conservar el cuello original. Articulos pendientes siguen indicados como proximamente.
-          Vestuario revisado en navegador: no certificamos igualdad exacta con la ilustracion ni ausencia de penetraciones en todas las fases.
-          Version: 1.2.2+17
+          NIDO 1.2.3: habitacion integrada en Mascota con las cinco pestanas visibles.
+          Cofre y decoracion en media pantalla, transicion suave e iconos de color a la izquierda.
+          96 miniaturas transparentes; 24 accesorios adaptados disponibles por oro.
+          Enlace del vestuario al esqueleto original para seguir carrera y salto.
+          Guardianes del Alba se muestra como Proximamente; el prototipo no se incluye.
+          Version de prueba. Pagos de tiendas pendientes; anuncios de prueba sin ingresos ni oro.
+          Version: 1.2.3+18
           NOTES
           echo "Commit: $SOURCE_SHA" >> release-notes.txt
-          gh release create nido-1.2.2 apk/NIDO-1.2.2-ligera.apk apk/NIDO-1.2.2-ligera.apk.sha256 --target "$SOURCE_SHA" --title "NIDO 1.2.2 - Hogar y juego online" --notes-file release-notes.txt --prerelease
+          gh release create nido-1.2.3 apk/NIDO-1.2.3-ligera.apk apk/NIDO-1.2.3-ligera.apk.sha256 --target "$SOURCE_SHA" --title "NIDO 1.2.3 - Habitacion y vestuario" --notes-file release-notes.txt --prerelease

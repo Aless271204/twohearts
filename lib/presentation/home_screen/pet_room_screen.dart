@@ -1,4 +1,3 @@
-import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import '../../core/store_packages.dart';
 import '../../core/pet_model_catalog.dart';
@@ -27,7 +26,10 @@ class PetRoomScreen extends StatefulWidget {
 class _PetRoomScreenState extends State<PetRoomScreen> {
   final inventory = InventoryService.instance, pet = SharedPetService.instance;
   int reaction = 0;
-  bool decorating = false;
+  String? openPanel;
+  bool get decorating => openPanel != null;
+  void _toggle(String key) =>
+      setState(() => openPanel = openPanel == key ? null : key);
   @override
   void initState() {
     super.initState();
@@ -50,15 +52,7 @@ class _PetRoomScreenState extends State<PetRoomScreen> {
     super.dispose();
   }
 
-  Future<void> _chest() => showModalBottomSheet<void>(
-    context: context,
-    useRootNavigator: true,
-    isScrollControlled: true,
-    backgroundColor: const Color(0xFFFFF9FA),
-    barrierColor: const Color(0x55756672),
-    showDragHandle: true,
-    builder: (_) => PetChest(previewMode: widget.previewMode),
-  );
+  void _chest() => _toggle('chest');
   Future<void> _family() => showModalBottomSheet<void>(
     context: context,
     useRootNavigator: true,
@@ -68,25 +62,36 @@ class _PetRoomScreenState extends State<PetRoomScreen> {
     showDragHandle: true,
     builder: (_) => const PetFamilySheet(),
   );
-  Widget _roomIcon(IconData icon, String label, VoidCallback action) => Padding(
-    padding: const EdgeInsets.only(right: 9),
+  Widget _roomIcon(
+    IconData icon,
+    String label,
+    Color color,
+    VoidCallback action,
+  ) => Padding(
+    padding: const EdgeInsets.only(bottom: 10),
     child: DecoratedBox(
       decoration: BoxDecoration(
-        color: Colors.white.withAlpha(240),
-        shape: BoxShape.circle,
-        boxShadow: const [
+        gradient: LinearGradient(
+          colors: [Colors.white, color.withAlpha(45)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: color.withAlpha(90)),
+        boxShadow: [
           BoxShadow(
-            color: Color(0x167B5666),
-            blurRadius: 14,
-            offset: Offset(0, 4),
+            color: color.withAlpha(40),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
           ),
         ],
       ),
       child: IconButton(
         tooltip: label,
-        color: const Color(0xFFB84266),
+        color: color,
         onPressed: action,
-        icon: Icon(icon),
+        icon: Icon(icon, size: 29),
+        padding: const EdgeInsets.all(12),
       ),
     ),
   );
@@ -98,7 +103,9 @@ class _PetRoomScreenState extends State<PetRoomScreen> {
         child: Stack(
           children: [
             AnimatedPositioned(
-              duration: const Duration(milliseconds: 420),
+              duration: MediaQuery.disableAnimationsOf(context)
+                  ? Duration.zero
+                  : const Duration(milliseconds: 360),
               curve: Curves.easeInOutCubic,
               top: 0,
               left: 0,
@@ -119,38 +126,42 @@ class _PetRoomScreenState extends State<PetRoomScreen> {
                     altText: '${pet.displayName} en su habitación',
                   ),
             ),
-            SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(16, 12, 7, 0),
-                child: Row(
-                  children: [
-                    _roomIcon(
-                      Icons.inventory_2_rounded,
-                      'Nuestro cofre',
-                      _chest,
-                    ),
-                    _roomIcon(Icons.pets_rounded, 'Nuestras mascotas', _family),
-                    _roomIcon(
-                      Icons.chair_rounded,
-                      'Personalizar habitación',
-                      () => setState(() => decorating = !decorating),
-                    ),
-                    const Spacer(),
-                    _roomIcon(Icons.close_rounded, 'Volver al nido', () {
-                      if (!widget.embedded) {
-                        Navigator.pop(context);
-                      } else {
-                        context.go(
-                          widget.previewMode ? '/' : '/memories-screen',
-                        );
-                      }
-                    }),
-                  ],
+            Positioned(
+              top: 0,
+              left: 0,
+              child: SafeArea(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(12, 12, 0, 0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      _roomIcon(
+                        Icons.inventory_2_rounded,
+                        'Nuestro cofre',
+                        const Color(0xFFD78A28),
+                        _chest,
+                      ),
+                      _roomIcon(
+                        Icons.pets_rounded,
+                        'Nuestras mascotas',
+                        const Color(0xFF9474CF),
+                        _family,
+                      ),
+                      _roomIcon(
+                        Icons.chair_rounded,
+                        'Personalizar habitación',
+                        const Color(0xFF4B9D80),
+                        () => _toggle('decorate'),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
             AnimatedPositioned(
-              duration: const Duration(milliseconds: 420),
+              duration: MediaQuery.disableAnimationsOf(context)
+                  ? Duration.zero
+                  : const Duration(milliseconds: 360),
               curve: Curves.easeInOutCubic,
               left: 0,
               right: 0,
@@ -158,9 +169,25 @@ class _PetRoomScreenState extends State<PetRoomScreen> {
                   ? constraints.maxHeight / 2
                   : constraints.maxHeight,
               height: constraints.maxHeight / 2,
-              child: RoomDecorationPanel(
-                previewMode: widget.previewMode,
-                onClose: () => setState(() => decorating = false),
+              child: RepaintBoundary(
+                child: ClipRRect(
+                  borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(24),
+                  ),
+                  child: ColoredBox(
+                    color: const Color(0xFFFFF9FA),
+                    child: openPanel == 'chest'
+                        ? PetChest(
+                            previewMode: widget.previewMode,
+                            embedded: true,
+                            onClose: () => setState(() => openPanel = null),
+                          )
+                        : RoomDecorationPanel(
+                            previewMode: widget.previewMode,
+                            onClose: () => setState(() => openPanel = null),
+                          ),
+                  ),
+                ),
               ),
             ),
           ],
@@ -349,8 +376,14 @@ class _RoomDecorationPanelState extends State<RoomDecorationPanel> {
 }
 
 class PetChest extends StatelessWidget {
-  final bool previewMode;
-  const PetChest({super.key, this.previewMode = false});
+  final bool previewMode, embedded;
+  final VoidCallback? onClose;
+  const PetChest({
+    super.key,
+    this.previewMode = false,
+    this.embedded = false,
+    this.onClose,
+  });
   @override
   Widget build(BuildContext context) => ListenableBuilder(
     listenable: InventoryService.instance,
@@ -363,20 +396,20 @@ class PetChest extends StatelessWidget {
           .toList();
       return SafeArea(
         child: SizedBox(
-          height: MediaQuery.sizeOf(context).height * .76,
+          height: embedded ? null : MediaQuery.sizeOf(context).height * .76,
           child: DefaultTabController(
             length: 2,
             child: Column(
               children: [
-                const Padding(
-                  padding: EdgeInsets.fromLTRB(20, 0, 20, 10),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 8, 12, 10),
                   child: Row(
                     children: [
                       Icon(Icons.inventory_2_rounded, color: Color(0xFFF05280)),
                       SizedBox(width: 10),
                       Text(
                         'Nuestro cofre',
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 23,
                           fontWeight: FontWeight.w800,
                         ),
@@ -384,6 +417,15 @@ class PetChest extends StatelessWidget {
                     ],
                   ),
                 ),
+                if (onClose != null)
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: IconButton(
+                      tooltip: 'Cerrar cofre',
+                      onPressed: onClose,
+                      icon: const Icon(Icons.close_rounded),
+                    ),
+                  ),
                 const TabBar(
                   tabs: [
                     Tab(text: 'Mis artículos'),

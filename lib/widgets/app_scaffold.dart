@@ -71,7 +71,7 @@ class _AppScaffoldState extends State<AppScaffold>
       bottomNavigationBar: AnimatedSize(
         duration: const Duration(milliseconds: 220),
         curve: Curves.easeOutCubic,
-        child: _modeOpen || _branch == 3
+        child: _modeOpen && _branch != 3
             ? const SizedBox.shrink()
             : AppNavigation(navigationShell: widget.navigationShell),
       ),

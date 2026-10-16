@@ -36,10 +36,10 @@ test('nine editable patterns have four valid Blender variants, finite attributes
     for(const a of Object.values(m.geometry.attributes))assert.ok([...a.array].every(Number.isFinite));
     if(item.equip_slot==='pet_body'){
      assert.ok(m.userData.nidoBoneNames.length>10);const w=m.geometry.attributes.skinWeight,indices=m.geometry.attributes.skinIndex;assert.ok(w);
-     assert.equal(m.userData.nidoSkinTransfer?.method,'closest_triangle_barycentric');
-     assert.equal(m.userData.nidoSkinTransfer?.version,3);
-     assert.equal(m.userData.nidoSkinTransfer?.source,/^(Patrón[ _]envolvente|Manga[ _]adaptada)/.test(m.name)?'pet_surface':'garment_surface');
-     assert.equal(m.userData.nidoSkinTransfer?.stage,/^(Patrón[ _]envolvente|Manga[ _]adaptada)/.test(m.name)?'primary':/^(Panel[ _]·|Volante[ _]pétalo)/.test(m.name)?'secondary':'decoration');
+     assert.equal(m.userData.nidoSkinTransfer?.method,m.userData.nidoShoulderLining?'original_surface_lining':'closest_triangle_barycentric');
+     if(!m.userData.nidoShoulderLining)assert.equal(m.userData.nidoSkinTransfer?.version,3);
+     if(!m.userData.nidoShoulderLining)assert.equal(m.userData.nidoSkinTransfer?.source,/^(Patrón[ _]envolvente|Manga[ _]adaptada)/.test(m.name)?'pet_surface':'garment_surface');
+     if(!m.userData.nidoShoulderLining)assert.equal(m.userData.nidoSkinTransfer?.stage,/^(Patrón[ _]envolvente|Manga[ _]adaptada)/.test(m.name)?'primary':/^(Panel[ _]·|Volante[ _]pétalo)/.test(m.name)?'secondary':'decoration');
      for(let i=0;i<w.count;i++){
       assert.ok(Math.abs(w.getX(i)+w.getY(i)+w.getZ(i)+w.getW(i)-1)<.002);
       for(let j=0;j<4;j++){
