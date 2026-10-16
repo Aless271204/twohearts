@@ -80,7 +80,7 @@ jobs:
       - name: Build signed Android APK
         run: |
           for attempt in 1 2; do
-            if flutter build apk --release --target-platform android-arm64 --no-pub --dart-define-from-file=build-env.json; then
+            if flutter build apk --release --split-per-abi --target-platform android-arm,android-arm64 --no-pub --dart-define-from-file=build-env.json; then
               exit 0
             fi
             if [ "$attempt" -eq 2 ]; then exit 1; fi
@@ -90,14 +90,16 @@ jobs:
       - name: Verify APK signature
         run: |
           APK_SIGNER=$(find "$ANDROID_HOME/build-tools" -name apksigner | sort -V | tail -n 1)
-          "$APK_SIGNER" verify --verbose --print-certs build/app/outputs/flutter-apk/app-release.apk
+          for apk in build/app/outputs/flutter-apk/app-*-release.apk; do
+            "$APK_SIGNER" verify --verbose --print-certs "$apk"
+          done
       - name: Remove temporary signing material
         if: always()
         run: rm -f "$RUNNER_TEMP/nido-upload.p12"
       - uses: actions/upload-artifact@v4
         with:
           name: twohearts-android-release
-          path: build/app/outputs/flutter-apk/app-release.apk
+          path: build/app/outputs/flutter-apk/app-*-release.apk
   android-smoke:
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -156,11 +158,12 @@ jobs:
           GH_REPO: ${{ github.repository }}
           SOURCE_SHA: ${{ github.sha }}
         run: |
-          mv apk/app-release.apk apk/NIDO-1.2.3-ligera.apk
+          mv apk/app-arm64-v8a-release.apk apk/NIDO-1.2.3-ligera.apk
+          mv apk/app-armeabi-v7a-release.apk apk/NIDO-1.2.3-android-32.apk
           sha256sum apk/NIDO-1.2.3-ligera.apk > apk/NIDO-1.2.3-ligera.apk.sha256
           cat > release-notes.txt <<'NOTES'
           NIDO 1.2.3: habitacion integrada en Mascota con las cinco pestanas visibles.
-          APK para Android ARM64, compatible con Pixel 6; omite bibliotecas de otras arquitecturas.
+          APK ligera para Android ARM64, compatible con Pixel 6; descarga alternativa para Android de 32 bits.
           Cofre y decoracion en media pantalla, transicion suave e iconos de color a la izquierda.
           96 miniaturas transparentes; 24 accesorios adaptados disponibles por oro.
           Enlace del vestuario al esqueleto original para seguir carrera y salto.
@@ -169,4 +172,4 @@ jobs:
           Version: 1.2.3+18
           NOTES
           echo "Commit: $SOURCE_SHA" >> release-notes.txt
-          gh release create nido-1.2.3 apk/NIDO-1.2.3-ligera.apk apk/NIDO-1.2.3-ligera.apk.sha256 --target "$SOURCE_SHA" --title "NIDO 1.2.3 - Habitacion y vestuario" --notes-file release-notes.txt --prerelease
+          gh release create nido-1.2.3 apk/NIDO-1.2.3-ligera.apk apk/NIDO-1.2.3-android-32.apk apk/NIDO-1.2.3-ligera.apk.sha256 --target "$SOURCE_SHA" --title "NIDO 1.2.3 - Habitacion y vestuario" --notes-file release-notes.txt --prerelease
