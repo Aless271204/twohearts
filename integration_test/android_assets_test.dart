@@ -8,6 +8,7 @@ import 'package:twohearts/core/pet_model_catalog.dart';
 import 'package:twohearts/services/supabase_service.dart';
 import 'package:twohearts/widgets/pet_3d_viewer.dart';
 import 'package:twohearts/widgets/forest_runner_native.dart';
+import 'package:twohearts/core/art_document.dart';
 
 Future<void> waitForJavaScript(
   WidgetTester tester,
@@ -313,4 +314,30 @@ void main() {
     }
     await tester.pumpWidget(const SizedBox.shrink());
   }, timeout: const Timeout(Duration(minutes: 7)));
+  testWidgets(
+    'drawing PNG saves on Android and private note widget accepts and clears data',
+    (tester) async {
+      const channel = MethodChannel('nido/art');
+      expect(await channel.invokeMethod<bool>('clearWidget'), isTrue);
+      expect(
+        await channel.invokeMethod<bool>('updateNote', {
+          'kind': 'text',
+          'content': 'Nota de prueba privada',
+        }),
+        isTrue,
+      );
+      final doc = ArtDocument();
+      doc.add(
+        const ArtMark(ArtTool.brush, Colors.pink, 20, [
+          Offset(70, 70),
+          Offset(180, 180),
+        ]),
+      );
+      final png = await tester.runAsync(doc.png);
+      final uri = await channel.invokeMethod<String>('savePng', {'bytes': png});
+      expect(uri, startsWith('content://media/'));
+      expect(await channel.invokeMethod<bool>('clearWidget'), isTrue);
+      doc.dispose();
+    },
+  );
 }

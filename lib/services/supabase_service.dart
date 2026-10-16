@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class SupabaseService {
@@ -45,7 +46,8 @@ class SupabaseService {
     required String password,
     required String fullName,
   }) async {
-    if (password.length < 12) throw const AuthException('Usa una contraseña de al menos 12 caracteres');
+    if (password.length < 12)
+      throw const AuthException('Usa una contraseña de al menos 12 caracteres');
     return await client.auth.signUp(
       email: email.trim(),
       password: password,
@@ -66,6 +68,16 @@ class SupabaseService {
 
   /// Sign out
   Future<void> signOut() async {
+    try {
+      await client
+          .rpc('art_action', params: {'p_action': 'revoke_widget'})
+          .timeout(const Duration(seconds: 3));
+    } catch (_) {}
+    if (!kIsWeb) {
+      try {
+        await const MethodChannel('nido/art').invokeMethod('clearWidget');
+      } catch (_) {}
+    }
     await client.auth.signOut();
   }
 
@@ -161,9 +173,21 @@ class SupabaseService {
 
   /// Update current user's profile
   Future<void> updateProfile(Map<String, dynamic> data) async {
-    const editable = {'full_name','avatar_url','relationship_start','pet_type','city','connection_type','nickname','bio','pet_portrait_style'};
+    const editable = {
+      'full_name',
+      'avatar_url',
+      'relationship_start',
+      'pet_type',
+      'city',
+      'connection_type',
+      'nickname',
+      'bio',
+      'pet_portrait_style',
+    };
     if (data.keys.any((key) => !editable.contains(key))) {
-      throw ArgumentError('Este campo debe modificarse mediante una operación autorizada');
+      throw ArgumentError(
+        'Este campo debe modificarse mediante una operación autorizada',
+      );
     }
     final uid = currentUser?.id;
     if (uid == null) return;
@@ -200,12 +224,14 @@ class SupabaseService {
       );
       if (result == 'linked') return null;
       return switch (result) {
-        'not_found' => 'Código no encontrado. Verifica el código e intenta de nuevo.',
+        'not_found' =>
+          'Código no encontrado. Verifica el código e intenta de nuevo.',
         'self' => 'No puedes enlazarte contigo mismo.',
         'caller_already_linked' => 'Ya estás enlazado con alguien.',
         'target_already_linked' => 'Este usuario ya está enlazado con alguien.',
         'profile_not_found' => 'No se encontró tu perfil de usuario.',
-        'invalid_connection_type' => 'El tipo de conexión seleccionado no es válido.',
+        'invalid_connection_type' =>
+          'El tipo de conexión seleccionado no es válido.',
         'not_authenticated' => 'Not authenticated',
         _ => 'No se pudo completar el enlace. Intenta de nuevo.',
       };

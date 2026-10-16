@@ -14,6 +14,11 @@ import android.speech.SpeechRecognizer
 import android.speech.tts.TextToSpeech
 import android.speech.tts.UtteranceProgressListener
 import java.util.Locale
+import android.appwidget.AppWidgetManager
+import android.content.ComponentName
+import android.content.ContentValues
+import android.provider.MediaStore
+import org.json.JSONObject
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
@@ -29,6 +34,46 @@ class MainActivity : FlutterFragmentActivity() {
 
     override fun configureFlutterEngine(engine: FlutterEngine) {
         super.configureFlutterEngine(engine)
+        MethodChannel(engine.dartExecutor.binaryMessenger, "nido/art").setMethodCallHandler { call, result ->
+            try {
+                when (call.method) {
+                    "configureWidget" -> {
+                        val url = call.argument<String>("url").orEmpty()
+                        val key = call.argument<String>("apiKey").orEmpty()
+                        val token = call.argument<String>("token").orEmpty()
+                        val user = call.argument<String>("user").orEmpty()
+                        if (!url.startsWith("https://") || !Regex("[a-f0-9]{64}").matches(token)) result.error("widget", "Configuración no válida", null)
+                        else { PartnerWidget.configure(this, url, key, token, user); result.success(true) }
+                    }
+                    "updateNote" -> { PartnerWidget.store(this, JSONObject(call.arguments as? Map<*, *> ?: emptyMap<String,Any>())); result.success(true) }
+                    "clearWidget" -> { PartnerWidget.clear(this); result.success(true) }
+                    "pinWidget" -> {
+                        val manager = AppWidgetManager.getInstance(this)
+                        result.success(if (Build.VERSION.SDK_INT >= 26 && manager.isRequestPinAppWidgetSupported) manager.requestPinAppWidget(ComponentName(this,NidoPartnerWidgetProvider::class.java),null,null) else false)
+                    }
+                    "savePng" -> {
+                        val bytes = call.argument<ByteArray>("bytes") ?: throw IllegalArgumentException("PNG vacío")
+                        if (bytes.size > 2_000_000) throw IllegalArgumentException("Imagen demasiado grande")
+                        if (Build.VERSION.SDK_INT < 29 && checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                            result.error("storage", "Usa Compartir PNG para guardar en este teléfono", null)
+                        } else {
+                            val values = ContentValues().apply {
+                                put(MediaStore.Images.Media.DISPLAY_NAME, "NIDO-${System.currentTimeMillis()}.png")
+                                put(MediaStore.Images.Media.MIME_TYPE, "image/png")
+                                if (Build.VERSION.SDK_INT >= 29) { put(MediaStore.Images.Media.RELATIVE_PATH,"Pictures/NIDO"); put(MediaStore.Images.Media.IS_PENDING,1) }
+                            }
+                            val uri = contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,values) ?: throw IllegalStateException("No se pudo guardar")
+                            try {
+                                contentResolver.openOutputStream(uri)?.use { it.write(bytes) } ?: throw IllegalStateException("Sin almacenamiento")
+                                if (Build.VERSION.SDK_INT >= 29) contentResolver.update(uri, ContentValues().apply {put(MediaStore.Images.Media.IS_PENDING,0)},null,null)
+                                result.success(uri.toString())
+                            } catch (e:Exception) { contentResolver.delete(uri,null,null); throw e }
+                        }
+                    }
+                    else -> result.notImplemented()
+                }
+            } catch (_: Exception) { result.error("art", "No se pudo completar esta acción", null) }
+        }
         MethodChannel(engine.dartExecutor.binaryMessenger, "nido/game_display").setMethodCallHandler { call, result ->
             if (call.method == "fullscreen") {
                 val controller = WindowCompat.getInsetsController(window, window.decorView)

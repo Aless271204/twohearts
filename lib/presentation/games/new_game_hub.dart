@@ -1,4 +1,5 @@
 import 'guardian_game_screen.dart';
+import 'art_game_screen.dart';
 import '../../widgets/twohearts_ui.dart';
 import '../../widgets/rewarded_gold_card.dart';
 import 'package:flutter/material.dart';
@@ -129,6 +130,26 @@ class _GameHubScreenState extends State<GameHubScreen> {
           _featuredForest(),
           const SizedBox(height: 16),
           _guardianAdventure(),
+          const SizedBox(height: 16),
+          Card(
+            child: ListTile(
+              contentPadding: const EdgeInsets.all(16),
+              leading: const Icon(
+                Icons.palette,
+                color: Color(0xFFDC6A8E),
+                size: 38,
+              ),
+              title: const Text(
+                'Pincel en pareja',
+                style: TextStyle(fontWeight: FontWeight.w800),
+              ),
+              subtitle: const Text(
+                'Dibuja nuestras mascotas · 5 minutos · 3 dificultades',
+              ),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () => _open(const ArtGameScreen()),
+            ),
+          ),
           const SizedBox(height: 20),
           const Text(
             'Todos los juegos',

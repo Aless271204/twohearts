@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import './app_navigation.dart';
 import 'twohearts_ui.dart';
 import '../services/scene_audio_policy.dart';
+import '../services/partner_art_service.dart';
 
 class AppScaffold extends StatefulWidget {
   final StatefulNavigationShell navigationShell;
@@ -19,6 +20,7 @@ class _AppScaffoldState extends State<AppScaffold>
   @override
   void initState() {
     super.initState();
+    PartnerArtService.instance.start();
     _branch = widget.navigationShell.currentIndex;
     SceneAudioPolicy.instance.update(tab: _branch);
     _transition = AnimationController(
@@ -44,6 +46,7 @@ class _AppScaffoldState extends State<AppScaffold>
 
   @override
   void dispose() {
+    PartnerArtService.instance.pause();
     _transition.dispose();
     super.dispose();
   }

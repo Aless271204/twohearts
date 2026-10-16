@@ -3,7 +3,7 @@ import 'package:home_widget/home_widget.dart';
 /// Real implementation using home_widget package for Android/iOS.
 abstract class HomeWidgetBridge {
   static const String _androidWidgetProvider =
-      'com.flutter_template.app.TwoHeartsWidgetProvider';
+      'com.example.twohearts.NidoPartnerWidgetProvider';
   static const String _iOSWidgetKind = 'TwoHeartsWidget';
 
   static Future<void> updateWidgets({

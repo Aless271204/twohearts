@@ -33,7 +33,7 @@ jobs:
           cache: true
       - run: flutter pub get
       - run: flutter analyze --no-fatal-infos --no-fatal-warnings
-      - run: flutter test test/local_asset_path_test.dart test/asset_byte_range_test.dart test/inventory_test.dart test/memory_album_test.dart test/private_memory_image_test.dart test/scene_navigation_test.dart test/rose_ui_test.dart test/twohearts_ui_test.dart test/room_catalog_test.dart test/geographic_location_test.dart test/social_test.dart test/partner_location_room_test.dart test/duo_training_test.dart
+      - run: flutter test test/local_asset_path_test.dart test/asset_byte_range_test.dart test/inventory_test.dart test/memory_album_test.dart test/private_memory_image_test.dart test/scene_navigation_test.dart test/rose_ui_test.dart test/twohearts_ui_test.dart test/room_catalog_test.dart test/geographic_location_test.dart test/social_test.dart test/partner_location_room_test.dart test/duo_training_test.dart test/art_document_test.dart
       - name: Prepare public build configuration
         run: |
           python3 -c "import json; d=json.load(open('env.json')); json.dump({k:d[k] for k in ['SUPABASE_URL','SUPABASE_ANON_KEY','GOOGLE_WEB_CLIENT_ID'] if k in d},open('build-env.json','w'))"
@@ -158,11 +158,16 @@ jobs:
           GH_REPO: ${{ github.repository }}
           SOURCE_SHA: ${{ github.sha }}
         run: |
-          mv apk/app-arm64-v8a-release.apk apk/NIDO-1.2.4-ligera.apk
-          mv apk/app-armeabi-v7a-release.apk apk/NIDO-1.2.4-android-32.apk
-          sha256sum apk/NIDO-1.2.4-ligera.apk > apk/NIDO-1.2.4-ligera.apk.sha256
+          mv apk/app-arm64-v8a-release.apk apk/NIDO-1.2.5-ligera.apk
+          mv apk/app-armeabi-v7a-release.apk apk/NIDO-1.2.5-android-32.apk
+          sha256sum apk/NIDO-1.2.5-ligera.apk > apk/NIDO-1.2.5-ligera.apk.sha256
           cat > release-notes.txt <<'NOTES'
-          NIDO 1.2.4: Guardianes del Alba para jugar en solitario y en pareja online desde dos celulares.
+          NIDO 1.2.5: Guardianes del Alba y Pincel en pareja desde dos celulares.
+          Nuevo juego de dibujo con referencias de las cuatro mascotas, tres dificultades, cinco minutos,
+          capas, pinceles, acuarela, relleno, texto, formas, zoom, colores y descarga/compartir PNG.
+          Dibujos privados con revelacion conjunta, votacion y valoracion visual orientativa, sin premio de oro.
+          Inicio: notas, fotos, galeria y dibujos para tu pareja. Widget Android con actualizacion manual,
+          al abrir la app y periodica; no incluye entrega push instantanea con la app cerrada.
           Crea una sala en Juegos > Guardianes y comparte su codigo; tu pareja se une desde su cuenta.
           Recorrido ampliado, equipo del inventario en pixel art y seleccion de mascotas desbloqueadas.
           Facil 5 corazones, medio 3 y dificil 1, sin corazones extra en dificil y con ritmo mas rapido.
@@ -171,7 +176,7 @@ jobs:
           Incluye la habitacion con navegacion integrada y el cofre de las versiones anteriores.
           APK ARM64 para Pixel 6 y telefonos actuales; alternativa para Android de 32 bits.
           Version de prueba para compartir. No es una publicacion en Google Play. Pagos reales pendientes; anuncios de prueba.
-          Version: 1.2.4+19
+          Version: 1.2.5+20
           NOTES
           echo "Commit: $SOURCE_SHA" >> release-notes.txt
-          gh release create nido-1.2.4 apk/NIDO-1.2.4-ligera.apk apk/NIDO-1.2.4-android-32.apk apk/NIDO-1.2.4-ligera.apk.sha256 --target "$SOURCE_SHA" --title "NIDO 1.2.4 - Guardianes online y vestuario pixel art" --notes-file release-notes.txt --prerelease
+          gh release create nido-1.2.5 apk/NIDO-1.2.5-ligera.apk apk/NIDO-1.2.5-android-32.apk apk/NIDO-1.2.5-ligera.apk.sha256 --target "$SOURCE_SHA" --title "NIDO 1.2.5 - Pincel en pareja y widget privado" --notes-file release-notes.txt --prerelease

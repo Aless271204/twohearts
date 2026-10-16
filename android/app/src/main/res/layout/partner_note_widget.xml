@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:id="@+id/partner_note_root" android:orientation="vertical" android:layout_width="match_parent" android:layout_height="match_parent" android:padding="16dp" android:background="@drawable/partner_note_background">
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:gravity="center_vertical">
+        <TextView android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:text="NIDO · Para ti ♥" android:textColor="#BE5477" android:textStyle="bold" android:textSize="16sp"/>
+        <TextView android:id="@+id/partner_note_refresh" android:layout_width="48dp" android:layout_height="48dp" android:text="↻" android:textSize="26sp" android:textColor="#BE5477" android:gravity="center" android:contentDescription="Actualizar nota"/>
+    </LinearLayout>
+    <ImageView android:id="@+id/partner_note_image" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:scaleType="fitCenter" android:contentDescription="Foto o dibujo enviado por tu pareja" android:visibility="gone"/>
+    <TextView android:id="@+id/partner_note_text" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:gravity="center" android:textColor="#302831" android:textSize="19sp" android:maxLines="10" android:ellipsize="end"/>
+</LinearLayout>
