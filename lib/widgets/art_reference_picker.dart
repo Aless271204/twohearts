@@ -13,7 +13,8 @@ import 'private_memory_image.dart';
 class ArtReferenceChoice {
   final String title;
   final Uint8List bytes;
-  const ArtReferenceChoice(this.title, this.bytes);
+  final String? difficultyPrefix;
+  const ArtReferenceChoice(this.title, this.bytes, {this.difficultyPrefix});
 }
 
 Future<ArtReferenceChoice?> showArtReferencePicker(BuildContext context) =>
@@ -118,7 +119,17 @@ class _ReferencePickerState extends State<_ReferencePicker> {
         }
       }
       if (bytes != null && bytes.length <= 12000000 && mounted)
-        Navigator.pop(context, ArtReferenceChoice(title, bytes));
+        Navigator.pop(
+          context,
+          ArtReferenceChoice(
+            title,
+            bytes,
+            difficultyPrefix:
+                asset == 'assets/images/art_references/paris-mascots.webp'
+                ? 'paris-mascots'
+                : null,
+          ),
+        );
     } catch (_) {
       if (mounted)
         setState(

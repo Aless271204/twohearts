@@ -158,11 +158,11 @@ jobs:
           GH_REPO: ${{ github.repository }}
           SOURCE_SHA: ${{ github.sha }}
         run: |
-          mv apk/app-arm64-v8a-release.apk apk/NIDO-1.2.5-ligera.apk
-          mv apk/app-armeabi-v7a-release.apk apk/NIDO-1.2.5-android-32.apk
-          sha256sum apk/NIDO-1.2.5-ligera.apk > apk/NIDO-1.2.5-ligera.apk.sha256
+          mv apk/app-arm64-v8a-release.apk apk/NIDO-1.2.6-ligera.apk
+          mv apk/app-armeabi-v7a-release.apk apk/NIDO-1.2.6-android-32.apk
+          sha256sum apk/NIDO-1.2.6-ligera.apk > apk/NIDO-1.2.6-ligera.apk.sha256
           cat > release-notes.txt <<'NOTES'
-          NIDO 1.2.5: Guardianes del Alba y Pincel en pareja desde dos celulares.
+          NIDO 1.2.6: Guardianes del Alba y Pincel en pareja desde dos celulares.
           Nuevo juego de dibujo con referencias de las cuatro mascotas, tres dificultades, cinco minutos,
           capas, pinceles, acuarela, relleno, texto, formas, zoom, colores y descarga/compartir PNG.
           Referencias de sus albumes, recuerdos, viajes y destinos futuros, con estilos original,
@@ -179,7 +179,7 @@ jobs:
           Incluye la habitacion con navegacion integrada y el cofre de las versiones anteriores.
           APK ARM64 para Pixel 6 y telefonos actuales; alternativa para Android de 32 bits.
           Version de prueba para compartir. No es una publicacion en Google Play. Pagos reales pendientes; anuncios de prueba.
-          Version: 1.2.5+20
+          Version: 1.2.6+21
           NOTES
           echo "Commit: $SOURCE_SHA" >> release-notes.txt
-          gh release create nido-1.2.5 apk/NIDO-1.2.5-ligera.apk apk/NIDO-1.2.5-android-32.apk apk/NIDO-1.2.5-ligera.apk.sha256 --target "$SOURCE_SHA" --title "NIDO 1.2.5 - Pincel en pareja y widget privado" --notes-file release-notes.txt --prerelease
+          gh release create nido-1.2.6 apk/NIDO-1.2.6-ligera.apk apk/NIDO-1.2.6-android-32.apk apk/NIDO-1.2.6-ligera.apk.sha256 --target "$SOURCE_SHA" --title "NIDO 1.2.6 - Pincel en pareja y widget privado" --notes-file release-notes.txt --prerelease

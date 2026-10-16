@@ -32,6 +32,7 @@ class _ArtGameScreenState extends State<ArtGameScreen>
   ui.Image? customReference;
   Uint8List? sourceReference, referencePng;
   String referenceTitle = 'Picnic en París · Mascotas 3D';
+  String? difficultyPrefix = 'paris-mascots';
   ReferenceStyle referenceStyle = ReferenceStyle.photo;
   bool preparingReference = false;
   int referenceGeneration = 0;
@@ -93,6 +94,7 @@ class _ArtGameScreenState extends State<ArtGameScreen>
     if (choice == null || !mounted) return;
     setState(() {
       sourceReference = choice.bytes;
+      difficultyPrefix = choice.difficultyPrefix;
       referenceTitle = choice.title;
       referenceStyle = ReferenceStyle.photo;
     });
@@ -100,15 +102,24 @@ class _ArtGameScreenState extends State<ArtGameScreen>
   }
 
   Future<void> _prepareReference() async {
-    final source = sourceReference;
+    var source = sourceReference;
     if (source == null || room != null) return;
     final generation = ++referenceGeneration;
     setState(() => preparingReference = true);
     try {
+      if (difficultyPrefix != null) {
+        source = (await rootBundle.load(
+          'assets/images/art_references/$difficultyPrefix${difficulty == 0
+              ? '-easy'
+              : difficulty == 1
+              ? '-medium'
+              : ''}.webp',
+        )).buffer.asUint8List();
+      }
       final image = await prepareArtReference(
         source,
         style: referenceStyle,
-        difficulty: difficulty,
+        difficulty: difficultyPrefix != null ? 2 : difficulty,
         mascot: pet,
       );
       if (!mounted || generation != referenceGeneration) {
@@ -142,6 +153,7 @@ class _ArtGameScreenState extends State<ArtGameScreen>
 
   Future<void> _loadRemoteReference(Map<String, dynamic> value) async {
     final generation = ++referenceGeneration;
+    setState(() => preparingReference = true);
     try {
       final bytes = base64Decode(value['reference_image'] as String);
       if (bytes.length < 24 || bytes.length > 1050000)
@@ -159,6 +171,7 @@ class _ArtGameScreenState extends State<ArtGameScreen>
       final old = customReference;
       setState(() {
         customReference = image;
+        preparingReference = false;
         referencePng = bytes;
         referenceTitle =
             value['reference_title'] as String? ?? 'Nuestro recuerdo';
@@ -171,6 +184,9 @@ class _ArtGameScreenState extends State<ArtGameScreen>
           () => error =
               'La referencia no se pudo cargar. Reabre la partida antes de dibujar.',
         );
+    } finally {
+      if (mounted && generation == referenceGeneration)
+        setState(() => preparingReference = false);
     }
   }
 
@@ -391,7 +407,8 @@ class _ArtGameScreenState extends State<ArtGameScreen>
   }
 
   Future<void> _scoreBoth() async {
-    if (score != null || pet == null || room == null) return;
+    if (score != null || pet == null || room == null || preparingReference)
+      return;
     final a = await _scoreImage(
           room![room!['host'] == uid ? 'host_art' : 'guest_art'] as String,
         ),
@@ -566,8 +583,8 @@ class _ArtGameScreenState extends State<ArtGameScreen>
               if (room == null) ...[
                 Text(
                   [
-                    'Fácil · formas grandes y colores simplificados',
-                    'Medio · más detalles y sombras',
+                    'Fácil · composición sencilla',
+                    'Medio · más elementos y paisaje',
                     'Difícil · referencia completa y texturas',
                   ][difficulty],
                   style: const TextStyle(fontWeight: FontWeight.w700),
@@ -680,6 +697,7 @@ class _ArtGameScreenState extends State<ArtGameScreen>
                             setState(() {
                               scene = v;
                               sourceReference = null;
+                              difficultyPrefix = null;
                               referenceGeneration++;
                               referencePng = null;
                               customReference?.dispose();
@@ -734,8 +752,8 @@ class _ArtGameScreenState extends State<ArtGameScreen>
                               ),
                               Text(
                                 [
-                                  'Fácil · formas y colores simplificados',
-                                  'Medio · más detalles y sombras',
+                                  'Fácil · composición sencilla',
+                                  'Medio · más elementos y paisaje',
                                   'Difícil · escena completa y texturas',
                                 ][difficulty],
                               ),

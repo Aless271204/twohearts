@@ -207,52 +207,25 @@ Future<ui.Image> _stylize(
   return result;
 }
 
-Future<ui.Image> _levelDetail(ui.Image source, int difficulty) async {
+Future<ui.Image> _levelDetail(
+  ui.Image source,
+  int difficulty, {
+  Offset focus = const Offset(.5, .5),
+}) async {
   if (difficulty >= 2) return source;
-  final size = difficulty == 0 ? 96 : 256;
-  final rec = ui.PictureRecorder();
-  Canvas(rec).drawImageRect(
+  final extent = difficulty == 0 ? 352.0 : 448.0;
+  final left = (focus.dx * 512 - extent / 2).clamp(0.0, 512 - extent);
+  final top = (focus.dy * 512 - extent / 2).clamp(0.0, 512 - extent);
+  final recorder = ui.PictureRecorder();
+  Canvas(recorder).drawImageRect(
     source,
-    Rect.fromLTWH(0, 0, source.width.toDouble(), source.height.toDouble()),
-    Rect.fromLTWH(0, 0, size.toDouble(), size.toDouble()),
-    Paint()..filterQuality = FilterQuality.high,
-  );
-  final picture = rec.endRecording(),
-      sampled = await picture.toImage(size, size);
-  picture.dispose();
-  source.dispose();
-  final raw = (await sampled.toByteData(
-    format: ui.ImageByteFormat.rawRgba,
-  ))!.buffer.asUint8List();
-  sampled.dispose();
-  final step = difficulty == 0 ? 64 : 24;
-  for (var i = 0; i < raw.length; i += 4) {
-    for (var j = 0; j < 3; j++) {
-      raw[i + j] = ((raw[i + j] / step).round() * step).clamp(0, 255);
-    }
-  }
-  final buffer = await ui.ImmutableBuffer.fromUint8List(raw);
-  final descriptor = ui.ImageDescriptor.raw(
-    buffer,
-    width: size,
-    height: size,
-    pixelFormat: ui.PixelFormat.rgba8888,
-  );
-  final codec = await descriptor.instantiateCodec(),
-      small = (await codec.getNextFrame()).image;
-  final out = ui.PictureRecorder();
-  Canvas(out).drawImageRect(
-    small,
-    Rect.fromLTWH(0, 0, size.toDouble(), size.toDouble()),
+    Rect.fromLTWH(left, top, extent, extent),
     const Rect.fromLTWH(0, 0, 512, 512),
     Paint()..filterQuality = FilterQuality.high,
   );
-  final finalPicture = out.endRecording(),
-      result = await finalPicture.toImage(512, 512);
-  finalPicture.dispose();
-  small.dispose();
-  codec.dispose();
-  descriptor.dispose();
-  buffer.dispose();
+  final picture = recorder.endRecording(),
+      result = await picture.toImage(512, 512);
+  picture.dispose();
+  source.dispose();
   return result;
 }
