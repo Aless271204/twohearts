@@ -1,3 +1,4 @@
+import '../../theme/app_theme.dart';
 import '../../core/store_packages.dart';
 import '../../core/store_economy.dart';
 import '../../widgets/garment_color_picker.dart';
@@ -246,7 +247,9 @@ class _ShopScreenState extends State<ShopScreen> {
     final items = inventory.catalog
         .where(
           (i) =>
-              i.scope == scope &&
+              (scope == 'interface'
+                  ? !['pet', 'room'].contains(i.scope)
+                  : i.scope == scope) &&
               (i.visible || onlyOwned) &&
               (scope != 'room' ||
                   roomCategory == null ||
@@ -277,10 +280,12 @@ class _ShopScreenState extends State<ShopScreen> {
         toolbarHeight: 76,
         titleSpacing: 20,
         title: const Text(
-          'Tienda e inventario',
+          'Tienda',
           style: TextStyle(
-            fontSize: 23,
-            fontWeight: FontWeight.w800,
+            fontFamily: AppTheme.displayFont,
+            fontSize: 29,
+            color: AppTheme.ink,
+            fontWeight: FontWeight.w700,
             letterSpacing: -.7,
           ),
         ),
@@ -339,7 +344,11 @@ class _ShopScreenState extends State<ShopScreen> {
                       scrollDirection: Axis.horizontal,
                       child: Row(
                         children: [
-                          for (final e in InventoryItem.destinations.entries)
+                          for (final e in const {
+                            'pet': 'Mascota',
+                            'room': 'Habitación',
+                            'interface': 'Interfaz',
+                          }.entries)
                             Padding(
                               padding: const EdgeInsets.only(right: 6),
                               child: ChoiceChip(
@@ -348,7 +357,11 @@ class _ShopScreenState extends State<ShopScreen> {
                                 ),
                                 showCheckmark: false,
                                 label: Text(e.value),
-                                selected: !showCoins && scope == e.key,
+                                selected:
+                                    !showCoins &&
+                                    (scope == e.key ||
+                                        (e.key == 'interface' &&
+                                            !['pet', 'room'].contains(scope))),
                                 onSelected: (_) => setState(() {
                                   scope = e.key;
                                   slot = null;
@@ -442,7 +455,10 @@ class _ShopScreenState extends State<ShopScreen> {
                               child: Text('Todos los objetos'),
                             ),
                             for (final e in InventoryItem.slots.entries.where(
-                              (e) => e.key.startsWith('${scope}_'),
+                              (e) => scope == 'interface'
+                                  ? !e.key.startsWith('pet_') &&
+                                        !e.key.startsWith('room_')
+                                  : e.key.startsWith('${scope}_'),
                             ))
                               PopupMenuItem(value: e.key, child: Text(e.value)),
                           ],
@@ -574,6 +590,12 @@ class _ShopScreenState extends State<ShopScreen> {
 
   Widget _productCard(InventoryItem item) {
     return Card(
+      color: const Color(0xFFFFFBF5),
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(18),
+        side: const BorderSide(color: Color(0xFFF2DCD6)),
+      ),
       clipBehavior: Clip.antiAlias,
       child: Padding(
         padding: const EdgeInsets.all(12),
@@ -603,6 +625,8 @@ class _ShopScreenState extends State<ShopScreen> {
             const SizedBox(height: 4),
             Text(
               item.description,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
               style: const TextStyle(
                 fontSize: 12,
                 height: 1.4,
@@ -627,7 +651,7 @@ class _ShopScreenState extends State<ShopScreen> {
               width: double.infinity,
               child: HeartButton(
                 onPressed: busy ? null : () => _viewItem(item),
-                label: 'Ver',
+                label: 'Probar',
               ),
             ),
           ],

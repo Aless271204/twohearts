@@ -1,10 +1,9 @@
 import 'guardian_game_screen.dart';
 import 'art_game_screen.dart';
+import '../../widgets/animated_game_cover.dart';
 import '../../widgets/twohearts_ui.dart';
 import '../../widgets/rewarded_gold_card.dart';
 import 'package:flutter/material.dart';
-import '../../widgets/rose_ui.dart';
-import '../../theme/app_theme.dart';
 import '../../services/game_service.dart';
 import '../../services/inventory_service.dart';
 import '../shop_screen/shop_screen.dart';
@@ -19,17 +18,17 @@ class GameHubScreen extends StatefulWidget {
 }
 
 class _GameHubScreenState extends State<GameHubScreen> {
-  final inventory = InventoryService.instance;
+  InventoryService get inventory => InventoryService.instance;
   @override
   void initState() {
     super.initState();
-    inventory.addListener(_changed);
+    if (!widget.previewMode) inventory.addListener(_changed);
     _load();
   }
 
   @override
   void dispose() {
-    inventory.removeListener(_changed);
+    if (!widget.previewMode) inventory.removeListener(_changed);
     super.dispose();
   }
 
@@ -121,7 +120,7 @@ class _GameHubScreenState extends State<GameHubScreen> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    backgroundColor: Colors.transparent,
+    backgroundColor: const Color(0xFFFFF7F5),
     body: RefreshIndicator(
       onRefresh: _load,
       child: ListView(
@@ -131,51 +130,16 @@ class _GameHubScreenState extends State<GameHubScreen> {
           const SizedBox(height: 16),
           _guardianAdventure(),
           const SizedBox(height: 16),
-          Card(
-            child: ListTile(
-              contentPadding: const EdgeInsets.all(16),
-              leading: const Icon(
-                Icons.palette,
-                color: Color(0xFFDC6A8E),
-                size: 38,
-              ),
-              title: const Text(
-                'Pincel en pareja',
-                style: TextStyle(fontWeight: FontWeight.w800),
-              ),
-              subtitle: const Text(
-                'Dibuja nuestras mascotas · 5 minutos · 3 dificultades',
-              ),
-              trailing: const Icon(Icons.chevron_right),
-              onTap: () => _open(const ArtGameScreen()),
-            ),
-          ),
+          _paintingGame(),
           const SizedBox(height: 20),
           const Text(
             'Todos los juegos',
             style: TextStyle(fontSize: 19, fontWeight: FontWeight.w700),
           ),
           const SizedBox(height: 12),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                child: _tile(
-                  'Ping pong\nen pareja',
-                  1,
-                  () => _choosePlayers('pong'),
-                ),
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: _tile(
-                  '¿Quién nos\nconoce mejor?',
-                  2,
-                  () => _choosePlayers('quiz'),
-                ),
-              ),
-            ],
-          ),
+          _tile('Ping pong en pareja', 1, () => _choosePlayers('pong')),
+          const SizedBox(height: 16),
+          _tile('¿Quién nos conoce mejor?', 2, () => _choosePlayers('quiz')),
           const SizedBox(height: 16),
           FilledButton.tonalIcon(
             onPressed: () => _open(const ShopScreen()),
@@ -202,87 +166,18 @@ class _GameHubScreenState extends State<GameHubScreen> {
       ),
     ),
   );
-  Widget _guardianAdventure() => Semantics(
-    label:
-        'Guardianes del Alba. Aventura pixel art. Solitario o pareja online. Jugar.',
-    button: true,
-    child: InkWell(
-      onTap: () => _open(const GuardianGameScreen()),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(22),
-        child: ColoredBox(
-          color: const Color(0xFFFFF9FA),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Image.asset(
-                'assets/images/ui/guardian-coming-soon.png',
-                height: 145,
-                width: double.infinity,
-                fit: BoxFit.cover,
-              ),
-              Padding(
-                padding: const EdgeInsets.all(16),
-                child: Row(
-                  children: [
-                    const Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Guardianes del Alba',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w800,
-                              color: Color(0xFF292633),
-                            ),
-                          ),
-                          SizedBox(height: 4),
-                          Text(
-                            'Aventura pixel art · Solo o en pareja',
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: Color(0xFF716B78),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 10,
-                        vertical: 7,
-                      ),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFEAF3ED),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: const Text(
-                        'Jugar',
-                        style: TextStyle(
-                          fontSize: 11,
-                          fontWeight: FontWeight.w700,
-                          color: Color(0xFF3D7259),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    ),
-  );
+  Widget _paintingGame() =>
+      _tile('Pincel en pareja', 4, () => _open(const ArtGameScreen()));
+  Widget _guardianAdventure() =>
+      _tile('Guardianes del Alba', 3, () => _open(const GuardianGameScreen()));
   Widget _tile(String title, int panel, VoidCallback action) => ClipRRect(
     borderRadius: BorderRadius.circular(20),
     child: SizedBox(
-      height: 224,
+      height: 292,
       child: Stack(
         fit: StackFit.expand,
         children: [
-          GameArt(panel: panel),
+          AnimatedGameCover(panel: panel),
           const DecoratedBox(
             decoration: BoxDecoration(
               gradient: LinearGradient(
@@ -304,7 +199,7 @@ class _GameHubScreenState extends State<GameHubScreen> {
               title,
               style: const TextStyle(
                 color: Colors.white,
-                fontSize: 15,
+                fontSize: 21,
                 height: 1.2,
                 fontWeight: FontWeight.w700,
               ),
@@ -320,58 +215,6 @@ class _GameHubScreenState extends State<GameHubScreen> {
       ),
     ),
   );
-  Widget _featuredForest() => SizedBox(
-    height: 326,
-    child: ClipRRect(
-      borderRadius: BorderRadius.circular(26),
-      child: Stack(
-        fit: StackFit.expand,
-        children: [
-          const GameArt(panel: 0),
-          const DecoratedBox(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [Color(0x08000000), Color(0xB5223B2E)],
-              ),
-            ),
-          ),
-          Positioned(
-            left: 20,
-            right: 20,
-            bottom: 20,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'Corre con tu mascota',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 23,
-                    fontWeight: FontWeight.w800,
-                  ),
-                ),
-                const SizedBox(height: 6),
-                const Text(
-                  'Un bosque lleno de vida. Salta, recoge corazones y supera tu récord.',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 13,
-                    height: 1.4,
-                  ),
-                ),
-                const SizedBox(height: 12),
-                HeartButton(
-                  label: 'Jugar',
-                  icon: Icons.play_arrow_rounded,
-                  onPressed: () => _open(const PebbleRunnerTest()),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    ),
-  );
+  Widget _featuredForest() =>
+      _tile('Corre con tu mascota', 0, () => _open(const PebbleRunnerTest()));
 }

@@ -1,7 +1,7 @@
 name: twohearts
 description: A new Flutter project.
 publish_to: none
-version: 1.2.7+22
+version: 1.2.8+23
 
 environment:
   sdk: ^3.9.0
@@ -53,11 +53,21 @@ dev_dependencies:
   flutter_lints: ^5.0.0 # CRITICAL: Required for code quality - DO NOT REMOVE
 
 flutter:
+  fonts:
+    - family: NidoSans
+      fonts:
+        - asset: assets/fonts/DMSans[opsz,wght].ttf
+    - family: NidoSerif
+      fonts:
+        - asset: assets/fonts/PlayfairDisplay[wght].ttf
+        - asset: assets/fonts/PlayfairDisplay-Italic[wght].ttf
+          style: italic
   uses-material-design: true # CRITICAL: Required for Material icon font - DO NOT REMOVE
   assets:
     - assets/sounds/
     - assets/images/pet_portraits/
     - assets/images/art_references/
+    - assets/images/art_references/mobile/
     - assets/
     - assets/images/img_app_logo.svg
     - assets/images/nido_logo.png
@@ -66,6 +76,8 @@ flutter:
     - assets/images/pets/
     - assets/images/ui/
     - assets/images/products/
+    - assets/images/products/boutique/
+    - assets/fonts/
     - assets/runner/
     - assets/runner/guardian/
     - assets/runner/guardian/audio/

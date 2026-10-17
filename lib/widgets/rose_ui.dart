@@ -1,3 +1,4 @@
+import '../core/boutique_thumbnails.dart';
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
 import '../services/inventory_service.dart';
@@ -44,26 +45,48 @@ class RoseLoading extends StatelessWidget {
   );
 }
 
-/// Three generated illustration panels, without embedding UI text in bitmaps.
+/// Illustrated game covers, without embedding UI text in bitmaps.
 class GameArt extends StatelessWidget {
   final int panel;
   const GameArt({super.key, required this.panel});
   @override
-  Widget build(BuildContext context) => ClipRect(
-    child: LayoutBuilder(
-      builder: (_, constraints) => OverflowBox(
-        alignment: Alignment(-1 + panel.toDouble(), 0),
-        maxWidth: constraints.maxWidth * 3,
-        minWidth: constraints.maxWidth * 3,
-        child: Image.asset(
-          'assets/images/ui/game-art.png',
-          width: constraints.maxWidth * 3,
-          height: constraints.maxHeight,
-          fit: BoxFit.fill,
-        ),
-      ),
-    ),
-  );
+  Widget build(BuildContext context) => panel >= 3
+      ? Image.asset(
+          panel == 3
+              ? 'assets/images/ui/guardian-game-cover.webp'
+              : 'assets/images/ui/art-game-cover.webp',
+          fit: BoxFit.cover,
+          width: double.infinity,
+          height: double.infinity,
+        )
+      : ClipRect(
+          child: LayoutBuilder(
+            builder: (_, constraints) {
+              final side = constraints.maxWidth > constraints.maxHeight
+                  ? constraints.maxWidth
+                  : constraints.maxHeight;
+              return OverflowBox(
+                alignment: Alignment(-1 + panel.toDouble(), 0),
+                maxWidth: side * 3,
+                minWidth: side * 3,
+                maxHeight: side,
+                minHeight: side,
+                child: Transform.translate(
+                  offset: Offset(
+                    (panel - 1) * (side - constraints.maxWidth) / 2,
+                    0,
+                  ),
+                  child: Image.asset(
+                    'assets/images/ui/game-art.png',
+                    width: side * 3,
+                    height: side,
+                    fit: BoxFit.fill,
+                  ),
+                ),
+              );
+            },
+          ),
+        );
 }
 
 /// Product art is an indicative family thumbnail; the actual object is previewed
@@ -101,6 +124,12 @@ class ProductThumbnail extends StatelessWidget {
   });
   @override
   Widget build(BuildContext context) {
+    final boutique = boutiqueThumbnails[item.key];
+    if (boutique != null) {
+      return _AnimatedProductPreview(
+        child: Image.asset(boutique, fit: BoxFit.contain),
+      );
+    }
     if (item.scope == 'room') return RoomItemThumbnail(item: item);
     if (item.scope == 'pet') {
       final color = (item.appearance['color'] as String? ?? '#91bda7')
@@ -168,7 +197,7 @@ class StoryArt extends StatelessWidget {
   );
 }
 
-/// A restrained showroom motion; image and equipped product share the same model.
+/// A restrained showroom motion for product illustrations and rendered previews.
 class _AnimatedProductPreview extends StatefulWidget {
   const _AnimatedProductPreview({required this.child});
   final Widget child;

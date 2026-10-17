@@ -8,7 +8,7 @@ import 'pet_3d_viewer.dart';
 const heartGradient = LinearGradient(
   begin: Alignment.topCenter,
   end: Alignment.bottomCenter,
-  colors: [Color(0xFFFF6592), Color(0xFFFF326D)],
+  colors: [Color(0xFFFFABB5), Color(0xFFFF819F)],
 );
 const heartShadow = [
   BoxShadow(color: Color(0x20EC4878), blurRadius: 12, offset: Offset(0, 4)),
@@ -44,8 +44,8 @@ class HeartButton extends StatelessWidget {
     child: TextButton(
       onPressed: onPressed,
       style: TextButton.styleFrom(
-        foregroundColor: outlined ? AppTheme.primary : Colors.white,
-        disabledForegroundColor: const Color(0xFF87717B),
+        foregroundColor: outlined ? AppTheme.primary : AppTheme.ink,
+        disabledForegroundColor: AppTheme.mutedInk,
         minimumSize: const Size(44, 40),
         padding: const EdgeInsets.symmetric(horizontal: 17, vertical: 10),
         shape: const StadiumBorder(),
@@ -126,8 +126,10 @@ class HeartHeader extends StatelessWidget {
               Text(
                 title,
                 style: const TextStyle(
-                  fontSize: 25,
-                  fontWeight: FontWeight.w800,
+                  fontFamily: AppTheme.displayFont,
+                  fontSize: 27,
+                  color: AppTheme.ink,
+                  fontWeight: FontWeight.w700,
                   letterSpacing: -.6,
                   height: 1.15,
                 ),
@@ -228,7 +230,7 @@ class HeartNavigation extends StatelessWidget {
                           tabs[i].icon,
                           size: 23,
                           color: selected == i
-                              ? Colors.white
+                              ? AppTheme.ink
                               : const Color(0xFF514D61),
                         ),
                         const SizedBox(height: 3),
@@ -241,7 +243,7 @@ class HeartNavigation extends StatelessWidget {
                               fontSize: 10,
                               fontWeight: FontWeight.w500,
                               color: selected == i
-                                  ? Colors.white
+                                  ? AppTheme.ink
                                   : const Color(0xFF514D61),
                             ),
                           ),
@@ -411,6 +413,7 @@ class HeartQuoteCard extends StatelessWidget {
                     style: const TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.w500,
+                      fontFamily: AppTheme.displayFont,
                       fontStyle: FontStyle.italic,
                       height: 1.4,
                       color: Color(0xFF612A43),

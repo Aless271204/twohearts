@@ -6,7 +6,20 @@ import 'package:google_fonts/google_fonts.dart';
 
 class AppTheme {
   // Primary palette
-  static const Color primary = Color(0xFFFF3F78);
+  static const Color primary = Color(0xFFB52D57);
+  static const Color ink = Color(0xFF302831);
+  static const Color mutedInk = Color(0xFF68565F);
+  static const Color roseButton = Color(0xFFFF9AAC);
+  static const Color selectedSurface = Color(0xFFF6BDCD);
+  static const String bodyFont = 'NidoSans';
+  static const String displayFont = 'NidoSerif';
+  static const TextStyle displayStyle = TextStyle(
+    fontFamily: displayFont,
+    fontSize: 29,
+    fontWeight: FontWeight.w700,
+    letterSpacing: -.7,
+    color: ink,
+  );
   static const Color primaryContainer = Color(0xFFFBE5EC);
   static const Color secondary = Color(0xFF3D7A5E);
   static const Color secondaryContainer = Color(0xFFB8DCCB);
@@ -18,8 +31,8 @@ class AppTheme {
 
   // Light surfaces
   static const Color surfaceLight = Color(0xFFFFFFFF);
-  static const Color surfaceVariantLight = Color(0xFFFFF5F7);
-  static const Color backgroundLight = Color(0xFFFFF9FA);
+  static const Color surfaceVariantLight = Color(0xFFFFF1EF);
+  static const Color backgroundLight = Color(0xFFFFF8F3);
 
   // Dark surfaces
   static const Color surfaceDark = Color(0xFF1E1A1B);
@@ -35,17 +48,61 @@ class AppTheme {
 
   static ThemeData get lightTheme => ThemeData(
     useMaterial3: true,
-    snackBarTheme: SnackBarThemeData(behavior: SnackBarBehavior.floating, backgroundColor: const Color(0xFF294737), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)), elevation: 4, insetPadding: const EdgeInsets.all(16)),
-    dialogTheme: DialogThemeData(backgroundColor: const Color(0xFFFFF9FA), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28))),
-    pageTransitionsTheme: const PageTransitionsTheme(builders: {TargetPlatform.android: FadeForwardsPageTransitionsBuilder()}),
-    filledButtonTheme: FilledButtonThemeData(style: FilledButton.styleFrom(shape: const StadiumBorder(), padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 12))),
-    segmentedButtonTheme: SegmentedButtonThemeData(style: ButtonStyle(
-      backgroundColor: WidgetStateProperty.resolveWith((s) => s.contains(WidgetState.selected) ? primary : surfaceVariantLight),
-      foregroundColor: WidgetStateProperty.resolveWith((s) => s.contains(WidgetState.selected) ? Colors.white : const Color(0xFF5F5361)),
-      side: const WidgetStatePropertyAll(BorderSide.none),
-      shape: const WidgetStatePropertyAll(StadiumBorder()),
-      textStyle: const WidgetStatePropertyAll(TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
-    )),
+    fontFamily: bodyFont,
+    snackBarTheme: SnackBarThemeData(
+      behavior: SnackBarBehavior.floating,
+      backgroundColor: const Color(0xFF294737),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      elevation: 4,
+      insetPadding: const EdgeInsets.all(16),
+    ),
+    dialogTheme: DialogThemeData(
+      backgroundColor: const Color(0xFFFFF9FA),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
+    ),
+    pageTransitionsTheme: const PageTransitionsTheme(
+      builders: {TargetPlatform.android: FadeForwardsPageTransitionsBuilder()},
+    ),
+    filledButtonTheme: FilledButtonThemeData(
+      style: FilledButton.styleFrom(
+        backgroundColor: roseButton,
+        foregroundColor: ink,
+        disabledBackgroundColor: const Color(0xFFF0E3E7),
+        disabledForegroundColor: mutedInk,
+        shape: const StadiumBorder(),
+        padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 12),
+      ),
+    ),
+    textButtonTheme: TextButtonThemeData(
+      style: TextButton.styleFrom(
+        foregroundColor: primary,
+        disabledForegroundColor: mutedInk,
+      ),
+    ),
+    outlinedButtonTheme: OutlinedButtonThemeData(
+      style: OutlinedButton.styleFrom(
+        foregroundColor: ink,
+        backgroundColor: surfaceLight,
+        disabledForegroundColor: mutedInk,
+        side: const BorderSide(color: Color(0xFFD69CAD)),
+        shape: const StadiumBorder(),
+      ),
+    ),
+    segmentedButtonTheme: SegmentedButtonThemeData(
+      style: ButtonStyle(
+        backgroundColor: WidgetStateProperty.resolveWith(
+          (s) => s.contains(WidgetState.selected)
+              ? selectedSurface
+              : surfaceVariantLight,
+        ),
+        foregroundColor: const WidgetStatePropertyAll(ink),
+        side: const WidgetStatePropertyAll(BorderSide.none),
+        shape: const WidgetStatePropertyAll(StadiumBorder()),
+        textStyle: const WidgetStatePropertyAll(
+          TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+        ),
+      ),
+    ),
     colorScheme: ColorScheme.light(
       primary: primary,
       onPrimary: Colors.white,
@@ -66,33 +123,31 @@ class AppTheme {
       inverseSurface: Color(0xFF1A1A1A),
       onInverseSurface: Colors.white,
     ),
-    textTheme: GoogleFonts.dmSansTextTheme(
-      TextTheme(
-        displayLarge: TextStyle(fontSize: 32, fontWeight: FontWeight.w700),
-        displayMedium: TextStyle(fontSize: 28, fontWeight: FontWeight.w700),
-        displaySmall: TextStyle(fontSize: 24, fontWeight: FontWeight.w700),
-        headlineLarge: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),
-        headlineMedium: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
-        headlineSmall: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-        titleLarge: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-        titleMedium: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
-        titleSmall: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
-        bodyLarge: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
-        bodyMedium: TextStyle(fontSize: 13, fontWeight: FontWeight.w400),
-        bodySmall: TextStyle(fontSize: 12, fontWeight: FontWeight.w400),
-        labelLarge: TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
-        labelMedium: TextStyle(
-          fontSize: 11,
-          fontWeight: FontWeight.w600,
-          letterSpacing: 0.2,
-        ),
-        labelSmall: TextStyle(
-          fontSize: 10,
-          fontWeight: FontWeight.w500,
-          letterSpacing: 0.3,
-        ),
+    textTheme: const TextTheme(
+      displayLarge: TextStyle(fontSize: 32, fontWeight: FontWeight.w700),
+      displayMedium: TextStyle(fontSize: 28, fontWeight: FontWeight.w700),
+      displaySmall: TextStyle(fontSize: 24, fontWeight: FontWeight.w700),
+      headlineLarge: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),
+      headlineMedium: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+      headlineSmall: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+      titleLarge: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+      titleMedium: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+      titleSmall: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+      bodyLarge: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
+      bodyMedium: TextStyle(fontSize: 13, fontWeight: FontWeight.w400),
+      bodySmall: TextStyle(fontSize: 12, fontWeight: FontWeight.w400),
+      labelLarge: TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+      labelMedium: TextStyle(
+        fontSize: 11,
+        fontWeight: FontWeight.w600,
+        letterSpacing: 0.2,
       ),
-    ),
+      labelSmall: TextStyle(
+        fontSize: 10,
+        fontWeight: FontWeight.w500,
+        letterSpacing: 0.3,
+      ),
+    ).apply(fontFamily: bodyFont, bodyColor: ink, displayColor: ink),
     scaffoldBackgroundColor: backgroundLight,
     appBarTheme: AppBarTheme(
       backgroundColor: Colors.transparent,
@@ -101,11 +156,7 @@ class AppTheme {
       surfaceTintColor: Colors.transparent,
       scrolledUnderElevation: 0,
       centerTitle: false,
-      titleTextStyle: GoogleFonts.dmSans(
-        fontSize: 18,
-        fontWeight: FontWeight.w600,
-        color: Color(0xFF1A1A1A),
-      ),
+      titleTextStyle: displayStyle,
     ),
     cardTheme: CardThemeData(
       color: surfaceLight,
@@ -140,20 +191,34 @@ class AppTheme {
     ),
     chipTheme: ChipThemeData(
       backgroundColor: surfaceVariantLight,
-      selectedColor: primary,
-      labelStyle: WidgetStateTextStyle.resolveWith((states) => GoogleFonts.dmSans(fontSize: 12, fontWeight: FontWeight.w500, color: states.contains(WidgetState.selected) ? Colors.white : const Color(0xFF605865))),
+      selectedColor: selectedSurface,
+      disabledColor: const Color(0xFFF0E3E7),
+      checkmarkColor: ink,
+      labelStyle: const TextStyle(
+        fontFamily: bodyFont,
+        fontSize: 12,
+        fontWeight: FontWeight.w600,
+        color: ink,
+      ),
+      secondaryLabelStyle: const TextStyle(
+        fontFamily: bodyFont,
+        fontSize: 12,
+        fontWeight: FontWeight.w700,
+        color: ink,
+      ),
       padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(999)),
-      side: BorderSide.none,
+      side: const BorderSide(color: Color(0xFFE2B7C3)),
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
-        backgroundColor: primary,
-        foregroundColor: Colors.white,
+        backgroundColor: roseButton,
+        foregroundColor: ink,
         elevation: 0,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(999)),
         padding: EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-        textStyle: GoogleFonts.dmSans(
+        textStyle: const TextStyle(
+          fontFamily: bodyFont,
           fontSize: 15,
           fontWeight: FontWeight.w600,
         ),

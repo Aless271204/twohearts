@@ -1,0 +1,514 @@
+[
+  {
+    "id": "hard-kioto",
+    "level": "hard",
+    "title": "kioto",
+    "asset": "assets/images/art_references/mobile/hard-kioto.webp",
+    "enabled": true,
+    "category": "mascots"
+  },
+  {
+    "id": "hard-nueva-york",
+    "level": "hard",
+    "title": "nueva-york",
+    "asset": "assets/images/art_references/mobile/hard-nueva-york.webp",
+    "enabled": true,
+    "category": "mascots"
+  },
+  {
+    "id": "hard-londres",
+    "level": "hard",
+    "title": "londres",
+    "asset": "assets/images/art_references/mobile/hard-londres.webp",
+    "enabled": true,
+    "category": "mascots"
+  },
+  {
+    "id": "hard-egipto",
+    "level": "hard",
+    "title": "egipto",
+    "asset": "assets/images/art_references/mobile/hard-egipto.webp",
+    "enabled": true,
+    "category": "mascots"
+  },
+  {
+    "id": "easy-easy-01",
+    "level": "easy",
+    "title": "Pingüino y corazón",
+    "asset": "assets/images/art_references/mobile/easy-easy-01.webp",
+    "enabled": true,
+    "category": "mascots"
+  },
+  {
+    "id": "easy-easy-02",
+    "level": "easy",
+    "title": "Cerdito y globo",
+    "asset": "assets/images/art_references/mobile/easy-easy-02.webp",
+    "enabled": true,
+    "category": "mascots"
+  },
+  {
+    "id": "easy-easy-03",
+    "level": "easy",
+    "title": "Oso y flor",
+    "asset": "assets/images/art_references/mobile/easy-easy-03.webp",
+    "enabled": true,
+    "category": "mascots"
+  },
+  {
+    "id": "easy-easy-04",
+    "level": "easy",
+    "title": "Pollito y estrella",
+    "asset": "assets/images/art_references/mobile/easy-easy-04.webp",
+    "enabled": true,
+    "category": "mascots"
+  },
+  {
+    "id": "easy-easy-05",
+    "level": "easy",
+    "title": "Un helado",
+    "asset": "assets/images/art_references/mobile/easy-easy-05.webp",
+    "enabled": true,
+    "category": "mascots"
+  },
+  {
+    "id": "easy-easy-06",
+    "level": "easy",
+    "title": "Una manzana",
+    "asset": "assets/images/art_references/mobile/easy-easy-06.webp",
+    "enabled": false,
+    "category": "mascots"
+  },
+  {
+    "id": "easy-easy-07",
+    "level": "easy",
+    "title": "Un libro",
+    "asset": "assets/images/art_references/mobile/easy-easy-07.webp",
+    "enabled": false,
+    "category": "mascots"
+  },
+  {
+    "id": "easy-easy-08",
+    "level": "easy",
+    "title": "Gorro de lluvia",
+    "asset": "assets/images/art_references/mobile/easy-easy-08.webp",
+    "enabled": false,
+    "category": "mascots"
+  },
+  {
+    "id": "hard-paris",
+    "level": "hard",
+    "title": "Desayuno en París",
+    "asset": "assets/images/art_references/mobile/hard-paris.webp",
+    "enabled": true,
+    "category": "mascots"
+  },
+  {
+    "id": "medium-medium-01",
+    "level": "medium",
+    "title": "Picnic",
+    "asset": "assets/images/art_references/mobile/medium-medium-01.webp",
+    "enabled": true,
+    "category": "mascots"
+  },
+  {
+    "id": "medium-medium-02",
+    "level": "medium",
+    "title": "Castillo de arena",
+    "asset": "assets/images/art_references/mobile/medium-medium-02.webp",
+    "enabled": true,
+    "category": "mascots"
+  },
+  {
+    "id": "medium-medium-03",
+    "level": "medium",
+    "title": "Excursión",
+    "asset": "assets/images/art_references/mobile/medium-medium-03.webp",
+    "enabled": true,
+    "category": "mascots"
+  },
+  {
+    "id": "medium-medium-04",
+    "level": "medium",
+    "title": "Bajo la lluvia",
+    "asset": "assets/images/art_references/mobile/medium-medium-04.webp",
+    "enabled": true,
+    "category": "mascots"
+  },
+  {
+    "id": "easy-easy-09",
+    "level": "easy",
+    "title": "Carro rojo",
+    "asset": "assets/images/art_references/mobile/easy-easy-09.webp",
+    "enabled": true,
+    "category": "vehicles"
+  },
+  {
+    "id": "easy-easy-10",
+    "level": "easy",
+    "title": "Velero",
+    "asset": "assets/images/art_references/mobile/easy-easy-10.webp",
+    "enabled": true,
+    "category": "vehicles"
+  },
+  {
+    "id": "easy-easy-11",
+    "level": "easy",
+    "title": "Casita",
+    "asset": "assets/images/art_references/mobile/easy-easy-11.webp",
+    "enabled": true,
+    "category": "scenery"
+  },
+  {
+    "id": "easy-easy-12",
+    "level": "easy",
+    "title": "Montañas y sol",
+    "asset": "assets/images/art_references/mobile/easy-easy-12.webp",
+    "enabled": true,
+    "category": "scenery"
+  },
+  {
+    "id": "easy-easy-13",
+    "level": "easy",
+    "title": "Isla y palmera",
+    "asset": "assets/images/art_references/mobile/easy-easy-13.webp",
+    "enabled": true,
+    "category": "scenery"
+  },
+  {
+    "id": "easy-easy-14",
+    "level": "easy",
+    "title": "Cohete",
+    "asset": "assets/images/art_references/mobile/easy-easy-14.webp",
+    "enabled": true,
+    "category": "vehicles"
+  },
+  {
+    "id": "easy-easy-15",
+    "level": "easy",
+    "title": "Girasol",
+    "asset": "assets/images/art_references/mobile/easy-easy-15.webp",
+    "enabled": true,
+    "category": "scenery"
+  },
+  {
+    "id": "easy-easy-16",
+    "level": "easy",
+    "title": "Globo aerostático",
+    "asset": "assets/images/art_references/mobile/easy-easy-16.webp",
+    "enabled": true,
+    "category": "scenery"
+  },
+  {
+    "id": "easy-easy-17",
+    "level": "easy",
+    "title": "Bicicleta",
+    "asset": "assets/images/art_references/mobile/easy-easy-17.webp",
+    "enabled": true,
+    "category": "vehicles"
+  },
+  {
+    "id": "easy-easy-18",
+    "level": "easy",
+    "title": "Cupcake",
+    "asset": "assets/images/art_references/mobile/easy-easy-18.webp",
+    "enabled": true,
+    "category": "scenery"
+  },
+  {
+    "id": "easy-easy-19",
+    "level": "easy",
+    "title": "Cactus",
+    "asset": "assets/images/art_references/mobile/easy-easy-19.webp",
+    "enabled": true,
+    "category": "scenery"
+  },
+  {
+    "id": "easy-easy-20",
+    "level": "easy",
+    "title": "Arcoíris",
+    "asset": "assets/images/art_references/mobile/easy-easy-20.webp",
+    "enabled": true,
+    "category": "scenery"
+  },
+  {
+    "id": "medium-medium-05",
+    "level": "medium",
+    "title": "Pintando",
+    "asset": "assets/images/art_references/mobile/medium-medium-05.webp",
+    "enabled": true,
+    "category": "mascots"
+  },
+  {
+    "id": "medium-medium-06",
+    "level": "medium",
+    "title": "Horneando",
+    "asset": "assets/images/art_references/mobile/medium-medium-06.webp",
+    "enabled": false,
+    "category": "mascots"
+  },
+  {
+    "id": "hard-acuario",
+    "level": "hard",
+    "title": "acuario",
+    "asset": "assets/images/art_references/mobile/hard-acuario.webp",
+    "enabled": true,
+    "category": "vehicles"
+  },
+  {
+    "id": "hard-amsterdam",
+    "level": "hard",
+    "title": "amsterdam",
+    "asset": "assets/images/art_references/mobile/hard-amsterdam.webp",
+    "enabled": true,
+    "category": "vehicles"
+  },
+  {
+    "id": "hard-biblioteca",
+    "level": "hard",
+    "title": "biblioteca",
+    "asset": "assets/images/art_references/mobile/hard-biblioteca.webp",
+    "enabled": true,
+    "category": "scenery"
+  },
+  {
+    "id": "hard-brasil",
+    "level": "hard",
+    "title": "brasil",
+    "asset": "assets/images/art_references/mobile/hard-brasil.webp",
+    "enabled": true,
+    "category": "scenery"
+  },
+  {
+    "id": "hard-campamento",
+    "level": "hard",
+    "title": "campamento",
+    "asset": "assets/images/art_references/mobile/hard-campamento.webp",
+    "enabled": true,
+    "category": "scenery"
+  },
+  {
+    "id": "hard-cocina",
+    "level": "hard",
+    "title": "cocina",
+    "asset": "assets/images/art_references/mobile/hard-cocina.webp",
+    "enabled": true,
+    "category": "scenery"
+  },
+  {
+    "id": "hard-cumpleanos",
+    "level": "hard",
+    "title": "cumpleanos",
+    "asset": "assets/images/art_references/mobile/hard-cumpleanos.webp",
+    "enabled": true,
+    "category": "scenery"
+  },
+  {
+    "id": "easy-easy-06-objects",
+    "level": "easy",
+    "title": "Avión de papel",
+    "asset": "assets/images/art_references/mobile/easy-easy-06-objects.webp",
+    "enabled": true,
+    "category": "objects"
+  },
+  {
+    "id": "easy-easy-07-objects",
+    "level": "easy",
+    "title": "Frutero",
+    "asset": "assets/images/art_references/mobile/easy-easy-07-objects.webp",
+    "enabled": true,
+    "category": "scenery"
+  },
+  {
+    "id": "easy-easy-08-objects",
+    "level": "easy",
+    "title": "Pelota",
+    "asset": "assets/images/art_references/mobile/easy-easy-08-objects.webp",
+    "enabled": true,
+    "category": "objects"
+  },
+  {
+    "id": "hard-espacio",
+    "level": "hard",
+    "title": "espacio",
+    "asset": "assets/images/art_references/mobile/hard-espacio.webp",
+    "enabled": true,
+    "category": "vehicles"
+  },
+  {
+    "id": "hard-grecia",
+    "level": "hard",
+    "title": "grecia",
+    "asset": "assets/images/art_references/mobile/hard-grecia.webp",
+    "enabled": true,
+    "category": "scenery"
+  },
+  {
+    "id": "hard-jardin",
+    "level": "hard",
+    "title": "jardin",
+    "asset": "assets/images/art_references/mobile/hard-jardin.webp",
+    "enabled": true,
+    "category": "scenery"
+  },
+  {
+    "id": "medium-medium-06-objects",
+    "level": "medium",
+    "title": "Galletas recién hechas",
+    "asset": "assets/images/art_references/mobile/medium-medium-06-objects.webp",
+    "enabled": true,
+    "category": "scenery"
+  },
+  {
+    "id": "medium-medium-07",
+    "level": "medium",
+    "title": "Un muelle",
+    "asset": "assets/images/art_references/mobile/medium-medium-07.webp",
+    "enabled": true,
+    "category": "scenery"
+  },
+  {
+    "id": "medium-medium-08",
+    "level": "medium",
+    "title": "Macetas y regadera",
+    "asset": "assets/images/art_references/mobile/medium-medium-08.webp",
+    "enabled": true,
+    "category": "scenery"
+  },
+  {
+    "id": "medium-medium-09",
+    "level": "medium",
+    "title": "Muñeco de nieve",
+    "asset": "assets/images/art_references/mobile/medium-medium-09.webp",
+    "enabled": true,
+    "category": "scenery"
+  },
+  {
+    "id": "medium-medium-10",
+    "level": "medium",
+    "title": "Cometa de colores",
+    "asset": "assets/images/art_references/mobile/medium-medium-10.webp",
+    "enabled": true,
+    "category": "scenery"
+  },
+  {
+    "id": "medium-medium-11",
+    "level": "medium",
+    "title": "Carro en la carretera",
+    "asset": "assets/images/art_references/mobile/medium-medium-11.webp",
+    "enabled": true,
+    "category": "vehicles"
+  },
+  {
+    "id": "medium-medium-12",
+    "level": "medium",
+    "title": "Velero en el lago",
+    "asset": "assets/images/art_references/mobile/medium-medium-12.webp",
+    "enabled": true,
+    "category": "vehicles"
+  },
+  {
+    "id": "medium-medium-13",
+    "level": "medium",
+    "title": "Casita y jardín",
+    "asset": "assets/images/art_references/mobile/medium-medium-13.webp",
+    "enabled": true,
+    "category": "scenery"
+  },
+  {
+    "id": "medium-medium-14",
+    "level": "medium",
+    "title": "Un día de playa",
+    "asset": "assets/images/art_references/mobile/medium-medium-14.webp",
+    "enabled": true,
+    "category": "scenery"
+  },
+  {
+    "id": "medium-medium-15",
+    "level": "medium",
+    "title": "Faro y barquito",
+    "asset": "assets/images/art_references/mobile/medium-medium-15.webp",
+    "enabled": true,
+    "category": "scenery"
+  },
+  {
+    "id": "medium-medium-16",
+    "level": "medium",
+    "title": "Un castillo",
+    "asset": "assets/images/art_references/mobile/medium-medium-16.webp",
+    "enabled": true,
+    "category": "scenery"
+  },
+  {
+    "id": "medium-medium-17",
+    "level": "medium",
+    "title": "Merienda campestre",
+    "asset": "assets/images/art_references/mobile/medium-medium-17.webp",
+    "enabled": true,
+    "category": "scenery"
+  },
+  {
+    "id": "medium-medium-18",
+    "level": "medium",
+    "title": "Mesa de dibujo",
+    "asset": "assets/images/art_references/mobile/medium-medium-18.webp",
+    "enabled": true,
+    "category": "scenery"
+  },
+  {
+    "id": "medium-medium-19",
+    "level": "medium",
+    "title": "Acampada en furgoneta",
+    "asset": "assets/images/art_references/mobile/medium-medium-19.webp",
+    "enabled": true,
+    "category": "vehicles"
+  },
+  {
+    "id": "medium-medium-20",
+    "level": "medium",
+    "title": "Jardín de tulipanes",
+    "asset": "assets/images/art_references/mobile/medium-medium-20.webp",
+    "enabled": true,
+    "category": "scenery"
+  },
+  {
+    "id": "hard-mexico",
+    "level": "hard",
+    "title": "mexico",
+    "asset": "assets/images/art_references/mobile/hard-mexico.webp",
+    "enabled": true,
+    "category": "vehicles"
+  },
+  {
+    "id": "hard-nieve",
+    "level": "hard",
+    "title": "nieve",
+    "asset": "assets/images/art_references/mobile/hard-nieve.webp",
+    "enabled": true,
+    "category": "scenery"
+  },
+  {
+    "id": "hard-submarino",
+    "level": "hard",
+    "title": "submarino",
+    "asset": "assets/images/art_references/mobile/hard-submarino.webp",
+    "enabled": true,
+    "category": "vehicles"
+  },
+  {
+    "id": "hard-tesla",
+    "level": "hard",
+    "title": "tesla",
+    "asset": "assets/images/art_references/mobile/hard-tesla.webp",
+    "enabled": true,
+    "category": "vehicles"
+  },
+  {
+    "id": "hard-tren",
+    "level": "hard",
+    "title": "tren",
+    "asset": "assets/images/art_references/mobile/hard-tren.webp",
+    "enabled": true,
+    "category": "scenery"
+  }
+]

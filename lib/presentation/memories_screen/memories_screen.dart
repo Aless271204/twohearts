@@ -175,10 +175,11 @@ class _MemoriesScreenState extends State<MemoriesScreen> {
                     color: Colors.white,
                     shape: BoxShape.circle,
                   ),
-                  child: const Icon(
-                    Icons.cottage_rounded,
-                    color: AppTheme.primary,
-                    size: 28,
+                  child: Image.asset(
+                    'assets/images/nido_logo.png',
+                    width: 38,
+                    height: 38,
+                    fit: BoxFit.contain,
                   ),
                 ),
                 actions: [

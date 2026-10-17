@@ -12,6 +12,7 @@ import '../../services/duo_audio.dart';
 import '../../widgets/art_studio.dart';
 import '../../widgets/art_reference_picker.dart';
 import '../../core/art_reference_catalog.dart';
+import '../../core/art_reference_deck.dart';
 
 class ArtGameScreen extends StatefulWidget {
   final bool freeDraw;
@@ -31,8 +32,9 @@ class _ArtGameScreenState extends State<ArtGameScreen>
   ui.Image? pet;
   ui.Image? customReference;
   Uint8List? sourceReference, referencePng;
-  String referenceTitle = 'Picnic en París · Mascotas 3D';
-  String? difficultyPrefix = 'paris-mascots';
+  String referenceTitle = 'Una nueva inspiración';
+  String? difficultyPrefix;
+  bool catalogMode = true;
   ReferenceStyle referenceStyle = ReferenceStyle.photo;
   bool preparingReference = false;
   int referenceGeneration = 0;
@@ -81,18 +83,41 @@ class _ArtGameScreenState extends State<ArtGameScreen>
   }
 
   Future<void> _defaultReference() async {
-    final bytes = (await rootBundle.load(
-      'assets/images/art_references/paris-mascots.webp',
-    )).buffer.asUint8List();
-    if (!mounted || sourceReference != null || room != null) return;
-    sourceReference = bytes;
-    await _prepareReference();
+    await _nextCatalogReference();
+  }
+
+  Future<void> _nextCatalogReference() async {
+    if (room != null || preparingReference) return;
+    final generation = ++referenceGeneration;
+    setState(() => preparingReference = true);
+    try {
+      final entry = await ArtReferenceDeck.draw(difficulty);
+      final bytes = (await rootBundle.load(entry.asset)).buffer.asUint8List();
+      if (!mounted || generation != referenceGeneration || room != null) return;
+      setState(() {
+        catalogMode = true;
+        sourceReference = bytes;
+        difficultyPrefix = null;
+        referenceStyle = ReferenceStyle.photo;
+        referenceTitle = entry.title;
+        preparingReference = false;
+      });
+      await _prepareReference();
+    } catch (_) {
+      if (mounted && generation == referenceGeneration) {
+        setState(() {
+          preparingReference = false;
+          error = 'No se pudo cargar el catálogo. Puedes elegir una foto.';
+        });
+      }
+    }
   }
 
   Future<void> _pickReference() async {
     final choice = await showArtReferencePicker(context);
     if (choice == null || !mounted) return;
     setState(() {
+      catalogMode = false;
       sourceReference = choice.bytes;
       difficultyPrefix = choice.difficultyPrefix;
       referenceTitle = choice.title;
@@ -119,7 +144,7 @@ class _ArtGameScreenState extends State<ArtGameScreen>
       final image = await prepareArtReference(
         source,
         style: referenceStyle,
-        difficulty: difficultyPrefix != null ? 2 : difficulty,
+        difficulty: catalogMode || difficultyPrefix != null ? 2 : difficulty,
         mascot: pet,
       );
       if (!mounted || generation != referenceGeneration) {
@@ -553,7 +578,7 @@ class _ArtGameScreenState extends State<ArtGameScreen>
               ),
               const SizedBox(height: 8),
               const Text(
-                'Dibuja a nuestras mascotas en escenas acogedoras. Empiezan cuando los dos estén listos; los dibujos se revelan al terminar y enviarlos ambos.',
+                'Mascotas, paisajes, carros y pequeñas aventuras. Una referencia distinta en cada partida; ambos dibujan la misma imagen durante cinco minutos.',
               ),
               const SizedBox(height: 12),
               Wrap(
@@ -563,10 +588,14 @@ class _ArtGameScreenState extends State<ArtGameScreen>
                     ChoiceChip(
                       label: Text(['Fácil', 'Medio', 'Difícil'][i]),
                       selected: difficulty == i,
-                      onSelected: room == null
+                      onSelected: room == null && !preparingReference
                           ? (_) {
                               setState(() => difficulty = i);
-                              _prepareReference();
+                              if (catalogMode) {
+                                _nextCatalogReference();
+                              } else {
+                                _prepareReference();
+                              }
                             }
                           : null,
                     ),
@@ -584,8 +613,8 @@ class _ArtGameScreenState extends State<ArtGameScreen>
                 Text(
                   [
                     'Fácil · composición sencilla',
-                    'Medio · más elementos y paisaje',
-                    'Difícil · referencia completa y texturas',
+                    'Medio · pocos objetos y fondo mayormente blanco',
+                    'Difícil · escenas con fondo, objetos y acciones',
                   ][difficulty],
                   style: const TextStyle(fontWeight: FontWeight.w700),
                 ),
@@ -594,7 +623,15 @@ class _ArtGameScreenState extends State<ArtGameScreen>
                   icon: const Icon(Icons.photo_library),
                   label: const Text('Sus fotos, viajes y destinos'),
                 ),
-                if (sourceReference != null)
+                if (!catalogMode)
+                  TextButton.icon(
+                    onPressed: preparingReference
+                        ? null
+                        : _nextCatalogReference,
+                    icon: const Icon(Icons.shuffle),
+                    label: const Text('Volver al catálogo aleatorio'),
+                  ),
+                if (!catalogMode && sourceReference != null)
                   Wrap(
                     spacing: 5,
                     children: [
@@ -612,7 +649,8 @@ class _ArtGameScreenState extends State<ArtGameScreen>
                     ],
                   ),
                 if (preparingReference) const LinearProgressIndicator(),
-                if (sourceReference != null &&
+                if (!catalogMode &&
+                    sourceReference != null &&
                     (referenceStyle == ReferenceStyle.mascot3d ||
                         referenceStyle == ReferenceStyle.pixel))
                   DropdownButtonFormField<int>(
@@ -696,6 +734,7 @@ class _ArtGameScreenState extends State<ArtGameScreen>
                           if (v != null) {
                             setState(() {
                               scene = v;
+                              catalogMode = false;
                               sourceReference = null;
                               difficultyPrefix = null;
                               referenceGeneration++;
@@ -949,6 +988,7 @@ class _ArtGameScreenState extends State<ArtGameScreen>
                   document.clear();
                   setState(() {
                     room = null;
+                    solo = false;
                     deadline = null;
                     started = false;
                     submitted = false;
@@ -958,6 +998,7 @@ class _ArtGameScreenState extends State<ArtGameScreen>
                     frozen = null;
                     seconds = 300;
                   });
+                  await _nextCatalogReference();
                 },
                 child: const Text('Otra ronda'),
               ),

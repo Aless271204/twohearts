@@ -1,0 +1,272 @@
+[
+  {
+    "level": "hard",
+    "id": "kioto",
+    "title": "kioto",
+    "subject": "penguin and brown bear sharing a heart shaped rice snack on a picnic blanket in Kyoto. Simple red arched bridge behind, one broad cherry branch with five large pink blossoms, distant pagoda silhouette, two plain tea cups and small basket. One flat turquoise stream. Simplify the old Kyoto painting into a clean cartoon.",
+    "index": 0,
+    "source": "C:\\Users\\Lenovo\\.codex\\generated_images\\01a119dd-fbd0-7490-9d7e-2daf0e5cab9d\\exec-e3c265f3-2490-4369-9274-716bfd1b93dd.png"
+  },
+  {
+    "level": "hard",
+    "id": "nueva-york",
+    "title": "nueva-york",
+    "subject": "pink pig eating a slice of pizza on a park bench in New York, simple skyline and Statue of Liberty silhouette in distance, one yellow taxi on road, a small backpack and one pigeon nearby",
+    "index": 1,
+    "source": "C:\\Users\\Lenovo\\.codex\\generated_images\\01a119dd-fbd0-7490-9d7e-2daf0e5cab9d\\exec-5cd8aad8-3728-47ed-8244-b5d02e46bf52.png"
+  },
+  {
+    "level": "hard",
+    "id": "londres",
+    "title": "londres",
+    "subject": "brown bear holding a pink umbrella beside a red London phone booth, simple Big Ben silhouette in background, a small puddle, one flower pot and a cup of tea on a low wall",
+    "index": 2,
+    "source": "C:\\Users\\Lenovo\\.codex\\generated_images\\01a119dd-fbd0-7490-9d7e-2daf0e5cab9d\\exec-3878834a-de92-4686-b072-28ffd5c43539.png"
+  },
+  {
+    "level": "hard",
+    "id": "egipto",
+    "title": "egipto",
+    "subject": "yellow chick wearing a simple explorer hat reading a map in Egypt, two broad pyramids, a palm tree, small canteen and camel-shaped sand sculpture nearby, one large sun",
+    "index": 3,
+    "source": "C:\\Users\\Lenovo\\.codex\\generated_images\\01a119dd-fbd0-7490-9d7e-2daf0e5cab9d\\exec-22ae53ac-6c94-442f-be37-2cb791a1fe64.png"
+  },
+  {
+    "level": "easy",
+    "id": "easy-01",
+    "title": "Pingüino y corazón",
+    "subject": "penguin holding a pink heart",
+    "index": 0,
+    "prompt": "ONE square drawing-game reference image, lovely simple cute cartoon for a FIVE MINUTE finger drawing challenge on a PHONE. Big clear round shapes, thick smooth dark brown outlines, round chubby mascot with two small dark dot eyes, tiny smile or triangle beak, simple oval paws or flippers and little blush. Clean broad flat pastel color areas, no fine textures, no fur detail, no glossy eyes, no photorealism, no 3D lighting, no tiny repeated patterns. Generous margin and all objects visible. No text, labels, border, UI or watermark. EASY: predominantly PURE WHITE background. Only ONE mascot with ONE large prop, no scenery, no furniture, no ground details. At most 4-5 colors and about 15-20 broad shapes/strokes. Extremely easy beginner doodle. Scene: penguin holding a pink heart.",
+    "source": "C:\\Users\\Lenovo\\.codex\\generated_images\\01a119dd-fbd0-7490-9d7e-2daf0e5cab9d\\exec-7d35820a-4507-473c-91cf-94d67445cb07.png"
+  },
+  {
+    "level": "easy",
+    "id": "easy-02",
+    "title": "Cerdito y globo",
+    "subject": "pink pig holding a yellow balloon",
+    "index": 1,
+    "prompt": "ONE square drawing-game reference image, lovely simple cute cartoon for a FIVE MINUTE finger drawing challenge on a PHONE. Big clear round shapes, thick smooth dark brown outlines, round chubby mascot with two small dark dot eyes, tiny smile or triangle beak, simple oval paws or flippers and little blush. Clean broad flat pastel color areas, no fine textures, no fur detail, no glossy eyes, no photorealism, no 3D lighting, no tiny repeated patterns. Generous margin and all objects visible. No text, labels, border, UI or watermark. EASY: predominantly PURE WHITE background. Only ONE mascot with ONE large prop, no scenery, no furniture, no ground details. At most 4-5 colors and about 15-20 broad shapes/strokes. Extremely easy beginner doodle. Scene: pink pig holding a yellow balloon.",
+    "source": "C:\\Users\\Lenovo\\.codex\\generated_images\\01a119dd-fbd0-7490-9d7e-2daf0e5cab9d\\exec-9054667c-b058-4bc3-b891-a0e4fc142c26.png"
+  },
+  {
+    "level": "easy",
+    "id": "easy-03",
+    "title": "Oso y flor",
+    "subject": "brown bear holding one flower",
+    "index": 2,
+    "prompt": "ONE square drawing-game reference image, lovely simple cute cartoon for a FIVE MINUTE finger drawing challenge on a PHONE. Big clear round shapes, thick smooth dark brown outlines, round chubby mascot with two small dark dot eyes, tiny smile or triangle beak, simple oval paws or flippers and little blush. Clean broad flat pastel color areas, no fine textures, no fur detail, no glossy eyes, no photorealism, no 3D lighting, no tiny repeated patterns. Generous margin and all objects visible. No text, labels, border, UI or watermark. EASY: predominantly PURE WHITE background. Only ONE mascot with ONE large prop, no scenery, no furniture, no ground details. At most 4-5 colors and about 15-20 broad shapes/strokes. Extremely easy beginner doodle. Scene: brown bear holding one flower.",
+    "source": "C:\\Users\\Lenovo\\.codex\\generated_images\\01a119dd-fbd0-7490-9d7e-2daf0e5cab9d\\exec-8fbfd7c6-5345-41e8-8ab7-7f3ff5494b6d.png"
+  },
+  {
+    "level": "easy",
+    "id": "easy-04",
+    "title": "Pollito y estrella",
+    "subject": "yellow chick hugging a star",
+    "index": 3,
+    "prompt": "ONE square drawing-game reference image, lovely simple cute cartoon for a FIVE MINUTE finger drawing challenge on a PHONE. Big clear round shapes, thick smooth dark brown outlines, round chubby mascot with two small dark dot eyes, tiny smile or triangle beak, simple oval paws or flippers and little blush. Clean broad flat pastel color areas, no fine textures, no fur detail, no glossy eyes, no photorealism, no 3D lighting, no tiny repeated patterns. Generous margin and all objects visible. No text, labels, border, UI or watermark. EASY: predominantly PURE WHITE background. Only ONE mascot with ONE large prop, no scenery, no furniture, no ground details. At most 4-5 colors and about 15-20 broad shapes/strokes. Extremely easy beginner doodle. Scene: yellow chick hugging a star.",
+    "source": "C:\\Users\\Lenovo\\.codex\\generated_images\\01a119dd-fbd0-7490-9d7e-2daf0e5cab9d\\exec-ba3fd492-106a-4fac-b561-1c4fd586a5b9.png"
+  },
+  {
+    "level": "easy",
+    "id": "easy-05",
+    "title": "Un helado",
+    "subject": "penguin eating an ice cream",
+    "index": 4,
+    "prompt": "ONE square drawing-game reference image, lovely simple cute cartoon for a FIVE MINUTE finger drawing challenge on a PHONE. Big clear round shapes, thick smooth dark brown outlines, round chubby mascot with two small dark dot eyes, tiny smile or triangle beak, simple oval paws or flippers and little blush. Clean broad flat pastel color areas, no fine textures, no fur detail, no glossy eyes, no photorealism, no 3D lighting, no tiny repeated patterns. Generous margin and all objects visible. No text, labels, border, UI or watermark. EASY: predominantly PURE WHITE background. Only ONE mascot with ONE large prop, no scenery, no furniture, no ground details. At most 4-5 colors and about 15-20 broad shapes/strokes. Extremely easy beginner doodle. Scene: penguin eating an ice cream.",
+    "source": "C:\\Users\\Lenovo\\.codex\\generated_images\\01a119dd-fbd0-7490-9d7e-2daf0e5cab9d\\exec-c10b6182-5acc-487f-a30b-2b779ab4f849.png"
+  },
+  {
+    "level": "easy",
+    "id": "easy-06",
+    "title": "Una manzana",
+    "subject": "pig holding an apple",
+    "index": 5,
+    "prompt": "ONE square drawing-game reference image, lovely simple cute cartoon for a FIVE MINUTE finger drawing challenge on a PHONE. Big clear round shapes, thick smooth dark brown outlines, round chubby mascot with two small dark dot eyes, tiny smile or triangle beak, simple oval paws or flippers and little blush. Clean broad flat pastel color areas, no fine textures, no fur detail, no glossy eyes, no photorealism, no 3D lighting, no tiny repeated patterns. Generous margin and all objects visible. No text, labels, border, UI or watermark. EASY: predominantly PURE WHITE background. Only ONE mascot with ONE large prop, no scenery, no furniture, no ground details. At most 4-5 colors and about 15-20 broad shapes/strokes. Extremely easy beginner doodle. Scene: pig holding an apple.",
+    "source": "C:\\Users\\Lenovo\\.codex\\generated_images\\01a119dd-fbd0-7490-9d7e-2daf0e5cab9d\\exec-aa8997f5-5b15-4ba9-a798-8f54313a356a.png"
+  },
+  {
+    "level": "easy",
+    "id": "easy-07",
+    "title": "Un libro",
+    "subject": "bear reading a closed book",
+    "index": 6,
+    "prompt": "ONE square drawing-game reference image, lovely simple cute cartoon for a FIVE MINUTE finger drawing challenge on a PHONE. Big clear round shapes, thick smooth dark brown outlines, round chubby mascot with two small dark dot eyes, tiny smile or triangle beak, simple oval paws or flippers and little blush. Clean broad flat pastel color areas, no fine textures, no fur detail, no glossy eyes, no photorealism, no 3D lighting, no tiny repeated patterns. Generous margin and all objects visible. No text, labels, border, UI or watermark. EASY: predominantly PURE WHITE background. Only ONE mascot with ONE large prop, no scenery, no furniture, no ground details. At most 4-5 colors and about 15-20 broad shapes/strokes. Extremely easy beginner doodle. Scene: bear reading a closed book.",
+    "source": "C:\\Users\\Lenovo\\.codex\\generated_images\\01a119dd-fbd0-7490-9d7e-2daf0e5cab9d\\exec-32bcabcd-acea-439c-9438-64f55ecdbc4d.png"
+  },
+  {
+    "level": "easy",
+    "id": "easy-08",
+    "title": "Gorro de lluvia",
+    "subject": "chick wearing a simple rain hat",
+    "index": 7,
+    "prompt": "ONE square drawing-game reference image, lovely simple cute cartoon for a FIVE MINUTE finger drawing challenge on a PHONE. Big clear round shapes, thick smooth dark brown outlines, round chubby mascot with two small dark dot eyes, tiny smile or triangle beak, simple oval paws or flippers and little blush. Clean broad flat pastel color areas, no fine textures, no fur detail, no glossy eyes, no photorealism, no 3D lighting, no tiny repeated patterns. Generous margin and all objects visible. No text, labels, border, UI or watermark. EASY: predominantly PURE WHITE background. Only ONE mascot with ONE large prop, no scenery, no furniture, no ground details. At most 4-5 colors and about 15-20 broad shapes/strokes. Extremely easy beginner doodle. Scene: chick wearing a simple rain hat.",
+    "source": "C:\\Users\\Lenovo\\.codex\\generated_images\\01a119dd-fbd0-7490-9d7e-2daf0e5cab9d\\exec-c8cce68b-2dda-455f-9b0a-99d17c2e65a5.png"
+  },
+  {
+    "level": "hard",
+    "id": "paris",
+    "title": "Desayuno en París",
+    "subject": "Approved Paris cafe penguin eating croissant.",
+    "index": 7,
+    "source": "C:\\Users\\Lenovo\\.codex\\generated_images\\01a119dd-fbd0-7490-9d7e-2daf0e5cab9d\\exec-edfa1c5d-a2dd-4081-809d-46f09ce24f40.png"
+  },
+  {
+    "level": "medium",
+    "id": "medium-01",
+    "title": "Picnic",
+    "subject": "penguin having a picnic with a basket cup and apple, one tree and sun",
+    "index": 0,
+    "source": "C:\\Users\\Lenovo\\.codex\\generated_images\\01a119dd-fbd0-7490-9d7e-2daf0e5cab9d\\exec-6250b412-6fb3-4e9b-a791-983bde25fd04.png"
+  },
+  {
+    "level": "medium",
+    "id": "medium-02",
+    "title": "Castillo de arena",
+    "subject": "pig building a sandcastle with bucket shovel shell and wave",
+    "index": 1,
+    "source": "C:\\Users\\Lenovo\\.codex\\generated_images\\01a119dd-fbd0-7490-9d7e-2daf0e5cab9d\\exec-e5766ddb-8a29-4bd2-be20-8123c821d11d.png"
+  },
+  {
+    "level": "medium",
+    "id": "medium-03",
+    "title": "Excursión",
+    "subject": "bear reading a trail map with backpack two mountain triangles and one pine",
+    "index": 2,
+    "source": "C:\\Users\\Lenovo\\.codex\\generated_images\\01a119dd-fbd0-7490-9d7e-2daf0e5cab9d\\exec-10466f92-7ee4-4916-8586-8ead37696f59.png"
+  },
+  {
+    "level": "medium",
+    "id": "medium-04",
+    "title": "Bajo la lluvia",
+    "subject": "chick with umbrella next to two puddles three tulips and a cloud",
+    "index": 3,
+    "source": "C:\\Users\\Lenovo\\.codex\\generated_images\\01a119dd-fbd0-7490-9d7e-2daf0e5cab9d\\exec-3a11f30c-f8e7-4137-9678-274b56f23248.png"
+  },
+  {
+    "level": "easy",
+    "id": "easy-09",
+    "title": "Carro rojo",
+    "subject": "a red compact car in side view, two round wheels, one broad window, white background",
+    "index": 8,
+    "prompt": "ONE square drawing-game reference image for FIVE MINUTES of finger drawing on a PHONE. Lovely cute simple cartoon, big clear rounded shapes, thick smooth dark brown outlines, flat broad pastel colors with minimal soft shading. If an animal is specified, use round chubby body, dot eyes, tiny smile or triangle beak, small oval paws/flippers and blush. If no animal is specified, do NOT add an animal, face or character. Clear generous margins, all main objects visible. No photorealism, no 3D, no fur or paper texture, no glossy eyes, no fine patterns, no words, letters, labels, borders or UI. EASY: pure WHITE background, only one main subject with its very small attached prop if specified, no additional scenery. Large basic shapes, 4-5 colors, roughly 15-20 strokes. Extremely simple beginner doodle. SCENE: a red compact car in side view, two round wheels, one broad window, white background.",
+    "source": "C:\\Users\\Lenovo\\.codex\\generated_images\\01a119dd-fbd0-7490-9d7e-2daf0e5cab9d\\exec-d1e37b48-4da5-4df9-a78c-64442935872d.png"
+  },
+  {
+    "level": "easy",
+    "id": "easy-10",
+    "title": "Velero",
+    "subject": "a simple blue sailboat with one triangular sail on one curved wave",
+    "index": 9,
+    "prompt": "ONE square drawing-game reference image for FIVE MINUTES of finger drawing on a PHONE. Lovely cute simple cartoon, big clear rounded shapes, thick smooth dark brown outlines, flat broad pastel colors with minimal soft shading. If an animal is specified, use round chubby body, dot eyes, tiny smile or triangle beak, small oval paws/flippers and blush. If no animal is specified, do NOT add an animal, face or character. Clear generous margins, all main objects visible. No photorealism, no 3D, no fur or paper texture, no glossy eyes, no fine patterns, no words, letters, labels, borders or UI. EASY: pure WHITE background, only one main subject with its very small attached prop if specified, no additional scenery. Large basic shapes, 4-5 colors, roughly 15-20 strokes. Extremely simple beginner doodle. SCENE: a simple blue sailboat with one triangular sail on one curved wave.",
+    "source": "C:\\Users\\Lenovo\\.codex\\generated_images\\01a119dd-fbd0-7490-9d7e-2daf0e5cab9d\\exec-1049a6c4-3e62-4730-8a3a-a8673527ea50.png"
+  },
+  {
+    "level": "easy",
+    "id": "easy-11",
+    "title": "Casita",
+    "subject": "a tiny cream house with red triangle roof, one door and two windows",
+    "index": 10,
+    "prompt": "ONE square drawing-game reference image for FIVE MINUTES of finger drawing on a PHONE. Lovely cute simple cartoon, big clear rounded shapes, thick smooth dark brown outlines, flat broad pastel colors with minimal soft shading. If an animal is specified, use round chubby body, dot eyes, tiny smile or triangle beak, small oval paws/flippers and blush. If no animal is specified, do NOT add an animal, face or character. Clear generous margins, all main objects visible. No photorealism, no 3D, no fur or paper texture, no glossy eyes, no fine patterns, no words, letters, labels, borders or UI. EASY: pure WHITE background, only one main subject with its very small attached prop if specified, no additional scenery. Large basic shapes, 4-5 colors, roughly 15-20 strokes. Extremely simple beginner doodle. SCENE: a tiny cream house with red triangle roof, one door and two windows.",
+    "source": "C:\\Users\\Lenovo\\.codex\\generated_images\\01a119dd-fbd0-7490-9d7e-2daf0e5cab9d\\exec-f4a12d4d-919f-4aaf-add9-c247f74318da.png"
+  },
+  {
+    "level": "easy",
+    "id": "easy-12",
+    "title": "Montañas y sol",
+    "subject": "two triangular mountains and one large sun, landscape only",
+    "index": 11,
+    "prompt": "ONE square drawing-game reference image for FIVE MINUTES of finger drawing on a PHONE. Lovely cute simple cartoon, big clear rounded shapes, thick smooth dark brown outlines, flat broad pastel colors with minimal soft shading. If an animal is specified, use round chubby body, dot eyes, tiny smile or triangle beak, small oval paws/flippers and blush. If no animal is specified, do NOT add an animal, face or character. Clear generous margins, all main objects visible. No photorealism, no 3D, no fur or paper texture, no glossy eyes, no fine patterns, no words, letters, labels, borders or UI. EASY: pure WHITE background, only one main subject with its very small attached prop if specified, no additional scenery. Large basic shapes, 4-5 colors, roughly 15-20 strokes. Extremely simple beginner doodle. SCENE: two triangular mountains and one large sun, landscape only.",
+    "source": "C:\\Users\\Lenovo\\.codex\\generated_images\\01a119dd-fbd0-7490-9d7e-2daf0e5cab9d\\exec-1f363022-6428-48ff-8505-712c4d15c1bb.png"
+  },
+  {
+    "level": "easy",
+    "id": "easy-13",
+    "title": "Isla y palmera",
+    "subject": "one palm tree on a small sand island with two curved sea lines",
+    "index": 12,
+    "prompt": "ONE square drawing-game reference image for FIVE MINUTES of finger drawing on a PHONE. Lovely cute simple cartoon, big clear rounded shapes, thick smooth dark brown outlines, flat broad pastel colors with minimal soft shading. If an animal is specified, use round chubby body, dot eyes, tiny smile or triangle beak, small oval paws/flippers and blush. If no animal is specified, do NOT add an animal, face or character. Clear generous margins, all main objects visible. No photorealism, no 3D, no fur or paper texture, no glossy eyes, no fine patterns, no words, letters, labels, borders or UI. EASY: pure WHITE background, only one main subject with its very small attached prop if specified, no additional scenery. Large basic shapes, 4-5 colors, roughly 15-20 strokes. Extremely simple beginner doodle. SCENE: one palm tree on a small sand island with two curved sea lines.",
+    "source": "C:\\Users\\Lenovo\\.codex\\generated_images\\01a119dd-fbd0-7490-9d7e-2daf0e5cab9d\\exec-743229ec-6fec-48ea-aa48-9eebb491b1e3.png"
+  },
+  {
+    "level": "easy",
+    "id": "easy-14",
+    "title": "Cohete",
+    "subject": "a simple rocket with one round window and one star",
+    "index": 13,
+    "prompt": "ONE square drawing-game reference image for FIVE MINUTES of finger drawing on a PHONE. Lovely cute simple cartoon, big clear rounded shapes, thick smooth dark brown outlines, flat broad pastel colors with minimal soft shading. If an animal is specified, use round chubby body, dot eyes, tiny smile or triangle beak, small oval paws/flippers and blush. If no animal is specified, do NOT add an animal, face or character. Clear generous margins, all main objects visible. No photorealism, no 3D, no fur or paper texture, no glossy eyes, no fine patterns, no words, letters, labels, borders or UI. EASY: pure WHITE background, only one main subject with its very small attached prop if specified, no additional scenery. Large basic shapes, 4-5 colors, roughly 15-20 strokes. Extremely simple beginner doodle. SCENE: a simple rocket with one round window and one star.",
+    "source": "C:\\Users\\Lenovo\\.codex\\generated_images\\01a119dd-fbd0-7490-9d7e-2daf0e5cab9d\\exec-f2b35ae6-08eb-476d-b69c-85882c69a0be.png"
+  },
+  {
+    "level": "easy",
+    "id": "easy-15",
+    "title": "Girasol",
+    "subject": "one large sunflower in a flower pot",
+    "index": 14,
+    "prompt": "ONE square drawing-game reference image for FIVE MINUTES of finger drawing on a PHONE. Lovely cute simple cartoon, big clear rounded shapes, thick smooth dark brown outlines, flat broad pastel colors with minimal soft shading. If an animal is specified, use round chubby body, dot eyes, tiny smile or triangle beak, small oval paws/flippers and blush. If no animal is specified, do NOT add an animal, face or character. Clear generous margins, all main objects visible. No photorealism, no 3D, no fur or paper texture, no glossy eyes, no fine patterns, no words, letters, labels, borders or UI. EASY: pure WHITE background, only one main subject with its very small attached prop if specified, no additional scenery. Large basic shapes, 4-5 colors, roughly 15-20 strokes. Extremely simple beginner doodle. SCENE: one large sunflower in a flower pot.",
+    "source": "C:\\Users\\Lenovo\\.codex\\generated_images\\01a119dd-fbd0-7490-9d7e-2daf0e5cab9d\\exec-8782947b-3a05-4419-ba05-4bee98cfc793.png"
+  },
+  {
+    "level": "easy",
+    "id": "easy-16",
+    "title": "Globo aerostático",
+    "subject": "a striped hot air balloon with a tiny square basket",
+    "index": 15,
+    "prompt": "ONE square drawing-game reference image for FIVE MINUTES of finger drawing on a PHONE. Lovely cute simple cartoon, big clear rounded shapes, thick smooth dark brown outlines, flat broad pastel colors with minimal soft shading. If an animal is specified, use round chubby body, dot eyes, tiny smile or triangle beak, small oval paws/flippers and blush. If no animal is specified, do NOT add an animal, face or character. Clear generous margins, all main objects visible. No photorealism, no 3D, no fur or paper texture, no glossy eyes, no fine patterns, no words, letters, labels, borders or UI. EASY: pure WHITE background, only one main subject with its very small attached prop if specified, no additional scenery. Large basic shapes, 4-5 colors, roughly 15-20 strokes. Extremely simple beginner doodle. SCENE: a striped hot air balloon with a tiny square basket.",
+    "source": "C:\\Users\\Lenovo\\.codex\\generated_images\\01a119dd-fbd0-7490-9d7e-2daf0e5cab9d\\exec-f3ae71b6-1612-402e-a6fa-90f2d2dfe769.png"
+  },
+  {
+    "level": "easy",
+    "id": "easy-17",
+    "title": "Bicicleta",
+    "subject": "one bicycle in side view with two wheels and simple frame",
+    "index": 16,
+    "prompt": "ONE square drawing-game reference image for FIVE MINUTES of finger drawing on a PHONE. Lovely cute simple cartoon, big clear rounded shapes, thick smooth dark brown outlines, flat broad pastel colors with minimal soft shading. If an animal is specified, use round chubby body, dot eyes, tiny smile or triangle beak, small oval paws/flippers and blush. If no animal is specified, do NOT add an animal, face or character. Clear generous margins, all main objects visible. No photorealism, no 3D, no fur or paper texture, no glossy eyes, no fine patterns, no words, letters, labels, borders or UI. EASY: pure WHITE background, only one main subject with its very small attached prop if specified, no additional scenery. Large basic shapes, 4-5 colors, roughly 15-20 strokes. Extremely simple beginner doodle. SCENE: one bicycle in side view with two wheels and simple frame.",
+    "source": "C:\\Users\\Lenovo\\.codex\\generated_images\\01a119dd-fbd0-7490-9d7e-2daf0e5cab9d\\exec-3774fbf1-78cc-43c1-9e02-0f8ad252a569.png"
+  },
+  {
+    "level": "easy",
+    "id": "easy-18",
+    "title": "Cupcake",
+    "subject": "a cute single cupcake with one cherry",
+    "index": 17,
+    "prompt": "ONE square drawing-game reference image for FIVE MINUTES of finger drawing on a PHONE. Lovely cute simple cartoon, big clear rounded shapes, thick smooth dark brown outlines, flat broad pastel colors with minimal soft shading. If an animal is specified, use round chubby body, dot eyes, tiny smile or triangle beak, small oval paws/flippers and blush. If no animal is specified, do NOT add an animal, face or character. Clear generous margins, all main objects visible. No photorealism, no 3D, no fur or paper texture, no glossy eyes, no fine patterns, no words, letters, labels, borders or UI. EASY: pure WHITE background, only one main subject with its very small attached prop if specified, no additional scenery. Large basic shapes, 4-5 colors, roughly 15-20 strokes. Extremely simple beginner doodle. SCENE: a cute single cupcake with one cherry.",
+    "source": "C:\\Users\\Lenovo\\.codex\\generated_images\\01a119dd-fbd0-7490-9d7e-2daf0e5cab9d\\exec-b85fb792-91bb-4a9c-85ea-e8371dc758fd.png"
+  },
+  {
+    "level": "easy",
+    "id": "easy-19",
+    "title": "Cactus",
+    "subject": "a green cactus in a terracotta pot",
+    "index": 18,
+    "prompt": "ONE square drawing-game reference image for FIVE MINUTES of finger drawing on a PHONE. Lovely cute simple cartoon, big clear rounded shapes, thick smooth dark brown outlines, flat broad pastel colors with minimal soft shading. If an animal is specified, use round chubby body, dot eyes, tiny smile or triangle beak, small oval paws/flippers and blush. If no animal is specified, do NOT add an animal, face or character. Clear generous margins, all main objects visible. No photorealism, no 3D, no fur or paper texture, no glossy eyes, no fine patterns, no words, letters, labels, borders or UI. EASY: pure WHITE background, only one main subject with its very small attached prop if specified, no additional scenery. Large basic shapes, 4-5 colors, roughly 15-20 strokes. Extremely simple beginner doodle. SCENE: a green cactus in a terracotta pot.",
+    "source": "C:\\Users\\Lenovo\\.codex\\generated_images\\01a119dd-fbd0-7490-9d7e-2daf0e5cab9d\\exec-bfff98f0-073c-4b37-a2ea-0b9f24df6e44.png"
+  },
+  {
+    "level": "easy",
+    "id": "easy-20",
+    "title": "Arcoíris",
+    "subject": "one pastel rainbow with one simple cloud",
+    "index": 19,
+    "prompt": "ONE square drawing-game reference image for FIVE MINUTES of finger drawing on a PHONE. Lovely cute simple cartoon, big clear rounded shapes, thick smooth dark brown outlines, flat broad pastel colors with minimal soft shading. If an animal is specified, use round chubby body, dot eyes, tiny smile or triangle beak, small oval paws/flippers and blush. If no animal is specified, do NOT add an animal, face or character. Clear generous margins, all main objects visible. No photorealism, no 3D, no fur or paper texture, no glossy eyes, no fine patterns, no words, letters, labels, borders or UI. EASY: pure WHITE background, only one main subject with its very small attached prop if specified, no additional scenery. Large basic shapes, 4-5 colors, roughly 15-20 strokes. Extremely simple beginner doodle. SCENE: one pastel rainbow with one simple cloud.",
+    "source": "C:\\Users\\Lenovo\\.codex\\generated_images\\01a119dd-fbd0-7490-9d7e-2daf0e5cab9d\\exec-6f24cf49-989a-41e9-a897-7cb863c4eb3c.png"
+  },
+  {
+    "level": "medium",
+    "id": "medium-05",
+    "title": "Pintando",
+    "subject": "penguin painting a heart on easel, palette brush and one flower pot",
+    "index": 4,
+    "prompt": "ONE square drawing-game reference image for FIVE MINUTES of finger drawing on a PHONE. Lovely cute simple cartoon, big clear rounded shapes, thick smooth dark brown outlines, flat broad pastel colors with minimal soft shading. If an animal is specified, use round chubby body, dot eyes, tiny smile or triangle beak, small oval paws/flippers and blush. If no animal is specified, do NOT add an animal, face or character. Clear generous margins, all main objects visible. No photorealism, no 3D, no fur or paper texture, no glossy eyes, no fine patterns, no words, letters, labels, borders or UI. MEDIUM: upper TWO THIRDS background WHITE, much empty space. One main subject and 3-4 simple nearby objects. NO dense scenery, NO complete landscape behind mascot, just a small symbolic tree/mountain if specified and a simple ground baseline. Large shapes, 5-7 colors, about 25-35 strokes. SCENE: penguin painting a heart on easel, palette brush and one flower pot.",
+    "source": "C:\\Users\\Lenovo\\.codex\\generated_images\\01a119dd-fbd0-7490-9d7e-2daf0e5cab9d\\exec-6e2c1b66-630f-4f8d-a95f-ae79259e1c17.png"
+  },
+  {
+    "level": "medium",
+    "id": "medium-06",
+    "title": "Horneando",
+    "subject": "pig baking three cookies with mixing bowl rolling pin and a simple table",
+    "index": 5,
+    "prompt": "ONE square drawing-game reference image for FIVE MINUTES of finger drawing on a PHONE. Lovely cute simple cartoon, big clear rounded shapes, thick smooth dark brown outlines, flat broad pastel colors with minimal soft shading. If an animal is specified, use round chubby body, dot eyes, tiny smile or triangle beak, small oval paws/flippers and blush. If no animal is specified, do NOT add an animal, face or character. Clear generous margins, all main objects visible. No photorealism, no 3D, no fur or paper texture, no glossy eyes, no fine patterns, no words, letters, labels, borders or UI. MEDIUM: upper TWO THIRDS background WHITE, much empty space. One main subject and 3-4 simple nearby objects. NO dense scenery, NO complete landscape behind mascot, just a small symbolic tree/mountain if specified and a simple ground baseline. Large shapes, 5-7 colors, about 25-35 strokes. SCENE: pig baking three cookies with mixing bowl rolling pin and a simple table.",
+    "source": "C:\\Users\\Lenovo\\.codex\\generated_images\\01a119dd-fbd0-7490-9d7e-2daf0e5cab9d\\exec-6b8b1780-e6cd-4324-8c5e-b224deb94478.png"
+  }
+]

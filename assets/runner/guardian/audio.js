@@ -1,20 +1,22 @@
 // Original lightweight score. Every layer shares the same transport and harmony.
 // Intensities change at bar boundaries: exploration -> tension -> boss -> climax.
 export class GuardianAudio{
- constructor(){this.ctx=null;this.timer=null;this.step=0;this.level=0;this.pending=0;this.lastEvent=0;this.musicVolume=.55;this.effectsVolume=.75;this.voices=new Set();this.voiceBuffers=new Map();}
- async start(){try{if(!this.ctx){const Context=globalThis.AudioContext??globalThis.webkitAudioContext;this.ctx=new Context();this.music=this.ctx.createGain();this.fx=this.ctx.createGain();this.music.connect(this.ctx.destination);this.fx.connect(this.ctx.destination);this.applyVolumes();}await this.ctx.resume();this.applyVolumes();if(this.timer)return;this.next=this.ctx.currentTime+.06;this.timer=setInterval(()=>this.schedule(),80);}catch{ /* Silent play remains available if audio is denied. */ }}
- applyVolumes(){if(!this.ctx)return;this.music.gain.setTargetAtTime(this.musicVolume*.24,this.ctx.currentTime,.08);this.fx.gain.setTargetAtTime(this.effectsVolume*.22,this.ctx.currentTime,.02);}
+ constructor(){this.ctx=null;this.timer=null;this.step=0;this.level=0;this.pending=0;this.lastEvent=0;this.musicVolume=.70;this.effectsVolume=.75;this.voices=new Set();this.voiceBuffers=new Map();}
+ async unlock(){try{if(!this.ctx){const Context=globalThis.AudioContext??globalThis.webkitAudioContext;this.ctx=new Context();this.music=this.ctx.createGain();this.fx=this.ctx.createGain();this.music.connect(this.ctx.destination);this.fx.connect(this.ctx.destination);this.applyVolumes();}await this.ctx.resume();return true;}catch{return false;}}
+ async start(){if(!await this.unlock())return;this.applyVolumes();if(this.timer)return;this.next=this.ctx.currentTime+.06;this.schedule();this.timer=setInterval(()=>this.schedule(),80);}
+ applyVolumes(){if(!this.ctx)return;this.music.gain.setTargetAtTime(this.musicVolume*.65,this.ctx.currentTime,.08);this.fx.gain.setTargetAtTime(this.effectsVolume*.22,this.ctx.currentTime,.02);}
  tone(midi,time,duration,volume,type='triangle',destination=this.music){
   if(!this.ctx||!destination)return;const o=this.ctx.createOscillator(),g=this.ctx.createGain();o.type=type;o.frequency.value=440*2**((midi-69)/12);g.gain.setValueAtTime(.0001,time);g.gain.exponentialRampToValueAtTime(Math.max(.001,volume),time+.012);g.gain.exponentialRampToValueAtTime(.0001,time+duration);o.connect(g);g.connect(destination);o.start(time);o.stop(time+duration+.03);o.onended=()=>{o.disconnect();g.disconnect();};
  }
- schedule(){if(!this.ctx||this.ctx.state!=='running')return;const tick=60/116/2;
+ schedule(){if(!this.ctx||this.ctx.state!=='running')return;const tick=60/(this.level>=3?140:this.level>=2?130:118)/2;
   if(this.next<this.ctx.currentTime-.3)this.next=this.ctx.currentTime+.03;
   const chords=[[50,57,62,65],[46,53,58,62],[48,55,60,64],[45,52,57,61]],melody=[74,0,77,76,74,69,72,0,70,0,74,77,76,74,72,69];
   while(this.next<this.ctx.currentTime+.18){const beat=this.step%8,bar=Math.floor(this.step/8)%4,c=chords[bar];if(beat===0)this.level=this.pending;
-   if(beat===0)for(const n of c.slice(1))this.tone(n,this.next,tick*7,.045,'sine');
-   if(beat%2===0)this.tone(c[0],this.next,tick*1.6,.18,'triangle');
+   if(beat===0)for(const n of c.slice(1))this.tone(n,this.next,tick*7,.07,'sine');
+   if(beat%2===0)this.tone(c[0],this.next,tick*1.6,.25,'triangle');
    if(this.level>=1)this.tone(c[1+(beat%3)],this.next,tick*.65,.09,'triangle');
-   const n=melody[this.step%16];if(n&&this.step%2===0)this.tone(n,this.next,tick*1.65,.12,'sine');
+   const n=melody[this.step%16];if(n)this.tone(n,this.next,tick*1.25,.20,'triangle');
+   if(beat%2===0)this.tone(beat%4===0?36:48,this.next,.10,.16,'sine');
    if(this.level>=2){this.tone(beat%4===0?29:beat%2===0?43:86,this.next,.08,beat%4===0?.4:.10,beat%2?'square':'sine');if(beat%2)this.tone(c[2]+12,this.next,tick*.42,.045,'triangle');}
    if(this.level>=3)this.tone(c[1+((beat+1)%3)]+12,this.next,tick*.5,.07,'sawtooth');
    this.step++;this.next+=tick;
@@ -26,11 +28,11 @@ export class GuardianAudio{
  effect(type){if(!this.ctx||this.ctx.state!=='running')return;const t=this.ctx.currentTime;
   const notes={coin:[86,93],pickup:[76,81,88],jump:[62,69],dash:[74,67],pulse:[81,86],hit:[62],hurt:[40,35],shield:[88,81],warning:[46,46,53],impact:[29,34],roll:[38,41,45],link:[74,78,81,86],upgrade:[69,74,78,81],rescue:[74,81,86],victory:[74,78,81,86],defeat:[62,58,50],blocked:[43],theft:[76,64]};
   for(const [i,n] of (notes[type]??[]).entries())this.tone(n,t+i*.075,type==='impact'?.25:.13,.3,type==='hurt'?'sawtooth':'triangle',this.fx);
-  if(type==='warning'){this.music.gain.cancelScheduledValues(t);this.music.gain.setTargetAtTime(this.musicVolume*.09,t,.03);this.music.gain.setTargetAtTime(this.musicVolume*.24,t+.35,.12);}
+  if(type==='warning'){this.music.gain.cancelScheduledValues(t);this.music.gain.setTargetAtTime(this.musicVolume*.22,t,.03);this.music.gain.setTargetAtTime(this.musicVolume*.65,t+.35,.12);}
  }
- async preloadVoices(){if(!this.ctx)return;await Promise.all(['cry-penguin','cry-bear','cry-pig','cry-chick','musgo-laugh'].map(async name=>{if(this.voiceBuffers.has(name))return;try{const response=await fetch(new URL('./audio/'+name+'.mp3',import.meta.url));if(!response.ok)return;const decoded=await this.ctx.decodeAudioData(await response.arrayBuffer());this.voiceBuffers.set(name,decoded);}catch{ /* Audio failure never blocks the game. */ }}));}
- stopVoices(){for(const source of this.voices){try{source.stop();}catch{}}this.voices.clear();}
- defeat(species){if(!this.ctx||this.ctx.state!=='running')return;this.stopVoices();clearInterval(this.timer);this.timer=null;const t=this.ctx.currentTime;this.music.gain.cancelScheduledValues(t);this.music.gain.setTargetAtTime(0,t,.12);for(const [name,delay,level]of [['cry-'+species,.12,1.25],['musgo-laugh',2.35,.85]]){const buffer=this.voiceBuffers.get(name);if(!buffer)continue;const source=this.ctx.createBufferSource(),gain=this.ctx.createGain();source.buffer=buffer;gain.gain.value=level;source.connect(gain);gain.connect(this.fx);this.voices.add(source);source.start(t+delay);source.onended=()=>{this.voices.delete(source);source.disconnect();gain.disconnect();};}}
+ // Voices are intentionally disabled; defeat uses only the instrumental effect.
+ stopVoices(){}
+ defeat(){if(!this.ctx||this.ctx.state!=='running')return;clearInterval(this.timer);this.timer=null;const t=this.ctx.currentTime;this.music.gain.cancelScheduledValues(t);this.music.gain.setTargetAtTime(0,t,.18);}
  pause(){clearInterval(this.timer);this.timer=null;this.stopVoices();this.ctx?.suspend().catch(()=>{});}
  dispose(){this.pause();this.ctx?.close().catch(()=>{});this.ctx=null;}
 }
