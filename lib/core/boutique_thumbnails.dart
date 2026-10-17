@@ -27,3 +27,31 @@ const boutiqueThumbnails = <String, String>{
   'furniture_cuddle_chair':
       'assets/images/products/boutique/furniture_cuddle_chair.webp',
 };
+
+const boutiqueDescriptions = <String, String>{
+  'cap_pink': 'Un look adorable para tu mascota.',
+  'beanie_cloud': 'Un toque acogedor lleno de ternura.',
+  'hat_garden': 'Pequeñas aventuras entre flores.',
+  'beret_chic': 'Dulzura con un toque chic.',
+  'glasses_heart': 'Siempre juntos en cada aventura.',
+  'glasses_round': 'Un detalle dorado para su mirada.',
+  'glasses_star': 'Para brillar en cada partida.',
+  'patch_pirate': 'Una pequeña aventura pirata.',
+  'mask_sleep': 'Dulces sueños en nuestro nido.',
+  'scarf_hearts': 'Corazones para los días frescos.',
+  'bandana_sage': 'Un pequeño toque de naturaleza.',
+  'necklace_heart': 'Un corazón siempre cerquita.',
+  'chain_gold': 'Una estrella para acompañarte.',
+  'bow_neck': 'El detalle dulce de su conjunto.',
+  'shirt_love': 'Su estilo, nuestra historia.',
+  'jacket_denim': 'Lista para nuevas aventuras.',
+  'coat_cloud': 'Un abrazo de color suave.',
+  'dress_petal': 'Pétalos y dulzura para su look.',
+  'hoodie_nido': 'Un look cómodo para compartir.',
+  'shoes_heart': 'Pequeños pasos llenos de amor.',
+  'boots_rain': 'Aventuras incluso bajo la lluvia.',
+  'slippers_cloud': 'Pasitos suaves en nuestro nido.',
+  'shoes_chic': 'Un toque elegante y adorable.',
+  'sandals_summer': 'Flores para sus aventuras de verano.',
+  'furniture_cuddle_chair': 'Un rincón más tierno y cómodo.',
+};

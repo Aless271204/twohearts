@@ -5,6 +5,12 @@ import 'package:twohearts/core/duo_pong.dart';
 import 'package:twohearts/core/room_catalog.dart';
 
 void main() {
+  test('Older catalog names render readable without changing valid text', () {
+    expect(InventoryItem.readableText('Gorra corazÃ³n'), 'Gorra corazón');
+    expect(InventoryItem.readableText('pingÃ¼ino'), 'pingüino');
+    expect(InventoryItem.readableText('Camiseta amor'), 'Camiseta amor');
+    expect(InventoryItem.readableText('Corazón'), 'Corazón');
+  });
   test(
     'Hiding a room product preserves its ownership reference and server price',
     () {

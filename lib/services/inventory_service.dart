@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'supabase_service.dart';
@@ -25,11 +26,21 @@ class InventoryItem {
           ? 'Suelo'
           : 'Muebles');
   String get key => data['item_key'] as String;
-  String get name => data['name'] as String;
+  // Older catalog rows can contain UTF-8 text decoded as Latin-1.
+  static String readableText(String value) {
+    if (!value.contains('Ã') && !value.contains('Â')) return value;
+    try {
+      return utf8.decode(latin1.encode(value));
+    } catch (_) {
+      return value;
+    }
+  }
+
+  String get name => readableText(data['name'] as String);
   String get emoji => data['emoji'] as String? ?? '🎁';
   String get scope => data['scope'] as String? ?? '';
   String get slot => data['equip_slot'] as String? ?? '';
-  String get description => data['description'] as String? ?? '';
+  String get description => readableText(data['description'] as String? ?? '');
   String get collection => data['collection'] as String? ?? 'Clásica';
   String get rarity => data['rarity'] as String? ?? 'Común';
   int get price => data['price_coins'] as int? ?? 0;

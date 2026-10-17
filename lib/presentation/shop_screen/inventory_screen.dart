@@ -1,3 +1,4 @@
+import '../../core/boutique_thumbnails.dart';
 import '../../theme/app_theme.dart';
 import '../../core/store_packages.dart';
 import '../../core/store_economy.dart';
@@ -624,7 +625,7 @@ class _ShopScreenState extends State<ShopScreen> {
             ),
             const SizedBox(height: 4),
             Text(
-              item.description,
+              boutiqueDescriptions[item.key] ?? item.description,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
               style: const TextStyle(

@@ -99,7 +99,11 @@ class AppTheme {
         side: const WidgetStatePropertyAll(BorderSide.none),
         shape: const WidgetStatePropertyAll(StadiumBorder()),
         textStyle: const WidgetStatePropertyAll(
-          TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+          TextStyle(
+            fontFamily: bodyFont,
+            fontSize: 13,
+            fontWeight: FontWeight.w600,
+          ),
         ),
       ),
     ),
@@ -136,7 +140,11 @@ class AppTheme {
       bodyLarge: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
       bodyMedium: TextStyle(fontSize: 13, fontWeight: FontWeight.w400),
       bodySmall: TextStyle(fontSize: 12, fontWeight: FontWeight.w400),
-      labelLarge: TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+      labelLarge: TextStyle(
+        fontFamily: bodyFont,
+        fontSize: 13,
+        fontWeight: FontWeight.w600,
+      ),
       labelMedium: TextStyle(
         fontSize: 11,
         fontWeight: FontWeight.w600,
