@@ -24,6 +24,11 @@ for backup in (ROOT/'outputs/cloth-weight-backups').glob('sewn_*.glb'):
             for name,index in a['attributes'].items():
                 if name in ('JOINTS_0','WEIGHTS_0'):
                     mutable.add(before['accessors'][index]['bufferView'])
+                elif after.get('extras',{}).get('nidoChickShoulderFit')==1 and name in ('POSITION','NORMAL'):
+                    mutable.add(before['accessors'][index]['bufferView'])
+                    if name=='POSITION':
+                        old_points=weights.attribute(before,old,index);new_points=weights.attribute(after,new,index)
+                        assert all(abs(a[0]-b[0])<1e-6 and abs(a[2]-b[2])<1e-6 and -.000001<=b[1]-a[1]<=.048001 for a,b in zip(old_points,new_points))
                 else:
                     assert weights.attribute(before,old,index)==weights.attribute(after,new,index),(backup.name,name)
     for i,view in enumerate(before['bufferViews']):
@@ -32,4 +37,4 @@ for backup in (ROOT/'outputs/cloth-weight-backups').glob('sewn_*.glb'):
             assert old[start:end]==new[start:end],(backup.name,i)
     count+=1
 assert count==20,count
-print('PASS: all 20 exports preserve geometry, UVs, normals, indices, textures and materials; only skin weights changed.')
+print('PASS: all 20 exports preserve UVs, indices, textures and materials. Unfitted geometry is identical; explicit chick shoulder fitting only raises Y by at most 0.048, with new normals.')

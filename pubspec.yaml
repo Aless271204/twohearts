@@ -1,7 +1,7 @@
 name: twohearts
 description: A new Flutter project.
 publish_to: none
-version: 1.2.8+23
+version: 1.2.9+24
 
 environment:
   sdk: ^3.9.0

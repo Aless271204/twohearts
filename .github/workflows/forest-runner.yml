@@ -1,7 +1,7 @@
 name: Flutter and forest runner
 on:
   push:
-    branches: [main, codex/android-local-assets, codex/runner-feedback, codex/pixel-local-rendering, codex/duo-games-inventory, codex/forest-video-loop]
+    branches: [main, codex/android-local-assets, codex/runner-feedback, codex/pixel-local-rendering, codex/duo-games-inventory, codex/forest-video-loop, codex/guardian-alba-prototype]
     paths-ignore: [.github/workflows/android-test-download.yml]
   pull_request:
     branches: [main]
@@ -25,6 +25,7 @@ jobs:
         timeout-minutes: 5
       - run: node --test test/blender_wardrobe_test.mjs test/blender_complements_test.mjs test/pet_torso_rig_test.mjs test/pet_footwear_coverage_test.mjs test/pet_runner_jump_test.mjs test/pet_runner_run_test.mjs test/pet_sleeve_coverage_test.mjs
       - run: node --test test/admob_signature_test.mjs test/garment_colors_test.mjs test/original_wardrobe_coverage_test.mjs test/wardrobe_details_fit_test.mjs test/garment_original_binding_test.mjs test/pet_footwear_anchors_test.mjs test/wardrobe_equipment_order_test.mjs test/guardian_engine_test.mjs test/guardian_network_test.mjs test/guardian_wardrobe_test.mjs test/guardian_audio_test.mjs
+      - run: node --test test/sewn_species_assets_test.mjs test/pet_wardrobe_jump_test.mjs
       - run: python3 scripts/audit-wardrobe-topology.py --strict
       - run: python3 test/wardrobe_export_seams_test.py
       - uses: subosito/flutter-action@v2
