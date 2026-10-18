@@ -1,0 +1,31 @@
+name: Deliver tested NIDO Android 1.2.9
+on:
+  push:
+    branches: [codex/web-preview-129]
+    paths: [.github/workflows/android-test-release.yml, scripts/publish-android-129.py]
+permissions:
+  contents: write
+  actions: read
+concurrency:
+  group: nido-android-129-delivery
+  cancel-in-progress: false
+jobs:
+  deliver:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: twohearts-android-release
+          run-id: 39096682460
+          github-token: ${{ github.token }}
+          path: outputs/android-129
+      - name: Verify signer, build identity, assets and Android smoke before publication
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 scripts/publish-android-129.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nido-129-delivery-proof
+          path: outputs/delivery-129.json
