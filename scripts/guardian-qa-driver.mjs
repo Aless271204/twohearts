@@ -16,6 +16,7 @@ while(s.status==='playing'){
    if(p.ground&&s.level.camps.some(x=>Math.abs(x-p.x)<80)&&s.gold>=15&&s.upgrades<3)m|=INPUT.upgrade;
   }else{
    let target=ARENA+(i===0?150:880);
+   if(difficulty==='hard'&&s.boss.action==='leaves'&&p.ground&&!(p.previous&INPUT.jump))jumps[i]=35;
    if(s.boss.action==='ward')target=s.players.filter(q=>q.hp>0).length===1?(s.frame-s.sigils[0]>320?RUNE_X[0]:RUNE_X[1]):RUNE_X[i];
    if(p.x<target-10)m|=INPUT.right;if(p.x>target+10)m|=INPUT.left;
    if(s.boss.action!=='ward'&&p.ground&&p.y>400&&!(p.previous&INPUT.jump))jumps[i]=35;

@@ -46,6 +46,8 @@ object PartnerWidget {
         (context.getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler).schedule(job)
     }
     @Synchronized fun store(context: Context, json: JSONObject) {
+        json.optJSONObject("couple_stats")?.let { prefs(context).edit().putString("couple_stats",it.toString()).apply() }
+        if(json.has("partner_mood"))NidoReminders.mood(context,json.optJSONObject("partner_mood"))
         val file = File(context.filesDir, "partner-note.png")
         var hasImage = false
         if (json.optString("kind") == "image") {
@@ -67,6 +69,7 @@ object PartnerWidget {
         redraw(context)
     }
     @Synchronized fun clear(context: Context) {
+        NidoReminders.clear(context)
         val scheduler = context.getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
         scheduler.cancel(JOB); scheduler.cancel(REFRESH_JOB)
         prefs(context).edit().clear().apply(); File(context.filesDir, "partner-note.png").delete(); redraw(context)

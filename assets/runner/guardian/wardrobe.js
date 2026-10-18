@@ -52,6 +52,27 @@ export const FOOTWEAR_KEYS=['shoes_heart','boots_rain','slippers_cloud','shoes_c
 // Original forehoof regions: generated footwear must never dress a pig's hand.
 const PIG_FOREHOOF=[[55,178,97,217],[32,136,83,178],[40,118,82,161],[35,154,82,190],[55,176,99,217],[90,166,134,210]];
 export class PixelWardrobe{
+ walkFrame(species,pose,raw=[],phase=0){
+  // Deform the finished ankle pixels, including equipped footwear, as one
+  // connected surface. The hip stays fixed; displacement grows toward toes.
+  const source=this.frame(species,pose,raw);
+  if(pose!==1&&pose!==4)return source;
+  const step=((Math.floor(phase)%8)+8)%8,key='walk:'+species+pose+step+JSON.stringify(cleanLoadout(raw));
+  this.walkCache??=new Map();if(this.walkCache.has(key))return this.walkCache.get(key);
+  const c=this.makeCanvas();c.width=c.height=320;const ctx=c.getContext('2d');ctx.imageSmoothingEnabled=false;
+  const bounds=FOOT_BOUNDS[species]?.[pose]??FOOT_BOUNDS.penguin[pose];
+  const split=32+(bounds[0][2]+bounds[1][0])/2,top=40+Math.min(bounds[0][1],bounds[1][1])-12;
+  ctx.drawImage(source,0,0,320,top,0,0,320,top);
+  for(let y=top;y<320;y++)for(let side=0;side<2;side++){
+   const x=side?split:0,w=side?320-split:split;
+   const ankle=40+bounds[side][1]-12,toe=40+bounds[side][3];
+   const amount=Math.max(0,Math.min(1,(y-ankle)/Math.max(1,toe-ankle)));
+   const swing=Math.sin(step*Math.PI/4+side*Math.PI);
+   ctx.drawImage(source,x,y,w,1,x+Math.round(swing*9*amount),y,w,1);
+  }
+  if(this.walkCache.size>=32)this.walkCache.delete(this.walkCache.keys().next().value);
+  this.walkCache.set(key,c);return c;
+ }
  constructor(base,atlas,makeCanvas=()=>document.createElement('canvas'),{bodies={},heads={},feet={}}={}){this.base=base;this.atlas=atlas;this.bodies=bodies;this.heads=heads;this.feet=feet;this.makeCanvas=makeCanvas;this.cache=new Map();this.items=new Map();}
  item(key,color){const cacheKey=key+(color??'');if(this.items.has(cacheKey))return this.items.get(cacheKey);const d=ITEMS[key];if(!d)return null;const c=this.makeCanvas();c.width=d[3];c.height=d[4];const ctx=c.getContext('2d');const scale=this.atlas.width/1536;ctx.drawImage(this.atlas,d[1]*scale,d[2]*scale,d[3]*scale,d[4]*scale,0,0,c.width,c.height);
   tint(c,key,color);

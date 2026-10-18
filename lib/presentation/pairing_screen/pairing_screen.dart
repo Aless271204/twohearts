@@ -1,4 +1,5 @@
 import '../../services/profile_change_notifier.dart';
+import '../../widgets/shared_wallet_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -251,6 +252,7 @@ class _PairingScreenState extends State<PairingScreen>
                   // Already paired banner
                   if (_isAlreadyPaired) ...[
                     _PairedBanner(partnerName: _partnerName),
+                    SharedWalletSettings(onUnlinked: _loadProfile),
                     const SizedBox(height: 20),
                   ],
 

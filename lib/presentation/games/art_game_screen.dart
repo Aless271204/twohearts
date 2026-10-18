@@ -9,6 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../core/art_document.dart';
 import '../../services/supabase_service.dart';
 import '../../services/duo_audio.dart';
+import '../../services/inventory_service.dart';
 import '../../widgets/art_studio.dart';
 import '../../widgets/art_reference_picker.dart';
 import '../../core/art_reference_catalog.dart';
@@ -35,6 +36,31 @@ class _ArtGameScreenState extends State<ArtGameScreen>
   String referenceTitle = 'Una nueva inspiración';
   String? difficultyPrefix;
   bool catalogMode = true;
+  bool _roomReferenceLoaded = false,
+      _referenceReady = false,
+      _markingReference = false;
+  Future<void> _markReferenceReady() async {
+    if (!_roomReferenceLoaded ||
+        _referenceReady ||
+        _markingReference ||
+        room == null ||
+        room!['reference_revealed_at'] == null)
+      return;
+    _markingReference = true;
+    try {
+      final value = await _rpc('reference_ready', {'id': room!['id']});
+      _referenceReady = true;
+      _accept(value);
+    } catch (_) {
+      if (mounted)
+        setState(
+          () => error = 'Reintentando la sincronización de la referencia…',
+        );
+    } finally {
+      _markingReference = false;
+    }
+  }
+
   ReferenceStyle referenceStyle = ReferenceStyle.photo;
   bool preparingReference = false;
   int referenceGeneration = 0;
@@ -202,6 +228,8 @@ class _ArtGameScreenState extends State<ArtGameScreen>
             value['reference_title'] as String? ?? 'Nuestro recuerdo';
       });
       old?.dispose();
+      _roomReferenceLoaded = true;
+      await _markReferenceReady();
       if (finished) _scoreBoth();
     } catch (_) {
       if (mounted)
@@ -295,7 +323,10 @@ class _ArtGameScreenState extends State<ArtGameScreen>
         ).difference(DateTime.now().toUtc());
       if (value['deadline'] != null) {
         deadline = DateTime.parse(value['deadline'] as String);
-        started = true;
+        started = !DateTime.now()
+            .toUtc()
+            .add(clockOffset)
+            .isBefore(deadline!.subtract(const Duration(minutes: 5)));
       }
       final ownKey = value['host'] == uid ? 'host_art' : 'guest_art';
       if (value[ownKey] != null) {
@@ -307,14 +338,31 @@ class _ArtGameScreenState extends State<ArtGameScreen>
     if (changedScene) _loadPet();
     if (!wasStarted && started) audio.start();
     if (finished && !changedScene && !changedReference) _scoreBoth();
-    if (value['reference_image'] != null &&
-        value['reference_image'] != base64Encode(referencePng ?? Uint8List(0)))
-      _loadRemoteReference(value);
+    if (finished && value['reward'] != null) {
+      unawaited(InventoryService.instance.refresh().catchError((_) {}));
+    }
+    if (value['reference_image'] != null) {
+      if (value['reference_image'] !=
+          base64Encode(referencePng ?? Uint8List(0))) {
+        _loadRemoteReference(value);
+      } else {
+        _roomReferenceLoaded = customReference != null;
+        _markReferenceReady();
+      }
+    }
   }
 
   void _tick(Timer? t) {
     if (!mounted) return;
     if (deadline != null) {
+      if (!started &&
+          !DateTime.now()
+              .toUtc()
+              .add(clockOffset)
+              .isBefore(deadline!.subtract(const Duration(minutes: 5)))) {
+        setState(() => started = true);
+        audio.start();
+      }
       final left = deadline!
           .difference(DateTime.now().toUtc().add(clockOffset))
           .inSeconds
@@ -330,7 +378,10 @@ class _ArtGameScreenState extends State<ArtGameScreen>
     if (room == null || polling || finished || !mounted || !active) return;
     polling = true;
     try {
-      var v = await _rpc('status', {'id': room!['id']});
+      var v = await _rpc('status', {
+        'id': room!['id'],
+        'download': !_referenceReady && room!['reference_revealed_at'] != null,
+      });
       if (v['host_submitted'] == true &&
           v['guest_submitted'] == true &&
           !finished)
@@ -571,7 +622,7 @@ class _ArtGameScreenState extends State<ArtGameScreen>
                   child: Text(error!),
                 ),
               ),
-            if (!started) ...[
+            if (!started && room?['reference_revealed_at'] == null) ...[
               const Text(
                 'Cinco minutos, dos miradas, una misma inspiración.',
                 style: TextStyle(fontSize: 23, fontWeight: FontWeight.w800),
@@ -601,14 +652,28 @@ class _ArtGameScreenState extends State<ArtGameScreen>
                     ),
                 ],
               ),
-              if (pet != null)
-                Center(
-                  child: SizedBox(
-                    width: 230,
-                    height: 230,
-                    child: CustomPaint(painter: reference),
+              const Card(
+                child: Padding(
+                  padding: EdgeInsets.all(24),
+                  child: Column(
+                    children: [
+                      Icon(Icons.lock_outline_rounded, size: 42),
+                      SizedBox(height: 10),
+                      Text(
+                        'Imagen sorpresa',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      Text(
+                        'Se revela al empezar. Desde ahí tienen cinco minutos.',
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
                   ),
                 ),
+              ),
               if (room == null) ...[
                 Text(
                   [
@@ -673,13 +738,14 @@ class _ArtGameScreenState extends State<ArtGameScreen>
                           },
                   ),
                 Text(
-                  referenceTitle,
+                  'Una referencia nueva para esta partida',
                   style: const TextStyle(fontWeight: FontWeight.w600),
                 ),
                 FilledButton.icon(
                   onPressed: busy || preparingReference
                       ? null
                       : () => _act('create', {
+                          'protocol': 2,
                           'difficulty': difficulty,
                           'scene': scene,
                           if (referencePng != null)
@@ -762,7 +828,7 @@ class _ArtGameScreenState extends State<ArtGameScreen>
               ],
               const SizedBox(height: 12),
               const Text(
-                'Mismas herramientas y tiempo en las tres dificultades. La escena incorpora más detalles en medio y difícil. La valoración automática mide parecido visual, composición y avance; la estética la deciden ustedes. No entrega oro ni cobra por jugar.',
+                'Mismas herramientas y tiempo en las tres dificultades. La escena incorpora más detalles en medio y difícil. La valoración automática mide parecido visual, composición y avance; la estética la deciden ustedes. Completar la partida en pareja entrega oro validado; practicar sigue siendo gratis.',
                 style: TextStyle(fontSize: 12, height: 1.5),
               ),
             ] else if (!finished) ...[
@@ -828,6 +894,8 @@ class _ArtGameScreenState extends State<ArtGameScreen>
                   document: document,
                   enabled:
                       !sending &&
+                      started &&
+                      !preparingReference &&
                       (widget.freeDraw ||
                           seconds > 0 &&
                               (room == null ||
@@ -988,6 +1056,8 @@ class _ArtGameScreenState extends State<ArtGameScreen>
                   document.clear();
                   setState(() {
                     room = null;
+                    _roomReferenceLoaded = false;
+                    _referenceReady = false;
                     solo = false;
                     deadline = null;
                     started = false;

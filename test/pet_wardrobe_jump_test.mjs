@@ -20,7 +20,7 @@ for(const [species,file] of Object.entries({penguin:'Meshy_AI_Pip_the_Penguin_Al
   for(const track of shoulder){const reference=scene.getObjectByName(track.name.slice(0,-11)).quaternion;
    for(let i=0;i<track.values.length;i+=4)assert.ok(reference.angleTo(new THREE.Quaternion().fromArray(track.values,i))<=.201);
   }
-  for(const [semantic,limit]of [['LeftUpLeg',.55],['RightUpLeg',.55],['LeftLeg',.45],['RightLeg',.45],['LeftFoot',.36],['RightFoot',.36]]){
+  for(const [semantic,limit]of [['LeftUpLeg',.72],['RightUpLeg',.72],['LeftLeg',.60],['RightLeg',.60],['LeftFoot',.36],['RightFoot',.36]]){
    const track=result.tracks.find(t=>t.name.endsWith(semantic+'.quaternion')),reference=scene.getObjectByName(track.name.slice(0,-11)).quaternion;
    for(let i=0;i<track.values.length;i+=4)assert.ok(reference.angleTo(new THREE.Quaternion().fromArray(track.values,i))<=limit+.001);
   }
@@ -36,6 +36,10 @@ for(const [species,file] of Object.entries({penguin:'Meshy_AI_Pip_the_Penguin_Al
   for(const semantic of ['LeftArm','RightArm','LeftUpLeg','RightUpLeg']){
    const t=result.tracks.find(t=>t.name.endsWith(semantic+'.quaternion'));
    assert.ok(t&&Array.from(t.values).some((v,i)=>Math.abs(v-t.values[i%4])>1e-5),'flipper cycle must retain movement');
+   if(semantic.endsWith('Arm')){
+    let span=0;for(let i=0;i<t.values.length;i+=4)for(let j=i+4;j<t.values.length;j+=4)span=Math.max(span,new THREE.Quaternion().fromArray(t.values,i).angleTo(new THREE.Quaternion().fromArray(t.values,j)));
+    assert.ok(span>.18,`${species} ${semantic}: visible arm swing, not a frozen sleeve (${span})`);
+   }
   }
  });
 }

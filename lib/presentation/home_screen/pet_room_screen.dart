@@ -5,6 +5,7 @@ import '../../services/inventory_service.dart';
 import '../../services/shared_pet_service.dart';
 import '../../widgets/pet_3d_viewer.dart';
 import '../../widgets/pet_family_sheet.dart';
+import '../../widgets/pet_adoption_welcome.dart';
 import '../../widgets/rose_ui.dart';
 import '../../widgets/twohearts_ui.dart';
 import '../shop_screen/inventory_screen.dart';
@@ -98,102 +99,111 @@ class _PetRoomScreenState extends State<PetRoomScreen> {
   @override
   Widget build(BuildContext context) => Scaffold(
     backgroundColor: const Color(0xFFFFF9FA),
-    body: LayoutBuilder(
-      builder: (context, constraints) => SizedBox.expand(
-        child: Stack(
-          children: [
-            AnimatedPositioned(
-              duration: MediaQuery.disableAnimationsOf(context)
-                  ? Duration.zero
-                  : const Duration(milliseconds: 360),
-              curve: Curves.easeInOutCubic,
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: decorating ? constraints.maxHeight / 2 : 0,
-              child:
-                  widget.roomScene ??
-                  Pet3DViewer(
-                    modelPath: PetModelCatalog.modelPathFor(pet.species),
-                    petLevel: pet.level,
-                    room: true,
-                    previewLoadout: inventory.loadout,
-                    petReaction: reaction,
-                    onPetStroke: () => setState(() => reaction++),
-                    autoPlay: true,
-                    cameraControls: false,
-                    animationName: 'Natural_Rest',
-                    altText: '${pet.displayName} en su habitación',
+    body:
+        !widget.previewMode &&
+            (!pet.ready ||
+                !pet.paired ||
+                !pet.selectionConfirmed ||
+                pet.data['arrival_pending'] == true)
+        ? const SafeArea(child: PetAdoptionWelcome())
+        : LayoutBuilder(
+            builder: (context, constraints) => SizedBox.expand(
+              child: Stack(
+                children: [
+                  AnimatedPositioned(
+                    duration: MediaQuery.disableAnimationsOf(context)
+                        ? Duration.zero
+                        : const Duration(milliseconds: 360),
+                    curve: Curves.easeInOutCubic,
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: decorating ? constraints.maxHeight / 2 : 0,
+                    child:
+                        widget.roomScene ??
+                        Pet3DViewer(
+                          modelPath: PetModelCatalog.modelPathFor(pet.species),
+                          petLevel: pet.level,
+                          room: true,
+                          previewLoadout: inventory.loadout,
+                          petReaction: reaction,
+                          onPetStroke: () => setState(() => reaction++),
+                          autoPlay: true,
+                          cameraControls: false,
+                          animationName: 'Natural_Rest',
+                          altText: '${pet.displayName} en su habitación',
+                        ),
                   ),
-            ),
-            Positioned(
-              top: 0,
-              left: 0,
-              child: SafeArea(
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(12, 12, 0, 0),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      _roomIcon(
-                        Icons.inventory_2_rounded,
-                        'Nuestro cofre',
-                        const Color(0xFFD78A28),
-                        _chest,
+                  Positioned(
+                    top: 0,
+                    left: 0,
+                    child: SafeArea(
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(12, 12, 0, 0),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            _roomIcon(
+                              Icons.inventory_2_rounded,
+                              'Nuestro cofre',
+                              const Color(0xFFD78A28),
+                              _chest,
+                            ),
+                            _roomIcon(
+                              Icons.pets_rounded,
+                              'Nuestras mascotas',
+                              const Color(0xFF9474CF),
+                              _family,
+                            ),
+                            _roomIcon(
+                              Icons.chair_rounded,
+                              'Personalizar habitación',
+                              const Color(0xFF4B9D80),
+                              () => _toggle('decorate'),
+                            ),
+                          ],
+                        ),
                       ),
-                      _roomIcon(
-                        Icons.pets_rounded,
-                        'Nuestras mascotas',
-                        const Color(0xFF9474CF),
-                        _family,
-                      ),
-                      _roomIcon(
-                        Icons.chair_rounded,
-                        'Personalizar habitación',
-                        const Color(0xFF4B9D80),
-                        () => _toggle('decorate'),
-                      ),
-                    ],
+                    ),
                   ),
-                ),
+                  AnimatedPositioned(
+                    duration: MediaQuery.disableAnimationsOf(context)
+                        ? Duration.zero
+                        : const Duration(milliseconds: 360),
+                    curve: Curves.easeInOutCubic,
+                    left: 0,
+                    right: 0,
+                    top: decorating
+                        ? constraints.maxHeight / 2
+                        : constraints.maxHeight,
+                    height: constraints.maxHeight / 2,
+                    child: RepaintBoundary(
+                      child: ClipRRect(
+                        borderRadius: const BorderRadius.vertical(
+                          top: Radius.circular(24),
+                        ),
+                        child: ColoredBox(
+                          color: const Color(0xFFFFF9FA),
+                          child: openPanel == 'chest'
+                              ? PetChest(
+                                  previewMode: widget.previewMode,
+                                  embedded: true,
+                                  onClose: () =>
+                                      setState(() => openPanel = null),
+                                )
+                              : RoomDecorationPanel(
+                                  previewMode: widget.previewMode,
+                                  onClose: () =>
+                                      setState(() => openPanel = null),
+                                ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
-            AnimatedPositioned(
-              duration: MediaQuery.disableAnimationsOf(context)
-                  ? Duration.zero
-                  : const Duration(milliseconds: 360),
-              curve: Curves.easeInOutCubic,
-              left: 0,
-              right: 0,
-              top: decorating
-                  ? constraints.maxHeight / 2
-                  : constraints.maxHeight,
-              height: constraints.maxHeight / 2,
-              child: RepaintBoundary(
-                child: ClipRRect(
-                  borderRadius: const BorderRadius.vertical(
-                    top: Radius.circular(24),
-                  ),
-                  child: ColoredBox(
-                    color: const Color(0xFFFFF9FA),
-                    child: openPanel == 'chest'
-                        ? PetChest(
-                            previewMode: widget.previewMode,
-                            embedded: true,
-                            onClose: () => setState(() => openPanel = null),
-                          )
-                        : RoomDecorationPanel(
-                            previewMode: widget.previewMode,
-                            onClose: () => setState(() => openPanel = null),
-                          ),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    ),
+          ),
   );
 }
 

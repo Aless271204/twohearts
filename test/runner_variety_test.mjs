@@ -36,3 +36,13 @@ test('random layouts and pickups survive checkpoint splitting identically',()=>{
  for(const f of ['patterns.js','difficulty.js','power-ups.js','replay.js'])assert.equal(readFileSync('assets/runner/'+f,'utf8'),readFileSync('supabase/functions/forest-runner/'+f,'utf8'));
  assert.ok(!readFileSync('supabase/functions/forest-runner/index.ts','utf8').includes('body.seed'));
 });
+
+test('storm expedition starts faster, introduces collapsing tiles only beyond 1.5 km and keeps replay deterministic',()=>{
+ assert.equal(runnerDifficulty(0,8).speed,12);assert.ok(runnerDifficulty(2050,8).speed>runnerDifficulty(1500,8).speed);
+ assert.ok(Array.from({length:150},(_,r)=>runnerRow(r,1499,8,42)).every(p=>p.kind!=='collapse'));
+ assert.ok(Array.from({length:150},(_,r)=>runnerRow(r,1600,8,42)).some(p=>p.kind==='collapse'));
+ for(let r=0;r<60;r++){const p=runnerRow(r,2000,8,42);assert.deepEqual(p,runnerRow(r,2000,8,42));assert.ok(p.obstacleLane>=0&&p.obstacleLane<3);}
+ const frames=Array.from({length:50},()=>[20000,[]]),initial={version:8,seed:42,distance:1600,untilRow:0};
+ const first=replayChunk(frames.slice(0,20),initial,8);
+ assert.deepEqual(replayChunk(frames.slice(20),first.state,8),replayChunk(frames,initial,8));
+});

@@ -27,10 +27,12 @@ class GameService {
 
   Future<Map<String, dynamic>> startRunnerSession() async {
     if (_uid == null) return {'guest': true};
-    return _runnerRequest({'action': 'start'});
+    return _runnerRequest({'action': 'start', 'runner_version': 8});
   }
 
-  Future<Map<String, dynamic>> checkpointRunnerSession(Map<String, dynamic> replay) async {
+  Future<Map<String, dynamic>> checkpointRunnerSession(
+    Map<String, dynamic> replay,
+  ) async {
     return _runnerRequest({'action': 'checkpoint', ...replay});
   }
 
@@ -87,11 +89,13 @@ class GameService {
           .select()
           .eq('user_id', uid)
           .maybeSingle();
-      if (row == null) {
-        await _db.rpc('inventory_snapshot');
-        return _defaultStats();
-      }
-      return row;
+      if (row == null) await _db.rpc('inventory_snapshot');
+      final wallet = await _db.rpc('wallet_snapshot') as Map;
+      return {
+        ...(row ?? _defaultStats()),
+        'love_coins': wallet['coins'],
+        'wallet_shared': wallet['shared'],
+      };
     } catch (e) {
       debugPrint('getStats error: $e');
       return _defaultStats();
@@ -240,7 +244,13 @@ class GameService {
     final uid = _uid;
     if (uid == null) return;
     try {
-      final current = await getStats();
+      // This legacy challenge path writes a personal sub-account. Never copy
+      // the combined couple balance back into one member's stored balance.
+      final current = await _db
+          .from('game_stats')
+          .select()
+          .eq('user_id', uid)
+          .single();
       await _db
           .from('game_stats')
           .update({

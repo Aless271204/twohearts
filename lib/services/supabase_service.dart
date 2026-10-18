@@ -191,7 +191,18 @@ class SupabaseService {
     }
     final uid = currentUser?.id;
     if (uid == null) return;
-    await client.from('user_profiles').update(data).eq('id', uid);
+    final fields = Map<String, dynamic>.from(data);
+    if (fields['relationship_start'] != null) {
+      await client.rpc(
+        'couple_state',
+        params: {
+          'p_action': 'anniversary',
+          'p_data': {'start': fields.remove('relationship_start')},
+        },
+      );
+    }
+    if (fields.isNotEmpty)
+      await client.from('user_profiles').update(fields).eq('id', uid);
     _clearMyProfileRequest();
   }
 
@@ -276,12 +287,14 @@ class SupabaseService {
         ? partnerProfile!['city'] as String
         : '';
 
-    DateTime startDate = DateTime.now().subtract(const Duration(days: 1));
-    if (myProfile?['relationship_start'] != null) {
-      try {
-        startDate = DateTime.parse(myProfile!['relationship_start'] as String);
-      } catch (_) {}
-    }
+    var dateValue =
+        myProfile?['relationship_start'] ??
+        partnerProfile?['relationship_start'];
+    try {
+      final shared = await client.rpc('couple_state') as Map;
+      dateValue = shared['start'];
+    } catch (_) {}
+    final DateTime? startDate = DateTime.tryParse(dateValue?.toString() ?? '');
 
     return {
       'myName': myName,

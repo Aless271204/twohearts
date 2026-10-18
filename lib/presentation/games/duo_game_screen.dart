@@ -229,6 +229,7 @@ class _DuoGameScreenState extends State<DuoGameScreen>
           params: {
             'p_match_id': match!['id'],
             if (widget.game == 'pong') 'p_paddle': pongToServerX(paddle, sideB),
+            if (widget.game == 'pong') 'p_phase': 'powerups-v1',
             if (choice != null) ...{
               'p_choice': choice,
               'p_question_no': state['question_no'],
@@ -674,7 +675,28 @@ class _DuoGameScreenState extends State<DuoGameScreen>
                         ),
                       )
                     else
-                      Expanded(child: _quiz(s, mine, other)),
+                      Expanded(
+                        child: AnimatedSwitcher(
+                          duration: MediaQuery.disableAnimationsOf(context)
+                              ? Duration.zero
+                              : const Duration(milliseconds: 260),
+                          transitionBuilder: (child, animation) =>
+                              FadeTransition(
+                                opacity: animation,
+                                child: SlideTransition(
+                                  position: Tween(
+                                    begin: const Offset(0, .035),
+                                    end: Offset.zero,
+                                  ).animate(animation),
+                                  child: child,
+                                ),
+                              ),
+                          child: KeyedSubtree(
+                            key: ValueKey('${s['question_no']}-${s['phase']}'),
+                            child: _quiz(s, mine, other),
+                          ),
+                        ),
+                      ),
                     Padding(
                       padding: const EdgeInsets.all(12),
                       child: Text(
@@ -844,12 +866,12 @@ class _PongPainter extends CustomPainter {
     );
     final opponent = (s['paddle_${sideB ? 'a' : 'b'}'] as num? ?? .5)
         .toDouble();
-    void paddle(double x, double y, Color c) {
+    void paddle(double x, double y, Color c, bool wide) {
       canvas.drawRRect(
         RRect.fromRectAndRadius(
           Rect.fromCenter(
             center: Offset(x * size.width, y * size.height),
-            width: size.width * .22,
+            width: size.width * (wide ? .34 : .22),
             height: 12,
           ),
           const Radius.circular(6),
@@ -862,6 +884,7 @@ class _PongPainter extends CustomPainter {
       mine,
       .9,
       cosmetics['pong_paddle']?.color ?? const Color(0xFF6393E7),
+      (s['wide_${sideB ? 'b' : 'a'}'] as num? ?? 0) > 0,
     );
     paddle(
       pongFromServer(opponent, sideB),
@@ -869,7 +892,39 @@ class _PongPainter extends CustomPainter {
       s['opponent_paddle_color'] == null
           ? const Color(0xFFF39D75)
           : InventoryItem.parseColor(s['opponent_paddle_color']),
+      (s['wide_${sideB ? 'a' : 'b'}'] as num? ?? 0) > 0,
     );
+    for (final side in ['a', 'b']) {
+      if (s['shield_$side'] != true) continue;
+      final bottom = (side == 'b') == sideB;
+      canvas.drawLine(
+        Offset(18, size.height * (bottom ? .97 : .03)),
+        Offset(size.width - 18, size.height * (bottom ? .97 : .03)),
+        Paint()
+          ..color = const Color(0xFF55AF9C)
+          ..strokeWidth = 5
+          ..strokeCap = StrokeCap.round,
+      );
+    }
+    if ((s['power_kind'] as num? ?? 0) > 0) {
+      final point = Offset(
+        pongFromServer((s['power_x'] as num).toDouble(), sideB) * size.width,
+        size.height * .5,
+      );
+      canvas.drawCircle(point, 18, Paint()..color = const Color(0xFFFFE7A5));
+      final text = TextPainter(
+        text: TextSpan(
+          text: s['power_kind'] == 1 ? '↔' : '◇',
+          style: const TextStyle(
+            color: Color(0xFF594526),
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        textDirection: TextDirection.ltr,
+      )..layout();
+      text.paint(canvas, point - Offset(text.width / 2, text.height / 2));
+    }
     final play = s['phase'] == 'play' && s['paused'] != true;
     final elapsed = play ? dt : 0.0;
     final x = pongBallX(

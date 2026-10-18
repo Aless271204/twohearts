@@ -12,6 +12,7 @@ import { createLivingForest } from './living-forest.js';
 import { createBridgeBelt } from './loop-bridge.js';
 import {runnerRow,seedFromSession} from './patterns.js';
 import { runnerDifficulty } from './difficulty.js';
+import {createStorm,stormIntensity} from './storm.js';
 import { AdventureMusic } from './music.js?v=expedition-2';
 import { limitTextureMemory } from './texture_budget.js';
 import {createWardrobeJump,createWardrobeRun} from './pet-wardrobe-jump.js?revision=ankles-dynamic-6';
@@ -53,6 +54,7 @@ scene.add(new THREE.HemisphereLight(petOnly?0xfff6ee:0xd3f5ff,petOnly?0xa4a6b5:0
 const sun=new THREE.DirectionalLight(petOnly?0xffffff:0xffe4aa,petOnly?1.8:2.5);sun.position.set(...(petOnly?[-3,6,5]:[-10,18,-16]));scene.add(sun);
 sun.castShadow=true;sun.shadow.mapSize.set(1024,1024);sun.shadow.camera.left=-12;sun.shadow.camera.right=12;sun.shadow.camera.top=18;sun.shadow.camera.bottom=-18;sun.shadow.camera.far=65;sun.shadow.normalBias=.035;
 const fill=new THREE.DirectionalLight(0xe1eeff,.8);fill.position.set(4,6,8);scene.add(fill);
+const storm=petOnly?null:createStorm(scene);
 const loader=new GLTFLoader(),templates={},paths=[],objects=[],pools=new Map();
 const pool=key=>{if(!pools.has(key))pools.set(key,[]);return pools.get(key);};
 function releaseObject(item){scene.remove(item.model);pool(item.model.userData.poolKey).push(item.model);}
@@ -83,7 +85,7 @@ let bestDistance=0;
 let sessionId=null,frames=[],pendingInputs=[],pendingSave=null,runElapsed=0;
 let lane=1,x=0,height=0,velocity=0,distance=0,coins=0,row=0,untilRow=0,last=performance.now();
 let toastUntil=0,animationId=0,needsRender=true;
-let replayVersion=7,runSeed=0,powers=freshPowers();
+let replayVersion=8,runSeed=0,powers=freshPowers();
 const speed=()=>runnerDifficulty(distance,replayVersion).speed*(replayVersion>=6?speedMultiplier(powers):1);
 // Read-only diagnostics for the standalone preview; absent in the app WebView.
 if(window.parent===window&&!window.RunnerBridge)window.runnerPreview=Object.freeze({stats:()=>({distance,height,lane,running,paused,coins,powers:{...powers},replayVersion,drawCalls:renderer.info.render.calls,triangles:renderer.info.render.triangles,textures:renderer.info.memory.textures,sceneryTime:visualTime,videoTime:backdrop.video?.currentTime??0,videoPaused:backdrop.video?.paused??true,fps:Math.round(measuredFps),renderScale}),rig:()=>{const bones=[];penguin?.traverse(o=>{if(o.isBone&&/(Head|Neck|Spine2|Hips|LeftUpLeg|RightUpLeg|LeftLeg|RightLeg|LeftFoot|RightFoot|LeftToeBase|RightToeBase|LeftToe_End|RightToe_End)$/.test(o.name))bones.push({name:o.name,position:penguin.worldToLocal(o.getWorldPosition(new THREE.Vector3())).toArray()});});const box=penguin?new THREE.Box3().setFromObject(penguin.children[0],true):null;return {bones,bounds:box?{min:box.min.toArray(),max:box.max.toArray()}:null};},screen:()=>{if(!penguin)return null;const b=new THREE.Box3().setFromObject(penguin,true),points=[];for(const x of [b.min.x,b.max.x])for(const y of [b.min.y,b.max.y])for(const z of [b.min.z,b.max.z])points.push(new THREE.Vector3(x,y,z).project(camera).toArray());return {points,feet:penguin.position.y,rotation:penguin.rotation.y};},replay:()=>({frames:frames.map(frame=>[frame[0],[...frame[1]]]),replay_version:replayVersion})});
@@ -128,12 +130,19 @@ function updatePowerHud(){
  host.hidden=active.length===0;
 }
 function spawnRow() {
-  const {obstacleLane,kind,coinLane,alternateLane,coins:coinPlan}=runnerRow(row,distance,replayVersion>=7?7:3,runSeed);
-  const model=place(kind,[1.15,.85,.75],LANES[obstacleLane],-68,[]);model.position.y=floorY;
-  objects.push({model,kind:'obstacle',x:LANES[obstacleLane],z:-68});
+  const {obstacleLane,kind,coinLane,alternateLane,coins:coinPlan}=runnerRow(row,distance,replayVersion>=8?8:replayVersion>=7?7:3,runSeed);
+  const model=kind==='collapse'?collapseTile():place(kind,[1.15,.85,.75],LANES[obstacleLane],-68,[]);model.position.set(LANES[obstacleLane],floorY,-68);
+  objects.push({model,kind:'obstacle',collapse:kind==='collapse',x:LANES[obstacleLane],z:-68});
   for(const coin of coinPlan??Array.from({length:5},(_,i)=>({lane:coinLane,z:-60-i*4,y:i===2?1.8:.7})))addCoin(coin.lane,coin.z,coin.y);
   addCoin(alternateLane,-68,.7);
   const pickup=replayVersion>=6?powerForRow(row,distance,obstacleLane,replayVersion>=7?runSeed:null):null;if(pickup)addPower(pickup);row++;
+}
+const tileGeometry=new THREE.BoxGeometry(1.45,.16,.64),tileWood=new THREE.MeshLambertMaterial({color:'#c68f5f'}),holeMaterial=new THREE.MeshBasicMaterial({color:'#15212b'}),holeGeometry=new THREE.PlaneGeometry(1.52,3.3);
+function collapseTile(){
+ let model=pool('collapse').pop();
+ if(!model){model=new THREE.Group();model.userData.poolKey='collapse';const hole=new THREE.Mesh(holeGeometry,holeMaterial);hole.rotation.x=-Math.PI/2;hole.position.y=.22;model.add(hole);for(let i=0;i<5;i++){const board=new THREE.Mesh(tileGeometry,tileWood);board.position.set(0,.32,(i-2)*.65);model.add(board);}}
+ for(let i=1;i<model.children.length;i++){model.children[i].position.y=.32;model.children[i].rotation.x=0;model.children[i].visible=true;}
+ scene.add(model);return model;
 }
 let hudKey='',lastMilestone=0,frameSample=0,frameCount=0,measuredFps=60,lastHudTime=0;
 function hud(){
@@ -168,7 +177,7 @@ start.onclick=async()=>{
   if(pendingSave){await saveRun();return;}
   if(paused){togglePause();return;}
   start.disabled=true;
-  try{const session=await requestHost('start');sessionId=session.session_id??null;replayVersion=session.guest?7:session.runner_version??session.powerup_version??5;runSeed=sessionId?seedFromSession(sessionId):crypto.getRandomValues(new Uint32Array(1))[0];bestDistance=session.best_distance??bestDistance;reset();}
+  try{const session=await requestHost('start');sessionId=session.session_id??null;replayVersion=session.guest?8:session.runner_version??session.powerup_version??5;runSeed=sessionId?seedFromSession(sessionId):crypto.getRandomValues(new Uint32Array(1))[0];bestDistance=session.best_distance??bestDistance;reset();}
   catch(error){showPanel('No pudimos iniciar la partida',error.message,'Volver a intentar');}
   finally{start.disabled=false;}
 };
@@ -244,7 +253,7 @@ function frame(now){
     x+=(LANES[lane]-x)*(1-Math.exp(-dt*10));untilRow-=travel;if(untilRow<=0){spawnRow();untilRow+=runnerDifficulty(distance,replayVersion).spacing;}
     for(const model of paths)model.position.z=distance%12;
     for(let i=objects.length-1;i>=0;i--){
-      const item=objects[i],previous=item.z;item.z+=travel;item.model.position.z=item.z;
+      const item=objects[i],previous=item.z;item.z+=travel;item.model.position.z=item.z;if(item.collapse){const fall=Math.max(0,(item.z+12)/12);for(let j=1;j<item.model.children.length;j++){const board=item.model.children[j];board.position.y=.32-fall*fall*5;board.rotation.x=fall*(j%2?.5:-.5);board.visible=fall<.8;}}
       if(item.kind==='coin'){item.model.rotation.y+=dt*2.4;item.model.position.y=item.y+floorY+Math.sin(runElapsed*3+item.z*.2)*.055;}
       const attracted=item.kind==='coin'&&replayVersion>=6&&magnetCollects(powers,previous,item.z);
       if(crossesPlayer(previous,item.z)||attracted){
@@ -310,6 +319,7 @@ function frame(now){
     camera.position.set(cameraX,2.35,5.8);camera.lookAt(cameraX,.95,-10);
   }
   backdrop.update(paused?0:dt,camera.aspect,cameraX,distance);
+  storm?.update(paused?0:dt,distance,cameraX);if(!petOnly)sun.intensity=2.5-stormIntensity(distance)*1.6;
   if(!paused){
     visualTime+=dt;effects.update(dt);butterflies.update(dt);birds.update(dt);
     particles.position.y=Math.sin(visualTime*.8)*.12;particles.position.z=distance%18;
@@ -381,7 +391,7 @@ async function boot(){
 addEventListener('pagehide',()=>{
   sceneClosing=true;clearTimeout(window.runnerBootTimer);
   music.dispose();
-  backdrop.dispose();
+  backdrop.dispose();storm?.dispose();
   cancelAnimationFrame(animationId);const geometries=new Set(),materials=new Set(),textures=new Set();
   scene.traverse(o=>{if(o.geometry)geometries.add(o.geometry);for(const m of(Array.isArray(o.material)?o.material:[o.material])){if(!m)continue;materials.add(m);for(const value of Object.values(m))if(value?.isTexture)textures.add(value);}});
   for(const g of geometries)g.dispose();for(const t of textures)t.dispose();for(const m of materials)m.dispose();renderer.dispose();renderer.forceContextLoss();

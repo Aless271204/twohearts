@@ -20,12 +20,12 @@ export function applyState(s,p){if(p?.v!==2||!Number.isInteger(p.f)||p.f<s.frame
 }
 export class GuardianSession{
  constructor(info){this.info=info;this.role=info.role;this.id=info.id;this.ownSeq=0;this.lastMask=0;this.remoteSeq=0;this.remoteMask=0;this.remoteQueue=new Map();this.ownHistory=new Map();this.unacked=[];this.databaseQueue=[];this.flushing=null;this.lastPeer=performance.now();this.lastSnapshot=0;this.closed=false;this.chunks=new Map();this.ack=0;this.remotePaused=false;this.onPacket=()=>{};this.onPause=()=>{};this.onLeave=()=>{};this.peerReceipt=false;receiver=p=>this.receive(p);}
- static async create(mode,difficulty,species,code=null){const info=await request('room',{p_action:mode==='solo'?'solo':code?'join':'create',p_difficulty:difficulty,p_species:species,...(code?{p_code:code}:{})});return new GuardianSession(info);}
+ static async create(mode,difficulty,species,code=null){const info=await request('room',{p_packets:{engine_version:3},p_action:mode==='solo'?'solo':code?'join':'create',p_difficulty:difficulty,p_species:species,...(code?{p_code:code}:{})});return new GuardianSession(info);}
  rpc(action,extra={}){return request('room',{p_action:action,p_id:this.id,...extra});}
  send(data){if(this.closed||this.info.mode==='solo')return Promise.resolve();return request('send',{data});}
  async connect(onStatus){
   if(this.info.mode==='solo'){this.startMaintenance();return this.info;}
-  await request('watch',{room:this.id});await this.rpc('ready');
+  await request('watch',{room:this.id});
   for(let i=0;i<600&&!this.closed;i++){const info=await this.rpc('status');this.info=info;onStatus(info);if(info.status==='cancelled')throw Error('La sala se cerró. Crea una nueva.');if(info.status==='running'){const delay=Math.max(0,Date.parse(info.started_at)-Date.parse(info.server_time));await wait(delay);this.startMaintenance();return info;}await wait(1000);}
   throw Error('La sala ha caducado. Crea otra para jugar.');
  }
@@ -52,7 +52,7 @@ export class GuardianSession{
  snapshot(s,paused){return this.send({kind:'state',state:packState(s,paused,this.remoteSeq)});}
  async save(s,events,refs){
   await this.flush();
-  if(this.role===1){for(let i=0;i<60;i++){const info=await this.rpc('status');if(info.status==='finished')return {saved:true,reward:info.reward};if(info.status==='cancelled')throw Error('La partida se cerró sin guardar');if(this.confirmError)throw this.confirmError;await wait(750);}throw Error('Esperando la confirmación de la partida. Puedes volver a guardar.');}
+  if(this.role===1){for(let i=0;i<60;i++){const info=await this.rpc('status');if(info.status==='finished')return {saved:true,reward:info.reward,prize:info.prize};if(info.status==='cancelled')throw Error('La partida se cerró sin guardar');if(this.confirmError)throw this.confirmError;await wait(750);}throw Error('Esperando la confirmación de la partida. Puedes volver a guardar.');}
   const hash=await transcriptHash(this.id,s.frame,events,refs);
   if(this.info.mode==='partner'){
    const total=Math.max(1,Math.ceil(events.length/200));let confirmed=false;

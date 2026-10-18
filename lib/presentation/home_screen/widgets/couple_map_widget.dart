@@ -12,6 +12,7 @@ class CoupleMapWidget extends StatefulWidget {
   final String myCity, partnerCity;
   final List<String> travelCities;
   final bool realtimeEnabled;
+  final CoupleLocationService? locationService;
   final ValueChanged<bool>? onRealtimeToggle;
   const CoupleMapWidget({
     super.key,
@@ -19,6 +20,7 @@ class CoupleMapWidget extends StatefulWidget {
     required this.partnerCity,
     this.travelCities = const [],
     this.realtimeEnabled = false,
+    this.locationService,
     this.onRealtimeToggle,
   });
   @override
@@ -27,7 +29,7 @@ class CoupleMapWidget extends StatefulWidget {
 
 class _CoupleMapWidgetState extends State<CoupleMapWidget> {
   final _controller = MapController();
-  final _shared = CoupleLocationService();
+  late final CoupleLocationService _shared;
   void _sharedChanged() {
     if (mounted) {
       setState(() {});
@@ -43,9 +45,10 @@ class _CoupleMapWidgetState extends State<CoupleMapWidget> {
   @override
   void initState() {
     super.initState();
+    _shared = widget.locationService ?? CoupleLocationService();
     _resolve();
     _shared.addListener(_sharedChanged);
-    _shared.start();
+    if (widget.locationService == null) _shared.start();
   }
 
   @override
@@ -61,7 +64,7 @@ class _CoupleMapWidgetState extends State<CoupleMapWidget> {
   void dispose() {
     _generation++;
     _shared.removeListener(_sharedChanged);
-    _shared.dispose();
+    if (widget.locationService == null) _shared.dispose();
     _controller.dispose();
     super.dispose();
   }

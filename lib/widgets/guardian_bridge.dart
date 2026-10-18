@@ -1,3 +1,4 @@
+import '../services/inventory_service.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -35,6 +36,7 @@ class GuardianBridge {
             'join',
             'status',
             'ready',
+            'start',
             'inputs',
             'confirm',
             'cancel',
@@ -45,6 +47,9 @@ class GuardianBridge {
           );
           if (data['error'] != null) throw StateError(data['error'].toString());
           response['result'] = data;
+          if (data['status'] == 'finished') {
+            unawaited(InventoryService.instance.refresh().catchError((_) {}));
+          }
           break;
         case 'watch':
           await _watch(p['room'] as String);
@@ -69,6 +74,14 @@ class GuardianBridge {
           );
           if (r.status != 200)
             throw StateError('No pudimos guardar la partida.');
+          if (r.data is! Map || (r.data as Map)['saved'] != true) {
+            throw StateError(
+              'La partida sigue pendiente de validación. Vuelve a guardar.',
+            );
+          }
+          // Settlement already succeeded. A refresh failure must not report
+          // that the verified reward was lost or ask for a second award.
+          unawaited(InventoryService.instance.refresh().catchError((_) {}));
           response['result'] = r.data;
           break;
         case 'close':

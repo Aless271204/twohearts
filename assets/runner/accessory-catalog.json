@@ -605,7 +605,7 @@
       },
       "fitted_model_space": true,
       "skinned_model_space": true,
-      "asset_revision": "b42b95cb94dbd6b67d8c",
+      "asset_revision": "bf024156fa71b73da69a",
       "sleeve_coverage": {
         "penguin": {
           "min_y": 0.41660043558286364,
@@ -625,10 +625,10 @@
         }
       },
       "species_model_hashes": {
-        "penguin": "e5982cf1b0e01c3e66f9502929f05e345abc4b59cc86812ebbb07efb0b977f2c",
-        "bear": "90d76d6d2ad6407dbd016ab0ff2540c76774cfe80c2d9e32592c69c482b6e46c",
-        "pig": "b2eb33c08631953bb75fcb171201440e6fdbdc4b65313bdf5021722e167470e2",
-        "chick": "c18c688773287bbe29383dac2b3f4021ca7d17d58e2983ea1006305f22bcab1e"
+        "penguin": "d43ded42e8ff1098452eb6cd5426d35441a21c54fb7a12093a76bfda0e1ca5c7",
+        "bear": "9db9a83160184073aecf6a4c254f6bd59e19116ffa3929dcba25a8182d3e85ec",
+        "pig": "359c0f5edbd09cd8d7681033200fb587b1b569d861e6074362601e22ede53f1d",
+        "chick": "c809b3508233252459c5ddfc9842fc1ee410aeb86eaed6c85c5668eeac29f0b4"
       },
       "coverage_assets": {
         "penguin": "assets/runner/restart/shirt-original-coverage-penguin.json",
@@ -668,7 +668,7 @@
       },
       "fitted_model_space": true,
       "skinned_model_space": true,
-      "asset_revision": "cf57dd56fc2988e5c2e6",
+      "asset_revision": "b3013c1e74c91af07b46",
       "sleeve_coverage": {
         "penguin": {
           "min_y": 0.41660043558286364,
@@ -688,10 +688,10 @@
         }
       },
       "species_model_hashes": {
-        "penguin": "3e97d2fac48057d9c882528dc1dc561350473eda38b3c488fe89480e660f1743",
-        "bear": "193f924c6474babdeaf0c105998f85d72082591aa02e5b5bd5ea390963f9728e",
-        "pig": "fe7059cb609dec5d39c7d451a864823cb59a73fd2a727e0ffaf173db3cc29ceb",
-        "chick": "e169d2091d3ae9d32becc9ce380f135ebfe71f1e345d8862055e64711cdfd5ec"
+        "penguin": "13a0a4f603595454240ec8e6e9c0c28f19cd99f09072fb32da340bf12e8ea1f4",
+        "bear": "90d7789fb5097417ceb6c50c41ee519a77314e2d782eeebf31996624f32c1014",
+        "pig": "54f5688a2789621a818edfb8a67999378805418bc52e062c8d452ba53950b06e",
+        "chick": "d36dd3c76e0740f73aa7c4faef58496fc18222d4f67ab793f8a30f71199d4675"
       },
       "coverage_assets": {
         "penguin": "assets/runner/restart/sewn-coverage-penguin-jacket_denim.json",
@@ -731,7 +731,7 @@
       },
       "fitted_model_space": true,
       "skinned_model_space": true,
-      "asset_revision": "dea2ddb39e8a8bf70a13",
+      "asset_revision": "e4bbe74b323c94c1d3e1",
       "sleeve_coverage": {
         "penguin": {
           "min_y": 0.3716004355828636,
@@ -751,10 +751,10 @@
         }
       },
       "species_model_hashes": {
-        "penguin": "f9aeb93ad2d30e68c0b753a063e27619a502608e3f21c4530ca379d7dd4c1e89",
-        "bear": "cd253d4cf70b151d1926e902052d22e47989760ff8a8bf7385bd4e405af4ef5b",
-        "pig": "67ea6a19b27356eb518cf205f9cda3a556c627aef7557a85d2a08bb5478e44db",
-        "chick": "143c7e4de92328b5efe62f2b5298262ce6bd668670eb1f58025aafed410e3805"
+        "penguin": "000b640626ae2bb62b77e404b787d9fcef81a3484bca51f401e73acafc6dcd4e",
+        "bear": "183d378689ef9a2b474aa50fd25a0493c26a2d26b4a3aab00b19e7fcb0dc9692",
+        "pig": "51576defb5cfd39acf4d000bb51681d06949bbf9112d90f9b2bbe96383f51532",
+        "chick": "2940b6cb99b9d8c76ca1c35f142a5a537276d6f20d986b994b786ae243a767d5"
       },
       "coverage_assets": {
         "penguin": "assets/runner/restart/sewn-coverage-penguin-coat_cloud.json",
@@ -794,7 +794,7 @@
       },
       "fitted_model_space": true,
       "skinned_model_space": true,
-      "asset_revision": "aaa463cc1301e13eb5ee",
+      "asset_revision": "6c90a38b7a1b72bf6652",
       "sleeve_coverage": {
         "penguin": {
           "min_y": 0.41660043558286364,
@@ -814,10 +814,10 @@
         }
       },
       "species_model_hashes": {
-        "penguin": "d214383a3b6e97dce9c876e1b31bff2a2924dc38676c2767cafd666d263199a5",
-        "bear": "2d85ab926adc81ee9f9a076660d673e8cfd205deeb7f83724edf2b8abf86ee0d",
-        "pig": "a6ace998de47058f733001720e827ac7f79638874cc41b96b6616853711ea5f7",
-        "chick": "3df208159e4040e0755eef740dbc6a1773256c1c8790fbdfb2a51bb6b2cc9f38"
+        "penguin": "163f479937e5090bc91ae377b02dc032627414e8a746f6676850fd168ad3ad18",
+        "bear": "bb765145913cbd78dc3dad0b399357e0b096a02ac961ead09c25c18fb20eb975",
+        "pig": "33bfa6d7ea63b965e44e80e58dbd85c931e345a97233a90fe346e586e9777511",
+        "chick": "f8aec43acd1ff8475e6225704859f7928c637a3508adcc3261fbc959f9b628f5"
       },
       "coverage_assets": {
         "penguin": "assets/runner/restart/sewn-coverage-penguin-dress_petal.json",
@@ -857,7 +857,7 @@
       },
       "fitted_model_space": true,
       "skinned_model_space": true,
-      "asset_revision": "03ef5b8901f344159cae",
+      "asset_revision": "9fb4128d2754e646cbe7",
       "sleeve_coverage": {
         "penguin": {
           "min_y": 0.3716004355828636,
@@ -877,10 +877,10 @@
         }
       },
       "species_model_hashes": {
-        "penguin": "6ac4741df831c043fac7804db0a21787cb08945384587f53a62c4b7c5338d88e",
-        "bear": "eb15de898a05b06d2b753b963e898a0d2fe299e0dd31ccd17eff261b3a305dc5",
-        "pig": "3a769f93dffab53c33e55de53ea626f56c21e057eda153f6efba20b4b789bbaa",
-        "chick": "13cac0522ba767ef259b85183a7adc2a1359b52f9474b653f45d30d9d513cb8c"
+        "penguin": "40347a09db17936f4467b6be3ee0fd846d240eecd23fda1cd9019b005495743c",
+        "bear": "898dcf77a5bc4235670218c5ae5aeaf0ed3d3dc96c8b08a930fd4d3be6c81ea0",
+        "pig": "7719437ae07473cd78b186984102446665c460e306e25fa3766566e6179bd363",
+        "chick": "0316f2eb3e6d3e76191fdb2da626abe05a63ccfb7b55a2e71db9b4cebe9881d1"
       },
       "coverage_assets": {
         "penguin": "assets/runner/restart/sewn-coverage-penguin-hoodie_nido.json",

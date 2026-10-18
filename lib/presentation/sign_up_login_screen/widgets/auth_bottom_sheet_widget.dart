@@ -1,4 +1,3 @@
-import '../../../services/shared_pet_service.dart';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
@@ -6,7 +5,6 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../core/app_export.dart';
 import '../../../services/supabase_service.dart';
-import './pet_selection_widget.dart';
 
 class AuthBottomSheetWidget extends StatefulWidget {
   final VoidCallback onAuthSuccess;
@@ -31,12 +29,10 @@ class _AuthBottomSheetWidgetState extends State<AuthBottomSheetWidget>
   bool _isLoading = false;
   String? _errorMessage;
 
-  // Signup steps: 0=credentials, 1=connection type, 2=pairing, 3=pet
+  // Adoption belongs to the shared nest after reciprocal pairing.
   int _signupStep = 0;
 
   String _connectionType = 'pareja'; // pareja | amigo | grupo
-  String? _selectedPet;
-  String _petName='';
   DateTime? _relationshipStart;
 
   @override
@@ -90,11 +86,8 @@ class _AuthBottomSheetWidgetState extends State<AuthBottomSheetWidget>
       return;
     }
     if (_signupStep == 2) {
-      setState(() => _signupStep = 3);
-      return;
-    }
-    if (_signupStep == 3) {
       await _finishSignup();
+      return;
     }
   }
 
@@ -117,11 +110,6 @@ class _AuthBottomSheetWidgetState extends State<AuthBottomSheetWidget>
         return;
       }
 
-      // Set pet type
-      if (_selectedPet != null) {
-        await SupabaseService.instance.setPetType(_selectedPet!);
-      }
-
       // Link partner if code provided
       final code = _partnerCodeController.text.trim();
       if (code.isNotEmpty) {
@@ -140,10 +128,6 @@ class _AuthBottomSheetWidgetState extends State<AuthBottomSheetWidget>
         }
       }
 
-      if (_selectedPet != null && SupabaseService.instance.currentUser != null) {
-        try {await SharedPetService.instance.change('choose',_selectedPet!,_petName);}
-        catch(_) {if(mounted)ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content:Text('La cuenta está creada. Podrán confirmar su mascota desde la habitación.')));}
-      }
       if (mounted) {
         widget.onAuthSuccess();
         // If no partner code was entered, navigate to pairing screen after a short delay
@@ -176,12 +160,9 @@ class _AuthBottomSheetWidgetState extends State<AuthBottomSheetWidget>
         .toDouble();
     final preferredTabHeight = _tabController.index == 0
         ? 300.0
-        : (_signupStep == 3 ? 420.0 : (_signupStep == 1 ? 340.0 : 320.0));
+        : (_signupStep == 1 ? 340.0 : 320.0);
     final tabContentHeight = math
-        .min(
-          preferredTabHeight,
-          math.max(120.0, availableHeight - 180.0),
-        )
+        .min(preferredTabHeight, math.max(120.0, availableHeight - 180.0))
         .toDouble();
 
     return Container(
@@ -370,7 +351,6 @@ class _AuthBottomSheetWidgetState extends State<AuthBottomSheetWidget>
                     ),
             ),
           ),
-
         ],
       ),
     );
@@ -400,16 +380,6 @@ class _AuthBottomSheetWidgetState extends State<AuthBottomSheetWidget>
   }
 
   Widget _buildSignupForm() {
-    if (_signupStep == 3) {
-      return PetSelectionWidget(
-        selectedPet: _selectedPet,
-        onPetSelected: (pet) => setState(() => _selectedPet = pet),
-        onNameChanged: (name) => _petName=name,
-        onConfirm: _finishSignup,
-        isLoading: _isLoading,
-      );
-    }
-
     if (_signupStep == 2) {
       return _buildPairingStep();
     }

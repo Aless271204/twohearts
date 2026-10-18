@@ -1,4 +1,7 @@
-import '../../widgets/partner_link_card.dart';
+import 'dart:async';
+import 'package:latlong2/latlong.dart';
+import '../../core/couple_metrics.dart';
+import '../../services/couple_location_service.dart';
 import '../../widgets/partner_art_card.dart';
 import '../../services/app_language.dart';
 import '../../widgets/twohearts_ui.dart';
@@ -27,29 +30,56 @@ class MemoriesScreen extends StatefulWidget {
   State<MemoriesScreen> createState() => _MemoriesScreenState();
 }
 
-class _MemoriesScreenState extends State<MemoriesScreen> {
+class _MemoriesScreenState extends State<MemoriesScreen>
+    with WidgetsBindingObserver {
+  final _locations = CoupleLocationService();
+  Timer? _calendarTick;
+  void _locationChanged() {
+    if (!mounted) return;
+    final a = _locations.mine?.point, b = _locations.partner?.point;
+    setState(
+      () => _coupleData['distanceKm'] = a == null || b == null
+          ? null
+          : const Distance().as(LengthUnit.Kilometer, a, b),
+    );
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _loadCoupleData();
+      if (mounted) setState(() {});
+    }
+  }
+
   Map<String, dynamic> _coupleData = {
     'myName': '',
     'partnerName': '',
     'myNickname': '',
     'partnerNickname': '',
-    'startDate': DateTime.now().subtract(const Duration(days: 1)),
+    'startDate': null,
     'myCity': '',
     'partnerCity': '',
-    'distanceKm': 0,
+    'distanceKm': null,
   };
 
   bool _loadingProfile = true;
   bool _realtimeDistance = false;
 
-  int get _daysTogether {
-    final start = _coupleData['startDate'] as DateTime;
-    return DateTime.now().difference(start).inDays;
-  }
+  int? get _daysTogether =>
+      coupleDays(_coupleData['startDate'] as DateTime?, DateTime.now());
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    _calendarTick = Timer.periodic(const Duration(minutes: 1), (_) {
+      if (mounted) setState(() {});
+    });
+    if (widget.previewAlbums == null) {
+      _locations.addListener(_locationChanged);
+      _locations.start();
+    }
     if (widget.previewAlbums == null)
       _loadCoupleData();
     else {
@@ -101,12 +131,13 @@ class _MemoriesScreenState extends State<MemoriesScreen> {
           _loadingProfile = false;
         });
 
-        final daysTogether = DateTime.now()
-            .difference(data['startDate'] as DateTime)
-            .inDays;
+        final daysTogether = coupleDays(
+          data['startDate'] as DateTime?,
+          DateTime.now(),
+        );
         HomeWidgetService.instance.updateAllWidgets(
-          daysTogether: daysTogether,
-          distanceKm: (_coupleData['distanceKm'] as int?) ?? 0,
+          daysTogether: daysTogether ?? 0,
+          distanceKm: (_coupleData['distanceKm'] as num?)?.round() ?? 0,
           dailyQuote: _getDailyQuote(),
           myNickname: myNick,
           partnerNickname: partnerNick,
@@ -126,6 +157,10 @@ class _MemoriesScreenState extends State<MemoriesScreen> {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    _calendarTick?.cancel();
+    _locations.removeListener(_locationChanged);
+    _locations.dispose();
     ProfileChangeNotifier.instance.removeListener(_onProfileChanged);
     super.dispose();
   }
@@ -198,6 +233,9 @@ class _MemoriesScreenState extends State<MemoriesScreen> {
                 previewAlbums: widget.previewAlbums,
                 daysTogether: _daysTogether,
                 realtimeDistance: _realtimeDistance,
+                locationService: widget.previewAlbums == null
+                    ? _locations
+                    : null,
                 onRealtimeToggle: (val) =>
                     setState(() => _realtimeDistance = val),
               ),
@@ -222,8 +260,9 @@ enum _AlbumViewMode { todos, lugares, fechas, especiales }
 class _AlbumJuntosTab extends StatefulWidget {
   final Map<String, dynamic> coupleData;
   final List<MemoryAlbum>? previewAlbums;
-  final int daysTogether;
+  final int? daysTogether;
   final bool realtimeDistance;
+  final CoupleLocationService? locationService;
   final ValueChanged<bool> onRealtimeToggle;
 
   const _AlbumJuntosTab({
@@ -231,6 +270,7 @@ class _AlbumJuntosTab extends StatefulWidget {
     this.previewAlbums,
     required this.daysTogether,
     required this.realtimeDistance,
+    this.locationService,
     required this.onRealtimeToggle,
   });
 
@@ -309,22 +349,18 @@ class _AlbumJuntosTabState extends State<_AlbumJuntosTab> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 16),
-                      child: PartnerLinkCard(),
-                    ),
-                    const DailyQuoteWidget(),
-                    PartnerArtCard(preview: widget.previewAlbums != null),
-
                     // Couple stats header
                     CoupleHeaderWidget(
                       myName: widget.coupleData['myName'] as String,
                       partnerName: widget.coupleData['partnerName'] as String,
                       daysTogether: widget.daysTogether,
-                      distanceKm: widget.coupleData['distanceKm'] as int,
+                      distanceKm: widget.coupleData['distanceKm'] as num?,
                       myCity: widget.coupleData['myCity'] as String,
                       partnerCity: widget.coupleData['partnerCity'] as String,
                     ),
+
+                    const DailyQuoteWidget(),
+                    PartnerArtCard(preview: widget.previewAlbums != null),
 
                     // Map
                     Padding(
@@ -343,6 +379,7 @@ class _AlbumJuntosTabState extends State<_AlbumJuntosTab> {
                       partnerCity: widget.coupleData['partnerCity'] as String,
                       travelCities: travelCities,
                       realtimeEnabled: widget.realtimeDistance,
+                      locationService: widget.locationService,
                       onRealtimeToggle: widget.onRealtimeToggle,
                     ),
 

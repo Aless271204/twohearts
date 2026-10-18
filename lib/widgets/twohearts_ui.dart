@@ -348,12 +348,14 @@ class NidoWelcomeSurface extends StatelessWidget {
 
 class HeartQuoteCard extends StatelessWidget {
   final String text, sendLabel, eyebrow;
+  final String? source;
   final VoidCallback? onSend, onMore;
   const HeartQuoteCard({
     super.key,
     required this.text,
     required this.sendLabel,
     this.eyebrow = 'Un momento para ustedes',
+    this.source,
     this.onSend,
     this.onMore,
   });
@@ -419,7 +421,19 @@ class HeartQuoteCard extends StatelessWidget {
                       color: Color(0xFF612A43),
                     ),
                   ),
-                  const SizedBox(height: 26),
+                  if (source != null) ...[
+                    const SizedBox(height: 10),
+                    Text(
+                      source!,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        fontSize: 11,
+                        height: 1.3,
+                        color: Color(0xFF684856),
+                      ),
+                    ),
+                  ],
+                  const SizedBox(height: 20),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -440,9 +454,9 @@ class HeartQuoteCard extends StatelessWidget {
                           ),
                           child: IconButton(
                             onPressed: onMore,
-                            tooltip: 'Otra frase',
+                            tooltip: 'Autor y obra',
                             icon: const Icon(
-                              Icons.refresh_rounded,
+                              Icons.info_outline_rounded,
                               color: AppTheme.primary,
                               size: 20,
                             ),

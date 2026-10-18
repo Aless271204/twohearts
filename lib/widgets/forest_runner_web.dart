@@ -13,6 +13,7 @@ class ForestRunnerView extends StatefulWidget {
   final bool petOnly;
   final bool room;
   final bool guardian;
+  final bool adoption, arrival;
   final int petReaction;
   final String petSpecies;
   final int petLevel;
@@ -26,6 +27,8 @@ class ForestRunnerView extends StatefulWidget {
     this.petOnly = false,
     this.room = false,
     this.guardian = false,
+    this.adoption = false,
+    this.arrival = false,
     this.petReaction = 0,
     this.petSpecies = 'penguin',
     this.petLevel = 10,
@@ -53,7 +56,9 @@ class _ForestRunnerViewState extends State<ForestRunnerView>
     _frame = web.HTMLIFrameElement()
       ..src = Uri.parse(web.document.baseURI)
           .resolve(
-            widget.guardian
+            widget.adoption
+                ? 'assets/assets/runner/adoption.html'
+                : widget.guardian
                 ? 'assets/assets/runner/guardian/index.html'
                 : 'assets/assets/runner/index.html',
           )
@@ -71,6 +76,7 @@ class _ForestRunnerViewState extends State<ForestRunnerView>
                   }
                 : {
                     'species': widget.petSpecies,
+                    if (widget.adoption) 'arrival': widget.arrival ? '1' : '0',
                     'level': (FeatureFlags.petGrowth ? widget.petLevel : 10)
                         .toString(),
                   },

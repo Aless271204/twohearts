@@ -1,6 +1,7 @@
 import '../../widgets/private_memory_image.dart';
 import '../../services/profile_avatar_service.dart';
 import '../../widgets/partner_link_card.dart';
+import '../../widgets/couple_care_settings.dart';
 import '../../widgets/place_search_sheet.dart';
 import '../../services/geographic_location_service.dart';
 import 'package:flutter/material.dart';
@@ -216,6 +217,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                       _buildProfileForm(),
                       const SizedBox(height: 24),
                       const PartnerLinkCard(),
+                      const CoupleCareSettings(),
                       const SizedBox(height: 16),
                       _buildConnectionInfo(),
                       const SizedBox(height: 24),

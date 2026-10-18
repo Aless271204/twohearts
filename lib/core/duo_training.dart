@@ -14,6 +14,9 @@ class DuoTraining {
   bool finished = false;
   String phase = 'countdown';
   String? event;
+  double wideA = 0, wideB = 0, powerClock = 0, powerX = .5;
+  bool shieldA = false, shieldB = false;
+  int powerNumber = 0, powerKind = 0, lastHit = -1;
   static const questions = [
     [
       'Planes',
@@ -114,6 +117,15 @@ class DuoTraining {
       return;
     }
     reaction -= safe;
+    powerClock += safe;
+    wideA = max(0, wideA - safe);
+    wideB = max(0, wideB - safe);
+    if ((powerClock / 8).floor() > powerNumber) {
+      powerNumber = (powerClock / 8).floor();
+      powerKind = 1 + powerNumber % 2;
+      powerX = .5 + sin(powerNumber * 2.399) * .25;
+    }
+    if (powerClock - powerNumber * 8 > 5) powerKind = 0;
     if (reaction <= 0) {
       target = (x + (random.nextDouble() - .5) * .28).clamp(.11, .89);
       reaction = .22 + random.nextDouble() * .15;
@@ -139,14 +151,47 @@ class DuoTraining {
           vy > 0 &&
           previous < .88 &&
           y >= .88 &&
-          (x - paddle.clamp(.11, .89)).abs() < .13;
+          (x - paddle.clamp(.11, .89)).abs() < (wideA > 0 ? .195 : .135);
       final botHit =
-          vy < 0 && previous > .12 && y <= .12 && (x - bot).abs() < .13;
+          vy < 0 &&
+          previous > .12 &&
+          y <= .12 &&
+          (x - bot).abs() < (wideB > 0 ? .195 : .135);
       if (playerHit || botHit) {
+        lastHit = playerHit ? 0 : 1;
         y = playerHit ? .88 : .12;
         vy = (playerHit ? -1 : 1) * (vy.abs() * 1.025).clamp(.48, .9);
         vx = ((x - (playerHit ? paddle : bot)) * 3).clamp(-.65, .65);
         event = 'hit';
+      }
+      if (powerKind > 0 &&
+          lastHit >= 0 &&
+          (x - powerX).abs() < .055 &&
+          (y - .5).abs() < .055) {
+        if (powerKind == 1) {
+          if (lastHit == 0) {
+            wideA = 6;
+          } else {
+            wideB = 6;
+          }
+        } else {
+          if (lastHit == 0) {
+            shieldA = true;
+          } else {
+            shieldB = true;
+          }
+        }
+        powerKind = 0;
+        event = 'score';
+      }
+      if (y > .98 && shieldA) {
+        y = .98;
+        vy = -vy.abs();
+        shieldA = false;
+      } else if (y < .02 && shieldB) {
+        y = .02;
+        vy = vy.abs();
+        shieldB = false;
       }
       if (y < -.04 || y > 1.04) {
         final won = y < 0;
@@ -206,6 +251,12 @@ class DuoTraining {
         'vx': vx,
         'vy': vy,
         'paddle_b': bot,
+        'wide_a': wideA,
+        'wide_b': wideB,
+        'shield_a': shieldA,
+        'shield_b': shieldB,
+        'power_kind': powerKind,
+        'power_x': powerX,
         'deadline': epoch + deadline - time,
         'my_choice': phase == 'self'
             ? self

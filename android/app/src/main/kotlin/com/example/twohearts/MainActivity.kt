@@ -34,6 +34,13 @@ class MainActivity : FlutterFragmentActivity() {
 
     override fun configureFlutterEngine(engine: FlutterEngine) {
         super.configureFlutterEngine(engine)
+        MethodChannel(engine.dartExecutor.binaryMessenger,"nido/reminders").setMethodCallHandler { call,result ->
+            when(call.method){
+                "configure" -> {NidoReminders.configure(this,call.argument<Boolean>("daily")==true,call.argument<Boolean>("moods")==true,call.argument<Int>("hour")?:19,call.argument<Int>("minute")?:0);result.success(true)}
+                "mood" -> {NidoReminders.mood(this,JSONObject(call.arguments as? Map<*,*> ?: emptyMap<String,Any>()));result.success(true)}
+                else -> result.notImplemented()
+            }
+        }
         MethodChannel(engine.dartExecutor.binaryMessenger, "nido/art").setMethodCallHandler { call, result ->
             try {
                 when (call.method) {

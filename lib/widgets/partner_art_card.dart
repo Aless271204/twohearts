@@ -179,8 +179,7 @@ class _PartnerArtCardState extends State<PartnerArtCard> {
               )
             else
               Text(
-                note['content'] as String? ??
-                    'Una foto, una nota o un dibujo: algo tuyo para acompañar a tu pareja.',
+                note['content'] as String? ?? 'Algo bonito para compartir.',
                 style: const TextStyle(fontSize: 16, height: 1.5),
               ),
             if (note['sent_at'] != null)
@@ -218,57 +217,57 @@ class _PartnerArtCardState extends State<PartnerArtCard> {
                 ),
               ],
             ),
-            TextButton.icon(
-              onPressed: widget.preview
-                  ? null
-                  : () async {
-                      try {
-                        final ok = await PartnerArtService.instance.pin();
-                        _message(
-                          ok
-                              ? 'Confirma añadir el widget en tu pantalla de inicio'
-                              : 'Mantén pulsado el inicio de tu teléfono → Widgets → NIDO',
-                        );
-                      } catch (_) {
-                        _message(
-                          'Añádelo desde Widgets → NIDO en la pantalla de inicio de tu teléfono.',
-                        );
-                      }
-                    },
-              icon: const Icon(Icons.widgets_outlined),
-              label: const Text('Widget de fotos y mensajes'),
-            ),
-            TextButton.icon(
-              onPressed: widget.preview
-                  ? null
-                  : () async {
-                      try {
-                        final ok = await PartnerArtService.instance.pin(
-                          history: true,
-                        );
-                        _message(
-                          ok
-                              ? 'Confirma añadir Nuestra historia'
-                              : 'Mantén pulsado el inicio → Widgets → NIDO → Nuestra historia',
-                        );
-                      } catch (_) {
-                        _message(
-                          'Añade Nuestra historia desde Widgets → NIDO.',
-                        );
-                      }
-                    },
-              icon: const Icon(Icons.favorite_outline),
-              label: const Text('Widget de aniversario y distancia'),
-            ),
-            const Text(
-              'En teléfonos compatibles puedes añadirlos también a la pantalla de bloqueo desde los ajustes de Android. La distancia muestra la última ubicación compartida; toca el widget para abrir NIDO y actualizarla.',
-            ),
-            const Text(
-              'Tu pareja añade el widget en su teléfono. Se actualiza al abrir NIDO y periódicamente en segundo plano; Android puede retrasarlo para ahorrar batería.',
-              style: TextStyle(
-                fontSize: 11,
-                height: 1.4,
-                color: Colors.black54,
+            Theme(
+              data: Theme.of(
+                context,
+              ).copyWith(dividerColor: Colors.transparent),
+              child: ExpansionTile(
+                tilePadding: EdgeInsets.zero,
+                title: const Text('Widgets', style: TextStyle(fontSize: 12)),
+                children: [
+                  TextButton.icon(
+                    onPressed: widget.preview
+                        ? null
+                        : () async {
+                            try {
+                              final ok = await PartnerArtService.instance.pin();
+                              _message(
+                                ok
+                                    ? 'Confirma añadir el widget en tu pantalla de inicio'
+                                    : 'Mantén pulsado el inicio de tu teléfono → Widgets → NIDO',
+                              );
+                            } catch (_) {
+                              _message(
+                                'Añádelo desde Widgets → NIDO en la pantalla de inicio de tu teléfono.',
+                              );
+                            }
+                          },
+                    icon: const Icon(Icons.widgets_outlined),
+                    label: const Text('Widget de fotos y mensajes'),
+                  ),
+                  TextButton.icon(
+                    onPressed: widget.preview
+                        ? null
+                        : () async {
+                            try {
+                              final ok = await PartnerArtService.instance.pin(
+                                history: true,
+                              );
+                              _message(
+                                ok
+                                    ? 'Confirma añadir Nuestra historia'
+                                    : 'Mantén pulsado el inicio → Widgets → NIDO → Nuestra historia',
+                              );
+                            } catch (_) {
+                              _message(
+                                'Añade Nuestra historia desde Widgets → NIDO.',
+                              );
+                            }
+                          },
+                    icon: const Icon(Icons.favorite_outline),
+                    label: const Text('Widget de aniversario y distancia'),
+                  ),
+                ],
               ),
             ),
             if (busy) const LinearProgressIndicator(),

@@ -80,7 +80,16 @@ function bossAttack(s){
   const b=s.boss,d=DIFFICULTIES[s.difficulty];b.phase=b.hp<b.maxHP*.48?2:1;
   if(b.action==='sleep')return;
   if(--b.timer>0){
-    if(b.action==='leaves'&&b.timer%32===0){for(let j=0;j<(s.difficulty==='easy'?2:3);j++)s.hazards.push({type:'leaf',x:b.x-75,y:FLOOR-35-j*43,vx:-3.5-b.phase*.45,vy:0,life:300});}
+    if(b.action==='leaves'&&b.timer%32===0){
+      for(let j=0;j<(s.difficulty==='easy'?2:3);j++)s.hazards.push({type:'leaf',x:b.x-75,y:FLOOR-35-j*43,vx:-3.5-b.phase*.45,vy:0,life:300});
+      // The warning also signals aimed canopy leaves: neither ledge is a safe turret in hard.
+      if(s.difficulty==='hard')for(const p of s.players){
+        if(p.hp<=0||p.y>FLOOR-65)continue;
+        const originX=b.x+Math.sign(p.x-b.x)*75,originY=FLOOR-100;
+        const dx=p.x-originX,dy=p.y-20-originY,len=Math.max(1,Math.hypot(dx,dy));
+        s.hazards.push({type:'leaf',x:originX,y:originY,vx:dx/len*4.4,vy:dy/len*4.4,life:220});
+      }
+    }
     if(b.action==='roll'){
       b.x+=b.vx;
       if(b.x<ARENA+85||b.x>WORLD_END-100){b.x=clamp(b.x,ARENA+85,WORLD_END-100);b.vx=-b.vx;b.rolls++;event(s,'impact',b.x,FLOOR);if(b.rolls>=2+b.phase){b.timer=1;}}

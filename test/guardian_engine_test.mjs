@@ -20,3 +20,11 @@ test('full expeditions can be completed by legal controls without extra health o
  test('difficulty gives every player exactly five, three or one starting hearts',()=>{for(const [difficulty,hearts] of [['easy',5],['medium',3],['hard',1]])for(const mode of ['solo','partner']){const s=createGame(17,difficulty,mode);assert.ok(s.players.every(p=>p.hp===hearts&&p.maxHP===hearts));}});
 
 test('hard has no healing or extra heart pickups in any seeded route and faster movement',()=>{for(let seed=0;seed<100;seed++){const s=createGame(seed,'hard');assert.ok(s.level.pickups.every(p=>!['heal','heart'].includes(p.type)));}const normal=createGame(1,'medium'),hard=createGame(1,'hard');stepGame(normal,[INPUT.right]);stepGame(hard,[INPUT.right]);assert.ok(hard.players[0].vx>normal.players[0].vx);assert.ok(DIFFICULTIES.hard.warning<DIFFICULTIES.medium.warning);});
+
+test('hard canopy leaves reach the right perch, with no added aimed attack in easier modes',()=>{
+ for(const difficulty of ['easy','medium','hard']){
+  const s=createGame(1,difficulty);s.stage='boss';s.level.enemies=[];s.level.pickups=[];
+  const p=s.players[0];p.x=ARENA+900;p.y=320;p.ground=true;s.boss.action='leaves';s.boss.timer=97;
+  stepGame(s);assert.equal(s.hazards.some(h=>h.type==='leaf'&&h.vx>0&&h.vy<0),difficulty==='hard');
+ }
+});

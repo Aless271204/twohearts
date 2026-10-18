@@ -79,6 +79,13 @@ class PartnerArtService extends ChangeNotifier with WidgetsBindingObserver {
             'start': profile?['relationship_start']?.toString() ?? '',
           };
           try {
+            final shared = await client.rpc('couple_state') as Map;
+            stats['start'] = shared['start']?.toString() ?? '';
+            await const MethodChannel(
+              'nido/reminders',
+            ).invokeMethod('mood', shared['partner'] ?? <String, dynamic>{});
+          } catch (_) {}
+          try {
             final locations = await client.rpc(
               'couple_location',
               params: {'p_action': 'snapshot'},

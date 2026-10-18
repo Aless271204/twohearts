@@ -58,3 +58,4 @@ build-env.json
 /tools/bin/
 
 /tools/audio-runtime/
+/tools/sql-test/
