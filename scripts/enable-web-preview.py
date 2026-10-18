@@ -11,3 +11,9 @@ except urllib.error.HTTPError as error:
  if error.code!=404:raise
  with urllib.request.urlopen(urllib.request.Request(url,data=json.dumps({'build_type':'workflow'}).encode(),headers=headers,method='POST'),timeout=45) as response:state=json.load(response)
 print(json.dumps({'url':state.get('html_url'),'build_type':state.get('build_type'),'status':state.get('status')}))
+policy_url='https://api.github.com/repos/Aless271204/twohearts/environments/github-pages/deployment-branch-policies'
+with urllib.request.urlopen(urllib.request.Request(policy_url,headers=headers),timeout=45) as response:policies=json.load(response)['branch_policies']
+branch='codex/web-preview-129'
+if not any(p['name']==branch and p['type']=='branch' for p in policies):
+ with urllib.request.urlopen(urllib.request.Request(policy_url,data=json.dumps({'name':branch,'type':'branch'}).encode(),headers=headers,method='POST'),timeout=45) as response:policy=json.load(response)
+ print(json.dumps({'enabled_preview_branch':policy['name']}))

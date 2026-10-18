@@ -12,6 +12,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   deploy:
+    # This exact branch is permitted by the github-pages environment policy.
     runs-on: ubuntu-latest
     environment:
       name: github-pages
