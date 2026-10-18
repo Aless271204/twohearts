@@ -1,0 +1,42 @@
+name: Public NIDO web preview
+on:
+  push:
+    branches: [codex/web-preview-129]
+permissions:
+  contents: read
+  actions: read
+  pages: write
+  id-token: write
+concurrency:
+  group: nido-web-preview
+  cancel-in-progress: false
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: twohearts-web
+          run-id: 39096682460
+          github-token: ${{ github.token }}
+          path: preview
+      - name: Prepare subdirectory hosting
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          path=Path('preview/index.html')
+          source=path.read_text().replace('<base href="/">','<base href="/twohearts/">').replace('<title>twohearts</title>','<title>NIDO · Prueba web</title>')
+          path.write_text(source)
+          Path('preview/404.html').write_text(source)
+          Path('preview/.nojekyll').touch()
+          assert not Path('preview/env.json').exists()
+          PY
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: preview
+      - uses: actions/deploy-pages@v4
+        id: deployment

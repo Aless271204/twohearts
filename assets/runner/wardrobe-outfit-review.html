@@ -4,9 +4,14 @@
 <nav><label>Conjunto <select id="outfit"><option value="dulce">Dulce</option><option value="cozy">Cozy</option><option value="jardin">Jardín</option><option value="chic">Chic</option><option value="pastel">Pastel</option></select></label><label>Vista <select id="angle"><option value="40">Tres cuartos</option><option value="0">Frente</option><option value="90">Perfil</option><option value="180">Espalda</option></select></label><label>Movimiento <select id="motion"><option value="">Reposo</option><option value="Wardrobe_Run">Carrera nueva</option><option value="Natural_Jump">Salto nuevo</option><option value="Running">Carrera original</option><option value="Regular_Jump">Salto original</option></select></label><label><input id="live" type="checkbox" checked> Animar</label><label>Instante <select id="phase"><option value="0">Inicio</option><option value=".25">25 %</option><option value=".5">50 %</option><option value=".75">75 %</option></select></label></nav>
 <p id="status"></p><div class="grid" id="pets"></div><small>Revisión digital con los modelos del catálogo local. Comprueba cada combinación antes de publicar la actualización. La peluca sigue oculta.</small>
 <script type="module">
-const read=async p=>{const r=await fetch(p,{cache:'no-store'});if(!r.ok)throw Error('No se pudo cargar '+p);return r.json()};
-const storeCatalog=await read('./accessory-catalog.json');
-const [catalog,details,wardrobe,complements,outfits]=await Promise.all(['restart/catalog.json','restart/details-catalog.json','blender-wardrobe-models.json','blender-complement-models.json','../../design/approved-outfits.json'].map(read));
+const read=async p=>{const r=await fetch(p,{cache:'no-store',signal:AbortSignal.timeout(15000)});if(!r.ok)throw Error('No se pudo cargar '+p);return r.json()};
+let storeCatalog,catalog,details,wardrobe,complements,outfits;
+try{
+ [storeCatalog,catalog,details,wardrobe,complements,outfits]=await Promise.all(['accessory-catalog.json','restart/catalog.json','restart/details-catalog.json','blender-wardrobe-models.json','blender-complement-models.json','../../design/approved-outfits.json'].map(read));
+}catch(error){
+ const status=document.getElementById('status');status.setAttribute('role','alert');status.textContent='No se pudo cargar el catálogo. Comprueba que el servidor esté abierto y recarga la página.';
+ const retry=document.createElement('button');retry.textContent='Volver a cargar';retry.onclick=()=>location.reload();status.append(' ',retry);throw error;
+}
 const speciesLabel=document.createElement('label');speciesLabel.textContent='Mascota ';
 const speciesControl=document.createElement('select');speciesControl.id='species';speciesLabel.append(speciesControl);
 for(const [value,text]of [['all','Todas'],['penguin','Pingüino'],['bear','Oso'],['pig','Cerdito'],['chick','Pollito']]){const option=document.createElement('option');option.value=value;option.textContent=text;speciesControl.append(option);}
@@ -21,6 +26,9 @@ for(const item of [...wardrobe,...complements]){
 document.querySelector('nav').append(itemLabel);
 const style=document.createElement('style');style.textContent='.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.grid.single{grid-template-columns:1fr}.grid.single iframe{height:560px}@media(min-width:1200px){.grid:not(.single){grid-template-columns:repeat(4,minmax(0,1fr))}}';document.head.append(style);
 const c=Object.fromEntries(['species','outfit','angle','motion','live','phase','item'].map(k=>[k,document.getElementById(k)])),params=new URLSearchParams(location.search);
+// Load one WebGL scene initially; four simultaneous textured pets can exhaust
+// laptop graphics memory. All four remain available in the mascot selector.
+if(!params.has('species'))c.species.value='penguin';
 for(const k of ['species','outfit','angle','motion','phase','item'])if(params.has(k))c[k].value=params.get(k);c.live.checked=params.get('live')!=='0';
 function equipment(sp){const result={},pending=[];
  for(const key of c.item.value?[c.item.value]:outfits.outfits.find(o=>o.key===c.outfit.value).items){
