@@ -1,5 +1,13 @@
 // One deterministic curve shared by rendering and reward validation.
 export function runnerDifficulty(distance, version = 5) {
+  if(version>=9&&distance>=2000){
+    const km=(distance-2000)/1000;
+    // Continuous acceleration, including after every later kilometre. The
+    // asymptote is a physical limit, not a flat stage or sudden speed jump.
+    const speed=44-20*Math.exp(-km/6);
+    const reaction=.72+.78*Math.exp(-km/3);
+    return {speed,spacing:speed*reaction,level:9+Math.floor(km),trapTier:Math.floor(km)};
+  }
   if(version>=8){
     const stages=[0,120,280,500,800,1200,1500,1800,2000,2500];
     let level=0;for(let i=1;i<stages.length;i++)if(distance>=stages[i])level=i;

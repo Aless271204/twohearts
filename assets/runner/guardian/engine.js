@@ -1,10 +1,12 @@
 import {DIFFICULTIES,INPUT,FLOOR,ARENA,WORLD_END,BOSS_HOME,SPECIES,RUNE_X,createLevel,rewardFor} from './config.js';
+import {updateAerialThreats} from './aerial-attacks.js';
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 const near=(a,b,dx,dy)=>Math.abs(a.x-b.x)<dx&&Math.abs(a.y-b.y)<dy;
-export function createGame(seed=1,difficulty='easy',mode='solo',species=['penguin','bear']){
+export function createGame(seed=1,difficulty='easy',mode='solo',species=['penguin','bear'],chapter='forest',route='stones',combat='legacy'){
   if(!DIFFICULTIES[difficulty]||!['solo','partner'].includes(mode))throw Error('Configuración inválida');
-  const d=DIFFICULTIES[difficulty],level=createLevel(seed,difficulty);
-  return {version:2,seed:seed>>>0,difficulty,mode,frame:0,status:'playing',stage:'path',gold:0,upgrades:0,checkpoint:90,level,shots:[],hazards:[],events:[],sigils:[-9999,-9999],boss:{x:BOSS_HOME,y:FLOOR,hp:d.bossHP*(mode==='partner'?1.6:1),maxHP:d.bossHP*(mode==='partner'?1.6:1),action:'sleep',timer:0,cycle:0,phase:1,rolls:0,vx:0},
+  if(!['forest','river'].includes(chapter))throw Error('Capítulo inválido');
+  const d=DIFFICULTIES[difficulty],level=createLevel(seed,difficulty,chapter,route);
+  return {version:2,chapter,...(combat==='aerial'?{combat}:{}),seed:seed>>>0,difficulty,mode,frame:0,status:'playing',stage:'path',gold:0,upgrades:0,checkpoint:90,level,shots:[],hazards:[],events:[],sigils:[-9999,-9999],boss:{x:BOSS_HOME,y:FLOOR,hp:d.bossHP*(mode==='partner'?1.6:1)*(chapter==='river'?1.2:1),maxHP:d.bossHP*(mode==='partner'?1.6:1)*(chapter==='river'?1.2:1),action:'sleep',timer:0,cycle:0,phase:1,rolls:0,vx:0},
     players:Array.from({length:mode==='partner'?2:1},(_,i)=>({id:i,species:SPECIES.includes(species[i])?species[i]:SPECIES[i],x:90+i*48,y:FLOOR,vx:0,vy:0,facing:1,hp:d.hearts,maxHP:d.hearts,ground:true,coyote:7,buffer:0,previous:0,invulnerable:0,dash:0,dashCooldown:0,attackCooldown:0,buffs:{},rescue:0,revives:0}))};
 }
 function event(s,type,x,y){s.eventSeq=(s.eventSeq??0)+1;s.events.push({id:s.eventSeq,type,x,y,frame:s.frame});}
@@ -76,7 +78,40 @@ function updatePlayer(s,p,mask){
   for(const coin of s.level.coins){if(!coin.used&&Math.abs(coin.x-p.x)<(p.buffs.magnet>0?125:22)&&Math.abs(coin.y-(p.y-20))<(p.buffs.magnet>0?100:32)){coin.used=true;pickup(s,p,{type:'coin'});if(s.frame%3===0)event(s,'coin',coin.x,coin.y);}}
   for(const item of s.level.pickups){if(!item.used&&!(item.type==='heal'&&p.hp>=p.maxHP)&&near({x:p.x,y:p.y-20},item,26,34)){item.used=true;pickup(s,p,item);}}
 }
+function riverBossAttack(s){
+ const b=s.boss,d=DIFFICULTIES[s.difficulty];b.phase=b.hp<b.maxHP*.48?2:1;
+ if(b.action==='sleep')return;
+ if(--b.timer>0){
+  if(['current','bubbles'].includes(b.action)){
+   const amplitude=b.phase===2?210:150,rate=s.difficulty==='hard'?.027:.019;
+   b.x=clamp(BOSS_HOME+Math.sin(s.frame*rate)*amplitude,ARENA+120,WORLD_END-120);
+  }
+  if(b.action==='quake'&&b.timer%24===0){
+   event(s,'impact',b.x,FLOOR);
+   for(const vx of [-6.2,6.2])s.hazards.push({type:'wave',x:b.x,y:FLOOR-12,vx,vy:0,life:200});
+  }
+  if(b.action==='current')for(const p of s.players)if(p.hp>0&&p.ground&&p.dash<=0)p.x=clamp(p.x-1.05-b.phase*.2,ARENA,WORLD_END-25);
+  if(b.action==='current'&&b.timer%40===0)s.hazards.push({type:'wave',x:b.x-100,y:FLOOR-12,vx:-3.7,vy:0,life:250});
+  if((b.action==='bubbles'||b.action==='current'&&b.phase===2)&&b.timer%(s.difficulty==='hard'?24:36)===0){
+   const count=s.difficulty==='easy'?2:3;
+   for(let i=0;i<count;i++)s.hazards.push({type:'bubble',x:ARENA+120+(b.cycle*97+i*247)%850,y:FLOOR+12,vx:Math.sin(i+b.cycle)*.25,vy:-2-b.phase*.3,life:160});
+  }
+  return;
+ }
+ if(b.action==='warning'){
+  if(b.next==='quake'){b.action='quake';b.timer=b.phase===2?73:49;event(s,'impact',b.x,FLOOR);}
+   else if(b.next==='tail'){b.action='recover';b.timer=45;for(const vx of [-5.4,5.4])s.hazards.push({type:'wave',x:b.x,y:FLOOR-12,vx,vy:0,life:220});event(s,'impact',b.x,FLOOR);}
+  else {b.action=b.next==='stomp'?'current':b.next;b.timer=b.action==='bubbles'?150:120;}
+  return;
+ }
+ if(['current','bubbles','recover','quake'].includes(b.action)){b.action='expose';b.timer=Math.round(d.recovery*.85);return;}
+ if(b.action==='ward'){b.action='warning';b.next='current';b.timer=d.warning;return;}
+ b.cycle++;
+ if(s.difficulty!=='easy'&&b.cycle%4===0){b.action='ward';b.wardLocked=s.difficulty==='hard';b.timer=720;s.sigils=[-9999,-9999];event(s,'ward',b.x,FLOOR-90);return;}
+ b.action='warning';b.next=b.cycle%5===0?'quake':['current','bubbles','tail'][b.cycle%3];b.timer=d.warning;event(s,'warning',b.x,FLOOR-100);
+}
 function bossAttack(s){
+  if(s.chapter==='river')return riverBossAttack(s);
   const b=s.boss,d=DIFFICULTIES[s.difficulty];b.phase=b.hp<b.maxHP*.48?2:1;
   if(b.action==='sleep')return;
   if(--b.timer>0){
@@ -118,6 +153,9 @@ export function stepGame(s,inputs=[0,0]){
   if(s.frame>60*360){s.status='defeat';return s;}
   for(let i=0;i<s.players.length;i++)updatePlayer(s,s.players[i],inputs[i]|0);
   const living=s.players.filter(p=>p.hp>0);
+  if(s.chapter==='river'&&s.stage==='path'&&s.frame%360>=240)for(const p of living){
+    if(p.ground&&s.level.currents.some(([a,b])=>p.x>a&&p.x<b))p.x=clamp(p.x+(s.difficulty==='hard'?1.05:.7),15,WORLD_END-25);
+  }
   if(!living.length){s.status='defeat';event(s,'defeat',0,0);return s;}
   if(s.stage==='path'&&s.players.every(p=>p.x>ARENA-80||p.hp<=0)){s.stage='boss';s.boss.action='warning';s.boss.next='stomp';s.boss.timer=120;s.hazards=[];event(s,'boss',s.boss.x,FLOOR);}
   const slowed=living.some(p=>p.buffs.slow>0)&&s.frame%2===0;
@@ -125,13 +163,15 @@ export function stepGame(s,inputs=[0,0]){
     for(const e of s.level.enemies){if(e.hp<=0)continue;
       const target=living.reduce((a,b)=>Math.abs(a.x-e.x)<Math.abs(b.x-e.x)?a:b);
       if(Math.abs(target.x-e.x)>650)continue;
-      e.x=e.type===0?e.x+Math.sign(target.x-e.x)*(e.stolen?-.9:.65):e.origin+Math.sin(s.frame/(e.type===2?22:65)+e.phase)*(e.type===2?70:38);
-      e.y=e.type===0||e.type===4?FLOOR-60+Math.sin(s.frame/25+e.phase)*18:FLOOR;
+      e.x=e.type===0?e.x+Math.sign(target.x-e.x)*(e.stolen?-.9:.65):e.origin+Math.sin(s.frame/(e.type===2?22:65)+e.phase)*(e.patrol??(e.type===2?70:38));
+      if(e.patrol&&e.type===0)e.x=clamp(e.x,e.origin-e.patrol,e.origin+e.patrol);
+      e.y=e.type===0||e.type===4?(e.surfaceY??FLOOR)-60+Math.sin(s.frame/25+e.phase)*18:(e.surfaceY??FLOOR);
       if(--e.cooldown<=0&&e.type===5){e.cooldown=DIFFICULTIES[s.difficulty].enemyRate;const dx=target.x-e.x,dy=target.y-22-(e.y-28),len=Math.max(1,Math.hypot(dx,dy));s.hazards.push({type:'acorn',x:e.x,y:e.y-28,vx:dx/len*3,vy:dy/len*3,life:200});}
       for(const p of living)if(near({x:p.x,y:p.y-20},{x:e.x,y:e.y-15},27,30))damage(s,p,e);
     }
+    if(s.combat==='aerial')updateAerialThreats(s,event);
     if(s.stage==='boss')bossAttack(s);
-    for(const h of s.hazards){h.x+=h.vx*(s.difficulty==='hard'?1.18:1);h.y+=h.vy*(s.difficulty==='hard'?1.18:1);h.life--;for(const p of living)if(near({x:p.x,y:p.y-17},h,h.type==='wave'?25:17,h.type==='wave'?24:17))damage(s,p);}
+    for(const h of s.hazards){if((h.delay??0)>0){h.delay--;continue;}if(h.ay)h.vy+=h.ay;h.x+=h.vx*(s.difficulty==='hard'?1.18:1);h.y+=h.vy*(s.difficulty==='hard'?1.18:1);h.life--;for(const p of living)if(near({x:p.x,y:p.y-17},h,h.type==='wave'?25:h.type==='fish'?23:17,h.type==='wave'?24:h.type==='fish'?23:17))damage(s,p);}
   }
   for(const shot of s.shots){shot.x+=shot.vx*(s.difficulty==='hard'?1.18:1);shot.y+=shot.vy*(s.difficulty==='hard'?1.18:1);shot.life--;
     const enemy=s.level.enemies.find(e=>e.hp>0&&near(shot,{x:e.x,y:e.y-20},25,30));
@@ -147,9 +187,9 @@ export function stepGame(s,inputs=[0,0]){
   if(s.boss.hp<=0){s.boss.hp=0;s.status='victory';event(s,'victory',s.boss.x,FLOOR-100);}
   return s;
 }
-export function replay(seed,difficulty,mode,events,frames,species){
+export function replay(seed,difficulty,mode,events,frames,species,chapter='forest',route='stones',combat='legacy'){
   if(!Number.isInteger(frames)||frames<1||frames>21600||!Array.isArray(events)||events.length>12000)throw Error('Registro inválido');
-  const state=createGame(seed,difficulty,mode,species),inputs=[0,0];let index=0,previous=-1;
+  const state=createGame(seed,difficulty,mode,species,chapter,route,combat),inputs=[0,0];let index=0,previous=-1;
   for(const e of events){if(!Array.isArray(e)||e.length!==3||!e.every(Number.isInteger)||e[0]<previous||e[0]<0||e[0]>=frames||e[1]<0||e[1]>=state.players.length||e[2]<0||e[2]>63)throw Error('Entrada inválida');previous=e[0];}
   for(let f=0;f<frames;f++){while(index<events.length&&events[index][0]===f){const [,p,mask]=events[index++];inputs[p]=mask;}stepGame(state,inputs);if(state.status!=='playing'&&f<frames-1)throw Error('Registro posterior al final');}
   return {state,reward:rewardFor(state)};

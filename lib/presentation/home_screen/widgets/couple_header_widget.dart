@@ -5,12 +5,14 @@ import '../../../theme/app_theme.dart';
 class CoupleHeaderWidget extends StatelessWidget {
   final String myName, partnerName, myCity, partnerCity;
   final int? daysTogether;
+  final DateTime? startDate;
   final num? distanceKm;
   const CoupleHeaderWidget({
     super.key,
     required this.myName,
     required this.partnerName,
     required this.daysTogether,
+    this.startDate,
     required this.distanceKm,
     required this.myCity,
     required this.partnerCity,
@@ -43,8 +45,8 @@ class CoupleHeaderWidget extends StatelessWidget {
             Expanded(
               child: _stat(
                 Icons.calendar_month_outlined,
-                daysTogether == null ? '—' : '${(daysTogether! / 7).floor()}',
-                'Semanas',
+                coupleMonths(startDate, DateTime.now())?.toString() ?? '—',
+                'Meses',
                 const Color(0xFFFFF0E7),
               ),
             ),

@@ -14,10 +14,11 @@ export function rng(seed){let x=seed>>>0;return()=>{x=(Math.imul(x,1664525)+1013
 
 // Reachable optional ledges guard the better rewards. The final arena always
 // retains two safe ledges; random variation never changes jump distances.
-export function createLevel(seed,difficulty){
+export function createLevel(seed,difficulty,chapter='forest',route='stones'){
+  if(chapter==='river'&&route!=='legacy')return createRiverLevel(seed,difficulty);
   const r=rng(seed),platforms=[],coins=[],pickups=[],enemies=[];
   const availablePowerups=difficulty==='hard'?POWERUPS.filter(type=>!['heal','heart'].includes(type)):POWERUPS;
-  const pits=[[1040,1160],[2570,2710],[4090,4240],[6220,6350]];
+  const pits=chapter==='river'?[[930,1060],[2350,2490],[3850,4000],[6030,6180],[6900,7020]]:[[1040,1160],[2570,2710],[4090,4240],[6220,6350]];
   let start=0;for(const [a,b] of pits){platforms.push({x:start,y:FLOOR,w:a-start});start=b;}
   platforms.push({x:start,y:FLOOR,w:WORLD_END-start});
   for(const x of [540,1430,2130,3030,3660,4480,5080,5820,6530,7140]){
@@ -31,15 +32,46 @@ export function createLevel(seed,difficulty){
     if(pits.some(([a,b])=>x>a-60&&x<b+70))continue;
     enemies.push({id:enemies.length,type:Math.floor(r()*6),x,y:FLOOR,hp:DIFFICULTIES[difficulty].enemyHP,origin:x,phase:r()*6,stolen:0,cooldown:60+Math.floor(r()*100)});
   }
-  const camps=[1770,3450,5410,6900];
+  const camps=chapter==='river'?[1770,3450,5410,7200]:[1770,3450,5410,6900];
   for(const x of difficulty==='hard'?[]:camps)pickups.push({id:pickups.length,x:x+60,y:405,type:'heal',used:false});
-  return {platforms,pits,coins,pickups,enemies,camps};
+  return {platforms,pits,coins,pickups,enemies,camps,currents:chapter==='river'?[[1200,1800],[2850,3400],[4700,5300]]:[]};
 }
 
-// All amounts are even before solo's exact 50% multiplier. Shop payout is only
-// granted by the authenticated server after replaying the completed expedition.
+// Short, reachable jumps between river rocks, with broad banks at checkpoints.
+// Legacy rooms keep the previous route for replay compatibility.
+function createRiverLevel(seed,difficulty){
+ const r=rng(seed),platforms=[],coins=[],pickups=[],enemies=[],camps=[1770,3450,5410,7200];
+ const banks=[[0,480],[1640,1950],[3320,3630],[5280,5590],[7070,7350],[7540,WORLD_END]];
+ const heights=[FLOOR,408,378,410,FLOOR,402];
+ const powers=difficulty==='hard'?POWERUPS.filter(t=>!['heal','heart'].includes(t)):POWERUPS;
+ const add=(x,y,w,kind)=>platforms.push({x,y,w,kind});
+ for(let b=0;b<banks.length;b++){
+  const [a,end]=banks[b];add(a,FLOOR,end-a,b===banks.length-1?'arena':'island');
+  if(!b)continue;
+  const previous=banks[b-1][1],span=a-previous,count=Math.ceil(span/210),step=span/count,gap=difficulty==='hard'?78:difficulty==='medium'?64:52;
+  for(let i=0;i<count;i++){
+   const x=previous+i*step+gap,w=step-gap,y=i===count-1?FLOOR:heights[(i+b)%heights.length];
+   add(x,y,w,i%4===2?'driftwood':'rock');
+  }
+ }
+ platforms.sort((a,b)=>a.x-b.x);
+ const primary=[...platforms],pits=[];
+ for(let i=1;i<primary.length;i++){const end=primary[i-1].x+primary[i-1].w;if(primary[i].x>end+.1)pits.push([end,primary[i].x]);}
+ for(const [i,p]of primary.entries()){
+  if(p.x>=ARENA)continue;
+  for(let x=p.x+25;x<p.x+p.w-15;x+=35)coins.push({id:coins.length,x,y:p.y-36-Math.sin((x-p.x)/p.w*Math.PI)*16,used:false});
+  if(p.kind==='rock'&&i%4===1){const x=p.x+Math.max(0,(p.w-92)/2);add(x,p.y-80,92,'bonus-rock');pickups.push({id:pickups.length,x:x+46,y:p.y-108,type:powers[Math.floor(r()*powers.length)],used:false});}
+  if(i>1&&p.w>105&&i%2===0&&p.x<ARENA-260){const x=p.x+p.w/2;enemies.push({id:enemies.length,type:Math.floor(r()*6),x,y:p.y,surfaceY:p.y,patrol:Math.max(12,p.w/2-30),hp:DIFFICULTIES[difficulty].enemyHP,origin:x,phase:r()*6,stolen:0,cooldown:75+Math.floor(r()*90)});}
+ }
+ for(const x of difficulty==='hard'?[]:camps)pickups.push({id:pickups.length,x:x+60,y:FLOOR-35,type:'heal',used:false});
+ add(ARENA+60,320,180,'rock');add(ARENA+810,320,180,'rock');
+ return {routeVersion:5,platforms,pits,coins,pickups,enemies,camps,currents:[[1200,1800],[2850,3400],[4700,5300]]};
+}
+
+// Expedition total: 10 remaining loot points per coin; solo earns half.
+// Only the server credits a verified victory. Partner settlement splits this
+// total between accounts, so the shared wallet never receives it twice.
 export function rewardFor(state){
   if(state.status!=='victory')return 0;
-  const units=DIFFICULTIES[state.difficulty].rewardUnits+Math.min(5,Math.floor(state.gold/40));
-  return state.mode==='partner'?units*2:units;
+  return Math.floor(Math.max(0,Number(state.gold)||0)/(state.mode==='partner'?10:20));
 }

@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'quiz_reactions.dart';
 
 /// Local practice only. No wallet, reward or authenticated mutation is exposed.
 class DuoTraining {
@@ -10,6 +11,7 @@ class DuoTraining {
   double time = 0, x = .5, y = .5, vx = .28, vy = .48, bot = .5;
   double target = .5, reaction = 0, deadline = 1;
   int scoreA = 0, scoreB = 0, winsA = 0, winsB = 0, question = 0;
+  int streakA = 0, streakB = 0;
   int? self, guess, botSelf, botGuess;
   bool finished = false;
   String phase = 'countdown';
@@ -17,6 +19,11 @@ class DuoTraining {
   double wideA = 0, wideB = 0, powerClock = 0, powerX = .5;
   bool shieldA = false, shieldB = false;
   int powerNumber = 0, powerKind = 0, lastHit = -1;
+  double tempoRemaining = 0;
+  int tempoKind = 0;
+  double get tempoRate => tempoRemaining > 0 ? (tempoKind == 3 ? 1.3 : .72) : 1;
+  static const double quizResponseSeconds = 20;
+  static const double quizRevealSeconds = 5, quizIntroSeconds = 2;
   static const questions = [
     [
       'Planes',
@@ -70,7 +77,7 @@ class DuoTraining {
     if (phase == 'self' && self == null) {
       self = choice;
       phase = 'guess';
-      deadline = time + 15;
+      deadline = time + quizResponseSeconds;
     } else if (phase == 'guess' && guess == null) {
       guess = choice;
       _reveal();
@@ -78,11 +85,15 @@ class DuoTraining {
   }
 
   void _reveal() {
-    if (guess == botSelf) scoreA++;
-    if (botGuess == self) scoreB++;
+    final a = guess != null && guess == botSelf,
+        b = self != null && botGuess == self;
+    if (a) scoreA++;
+    if (b) scoreB++;
+    streakA = nextQuizStreak(streakA, a);
+    streakB = nextQuizStreak(streakB, b);
     event = guess == botSelf ? 'score' : 'miss';
     phase = 'reveal';
-    deadline = time + 3;
+    deadline = time + quizRevealSeconds;
   }
 
   void step(double dt, double paddle) {
@@ -93,7 +104,7 @@ class DuoTraining {
     if (phase == 'countdown') {
       if (time >= deadline) {
         phase = game == 'pong' ? 'play' : 'self';
-        deadline = time + 15;
+        deadline = time + quizResponseSeconds;
       }
       return;
     }
@@ -101,7 +112,7 @@ class DuoTraining {
       if (time < deadline) return;
       if (phase == 'self') {
         phase = 'guess';
-        deadline = time + 15;
+        deadline = time + quizResponseSeconds;
       } else if (phase == 'guess') {
         _reveal();
       } else if (phase == 'reveal') {
@@ -111,18 +122,23 @@ class DuoTraining {
           return;
         }
         _newQuestion();
+        phase = 'question_intro';
+        deadline = time + quizIntroSeconds;
+      } else if (phase == 'question_intro') {
         phase = 'self';
-        deadline = time + 15;
+        deadline = time + quizResponseSeconds;
       }
       return;
     }
     reaction -= safe;
     powerClock += safe;
+    tempoRemaining = max(0, tempoRemaining - safe);
+    if (tempoRemaining == 0) tempoKind = 0;
     wideA = max(0, wideA - safe);
     wideB = max(0, wideB - safe);
     if ((powerClock / 8).floor() > powerNumber) {
       powerNumber = (powerClock / 8).floor();
-      powerKind = 1 + powerNumber % 2;
+      powerKind = 1 + powerNumber % 4;
       powerX = .5 + sin(powerNumber * 2.399) * .25;
     }
     if (powerClock - powerNumber * 8 > 5) powerKind = 0;
@@ -135,8 +151,8 @@ class DuoTraining {
     final delta = safe / steps;
     for (var i = 0; i < steps; i++) {
       final previous = y;
-      x += vx * delta;
-      y += vy * delta;
+      x += vx * delta * tempoRate;
+      y += vy * delta * tempoRate;
       if (x < .025) {
         x = .05 - x;
         vx = vx.abs();
@@ -174,12 +190,15 @@ class DuoTraining {
           } else {
             wideB = 6;
           }
-        } else {
+        } else if (powerKind == 2) {
           if (lastHit == 0) {
             shieldA = true;
           } else {
             shieldB = true;
           }
+        } else {
+          tempoKind = powerKind;
+          tempoRemaining = 4;
         }
         powerKind = 0;
         event = 'score';
@@ -239,6 +258,8 @@ class DuoTraining {
       'server_time': epoch,
       'state': {
         'phase': phase,
+        'streak_a': streakA,
+        'streak_b': streakB,
         'round': winsA + winsB + 1,
         'wins_a': winsA,
         'wins_b': winsB,
@@ -257,6 +278,9 @@ class DuoTraining {
         'shield_b': shieldB,
         'power_kind': powerKind,
         'power_x': powerX,
+        'tempo_kind': tempoKind,
+        'tempo_remaining': tempoRemaining,
+        'tempo_rate': tempoRate,
         'deadline': epoch + deadline - time,
         'my_choice': phase == 'self'
             ? self

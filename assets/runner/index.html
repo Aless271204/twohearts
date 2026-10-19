@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="es">
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
-<title>Corre en pareja · Bosque</title>
+<title>Senderos del Nido · Bosque</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#17392b;color:#fff;font:16px system-ui;overflow:hidden;touch-action:none}canvas{display:block;width:100%;height:100%}button{font:inherit;color:#fff;border:1px solid #ffffff55;background:#244d39;border-radius:18px;padding:14px 22px;cursor:pointer;touch-action:manipulation}button:focus-visible{outline:3px solid #f8d569}button:disabled{opacity:.5}#hud{position:fixed;top:14px;left:16px;right:16px;display:flex;align-items:center;justify-content:space-between;pointer-events:none;text-shadow:0 2px 5px #000}#pause{pointer-events:auto;padding:10px}#panel{position:fixed;inset:0;display:grid;place-items:center;background:#0b231c66}#card{width:min(420px,90vw);padding:28px;border-radius:26px;background:#17392bec;text-align:center;box-shadow:0 14px 70px #0006}h1{margin:0 0 12px;font-size:28px}p{line-height:1.5;color:#ddebd8}#start{background:#e5b947;color:#213323;font-weight:750}#controls{position:fixed;bottom:max(16px,env(safe-area-inset-bottom));left:16px;right:16px;display:flex;gap:12px;justify-content:center}#jump{min-width:140px;background:#d9aa36;color:#17392b;font-weight:750}[hidden]{display:none!important}#toast{position:fixed;top:70px;width:100%;text-align:center;color:#ffe38a;font-weight:800;pointer-events:none}
 </style>
@@ -13,7 +13,7 @@
 <div id="power-ups" aria-live="polite" hidden></div>
 <style>#power-ups{position:fixed;top:calc(max(12px,env(safe-area-inset-top)) + 46px);left:max(12px,env(safe-area-inset-left));right:12px;display:flex;gap:5px;flex-wrap:wrap;pointer-events:none}#power-ups span{font:600 11px system-ui;color:#fff;background:#17392be6;border:1px solid;border-radius:12px;padding:5px 7px}.pet-only #power-ups,.menu-open #power-ups{display:none!important}</style>
 <div id="toast"></div>
-<div id="panel"><div id="card"><h1 id="title">Corre en pareja</h1><p id="message">Preparando tu bosque…</p><button id="music" aria-label="Silenciar audio" style="margin-bottom:16px">Sonido: activado</button><div class="end-actions"><button id="exit">Salir</button><button id="start" disabled>Jugar</button></div><small style="display:block;margin-top:12px;opacity:.65">Aventura · Música expedición</small></div></div>
+<div id="panel"><div id="card"><h1 id="title">Senderos del Nido</h1><p id="message">Preparando tu bosque…</p><button id="music" aria-label="Silenciar audio" style="margin-bottom:16px">Sonido: activado</button><div class="end-actions"><button id="exit">Salir</button><button id="start" disabled>Jugar</button></div><small style="display:block;margin-top:12px;opacity:.65">Aventura · Música expedición</small></div></div>
 <div id="controls"><button id="left" aria-label="Mover a la izquierda">←</button><button id="jump">Saltar</button><button id="right" aria-label="Mover a la derecha">→</button></div>
 <style>.pet-only{background:transparent}.pet-only #hud,.pet-only #panel,.pet-only #controls,.pet-only #biome,.pet-only #toast{display:none}#progress{display:block;width:100%;height:5px;margin-top:6px;accent-color:#f6ce68}#goal{display:block;margin-top:4px;color:#ffe09a}#hud span,#biome,#controls button{backdrop-filter:none}</style>
 <div id="biome">🌿 1. BOSQUE<small><span id="difficulty">Ritmo 1/5</span> · Un bosque lleno de vida</small><span id="record">🏆 Récord: 0 m</span><span id="goal">Siguiente hito · 500 m</span><progress id="progress" value="0" max="500"></progress></div>
@@ -22,7 +22,7 @@
 <script>if(new URLSearchParams(location.search).get('pet')==='1')document.body.classList.add('pet-only');</script>
 <script type="importmap">{"imports":{"three":"./vendor/three.module.js","three/addons/":"./vendor/"}}</script>
 <script type="module" src="diagnostics.js"></script>
-<script type="module" src="game.js?revision=original-skin-1"></script>
+<script type="module" src="game.js?revision=room-gestures-5"></script>
 <style>
 #card{background:linear-gradient(145deg,#264e3df5,#102d25f2);border-radius:32px;padding:32px;box-shadow:0 24px 80px #071b1866;animation:arrive .28s ease-out}button{transition:transform .16s ease,background .2s ease,opacity .2s ease;box-shadow:0 5px 12px #071b1820}button:active{transform:scale(.95)}#toast:empty{opacity:0}#toast:not(:empty){width:auto;left:50%;transform:translateX(-50%);max-width:90vw;padding:12px 20px;border-radius:22px;background:#183d32e8;box-shadow:0 8px 24px #0003;animation:arrive .3s ease-out;font-size:14px}#start:disabled::before{content:'';display:inline-block;width:14px;height:14px;margin-right:10px;border:2px solid #28412a44;border-top-color:#28412a;border-radius:50%;animation:spin 1s linear infinite}#biome{border-radius:22px;padding:10px 18px}#progress{border-radius:9px;overflow:hidden}#message{min-height:48px}@keyframes arrive{from{opacity:0;translate:0 10px}to{opacity:1;translate:0 0}}@keyframes spin{to{rotate:360deg}}@media(prefers-reduced-motion:reduce){*,*::before{animation:none!important;transition:none!important}}
 </style><style>
@@ -38,3 +38,16 @@ body:has(#panel:not([hidden])) #controls,body:has(#panel:not([hidden])) #hud,.me
 </style><style>
 #panel{background:#fff9fa80}#card{background:linear-gradient(145deg,#fffdfdf5,#ffedf2f5);border:1px solid #f2d6df;box-shadow:0 18px 50px #9c506d20;color:#292633}#card h1,#card p,#card small,#card details{color:#292633}#card #music,#card #exit{background:#fff9fa;color:#292633;border-color:#edcbd7}#card #start{background:#f05280;color:#fff}#card #start:disabled::before{border-color:#ffffff66;border-top-color:#fff}
 </style></html>
+
+<style>
+body:not(.pet-only){color:#26384b}body:not(.pet-only) #card{background:#fff5e9f5;color:#28394b;border:1px solid #f4d4c2}body:not(.pet-only) h1{font-family:Georgia,serif}body:not(.pet-only) button{background:#fff2dc;color:#26394a;border:2px solid #fff8e8;font-weight:750;box-shadow:0 3px 0 #775e4933}body:not(.pet-only) #jump,body:not(.pet-only) #start{background:#ffd46b;color:#223f3e;border-color:#fff2b5}body:not(.pet-only) #left,body:not(.pet-only) #right,body:not(.pet-only) #pause{background:#ee796e;color:#fff;border-color:#ffc7af}body:not(.pet-only) #hud{color:#26394a;text-shadow:none}body:not(.pet-only) #hud span{background:#fff2dfea;color:#26394a}body:not(.pet-only) #biome{background:#fff4e5eb;color:#274139;text-shadow:none;border:1px solid #fff6dd}body:not(.pet-only) #biome small,body:not(.pet-only) #goal{color:#4f6252}
+</style>
+<div id="season-status"><span id="season-name">🌸 Primavera</span><small id="season-range">0–2 km</small></div>
+<a id="season-preview-link" href="season-review.html?revision=polish-3" hidden>Ver todas las estaciones</a>
+<style>
+#season-status{position:fixed;bottom:calc(74px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);display:flex;gap:8px;align-items:center;white-space:nowrap;border-radius:20px;background:#fff4e5ed;color:#274139;padding:8px 14px;font-size:12px;pointer-events:none;box-shadow:0 3px 12px #20392822}
+#season-name{font-weight:750}#season-range{font-size:11px;color:#52674f}
+.pet-only #season-status,.menu-open #season-status{display:none}
+#season-preview-link{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);z-index:6;border-radius:18px;padding:10px 16px;background:#fff4e5;color:#274139;font:600 13px system-ui;text-decoration:none}
+body:not(.menu-open) #season-preview-link{display:none}
+</style>

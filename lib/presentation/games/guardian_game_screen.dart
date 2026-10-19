@@ -6,7 +6,12 @@ import '../../services/audio_service.dart';
 import '../../services/shared_pet_service.dart';
 
 class GuardianGameScreen extends StatefulWidget {
-  const GuardianGameScreen({super.key});
+  final bool penalties, maze;
+  const GuardianGameScreen({
+    super.key,
+    this.penalties = false,
+    this.maze = false,
+  });
   @override
   State<GuardianGameScreen> createState() => _GuardianGameScreenState();
 }
@@ -33,7 +38,9 @@ class _GuardianGameScreenState extends State<GuardianGameScreen> {
     child: Scaffold(
       backgroundColor: const Color(0xFF173B39),
       body: ForestRunnerView(
-        guardian: true,
+        guardian: !widget.penalties && !widget.maze,
+        maze: widget.maze,
+        penalties: widget.penalties,
         petSpecies: SharedPetService.instance.species,
         onExit: () => Navigator.maybePop(context),
       ),

@@ -131,15 +131,39 @@ class _GameHubScreenState extends State<GameHubScreen> {
           _guardianAdventure(),
           const SizedBox(height: 16),
           _paintingGame(),
+          const SizedBox(height: 16),
+          _tile(
+            'Goles y abrazos',
+            5,
+            () => _open(const GuardianGameScreen(penalties: true)),
+            subtitle: 'Penales en pareja',
+          ),
+          const SizedBox(height: 16),
+          _tile(
+            'Farolitos del Nido',
+            6,
+            () => _open(const GuardianGameScreen(maze: true)),
+            subtitle: 'Laberinto de Halloween',
+          ),
           const SizedBox(height: 20),
           const Text(
             'Todos los juegos',
             style: TextStyle(fontSize: 19, fontWeight: FontWeight.w700),
           ),
           const SizedBox(height: 12),
-          _tile('Ping pong en pareja', 1, () => _choosePlayers('pong')),
+          _tile(
+            'Peloteo con amor',
+            1,
+            () => _choosePlayers('pong'),
+            subtitle: 'Ping pong · Regalos y potenciadores',
+          ),
           const SizedBox(height: 16),
-          _tile('¿Quién nos conoce mejor?', 2, () => _choosePlayers('quiz')),
+          _tile(
+            '¿Cuánto nos conocemos?',
+            2,
+            () => _choosePlayers('quiz'),
+            subtitle: '20 segundos para cada respuesta',
+          ),
           const SizedBox(height: 16),
           FilledButton.tonalIcon(
             onPressed: () => _open(const ShopScreen()),
@@ -153,7 +177,7 @@ class _GameHubScreenState extends State<GameHubScreen> {
               builder: (_) => const AlertDialog(
                 title: Text('Recompensas'),
                 content: Text(
-                  'En los juegos en pareja, quien gana recibe 20 LoveCoins y su pareja 8, hasta 300 al día. En el bosque, cada 20 puntos recogidos se convierten en 1 moneda al terminar una carrera validada.',
+                  'Correr: 50 puntos = 1 moneda al guardar la partida. Guardianes: 10 puntos de botín restante = 1 moneda al vencer al jefe; en solitario recibes la mitad. El premio de Guardianes se abona una sola vez y se comparte entre ambos jugadores. Superar un récord anterior da un 10 % extra, redondeado hacia arriba y dentro del límite diario. Correr: distancia; Guardianes: tiempo por dificultad y mapa; Farolitos: menos pasos; juegos competitivos y pintura: mejor racha de victorias (en pintura, por voto de ambos). El primer resultado fija el récord. En los otros juegos en pareja, quien gana recibe 20 monedas y su pareja 8, hasta 300 al día.',
                 ),
               ),
             ),
@@ -168,9 +192,18 @@ class _GameHubScreenState extends State<GameHubScreen> {
   );
   Widget _paintingGame() =>
       _tile('Pincel en pareja', 4, () => _open(const ArtGameScreen()));
-  Widget _guardianAdventure() =>
-      _tile('Guardianes del Alba', 3, () => _open(const GuardianGameScreen()));
-  Widget _tile(String title, int panel, VoidCallback action) => ClipRRect(
+  Widget _guardianAdventure() => _tile(
+    'Guardianes del Alba',
+    3,
+    () => _open(const GuardianGameScreen()),
+    subtitle: 'Bosque · Río de los Faroles',
+  );
+  Widget _tile(
+    String title,
+    int panel,
+    VoidCallback action, {
+    String? subtitle,
+  }) => ClipRRect(
     borderRadius: BorderRadius.circular(20),
     child: SizedBox(
       height: 292,
@@ -184,9 +217,9 @@ class _GameHubScreenState extends State<GameHubScreen> {
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: [
-                  Color(0x63000000),
+                  Color(0x9C000000),
                   Color(0x00000000),
-                  Color(0x53000000),
+                  Color(0x73000000),
                 ],
               ),
             ),
@@ -195,14 +228,38 @@ class _GameHubScreenState extends State<GameHubScreen> {
             left: 12,
             top: 12,
             right: 12,
-            child: Text(
-              title,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 21,
-                height: 1.2,
-                fontWeight: FontWeight.w700,
-              ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 21,
+                    height: 1.2,
+                    fontWeight: FontWeight.w700,
+                    shadows: [
+                      Shadow(
+                        color: Color(0x85000000),
+                        blurRadius: 8,
+                        offset: Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                ),
+                if (subtitle != null)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 4),
+                    child: Text(
+                      subtitle,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+              ],
             ),
           ),
           Positioned(
@@ -215,6 +272,10 @@ class _GameHubScreenState extends State<GameHubScreen> {
       ),
     ),
   );
-  Widget _featuredForest() =>
-      _tile('Corre con tu mascota', 0, () => _open(const PebbleRunnerTest()));
+  Widget _featuredForest() => _tile(
+    'Senderos del Nido',
+    0,
+    () => _open(const PebbleRunnerTest()),
+    subtitle: 'Corre entre las cuatro estaciones',
+  );
 }

@@ -8,11 +8,13 @@ import { LANES, jumpStep, crossesPlayer, hitsObstacle, collectsCoin } from './ph
 import { createRunnerEffects, createButterflies } from './tropical.js';
 import { createRunnerCoin } from './runner-coin.js';
 import { createBirds } from './forest-life.js';
-import { createLivingForest } from './living-forest.js';
+import { createLivingForest } from './living-forest.js?revision=polish-3';
 import { createBridgeBelt } from './loop-bridge.js';
 import {runnerRow,seedFromSession} from './patterns.js';
 import { runnerDifficulty } from './difficulty.js';
 import {createStorm,stormIntensity} from './storm.js';
+import {seasonAt} from './seasons.js';
+import {createShieldBubble} from './shield-bubble.js';
 import { AdventureMusic } from './music.js?v=expedition-2';
 import { limitTextureMemory } from './texture_budget.js';
 import {createWardrobeJump,createWardrobeRun} from './pet-wardrobe-jump.js?revision=ankles-dynamic-6';
@@ -23,6 +25,8 @@ import { measurePetSoles, createNaturalRest } from './pet-rest-pose.js';
 import { createPetMotion } from './pet-motion.js';
 import {keepJumpFacingForward} from './pet-jump-heading.js';
 const params=new URLSearchParams(location.search),petOnly=params.get('pet')==='1',petOrbit=params.get('orbit')==='1';
+const seasonPreviewLink=document.getElementById('season-preview-link');
+if(seasonPreviewLink)seasonPreviewLink.hidden=petOnly||window.top!==window||!!window.RunnerBridge||!['127.0.0.1','localhost','[::1]'].includes(location.hostname);
 // Opt-in local wardrobe trial. Published sessions retain their current motion.
 const wardrobeTrial=params.get('wardrobe_trial')==='1'&&params.has('appearance')&&!window.RunnerBridge;
 let useTailoredMotion=wardrobeTrial;
@@ -41,6 +45,7 @@ scene.background=null;scene.fog=new THREE.Fog('#a9d9db',55,110);
 const camera=new THREE.PerspectiveCamera(56,innerWidth/innerHeight,0.08,300);
 function frameCamera(){camera.aspect=innerWidth/innerHeight;camera.fov=THREE.MathUtils.radToDeg(2*Math.atan(Math.tan(THREE.MathUtils.degToRad(56)/2)*Math.max(1,.46/camera.aspect)));camera.updateProjectionMatrix();}frameCamera();
 const backdrop=petOnly?{load:async()=>{},update(){},setPaused(){},dispose(){}}:createLivingForest(scene),music=new AdventureMusic(),birds=createBirds(scene);
+const shieldBubble=createShieldBubble(scene);
 const effects=createRunnerEffects(scene),butterflies=createButterflies(scene);
 let visualTime=0,landingPulse=0,pickupStreak=0;
 let restSole=null,petMotion=null,petSuspended=false;
@@ -85,7 +90,7 @@ let bestDistance=0;
 let sessionId=null,frames=[],pendingInputs=[],pendingSave=null,runElapsed=0;
 let lane=1,x=0,height=0,velocity=0,distance=0,coins=0,row=0,untilRow=0,last=performance.now();
 let toastUntil=0,animationId=0,needsRender=true;
-let replayVersion=8,runSeed=0,powers=freshPowers();
+let replayVersion=10,runSeed=0,powers=freshPowers();
 const speed=()=>runnerDifficulty(distance,replayVersion).speed*(replayVersion>=6?speedMultiplier(powers):1);
 // Read-only diagnostics for the standalone preview; absent in the app WebView.
 if(window.parent===window&&!window.RunnerBridge)window.runnerPreview=Object.freeze({stats:()=>({distance,height,lane,running,paused,coins,powers:{...powers},replayVersion,drawCalls:renderer.info.render.calls,triangles:renderer.info.render.triangles,textures:renderer.info.memory.textures,sceneryTime:visualTime,videoTime:backdrop.video?.currentTime??0,videoPaused:backdrop.video?.paused??true,fps:Math.round(measuredFps),renderScale}),rig:()=>{const bones=[];penguin?.traverse(o=>{if(o.isBone&&/(Head|Neck|Spine2|Hips|LeftUpLeg|RightUpLeg|LeftLeg|RightLeg|LeftFoot|RightFoot|LeftToeBase|RightToeBase|LeftToe_End|RightToe_End)$/.test(o.name))bones.push({name:o.name,position:penguin.worldToLocal(o.getWorldPosition(new THREE.Vector3())).toArray()});});const box=penguin?new THREE.Box3().setFromObject(penguin.children[0],true):null;return {bones,bounds:box?{min:box.min.toArray(),max:box.max.toArray()}:null};},screen:()=>{if(!penguin)return null;const b=new THREE.Box3().setFromObject(penguin,true),points=[];for(const x of [b.min.x,b.max.x])for(const y of [b.min.y,b.max.y])for(const z of [b.min.z,b.max.z])points.push(new THREE.Vector3(x,y,z).project(camera).toArray());return {points,feet:penguin.position.y,rotation:penguin.rotation.y};},replay:()=>({frames:frames.map(frame=>[frame[0],[...frame[1]]]),replay_version:replayVersion})});
@@ -130,14 +135,17 @@ function updatePowerHud(){
  host.hidden=active.length===0;
 }
 function spawnRow() {
-  const {obstacleLane,kind,coinLane,alternateLane,coins:coinPlan}=runnerRow(row,distance,replayVersion>=8?8:replayVersion>=7?7:3,runSeed);
-  const model=kind==='collapse'?collapseTile():place(kind,[1.15,.85,.75],LANES[obstacleLane],-68,[]);model.position.set(LANES[obstacleLane],floorY,-68);
-  objects.push({model,kind:'obstacle',collapse:kind==='collapse',x:LANES[obstacleLane],z:-68});
+  const {obstacleLane,obstacleLanes=[obstacleLane],safeLane,kind,coinLane,alternateLane,coins:coinPlan}=runnerRow(row,distance,replayVersion>=10?10:replayVersion>=9?9:replayVersion>=8?8:replayVersion>=7?7:3,runSeed);
+  for(const lane of obstacleLanes){
+  const model=kind==='collapse'?collapseTile():kind==='tree'?fallingLog():place(kind,[1.15,.85,.75],LANES[lane],-68,[]);model.position.set(LANES[lane],floorY,-68);
+  objects.push({model,kind:'obstacle',collapse:kind==='collapse',tree:kind==='tree',x:LANES[lane],z:-68});}
   for(const coin of coinPlan??Array.from({length:5},(_,i)=>({lane:coinLane,z:-60-i*4,y:i===2?1.8:.7})))addCoin(coin.lane,coin.z,coin.y);
   addCoin(alternateLane,-68,.7);
-  const pickup=replayVersion>=6?powerForRow(row,distance,obstacleLane,replayVersion>=7?runSeed:null):null;if(pickup)addPower(pickup);row++;
+  const pickup=replayVersion>=6?powerForRow(row,distance,obstacleLane,replayVersion>=7?runSeed:null):null;if(pickup){if(replayVersion>=9)pickup.lane=safeLane;addPower(pickup);}row++;
 }
 const tileGeometry=new THREE.BoxGeometry(1.45,.16,.64),tileWood=new THREE.MeshLambertMaterial({color:'#c68f5f'}),holeMaterial=new THREE.MeshBasicMaterial({color:'#15212b'}),holeGeometry=new THREE.PlaneGeometry(1.52,3.3);
+const logGeometry=new THREE.CylinderGeometry(.25,.34,1.22,9),logBark=new THREE.MeshLambertMaterial({color:'#845934'}),logEnd=new THREE.MeshLambertMaterial({color:'#d8ad74'});
+function fallingLog(){let model=pool('tree').pop();if(!model){model=new THREE.Group();model.userData.poolKey='tree';const pivot=new THREE.Group();model.add(pivot);const log=new THREE.Mesh(logGeometry,[logBark,logEnd,logEnd]);log.rotation.z=Math.PI/2;log.position.y=.43;pivot.add(log);const twig=new THREE.Mesh(new THREE.CylinderGeometry(.045,.07,.42,6),logBark);twig.position.set(.3,.7,0);twig.rotation.z=-.4;pivot.add(twig);const warning=new THREE.Mesh(new THREE.PlaneGeometry(1.35,1.4),new THREE.MeshBasicMaterial({color:'#ffb865',transparent:true,opacity:.35,depthWrite:false}));warning.rotation.x=-Math.PI/2;warning.position.y=.025;model.add(warning);}scene.add(model);return model;}
 function collapseTile(){
  let model=pool('collapse').pop();
  if(!model){model=new THREE.Group();model.userData.poolKey='collapse';const hole=new THREE.Mesh(holeGeometry,holeMaterial);hole.rotation.x=-Math.PI/2;hole.position.y=.22;model.add(hole);for(let i=0;i<5;i++){const board=new THREE.Mesh(tileGeometry,tileWood);board.position.set(0,.32,(i-2)*.65);model.add(board);}}
@@ -148,7 +156,11 @@ let hudKey='',lastMilestone=0,frameSample=0,frameCount=0,measuredFps=60,lastHudT
 function hud(){
  const level=runnerDifficulty(distance,replayVersion).level,m=Math.floor(distance),key=`${level}|${m}|${coins}|${bestDistance}`;
  if(key===hudKey)return;hudKey=key;
- $('difficulty').textContent=`Ritmo ${level}`;$('coins').textContent=`♥ ${coins} pts`;$('distance').textContent=`${m} m`;
+ const season=seasonAt(distance);$('biome').firstChild.nodeValue=`${['🌸','☀','🍂','❄','⛈'][season.index]} ${season.label} `;$('difficulty').textContent=`Ritmo ${level}`;$('coins').textContent=`♥ ${coins} pts`;$('distance').textContent=`${m} m`;
+ const seasonLabel=season.index===4&&distance<10000?'🌧 Lluvia':`${['🌸','☀','🍂','❄','⛈'][season.index]} ${season.label}`;
+ if($('season-name').textContent!==seasonLabel)$('season-name').textContent=seasonLabel;
+ $('season-range').textContent=season.index<4?`${season.index*2}–${season.index*2+2} km`:distance<10000?'8–10 km':'10 km +';
+ document.body.dataset.season=season.id;
  $('goal').textContent=`Siguiente hito · ${(Math.floor(distance/500)+1)*500} m`;
  $('progress').value=distance%500;$('record').textContent=`🏆 Récord: ${bestDistance} m`;
  const step=Math.floor(distance/500);
@@ -162,7 +174,7 @@ function reset(){
   for(const item of objects)releaseObject(item);objects.length=0;
   lane=1;x=height=velocity=distance=coins=row=cameraX=0;untilRow=0;paused=false;running=true;
   frames=[];pendingInputs=[];pendingSave=null;runElapsed=0;checkpointIndex=1;checkpointElapsed=0;checkpointBusy=false;checkpointFailed=terminalAfterCheckpoint=false;
-  powers=freshPowers();powerHudKey='reset';updatePowerHud();effects.reset();landingPulse=pickupStreak=lastMilestone=0;hudKey='';backdrop.setPaused(false);
+  powers=freshPowers();powerHudKey='reset';updatePowerHud();effects.reset();shieldBubble.reset();landingPulse=pickupStreak=lastMilestone=0;hudKey='';backdrop.setPaused(false);
   $('toast').textContent='';panel.hidden=true;document.body.classList.remove('menu-open');pause.disabled=false;pause.textContent='Pausa';hud();
   music.start();
 }
@@ -177,7 +189,7 @@ start.onclick=async()=>{
   if(pendingSave){await saveRun();return;}
   if(paused){togglePause();return;}
   start.disabled=true;
-  try{const session=await requestHost('start');sessionId=session.session_id??null;replayVersion=session.guest?8:session.runner_version??session.powerup_version??5;runSeed=sessionId?seedFromSession(sessionId):crypto.getRandomValues(new Uint32Array(1))[0];bestDistance=session.best_distance??bestDistance;reset();}
+  try{const session=await requestHost('start');sessionId=session.session_id??null;replayVersion=session.guest?10:session.runner_version??session.powerup_version??5;runSeed=sessionId?seedFromSession(sessionId):crypto.getRandomValues(new Uint32Array(1))[0];bestDistance=session.best_distance??bestDistance;reset();}
   catch(error){showPanel('No pudimos iniciar la partida',error.message,'Volver a intentar');}
   finally{start.disabled=false;}
 };
@@ -196,7 +208,7 @@ async function saveRun(){
       return;
     }
     const awarded=result.coins_awarded??0;
-    showPanel('¡Partida guardada!',`Recorriste ${Math.floor(distance)} metros. Ganaste ${awarded} monedas para la tienda (20 puntos = 1 moneda). Récord: ${result.best_distance??Math.floor(distance)} m.`,'Continuar');
+    showPanel('¡Partida guardada!',`Recorriste ${Math.floor(distance)} metros. Ganaste ${awarded} monedas para la tienda (50 puntos = 1 moneda). Récord: ${result.best_distance??Math.floor(distance)} m.`,'Continuar');
   }catch(error){pendingSave=payload;checkpointFailed=payload.checkpoint===true;if(running){paused=true;music.pause();}showPanel('Tu partida está pendiente',error.message,'Reintentar guardado');}
   finally{start.disabled=false;}
 }
@@ -253,7 +265,7 @@ function frame(now){
     x+=(LANES[lane]-x)*(1-Math.exp(-dt*10));untilRow-=travel;if(untilRow<=0){spawnRow();untilRow+=runnerDifficulty(distance,replayVersion).spacing;}
     for(const model of paths)model.position.z=distance%12;
     for(let i=objects.length-1;i>=0;i--){
-      const item=objects[i],previous=item.z;item.z+=travel;item.model.position.z=item.z;if(item.collapse){const fall=Math.max(0,(item.z+12)/12);for(let j=1;j<item.model.children.length;j++){const board=item.model.children[j];board.position.y=.32-fall*fall*5;board.rotation.x=fall*(j%2?.5:-.5);board.visible=fall<.8;}}
+      const item=objects[i],previous=item.z;if(item.tree){const fall=Math.max(0,Math.min(1,(-item.z-18)/32));item.model.children[0].rotation.z=fall*.85;item.model.children[0].position.y=fall*.55;item.model.children[1].material.opacity=.22+Math.sin(visualTime*7)*.08;}item.z+=travel;item.model.position.z=item.z;if(item.collapse){const fall=Math.max(0,(item.z+12)/12);for(let j=1;j<item.model.children.length;j++){const board=item.model.children[j];board.position.y=.32-fall*fall*5;board.rotation.x=fall*(j%2?.5:-.5);board.visible=fall<.8;}}
       if(item.kind==='coin'){item.model.rotation.y+=dt*2.4;item.model.position.y=item.y+floorY+Math.sin(runElapsed*3+item.z*.2)*.055;}
       const attracted=item.kind==='coin'&&replayVersion>=6&&magnetCollects(powers,previous,item.z);
       if(crossesPlayer(previous,item.z)||attracted){
@@ -318,6 +330,7 @@ function frame(now){
   }else{
     camera.position.set(cameraX,2.35,5.8);camera.lookAt(cameraX,.95,-10);
   }
+  shieldBubble.update(paused?0:dt,!petOnly&&running&&powers.shield>0,x,floorY+height,growth);
   backdrop.update(paused?0:dt,camera.aspect,cameraX,distance);
   storm?.update(paused?0:dt,distance,cameraX);if(!petOnly)sun.intensity=2.5-stormIntensity(distance)*1.6;
   if(!paused){
@@ -380,7 +393,7 @@ async function boot(){
     if(!petOnly)boardwalk();
     penguin.traverse(o=>{if(o.isMesh)o.castShadow=true;});
     clearTimeout(window.runnerBootTimer);ready=true;start.disabled=false;
-    showPanel('Un paseo con tu mascota','Tu aventura comienza aquí.','Correr con tu mascota');
+    showPanel('Senderos del Nido','Tu aventura comienza aquí.','Correr con tu mascota');
     if(petOnly){document.body.classList.add('pet-only');scene.background=roomMode?new THREE.Color('#fff9fa'):null;scene.fog=null;renderer.setClearColor(0,0);for(const child of scene.children)if(child!==penguin&&child!==shadow&&child!==petRoom&&!child.isLight)child.visible=false;}
     last=performance.now();animationId=requestAnimationFrame(frame);
   }catch(error){
@@ -391,7 +404,7 @@ async function boot(){
 addEventListener('pagehide',()=>{
   sceneClosing=true;clearTimeout(window.runnerBootTimer);
   music.dispose();
-  backdrop.dispose();storm?.dispose();
+  backdrop.dispose();storm?.dispose();shieldBubble.dispose();
   cancelAnimationFrame(animationId);const geometries=new Set(),materials=new Set(),textures=new Set();
   scene.traverse(o=>{if(o.geometry)geometries.add(o.geometry);for(const m of(Array.isArray(o.material)?o.material:[o.material])){if(!m)continue;materials.add(m);for(const value of Object.values(m))if(value?.isTexture)textures.add(value);}});
   for(const g of geometries)g.dispose();for(const t of textures)t.dispose();for(const m of materials)m.dispose();renderer.dispose();renderer.forceContextLoss();

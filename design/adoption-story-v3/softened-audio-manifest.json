@@ -1,0 +1,34 @@
+[
+  {
+    "species": "penguin",
+    "path": "assets\\sounds\\adoption_baby_penguin_v3.mp3",
+    "pitch_ratio": 0.76,
+    "lowpass_hz": 1850,
+    "bytes": 12765,
+    "sha256": "14e438e8d00da5b44ca76fe3bd201a4d80f7670a2b8c5c57e771701a3043ce48"
+  },
+  {
+    "species": "bear",
+    "path": "assets\\sounds\\adoption_baby_bear_v3.mp3",
+    "pitch_ratio": 0.93,
+    "lowpass_hz": 2000,
+    "bytes": 12765,
+    "sha256": "91f35ec106111651a826ff8d6bc71e3c8050088c5f8680b7b511ebf75ccafe22"
+  },
+  {
+    "species": "pig",
+    "path": "assets\\sounds\\adoption_baby_pig_v3.mp3",
+    "pitch_ratio": 0.87,
+    "lowpass_hz": 1750,
+    "bytes": 12608,
+    "sha256": "7f6d36406b44806a9ced58ef2361b19d2c7e6f66753c13050c10847095cc0d8d"
+  },
+  {
+    "species": "chick",
+    "path": "assets\\sounds\\adoption_baby_chick_v3.mp3",
+    "pitch_ratio": 0.72,
+    "lowpass_hz": 1650,
+    "bytes": 12608,
+    "sha256": "b41519767cf2cfd2e16f24de828df3cdce7cf6c5fda1513c10b3d9224dcf307c"
+  }
+]

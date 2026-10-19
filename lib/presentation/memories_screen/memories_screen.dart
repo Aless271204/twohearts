@@ -354,6 +354,7 @@ class _AlbumJuntosTabState extends State<_AlbumJuntosTab> {
                       myName: widget.coupleData['myName'] as String,
                       partnerName: widget.coupleData['partnerName'] as String,
                       daysTogether: widget.daysTogether,
+                      startDate: widget.coupleData['startDate'] as DateTime?,
                       distanceKm: widget.coupleData['distanceKm'] as num?,
                       myCity: widget.coupleData['myCity'] as String,
                       partnerCity: widget.coupleData['partnerCity'] as String,

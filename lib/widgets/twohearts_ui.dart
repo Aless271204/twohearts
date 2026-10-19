@@ -180,7 +180,7 @@ class HeartNavigation extends StatelessWidget {
     (label: 'Tienda', icon: Icons.storefront_outlined),
     (label: 'Nido', icon: Icons.home_outlined),
     (label: 'Mascota', icon: Icons.pets_outlined),
-    (label: 'Actividades', icon: Icons.sports_esports_outlined),
+    (label: 'Juegos', icon: Icons.sports_esports_outlined),
   ];
   @override
   Widget build(BuildContext context) => Container(

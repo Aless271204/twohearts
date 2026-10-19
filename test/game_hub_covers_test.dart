@@ -12,7 +12,7 @@ import 'package:twohearts/theme/app_theme.dart';
 
 void main() {
   testWidgets(
-    'all five games have illustrated covers on a narrow mobile screen',
+    'all seven games have illustrated covers on a narrow mobile screen',
     (tester) async {
       SharedPreferences.setMockInitialValues({});
       GoogleFonts.config.allowRuntimeFetching = false;
@@ -20,6 +20,15 @@ void main() {
       tester.view.devicePixelRatio = 1;
       addTearDown(tester.view.resetPhysicalSize);
       addTearDown(tester.view.resetDevicePixelRatio);
+      await tester.runAsync(() async {
+        for (final font in const [
+          ('NidoSans', 'assets/fonts/DMSans[opsz,wght].ttf'),
+          ('NidoSerif', 'assets/fonts/PlayfairDisplay[wght].ttf'),
+        ]) {
+          final loader = FontLoader(font.$1)..addFont(File(font.$2).readAsBytes().then((bytes) => ByteData.sublistView(bytes)));
+          await loader.load();
+        }
+      });
       if (Platform.isWindows) {
         await tester.runAsync(() async {
           final loader = FontLoader('Roboto')
@@ -76,7 +85,7 @@ void main() {
           image.dispose();
         });
       }
-      for (var page = 0; page < 3; page++) {
+      for (var page = 0; page < 5; page++) {
         await tester.drag(find.byType(ListView), const Offset(0, -500));
         await tester.pump(const Duration(milliseconds: 500));
         for (final element in find.byType(AnimatedGameCover).evaluate()) {
@@ -84,8 +93,17 @@ void main() {
           seen.add(cover.panel);
           expect(tester.getSize(find.byWidget(cover)), const Size(350, 292));
         }
+        if (Platform.environment['NIDO_CAPTURE_ART'] == '1') {
+          await tester.runAsync(() async {
+            final render = key.currentContext!.findRenderObject()! as RenderRepaintBoundary;
+            final image = await render.toImage();
+            final bytes = await image.toByteData(format: ui.ImageByteFormat.png);
+            await File('outputs/art-catalog-review/game-hub-page-$page.png').writeAsBytes(bytes!.buffer.asUint8List());
+            image.dispose();
+          });
+        }
       }
-      expect(seen, {0, 1, 2, 3, 4});
+      expect(seen, {0, 1, 2, 3, 4, 5, 6});
       expect(tester.takeException(), isNull);
       if (Platform.environment['NIDO_CAPTURE_ART'] == '1') {
         await tester.runAsync(() async {

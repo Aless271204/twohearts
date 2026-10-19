@@ -50,11 +50,15 @@ class GameArt extends StatelessWidget {
   final int panel;
   const GameArt({super.key, required this.panel});
   @override
-  Widget build(BuildContext context) => panel >= 3
+  Widget build(BuildContext context) => panel == 0 || panel >= 3
       ? Image.asset(
-          panel == 3
-              ? 'assets/images/ui/guardian-game-cover.webp'
-              : 'assets/images/ui/art-game-cover.webp',
+          switch (panel) {
+            0 => 'assets/images/ui/runner-seasons-cover-v3.webp',
+            3 => 'assets/images/ui/guardian-river-cover-v3.webp',
+            5 => 'assets/images/ui/penalty-game-cover-v3.webp',
+            6 => 'assets/images/ui/maze-halloween-cover-v3.webp',
+            _ => 'assets/images/ui/art-game-cover.webp',
+          },
           fit: BoxFit.cover,
           width: double.infinity,
           height: double.infinity,

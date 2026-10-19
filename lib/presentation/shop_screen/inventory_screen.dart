@@ -533,7 +533,7 @@ class _ShopScreenState extends State<ShopScreen> {
       Text('Oro para su nido', style: Theme.of(context).textTheme.titleLarge),
       const SizedBox(height: 8),
       const Text(
-        'Cada 20 puntos del bosque se convierten en 1 moneda de la tienda.',
+        'Correr: 50 puntos = 1 moneda. Guardianes: 10 puntos de botín restante = 1 moneda en pareja; en solitario, la mitad. Superar un récord anterior da un 10 % extra dentro del límite diario.',
       ),
       const SizedBox(height: 12),
       RewardedGoldCard(previewMode: widget.previewMode),

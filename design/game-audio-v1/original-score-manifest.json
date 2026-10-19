@@ -1,0 +1,93 @@
+{
+  "provenance": "Original locally composed scores and synthesized foley, deterministic seed84319",
+  "files": [
+    {
+      "file": "assets\\sounds\\penalty_theme.mp3",
+      "bytes": 137969,
+      "seconds": 17.143,
+      "sha256": "9e510507ef269652d6b64a617b6c31e28481961c80a6cd3238958b591c53aa52",
+      "peak": 0.624,
+      "rms": 0.1704
+    },
+    {
+      "file": "assets\\sounds\\maze_theme.mp3",
+      "bytes": 188124,
+      "seconds": 23.415,
+      "sha256": "27bef82e578d307dcb10b252c688cffcf554a957ea51fd3c12884b3f9fcbc250",
+      "peak": 0.624,
+      "rms": 0.1355
+    },
+    {
+      "file": "assets\\sounds\\maze_step_0.mp3",
+      "bytes": 1323,
+      "seconds": 0.13,
+      "sha256": "91e6fe27610187d8cf0039508bdeb37e5d4882d17addd25626676857bad4f887",
+      "peak": 0.584,
+      "rms": 0.0936
+    },
+    {
+      "file": "assets\\sounds\\maze_step_1.mp3",
+      "bytes": 1323,
+      "seconds": 0.13,
+      "sha256": "c84cb92bb7804a68a46ade683dc1e53d775a6769427b50395a8745f1ea846dfb",
+      "peak": 0.583,
+      "rms": 0.0973
+    },
+    {
+      "file": "assets\\sounds\\maze_step_2.mp3",
+      "bytes": 1323,
+      "seconds": 0.13,
+      "sha256": "95af468a458ceae2e8f01197051075414f2bee2071267e0a8299cce2f17b5e00",
+      "peak": 0.566,
+      "rms": 0.0967
+    },
+    {
+      "file": "assets\\sounds\\maze_chest.mp3",
+      "bytes": 4144,
+      "seconds": 0.6,
+      "sha256": "8ab9ced230bbaaf0cd1e771d5b8697517b09057480f4633860d4905202e8c04c",
+      "peak": 0.456,
+      "rms": 0.0643
+    },
+    {
+      "file": "assets\\sounds\\maze_trap.mp3",
+      "bytes": 3987,
+      "seconds": 0.55,
+      "sha256": "8a5163090cc40078b7a561637225ce9a2c35c5ce50dfca8bb928198674c2a6c7",
+      "peak": 0.408,
+      "rms": 0.0648
+    },
+    {
+      "file": "assets\\sounds\\maze_disarm.mp3",
+      "bytes": 3987,
+      "seconds": 0.55,
+      "sha256": "be87d466013239047ee864cd5755e3d943a98c3d2ef8fcf160939beb5bafd00d",
+      "peak": 0.449,
+      "rms": 0.0663
+    },
+    {
+      "file": "assets\\sounds\\scene_click.mp3",
+      "bytes": 1166,
+      "seconds": 0.09,
+      "sha256": "24541a58ddce30bd688b844d328961a927c0bace6bae9cac8633cf99ff7978a9",
+      "peak": 0.24,
+      "rms": 0.045
+    },
+    {
+      "file": "assets\\sounds\\maze_light.mp3",
+      "bytes": 1636,
+      "seconds": 0.16,
+      "sha256": "93e003463132d30d03ee23a3230993e6081455426e5c55a8441a1a9c43e9c35b",
+      "peak": 0.344,
+      "rms": 0.0614
+    },
+    {
+      "file": "assets\\sounds\\maze_blocked.mp3",
+      "bytes": 1323,
+      "seconds": 0.12,
+      "sha256": "3ca205ed457bd7b850e6ba7a2a96ebabe1468c487c57cf34cbe61525d42e1495",
+      "peak": 0.362,
+      "rms": 0.0638
+    }
+  ]
+}

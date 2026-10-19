@@ -5,6 +5,30 @@ import {seedFromSession,runnerRow} from '../assets/runner/patterns.js';
 import {powerForRow} from '../assets/runner/power-ups.js';
 import {runnerDifficulty} from '../assets/runner/difficulty.js';
 import {replayChunk} from '../assets/runner/replay.js';
+
+test('v9 keeps accelerating after the storm while every kilometre shortens the trap interval',()=>{
+ let previous=runnerDifficulty(2000,9);
+ for(let km=3;km<=40;km++){
+  const next=runnerDifficulty(km*1000,9);
+  assert.ok(next.speed>previous.speed);assert.ok(next.spacing/next.speed<previous.spacing/previous.speed);
+  assert.ok(next.speed<44&&next.spacing/next.speed>=.72);previous=next;
+ }
+ assert.ok(Math.abs(runnerDifficulty(2000,9).speed-runnerDifficulty(1999.99,9).speed)<.001);
+ assert.equal(runnerDifficulty(10000,8).speed,24,'installed v8 remains unchanged');
+});
+test('late v9 layouts add double traps without ever blocking all lanes',()=>{
+ let doubles=0;
+ for(let seed=0;seed<30;seed++)for(let row=0;row<100;row++){
+  const p=runnerRow(row,12000,9,seed);assert.ok(!p.obstacleLanes.includes(p.safeLane));
+  assert.ok(p.obstacleLanes.length>=1&&p.obstacleLanes.length<=2);if(p.obstacleLanes.length===2)doubles++;
+  assert.deepEqual(p,runnerRow(row,12000,9,seed));
+ }
+ assert.ok(doubles>2000,'double traps become frequent in long runs');
+ const start={version:9,seed:31,distance:12000,elapsed:600,untilRow:0};
+ const frames=Array.from({length:60},()=>[16667,[]]);
+ const a=replayChunk(frames.slice(0,30),start,9);
+ assert.deepEqual(replayChunk(frames.slice(30),a.state,9),replayChunk(frames,start,9));
+});
 test('each server-issued session produces reproducible distinct coin and obstacle layouts',()=>{
  const signatures=new Set();
  for(let id=0;id<16;id++){

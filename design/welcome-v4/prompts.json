@@ -1,0 +1,27 @@
+[
+  {
+    "frame": 0,
+    "prompt": "Edit the provided NIDO welcome illustration. Change ONLY the wording at the top: replace 'Bienvenidos al mundo de Nido' with exactly 'Bienvenidos a Nido'. 'Bienvenidos' in the same elegant warm-dark-brown serif, a small 'a', and 'Nido' larger in the same coral serif. Remove the words 'al mundo de' completely. Preserve the four adorable baby mascots, unmistakable stork, cozy nest room, flowers, lighting, palette, layout and quality exactly. Highly readable typography on ivory. No other text or changes.",
+    "tool": "Built-in image_gen"
+  },
+  {
+    "frame": 1,
+    "prompt": "Use case: illustration-story. Create ONE portrait 2:3 premium adorable animated 3D illustration for NIDO mobile app welcome carousel. Match the warm tactile fur, large expressive black eyes, tiny rosy cheeks, coral/cream/sage palette, natural golden light and extremely sweet rounded animal character style of the reference. Animal mascots only: tiny black-white penguin, warm brown bear, pink pig, yellow chick, in cute anthropomorphic poses. ONE full scene, no collage. No stork, no UI buttons, no watermark. Reserve upper 25% pale ivory space and render the EXACT indicated Spanish title in large elegant readable dark brown and coral serif typography. Subject and props in lower 75%, clearly readable at phone size. Text (verbatim): \"Tu espacio para compartir\". Scene: A cuddly brown bear and pink pig sitting together at a rounded wooden table in their sunny cozy nest room, joyfully exchanging a small envelope with a heart seal, an open photo album with tiny illustrated holiday memories on the table, gentle loving smiles, a little plant and cream curtains, intimate composition.",
+    "tool": "Built-in image_gen"
+  },
+  {
+    "frame": 2,
+    "prompt": "Use case: illustration-story. Create ONE portrait 2:3 premium adorable animated 3D illustration for NIDO mobile app welcome carousel. Match the warm tactile fur, large expressive black eyes, tiny rosy cheeks, coral/cream/sage palette, natural golden light and extremely sweet rounded animal character style of the reference. Animal mascots only: tiny black-white penguin, warm brown bear, pink pig, yellow chick, in cute anthropomorphic poses. ONE full scene, no collage. No stork, no UI buttons, no watermark. Reserve upper 25% pale ivory space and render the EXACT indicated Spanish title in large elegant readable dark brown and coral serif typography. Subject and props in lower 75%, clearly readable at phone size. Text (verbatim): \"Divertirte y amar\". Scene: A cuddly tiny penguin in cream heart T-shirt and yellow chick in coral scarf laughing together while playing a friendly tabletop game, miniature colorful game pieces and gold stars floating subtly, soft pastel cushions, warm delightful garden nook, affectionate companionship, joyful lively poses.",
+    "tool": "Built-in image_gen"
+  },
+  {
+    "frame": 3,
+    "prompt": "Use case: illustration-story. Create ONE portrait 2:3 premium adorable animated 3D illustration for NIDO mobile app welcome carousel. Match the warm tactile fur, large expressive black eyes, tiny rosy cheeks, coral/cream/sage palette, natural golden light and extremely sweet rounded animal character style of the reference. Animal mascots only: tiny black-white penguin, warm brown bear, pink pig, yellow chick, in cute anthropomorphic poses. ONE full scene, no collage. No stork, no UI buttons, no watermark. Reserve upper 25% pale ivory space and render the EXACT indicated Spanish title in large elegant readable dark brown and coral serif typography. Subject and props in lower 75%, clearly readable at phone size. Text (verbatim): \"Tu lugar seguro y personal\". Scene: A cuddly brown bear and tiny penguin resting together under a thick knitted cream blanket on a sage sofa, bear gently comforting penguin, tiny heart cushion, softly glowing lamp, cozy nest room window at sunset, little books and plants, feeling safe and cared for, calm tender mood.",
+    "tool": "Built-in image_gen"
+  },
+  {
+    "frame": 4,
+    "prompt": "Use case: illustration-story. Create ONE portrait 2:3 premium adorable animated 3D illustration for NIDO mobile app welcome carousel. Match the warm tactile fur, large expressive black eyes, tiny rosy cheeks, coral/cream/sage palette, natural golden light and extremely sweet rounded animal character style of the reference. Animal mascots only: tiny black-white penguin, warm brown bear, pink pig, yellow chick, in cute anthropomorphic poses. ONE full scene, no collage. No stork, no UI buttons, no watermark. Reserve upper 25% pale ivory space and render the EXACT indicated Spanish title in large elegant readable dark brown and coral serif typography. Subject and props in lower 75%, clearly readable at phone size. Text (verbatim): \"Comparte tu Nido\ncon quien más quieres\". Scene: All four adorable mascots penguin bear pig chick huddled happily together in the welcoming round doorway of their warm wooden nest home, each with two little feet, gentle hugs and waving invitation toward viewer, coral heart wreath above door, flowering leafy plants, warm golden afternoon light, friendship love and home, adults with baby-cute proportions.",
+    "tool": "Built-in image_gen"
+  }
+]

@@ -1,5 +1,5 @@
 import {createGame,stepGame} from '../assets/runner/guardian/engine.js';import {INPUT,ARENA,RUNE_X} from '../assets/runner/guardian/config.js';
-export function driveExpedition(seed=17,difficulty='easy',mode='solo',species=['penguin','bear']){const s=createGame(seed,difficulty,mode,species);
+export function driveExpedition(seed=17,difficulty='easy',mode='solo',species=['penguin','bear'],chapter='forest'){const s=createGame(seed,difficulty,mode,species,chapter);
 const jumps=[0,0],previous=[0,0],seq=[0,0],events=[],refs=[],packets=[[],[]];
 while(s.status==='playing'){
  const masks=s.players.map((p,i)=>{

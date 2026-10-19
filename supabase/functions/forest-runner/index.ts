@@ -22,10 +22,10 @@ Deno.serve(async req=>{
     if(!user.id)return reply({error:'Invalid user'},401);
     const raw=await req.text();if(raw.length>4000000)return reply({error:'Replay is too large'},413);
     const body=JSON.parse(raw);
-    if(body.action==='start')return reply({...await rpc('runner_start_session',{p_user_id:user.id}),powerup_version:6,runner_version:body.runner_version===8?8:7});
+    if(body.action==='start')return reply({...await rpc('runner_start_session',{p_user_id:user.id}),powerup_version:6,runner_version:body.runner_version===10?10:body.runner_version===9?9:body.runner_version===8?8:7});
     if(body.action==='finish'||body.action==='checkpoint'){
       if(typeof body.session_id!=='string'||! /^[0-9a-f-]{36}$/i.test(body.session_id))return reply({error:'Invalid run'},400);
-      if([4,5,6,7,8].includes(body.replay_version)){
+      if([4,5,6,7,8,9,10].includes(body.replay_version)){
         if(!Number.isInteger(body.checkpoint_index)||body.checkpoint_index<1)return reply({error:'Invalid checkpoint'},400);
         const response=await fetch(`${url}/rest/v1/runner_sessions?id=eq.${body.session_id}&user_id=eq.${user.id}&select=status,checkpoint_state,checkpoint_index,checkpoint_result`,{headers:{apikey:serviceKey,Authorization:`Bearer ${serviceKey}`}});
         if(!response.ok)throw Error('Checkpoint unavailable');

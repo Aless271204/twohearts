@@ -17,7 +17,7 @@ Deno.serve(async req=>{
   validateInputRefs(context,body.events,body.refs);const hash=await transcriptHash(body.room,body.frames,body.events,body.refs);
   if(r.status!=='finished'){const elapsed=(Date.now()-Date.parse(r.started_at))/1000;if(elapsed+3<body.frames/60||elapsed>900)throw Error('Invalid elapsed time');}
   if(r.mode==='partner'&&r.confirmed_hash!==hash)throw Error('Partner has not confirmed this run');
-  const validate=r.engine_version===3?replay:replayV2;const result=validate(Number(r.seed),r.difficulty,r.mode,body.events,body.frames,[r.host_species,r.guest_species]);if(result.state.status!=='victory')throw Error('Not a completed victory');
+  const validate=r.engine_version>=3?replay:replayV2;const result=validate(Number(r.seed),r.difficulty,r.mode,body.events,body.frames,[r.host_species,r.guest_species],[4,5,7].includes(r.engine_version)?'river':'forest',r.engine_version<5?'legacy':'stones',r.engine_version>=6?'aerial':'legacy');if(result.state.status!=='victory')throw Error('Not a completed victory');
   return reply(await rpc('guardian_settle',{p_id:body.room,p_user_id:user.id,p_hash:hash,p_reward:result.reward,p_frames:body.frames}));
  }catch(error){console.warn('Guardian validation rejected',error instanceof Error?error.message:'Invalid run');return reply({error:'No pudimos validar la partida. Espera a tu pareja y vuelve a guardar.'},400);}
 });

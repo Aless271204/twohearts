@@ -13,6 +13,8 @@ class ForestRunnerView extends StatefulWidget {
   final bool petOnly;
   final bool room;
   final bool guardian;
+  final bool penalties;
+  final bool maze;
   final bool adoption, arrival;
   final int petReaction;
   final String petSpecies;
@@ -27,6 +29,8 @@ class ForestRunnerView extends StatefulWidget {
     this.petOnly = false,
     this.room = false,
     this.guardian = false,
+    this.penalties = false,
+    this.maze = false,
     this.adoption = false,
     this.arrival = false,
     this.petReaction = 0,
@@ -56,7 +60,11 @@ class _ForestRunnerViewState extends State<ForestRunnerView>
     _frame = web.HTMLIFrameElement()
       ..src = Uri.parse(web.document.baseURI)
           .resolve(
-            widget.adoption
+            widget.maze
+                ? 'assets/assets/runner/maze/index.html'
+                : widget.penalties
+                ? 'assets/assets/runner/penalties/index.html'
+                : widget.adoption
                 ? 'assets/assets/runner/adoption.html'
                 : widget.guardian
                 ? 'assets/assets/runner/guardian/index.html'

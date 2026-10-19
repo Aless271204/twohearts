@@ -26,7 +26,7 @@ export class GuardianAudio{
   for(const e of s.events){if(e.id<=this.lastEvent)continue;this.lastEvent=e.id;this.effect(e.type);}
  }
  effect(type){if(!this.ctx||this.ctx.state!=='running')return;const t=this.ctx.currentTime;
-  const notes={coin:[86,93],pickup:[76,81,88],jump:[62,69],dash:[74,67],pulse:[81,86],hit:[62],hurt:[40,35],shield:[88,81],warning:[46,46,53],impact:[29,34],roll:[38,41,45],link:[74,78,81,86],upgrade:[69,74,78,81],rescue:[74,81,86],victory:[74,78,81,86],defeat:[62,58,50],blocked:[43],theft:[76,64]};
+  const notes={aerial_warning:[62,69],water_warning:[74,77],coin:[86,93],pickup:[76,81,88],jump:[62,69],dash:[74,67],pulse:[81,86],hit:[62],hurt:[40,35],shield:[88,81],warning:[46,46,53],impact:[29,34],roll:[38,41,45],link:[74,78,81,86],upgrade:[69,74,78,81],rescue:[74,81,86],victory:[74,78,81,86],defeat:[62,58,50],blocked:[43],theft:[76,64]};
   for(const [i,n] of (notes[type]??[]).entries())this.tone(n,t+i*.075,type==='impact'?.25:.13,.3,type==='hurt'?'sawtooth':'triangle',this.fx);
   if(type==='warning'){this.music.gain.cancelScheduledValues(t);this.music.gain.setTargetAtTime(this.musicVolume*.22,t,.03);this.music.gain.setTargetAtTime(this.musicVolume*.65,t+.35,.12);}
  }

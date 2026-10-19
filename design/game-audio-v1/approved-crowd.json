@@ -1,0 +1,15 @@
+{
+  "approved": true,
+  "files": [
+    {
+      "kind": "goal",
+      "bytes": 48944,
+      "task": "75609340-1c48-445a-a30b-1c9dcd78c3cd"
+    },
+    {
+      "kind": "miss",
+      "bytes": 48944,
+      "task": "27aa84c6-86d3-40dd-bc22-ec92aead19b7"
+    }
+  ]
+}

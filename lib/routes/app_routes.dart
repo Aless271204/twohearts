@@ -13,10 +13,13 @@ import '../presentation/pairing_screen/pairing_screen.dart';
 import '../presentation/profile_screen/profile_screen.dart';
 import '../widgets/app_scaffold.dart';
 import '../services/scene_audio_policy.dart';
+import '../services/login_welcome_session.dart';
+import '../presentation/sign_up_login_screen/nido_welcome_screen.dart';
 
 class AppRoutes {
   static const String initial = '/';
   static const String signUpLogin = '/sign-up-login-screen';
+  static const String welcomeScreen = '/welcome-screen';
   static const String socialScreen = '/social-screen';
   static const String shopScreen = '/shop-screen';
   static const String homeScreen = '/home-screen';
@@ -36,6 +39,12 @@ final GoRouter appRouter = GoRouter(
         state.matchedLocation == AppRoutes.initial ||
         state.matchedLocation == AppRoutes.signUpLogin;
 
+    if (isLoggedIn && LoginWelcomeSession.instance.needsWelcome(session.user.id) &&
+        state.matchedLocation != AppRoutes.welcomeScreen) {
+      final next = isOnAuth ? AppRoutes.memoriesScreen : state.uri.toString();
+      return Uri(path: AppRoutes.welcomeScreen, queryParameters: {'next': next}).toString();
+    }
+
     if (isLoggedIn && isOnAuth) {
       // Memories is now the home/center tab
       return AppRoutes.memoriesScreen;
@@ -49,6 +58,21 @@ final GoRouter appRouter = GoRouter(
     Supabase.instance.client.auth.onAuthStateChange,
   ),
   routes: [
+    GoRoute(
+      path: AppRoutes.welcomeScreen,
+      builder: (context, state) => NidoWelcomeScreen(onFinished: () {
+        final user = Supabase.instance.client.auth.currentUser;
+        if (user == null) {context.go(AppRoutes.initial); return;}
+        LoginWelcomeSession.instance.complete(user.id);
+        final next = state.uri.queryParameters['next'];
+        const allowed = [AppRoutes.socialScreen, AppRoutes.shopScreen,
+          AppRoutes.memoriesScreen, AppRoutes.homeScreen, AppRoutes.activitiesScreen,
+          AppRoutes.profileScreen, AppRoutes.pairingScreen];
+        final target = next == null ? null : Uri.tryParse(next);
+        context.go(target != null && !target.hasScheme && !target.hasAuthority && allowed.contains(target.path)
+          ? target.toString() : AppRoutes.memoriesScreen);
+      }),
+    ),
     GoRoute(
       path: AppRoutes.initial,
       pageBuilder: (context, state) => CustomTransitionPage(
@@ -128,7 +152,7 @@ final GoRouter appRouter = GoRouter(
             ),
           ],
         ),
-        // Branch 4: Actividades
+        // Branch 4: Juegos (keeps the existing route for saved links)
         StatefulShellBranch(
           routes: [
             GoRoute(
@@ -187,7 +211,10 @@ final GoRouter appRouter = GoRouter(
 class GoRouterRefreshStream extends ChangeNotifier {
   GoRouterRefreshStream(Stream<AuthState> stream) {
     notifyListeners();
-    _subscription = stream.listen((_) => notifyListeners());
+    _subscription = stream.listen((state) {
+      if (state.event == AuthChangeEvent.signedOut) LoginWelcomeSession.instance.reset();
+      notifyListeners();
+    });
   }
 
   late final StreamSubscription<AuthState> _subscription;

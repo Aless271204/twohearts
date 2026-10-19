@@ -20,3 +20,5 @@
 .overlay{align-items:flex-start}.overlay .panel{margin:auto}#result.defeat .panel{margin:0}
 
 #controls[data-layout=split] .actions button{height:48px;min-height:48px;padding:4px}
+
+#wardGuide{position:absolute;top:100px;left:50%;transform:translateX(-50%);max-width:75%;padding:8px 16px;border-radius:16px;background:#fff3d9ee;color:#393b46;text-align:center;pointer-events:none;box-shadow:0 3px 16px #132c3926}#wardGuide b,#wardGuide span{display:block}#wardGuide span{font-size:12px;margin-top:3px}@media(max-height:460px){#wardGuide{top:75px;padding:5px 10px;font-size:13px}}

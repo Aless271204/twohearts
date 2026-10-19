@@ -9,7 +9,9 @@ import {prepareHeadwearOcclusion} from './pet-headwear-occlusion.js?revision=ear
 import {createClothWrap} from './pet-cloth-wrap.js?revision=3';
 import {createFootwearAnchors} from './pet-footwear-anchors.js?revision=paw-contact-3';
 
-export {createAccessory} from './accessory-pieces.js?revision=wardrobe-colors-2';
+// Export the same stateful registry used by equipRunnerCosmetics. Importing a
+// second revision creates another ESM instance with an empty accessory cache.
+export {createAccessory,prepareAccessoryAssets,registerAccessoryAsset,releaseAccessoryAssets,disposeAccessory} from './accessory-pieces.js?revision=wardrobe-colors-2';
 
 export function measureAccessoryFit(model) {
   model.updateMatrixWorld(true);

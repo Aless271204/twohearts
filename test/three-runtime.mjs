@@ -1,16 +1,20 @@
 import {readFileSync} from 'node:fs';
 const modules=new Map();
-export function runtimeUrl(path) {
+export function runtimeUrl(path,{preserveModuleIdentity=false}={}) {
   const url=new URL(path,import.meta.url);
-  if(modules.has(url.href))return modules.get(url.href);
+  const key=(preserveModuleIdentity?'browser:':'geometry:')+url.href;
+  if(modules.has(key))return modules.get(key);
   let source=readFileSync(url,'utf8');
   source=source.replace(/((?:^|\n)(?:import|export)\s+(?:\{[^}]*\}|\*[^;]*?|\w+)\s+from\s+)(['"])([^'"]+)\2/g,(text,prefix,quote,specifier)=>{
     const target=specifier==='three'?new URL('../assets/runner/vendor/three.module.js',import.meta.url).href:
-      specifier.startsWith('three/addons/')?runtimeUrl('../assets/runner/vendor/'+specifier.slice(13)):
-      specifier.startsWith('.')?runtimeUrl(new URL(specifier,url).href):specifier;
+      specifier.startsWith('three/addons/')?runtimeUrl('../assets/runner/vendor/'+specifier.slice(13),{preserveModuleIdentity}):
+      specifier.startsWith('.')?runtimeUrl(new URL(specifier,url).href,{preserveModuleIdentity}):specifier;
     return `${prefix}${JSON.stringify(target)}`;
   });
-  const result='data:text/javascript;base64,'+Buffer.from(source).toString('base64');modules.set(url.href,result);return result;
+  source=source.replaceAll('import.meta.url',JSON.stringify(url.href));
+  // Browsers distinguish module URLs including cache revisions. Keep that
+  // identity when testing state shared by a real application's import graph.
+  const result='data:text/javascript;base64,'+Buffer.from(source).toString('base64')+(preserveModuleIdentity?'#'+encodeURIComponent(url.href):'');modules.set(key,result);return result;
 }
 export async function loadPet(filename) {
   const bytes=readFileSync(new URL('../assets/runner/play-models/'+filename,import.meta.url));

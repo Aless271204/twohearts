@@ -1,0 +1,30 @@
+{
+  "provider": "Runway sound effects",
+  "credits": 8,
+  "files": [
+    {
+      "species": "penguin",
+      "task": "7a4249a8-8a82-450c-b939-0d901d6e9bde",
+      "bytes": 33061,
+      "prompt": "A tiny newborn penguin chick makes two very soft affectionate peeps and a little sleepy trilling coo, close gentle downy baby bird, warm innocent animated pet sound, rounded low volume, not shrill, no human baby, no speech, no music, no background. Short tender greeting, not distress."
+    },
+    {
+      "species": "bear",
+      "task": "a482f1d5-745a-42d9-9771-f73384113bf2",
+      "bytes": 33061,
+      "prompt": "A tiny sleepy bear cub makes two soft warm baby-cub whuffs and a gentle nosey coo, adorable rounded breathy animal vocalization, peaceful content baby greeting, no growling menace, no crying human, no speech, no music, no background, not squeaky or shrill."
+    },
+    {
+      "species": "pig",
+      "task": "3967e177-0d59-4592-83f4-172ce066c3f4",
+      "bytes": 33061,
+      "prompt": "An adorable little baby piglet gives two tiny soft oinks with a gentle sleepy snuffle, quiet tender affectionate greeting, warm rounded cartoon pet sound while still recognizably a piglet, not squealing, not distressed, no human baby, no words, no music, no background."
+    },
+    {
+      "species": "chick",
+      "task": "8afeeb67-8f51-4cac-9553-7aa4174c19dc",
+      "bytes": 33061,
+      "prompt": "A tiny newly hatched chick gives three soft delicate baby peep-peeps and a sleepy little chirrup, warm round sound at gentle volume, adorable close affectionate pet greeting, not piercing or shrill, no distress, no human baby, no speech, no music, no background."
+    }
+  ]
+}

@@ -12,15 +12,15 @@ function receive(m){if(typeof m==='string'){try{m=JSON.parse(m);}catch{return;}}
 globalThis.guardianBridgeResponse=receive;
 if(globalThis.addEventListener)globalThis.addEventListener('message',e=>{if(e.origin===location.origin&&e.source===parent)receive(e.data);});
 const wait=ms=>new Promise(r=>setTimeout(r,ms));
-export function packState(s,paused,ack){return {v:2,f:s.frame,status:s.status,stage:s.stage,gold:s.gold,upgrades:s.upgrades,checkpoint:s.checkpoint,players:s.players,boss:s.boss,en:s.level.enemies.map(e=>[e.id,e.x,e.y,e.hp]),co:s.level.coins.filter(c=>c.used).map(c=>c.id),pu:s.level.pickups.filter(c=>c.used).map(c=>c.id),shots:s.shots,hazards:s.hazards,events:s.events,eventSeq:s.eventSeq??0,sigils:s.sigils,paused,ack};}
-export function applyState(s,p){if(p?.v!==2||!Number.isInteger(p.f)||p.f<s.frame||!Array.isArray(p.players)||p.players.length!==2)return false;
+export function packState(s,paused,ack){return {v:2,combat:s.combat??'legacy',route:s.level.routeVersion??0,chapter:s.chapter??'forest',f:s.frame,status:s.status,stage:s.stage,gold:s.gold,upgrades:s.upgrades,checkpoint:s.checkpoint,players:s.players,boss:s.boss,en:s.level.enemies.map(e=>[e.id,e.x,e.y,e.hp]),co:s.level.coins.filter(c=>c.used).map(c=>c.id),pu:s.level.pickups.filter(c=>c.used).map(c=>c.id),shots:s.shots,hazards:s.hazards,events:s.events,eventSeq:s.eventSeq??0,sigils:s.sigils,paused,ack};}
+export function applyState(s,p){if((p?.combat??'legacy')!==(s.combat??'legacy')||(p?.route??0)!==(s.level.routeVersion??0)||(p?.chapter??'forest')!==(s.chapter??'forest')||p?.v!==2||!Number.isInteger(p.f)||p.f<s.frame||!Array.isArray(p.players)||p.players.length!==2)return false;
  for(const k of ['status','stage','gold','upgrades','checkpoint','players','boss','shots','hazards','events','eventSeq','sigils'])s[k]=p[k];s.frame=p.f;
  for(const [id,x,y,hp]of p.en){const e=s.level.enemies[id];if(e){e.x=x;e.y=y;e.hp=hp;}}
  const coins=new Set(p.co),pickups=new Set(p.pu);for(const c of s.level.coins)c.used=coins.has(c.id);for(const c of s.level.pickups)c.used=pickups.has(c.id);return true;
 }
 export class GuardianSession{
  constructor(info){this.info=info;this.role=info.role;this.id=info.id;this.ownSeq=0;this.lastMask=0;this.remoteSeq=0;this.remoteMask=0;this.remoteQueue=new Map();this.ownHistory=new Map();this.unacked=[];this.databaseQueue=[];this.flushing=null;this.lastPeer=performance.now();this.lastSnapshot=0;this.closed=false;this.chunks=new Map();this.ack=0;this.remotePaused=false;this.onPacket=()=>{};this.onPause=()=>{};this.onLeave=()=>{};this.peerReceipt=false;receiver=p=>this.receive(p);}
- static async create(mode,difficulty,species,code=null){const info=await request('room',{p_packets:{engine_version:3},p_action:mode==='solo'?'solo':code?'join':'create',p_difficulty:difficulty,p_species:species,...(code?{p_code:code}:{})});return new GuardianSession(info);}
+ static async create(mode,difficulty,species,code=null,chapter='forest'){const info=await request('room',{p_packets:{engine_version:7,chapter},p_action:mode==='solo'?'solo':code?'join':'create',p_difficulty:difficulty,p_species:species,...(code?{p_code:code}:{})});return new GuardianSession(info);}
  rpc(action,extra={}){return request('room',{p_action:action,p_id:this.id,...extra});}
  send(data){if(this.closed||this.info.mode==='solo')return Promise.resolve();return request('send',{data});}
  async connect(onStatus){
@@ -46,13 +46,13 @@ export class GuardianSession{
   for(let i=0;i<packet.total;i++){const c=this.chunks.get(i);if(!c||c.hash!==packet.hash||!Array.isArray(c.events)||c.events.length>200)throw Error('Repetición incompleta');events.push(...c.events);refs.push(...c.refs);}
   for(let i=0;i<events.length;i++)if(events[i][1]===1&&this.ownHistory.get(refs[i])!==events[i][2])throw Error('Las entradas de tu mascota no coinciden');
   const hash=await transcriptHash(this.id,packet.frames,events,refs);if(hash!==packet.hash)throw Error('La repetición no coincide');
-  const r=replay(Number(this.info.seed),this.info.difficulty,'partner',events,packet.frames,this.info.species);if(r.state.status!=='victory')throw Error('La victoria no coincide');
+  const r=replay(Number(this.info.seed),this.info.difficulty,'partner',events,packet.frames,this.info.species,[4,5,7].includes(this.info.engine_version)?'river':'forest',this.info.engine_version<5?'legacy':'stones',this.info.engine_version>=6?'aerial':'legacy');if(r.state.status!=='victory')throw Error('La victoria no coincide');
   await this.flush();await this.rpc('confirm',{p_packets:{hash}});this.peerReceipt=true;
  }
  snapshot(s,paused){return this.send({kind:'state',state:packState(s,paused,this.remoteSeq)});}
  async save(s,events,refs){
   await this.flush();
-  if(this.role===1){for(let i=0;i<60;i++){const info=await this.rpc('status');if(info.status==='finished')return {saved:true,reward:info.reward,prize:info.prize};if(info.status==='cancelled')throw Error('La partida se cerró sin guardar');if(this.confirmError)throw this.confirmError;await wait(750);}throw Error('Esperando la confirmación de la partida. Puedes volver a guardar.');}
+  if(this.role===1){for(let i=0;i<60;i++){const info=await this.rpc('status');if(info.status==='finished')return {saved:true,reward:info.reward,total_reward:info.total_reward,prize:info.prize};if(info.status==='cancelled')throw Error('La partida se cerró sin guardar');if(this.confirmError)throw this.confirmError;await wait(750);}throw Error('Esperando la confirmación de la partida. Puedes volver a guardar.');}
   const hash=await transcriptHash(this.id,s.frame,events,refs);
   if(this.info.mode==='partner'){
    const total=Math.max(1,Math.ceil(events.length/200));let confirmed=false;

@@ -1,0 +1,219 @@
+{
+  "tool": "Built-in image_gen",
+  "bird": "stork",
+  "frames": [
+    {
+      "species": "penguin",
+      "frame": 0,
+      "path": "assets\\images\\ui\\adoption-penguin-0-v3.webp",
+      "crop": [
+        0,
+        0,
+        627,
+        627
+      ],
+      "bytes": 72720,
+      "sha256": "24114fdf129a42d4834f1f86378dee9ab5a50a8201f742176f7897942d8f278d"
+    },
+    {
+      "species": "penguin",
+      "frame": 1,
+      "path": "assets\\images\\ui\\adoption-penguin-1-v3.webp",
+      "crop": [
+        627,
+        0,
+        1254,
+        627
+      ],
+      "bytes": 76644,
+      "sha256": "7c6b3f25381ece756cfd12441bebe10562f6d30a657e75969cefaa62d060c7a6"
+    },
+    {
+      "species": "penguin",
+      "frame": 2,
+      "path": "assets\\images\\ui\\adoption-penguin-2-v3.webp",
+      "crop": [
+        0,
+        627,
+        627,
+        1254
+      ],
+      "bytes": 68270,
+      "sha256": "ec9232828e8dfb4994e74967acc19f480cfd645d9bf309ae6e2442e4b458a53e"
+    },
+    {
+      "species": "penguin",
+      "frame": 3,
+      "path": "assets\\images\\ui\\adoption-penguin-3-v3.webp",
+      "crop": [
+        627,
+        627,
+        1254,
+        1254
+      ],
+      "bytes": 70530,
+      "sha256": "38d7ad7d6789fbec26fc7551e66db6affd643393cbff6171b544fa93b1e171a4"
+    },
+    {
+      "species": "bear",
+      "frame": 0,
+      "path": "assets\\images\\ui\\adoption-bear-0-v3.webp",
+      "crop": [
+        0,
+        0,
+        627,
+        627
+      ],
+      "bytes": 74226,
+      "sha256": "040156057bc5ddb9a2a7725c87540a57dc54109ae2f6f1977fe4e46f0900f7dc"
+    },
+    {
+      "species": "bear",
+      "frame": 1,
+      "path": "assets\\images\\ui\\adoption-bear-1-v3.webp",
+      "crop": [
+        627,
+        0,
+        1254,
+        627
+      ],
+      "bytes": 77816,
+      "sha256": "0621e261a269a31d1494d151d0913530f2295fb89920cce9460c19990d99de89"
+    },
+    {
+      "species": "bear",
+      "frame": 2,
+      "path": "assets\\images\\ui\\adoption-bear-2-v3.webp",
+      "crop": [
+        0,
+        627,
+        627,
+        1254
+      ],
+      "bytes": 74652,
+      "sha256": "6c0674fd9e15f202fd2684210a9a0c27dd6429aa9cff938654f0f9bde2eb1438"
+    },
+    {
+      "species": "bear",
+      "frame": 3,
+      "path": "assets\\images\\ui\\adoption-bear-3-v3.webp",
+      "crop": [
+        627,
+        627,
+        1254,
+        1254
+      ],
+      "bytes": 73104,
+      "sha256": "d1b6388ec75f786e72d4e57883b120979623636c7bb5b9c28bfa1d52d63b474d"
+    },
+    {
+      "species": "pig",
+      "frame": 0,
+      "path": "assets\\images\\ui\\adoption-pig-0-v3.webp",
+      "crop": [
+        0,
+        0,
+        627,
+        627
+      ],
+      "bytes": 72782,
+      "sha256": "4a68a256f109e75d8d9b93f570db9f399db8a340e802685c5bbf372333c3690c"
+    },
+    {
+      "species": "pig",
+      "frame": 1,
+      "path": "assets\\images\\ui\\adoption-pig-1-v3.webp",
+      "crop": [
+        627,
+        0,
+        1254,
+        627
+      ],
+      "bytes": 78390,
+      "sha256": "548dd3e449ecc9dde03b10055e090111abdd357de0dee178788113326215f1f9"
+    },
+    {
+      "species": "pig",
+      "frame": 2,
+      "path": "assets\\images\\ui\\adoption-pig-2-v3.webp",
+      "crop": [
+        0,
+        627,
+        627,
+        1254
+      ],
+      "bytes": 71258,
+      "sha256": "d1eeb2494034e814580e5b03d3ea6ae00efbeb8bc842858435149de8531f24c1"
+    },
+    {
+      "species": "pig",
+      "frame": 3,
+      "path": "assets\\images\\ui\\adoption-pig-3-v3.webp",
+      "crop": [
+        627,
+        627,
+        1254,
+        1254
+      ],
+      "bytes": 70468,
+      "sha256": "6e7cdc7576753df6176107a51f05883d651e463bab75d1955bc79493d00fa60c"
+    },
+    {
+      "species": "chick",
+      "frame": 0,
+      "path": "assets\\images\\ui\\adoption-chick-0-v3.webp",
+      "crop": [
+        0,
+        0,
+        627,
+        627
+      ],
+      "bytes": 74802,
+      "sha256": "51c6996b2e635d69cab05c537deb562c7b13659fb76ee92c95c5414d8da59146"
+    },
+    {
+      "species": "chick",
+      "frame": 1,
+      "path": "assets\\images\\ui\\adoption-chick-1-v3.webp",
+      "crop": [
+        627,
+        0,
+        1254,
+        627
+      ],
+      "bytes": 77864,
+      "sha256": "8c89e529e4758f652fd2ed4fb29381c93a06f2940a3308b09dae383d3591226c"
+    },
+    {
+      "species": "chick",
+      "frame": 2,
+      "path": "assets\\images\\ui\\adoption-chick-2-v3.webp",
+      "crop": [
+        0,
+        627,
+        627,
+        1254
+      ],
+      "bytes": 69252,
+      "sha256": "4f04137ae8c24c2357bf1782cd1b08b1e13c2b38013bb6968f22114bfdcafa82"
+    },
+    {
+      "species": "chick",
+      "frame": 3,
+      "path": "assets\\images\\ui\\adoption-chick-3-v3.webp",
+      "crop": [
+        627,
+        627,
+        1254,
+        1254
+      ],
+      "bytes": 70788,
+      "sha256": "4777c7002551482a56bb19bc5afc5fec6a51bb99bd30b76162f59c6570b0d17e"
+    },
+    {
+      "path": "assets\\images\\ui\\adoption-welcome-v3.webp",
+      "bytes": 235596,
+      "sha256": "315dd13815a0f2599e8569b65a57e69594a4a2d53993ac892d99279ebbd71d41"
+    }
+  ]
+}

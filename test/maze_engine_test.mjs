@@ -1,0 +1,13 @@
+import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';import {createMaze,mazeAction,mazeReward,publicMaze} from '../assets/runner/maze/engine.js';
+function path(s,p,target){const q=[[p.x,p.z,[]]],seen=new Set([`${p.x},${p.z}`]);while(q.length){const [x,z,steps]=q.shift();if(x===target.x&&z===target.z)return steps;for(const [dx,dz]of [[1,0],[-1,0],[0,1],[0,-1]]){const a=x+dx,b=z+dz,k=`${a},${b}`;if(a<0||b<0||a>=s.size||b>=s.size||s.grid[b*s.size+a]||seen.has(k))continue;seen.add(k);q.push([a,b,[...steps,[dx,dz]]]);}}throw Error('Unreachable');}
+function go(s,side,target){for(const [dx,dz]of path(s,s.players[side],target)){const p=s.players[side],trap=s.traps.find(t=>!t.used&&t.x===p.x+dx&&t.z===p.z+dz);if(trap)s=mazeAction(s,side,{kind:'disarm',id:trap.id});s=mazeAction(s,side,{kind:'move',dx,dz});}return s;}
+test('all seeded difficulties have connected reachable keys/exit and can be completed with legal moves',()=>{
+ for(const difficulty of ['easy','medium','hard'])for(const mode of ['solo','partner'])for(let seed=1;seed<=12;seed++){
+  let s=createMaze(seed,difficulty,mode);assert.deepEqual(s,createMaze(seed,difficulty,mode));const hp=s.players[0].hp;
+  for(const c of s.chests.filter(c=>c.type==='key')){s=go(s,0,c);s=mazeAction(s,0,{kind:'open',id:c.id});}
+  assert.equal(s.keys,3);s=go(s,0,s.exit);if(mode==='partner')s=go(s,1,s.exit);assert.equal(s.status,'victory');assert.equal(s.players[0].hp,hp);assert.ok(mazeReward(s)>0);
+ }
+});
+test('walls, remote chest opening, hidden content and trap warnings protect game rules',()=>{let s=createMaze(82,'medium');const before=s.players[0];s=mazeAction(s,0,{kind:'move',dx:0,dz:-1});assert.equal(s.players[0].z,before.z);s=mazeAction(s,0,{kind:'open',id:0});assert.equal(s.keys,0);assert.ok(publicMaze(s).chests.every(c=>!('type' in c)));assert.equal(mazeReward(s),0);assert.throws(()=>mazeAction(s,0,{kind:'move',dx:1,dz:1}));assert.throws(()=>createMaze(1,'impossible'));});
+test('solo reward is half the partner per-player reward, including treasure',()=>{for(const difficulty of ['easy','medium','hard']){const s=createMaze(1,difficulty);s.status='victory';s.gold=10;assert.equal(mazeReward(s)*2,mazeReward({...s,mode:'partner'}));}});
+test('client/server maze engines remain identical',()=>assert.equal(fs.readFileSync('assets/runner/maze/engine.js','utf8'),fs.readFileSync('supabase/functions/maze-adventure/engine.js','utf8')));

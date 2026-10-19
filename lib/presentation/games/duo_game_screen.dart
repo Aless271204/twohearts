@@ -10,6 +10,9 @@ import '../../services/supabase_service.dart';
 import '../../services/inventory_service.dart';
 import '../../core/duo_pong.dart';
 import '../../widgets/immersive_game.dart';
+import '../../widgets/duo_object_art.dart';
+import '../../widgets/quiz_reaction_card.dart';
+import '../../core/quiz_reactions.dart';
 
 class DuoGameScreen extends StatefulWidget {
   final String game, mode, roomCode;
@@ -40,7 +43,7 @@ class _DuoGameScreenState extends State<DuoGameScreen>
   String? failure, lobbyCode;
   bool waitingOnline = false;
   double paddle = .5;
-  int? pendingChoice;
+  int? pendingChoice, draftChoice;
   DateTime received = DateTime.now();
   final Stopwatch elapsed = Stopwatch()..start();
   int receivedAt = 0;
@@ -100,6 +103,7 @@ class _DuoGameScreenState extends State<DuoGameScreen>
     if (next['state']['question_no'] != match?['state']?['question_no'] ||
         next['state']['phase'] != match?['state']?['phase']) {
       pendingChoice = null;
+      draftChoice = null;
     }
     setState(() {
       match = next;
@@ -229,7 +233,7 @@ class _DuoGameScreenState extends State<DuoGameScreen>
           params: {
             'p_match_id': match!['id'],
             if (widget.game == 'pong') 'p_paddle': pongToServerX(paddle, sideB),
-            if (widget.game == 'pong') 'p_phase': 'powerups-v1',
+            if (widget.game == 'pong') 'p_phase': 'powerups-v2',
             if (choice != null) ...{
               'p_choice': choice,
               'p_question_no': state['question_no'],
@@ -344,7 +348,7 @@ class _DuoGameScreenState extends State<DuoGameScreen>
         ? 'feminine'
         : 'masculine';
     return SizedBox(
-      width: 64,
+      width: 78,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -352,8 +356,8 @@ class _DuoGameScreenState extends State<DuoGameScreen>
             borderRadius: BorderRadius.circular(18),
             child: Image.asset(
               'assets/images/pet_portraits/$species-$style.png',
-              width: 58,
-              height: 68,
+              width: 74,
+              height: 78,
               fit: BoxFit.contain,
               errorBuilder: (_, __, ___) => Text(
                 PetModelCatalog.emojis[species]!,
@@ -395,9 +399,9 @@ class _DuoGameScreenState extends State<DuoGameScreen>
         },
         child: Scaffold(
           backgroundColor: dark
-              ? const Color(0xFFFFF9FA)
+              ? const Color(0xFFFFF5E8)
               : inventory.at('quiz_table')?.color.withAlpha(80) ??
-                    const Color(0xFFFFF4F7),
+                    const Color(0xFFFFF4E9),
           appBar: status == 'playing'
               ? null
               : AppBar(
@@ -417,9 +421,9 @@ class _DuoGameScreenState extends State<DuoGameScreen>
                   title: Text(
                     dark
                         ? (widget.mode == 'train'
-                              ? 'Ping pong · Entrenar'
-                              : 'Ping pong')
-                        : '¿Quién conoce mejor al otro?',
+                              ? 'Peloteo con amor · Entrenar'
+                              : 'Peloteo con amor')
+                        : '¿Cuánto nos conocemos?',
                   ),
                 ),
           body: match == null
@@ -480,6 +484,19 @@ class _DuoGameScreenState extends State<DuoGameScreen>
                 )
               : Column(
                   children: [
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(12, 12, 12, 4),
+                      child: Text(
+                        dark ? 'Peloteo con amor' : '¿Cuánto nos conocemos?',
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          fontFamily: 'NidoSerif',
+                          fontSize: 25,
+                          fontWeight: FontWeight.w700,
+                          color: Color(0xFF523D35),
+                        ),
+                      ),
+                    ),
                     if (failure != null)
                       MaterialBanner(
                         content: Text(failure!),
@@ -547,6 +564,7 @@ class _DuoGameScreenState extends State<DuoGameScreen>
                         ],
                       ),
                     ),
+
                     if (status == 'finished' || status == 'cancelled')
                       Expanded(
                         child: Center(
@@ -623,57 +641,7 @@ class _DuoGameScreenState extends State<DuoGameScreen>
                         ),
                       )
                     else if (dark)
-                      Expanded(
-                        child: LayoutBuilder(
-                          builder: (context, box) => GestureDetector(
-                            behavior: HitTestBehavior.opaque,
-                            onPanDown: (d) => setState(
-                              () => paddle = (d.localPosition.dx / box.maxWidth)
-                                  .clamp(.11, .89)
-                                  .toDouble(),
-                            ),
-                            onPanUpdate: (d) => setState(
-                              () => paddle = (d.localPosition.dx / box.maxWidth)
-                                  .clamp(.11, .89)
-                                  .toDouble(),
-                            ),
-                            child: Stack(
-                              children: [
-                                Positioned.fill(
-                                  child: AnimatedBuilder(
-                                    animation: frames,
-                                    builder: (context, _) => CustomPaint(
-                                      painter: _PongPainter(
-                                        s,
-                                        sideB,
-                                        paddle,
-                                        (elapsed.elapsedMilliseconds -
-                                                receivedAt) /
-                                            1000,
-                                        inventory.loadout,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                if (s['paused'] == true ||
-                                    s['phase'] == 'countdown')
-                                  Center(
-                                    child: Text(
-                                      s['paused'] == true
-                                          ? 'Esperando conexión\ndel otro jugador…'
-                                          : '¡Prepárate!',
-                                      textAlign: TextAlign.center,
-                                      style: const TextStyle(
-                                        color: Color(0xFF5D4158),
-                                        fontSize: 24,
-                                      ),
-                                    ),
-                                  ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      )
+                      Expanded(child: _pongStage(s))
                     else
                       Expanded(
                         child: AnimatedSwitcher(
@@ -697,11 +665,12 @@ class _DuoGameScreenState extends State<DuoGameScreen>
                           ),
                         ),
                       ),
+                    if (dark && status == 'playing') _powerLegend(s, mine),
                     Padding(
                       padding: const EdgeInsets.all(12),
                       child: Text(
                         dark
-                            ? 'Desliza tu paleta · 7 puntos por ronda'
+                            ? 'Desliza tu paleta · Atrapa los regalos con la pelota'
                             : widget.mode == 'train'
                             ? 'Responde sobre ti y trata de conocer a Nube.'
                             : 'Responde sobre ti y adivina la respuesta del otro jugador.',
@@ -716,6 +685,139 @@ class _DuoGameScreenState extends State<DuoGameScreen>
     );
   }
 
+  Widget _pongStage(Map<String, dynamic> s) => LayoutBuilder(
+    builder: (context, scene) => Stack(
+      children: [
+        Positioned.fill(
+          child: Image.asset(
+            'assets/images/ui/pong-room-v5.webp',
+            fit: BoxFit.fill,
+          ),
+        ),
+        Positioned(
+          left: scene.maxWidth * .115,
+          right: scene.maxWidth * .115,
+          top: scene.maxHeight * .17,
+          bottom: scene.maxHeight * .17,
+          child: LayoutBuilder(
+            builder: (context, box) => GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onPanDown: (d) => setState(
+                () => paddle = (d.localPosition.dx / box.maxWidth)
+                    .clamp(.11, .89)
+                    .toDouble(),
+              ),
+              onPanUpdate: (d) => setState(
+                () => paddle = (d.localPosition.dx / box.maxWidth)
+                    .clamp(.11, .89)
+                    .toDouble(),
+              ),
+              child: AnimatedBuilder(
+                animation: frames,
+                builder: (context, _) => CustomPaint(
+                  painter: _PongPainter(
+                    s,
+                    sideB,
+                    paddle,
+                    (elapsed.elapsedMilliseconds - receivedAt) / 1000,
+                    inventory.loadout,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+        if (s['paused'] == true || s['phase'] == 'countdown')
+          Center(
+            child: Container(
+              padding: const EdgeInsets.all(18),
+              decoration: BoxDecoration(
+                color: const Color(0xFFFFFAF0),
+                borderRadius: BorderRadius.circular(22),
+              ),
+              child: Text(
+                s['paused'] == true ? 'Esperando conexión…' : '¡Prepárate!',
+                style: const TextStyle(
+                  color: Color(0xFF65434D),
+                  fontSize: 23,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ),
+          ),
+      ],
+    ),
+  );
+
+  Widget _powerLegend(Map<String, dynamic> s, String mine) {
+    final extended = widget.mode == 'train' || s['powerups_v2'] == true;
+    final active = (s['tempo_remaining'] as num? ?? 0) > 0;
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(12, 0, 12, 8),
+      child: Column(
+        children: [
+          Wrap(
+            spacing: 6,
+            runSpacing: 5,
+            alignment: WrapAlignment.center,
+            children: [
+              for (final item in [
+                ('Paleta XL', 'wide'),
+                ('Escudo', 'shield'),
+                if (extended) ('Chispa', 'spark'),
+                if (extended) ('Calma', 'calm'),
+              ])
+                Semantics(
+                  label: item.$1,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Image.asset(
+                        'assets/images/ui/pong-power-${item.$2}-v5.webp',
+                        width: 54,
+                        height: 49,
+                        fit: BoxFit.contain,
+                        excludeFromSemantics: true,
+                      ),
+                      Text(
+                        item.$1,
+                        style: const TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w700,
+                          color: Color(0xFF493744),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+            ],
+          ),
+          if (active)
+            Padding(
+              padding: const EdgeInsets.only(top: 4),
+              child: Text(
+                '${s['tempo_kind'] == 3 ? '✨ Chispa' : '☁ Calma'} · ${(s['tempo_remaining'] as num).ceil()} s',
+                style: const TextStyle(
+                  color: Color(0xFF765481),
+                  fontWeight: FontWeight.w700,
+                  fontSize: 12,
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  bool _canConfirm(Map<String, dynamic> s) =>
+      draftChoice != null &&
+      !answerBusy &&
+      !inFlight &&
+      (s['deadline'] as num? ?? 0) -
+              (match!['server_time'] as num) -
+              (elapsed.elapsedMilliseconds - receivedAt) / 1000 >
+          0;
+
   Widget _quiz(Map<String, dynamic> s, String mine, String other) {
     final q = Map<String, dynamic>.from(s['question'] as Map? ?? {});
     final options = List<String>.from(q['options'] as List? ?? []);
@@ -728,6 +830,9 @@ class _DuoGameScreenState extends State<DuoGameScreen>
         child: Text('Esperando la conexión del otro jugador…'),
       );
     }
+    if (['reveal', 'question_intro', 'countdown'].contains(phase)) {
+      return _quizIntermission(s, mine, other, label);
+    }
     return ListView(
       padding: const EdgeInsets.all(20),
       children: [
@@ -737,13 +842,72 @@ class _DuoGameScreenState extends State<DuoGameScreen>
             final secs =
                 ((s['deadline'] as num? ?? 0) -
                         (match!['server_time'] as num) -
-                        (DateTime.now().difference(received).inMilliseconds /
-                            1000))
+                        ((elapsed.elapsedMilliseconds - receivedAt) / 1000))
                     .ceil()
-                    .clamp(0, 15);
-            return Text(
-              'Ronda ${s['round']} · ${q['category'] ?? ''} · ${secs}s',
-              textAlign: TextAlign.center,
+                    .clamp(0, 20);
+            final answering = ['self', 'guess'].contains(phase);
+            final accent = secs <= 5 && answering
+                ? const Color(0xFFB93659)
+                : const Color(0xFFCB557B);
+            return Container(
+              padding: const EdgeInsets.all(14),
+              decoration: BoxDecoration(
+                color: const Color(0xFFFFFAF5),
+                borderRadius: BorderRadius.circular(24),
+                border: Border.all(color: const Color(0xFFF0DDE0)),
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Ronda ${s['round']}',
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w700,
+                            color: Color(0xFF493744),
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          q['category'] as String? ?? 'Nuestros detalles',
+                          style: const TextStyle(color: Color(0xFF755A69)),
+                        ),
+                        const SizedBox(height: 8),
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(8),
+                          child: LinearProgressIndicator(
+                            value: answering ? secs / 20 : 1,
+                            minHeight: 5,
+                            color: accent,
+                            backgroundColor: const Color(0xFFF2E4E8),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Container(
+                    width: 62,
+                    height: 62,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFFFE9E5),
+                      shape: BoxShape.circle,
+                      border: Border.all(color: accent, width: 2),
+                    ),
+                    child: Text(
+                      '${secs}s',
+                      style: TextStyle(
+                        color: accent,
+                        fontSize: 20,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             );
           },
         ),
@@ -755,7 +919,7 @@ class _DuoGameScreenState extends State<DuoGameScreen>
             borderRadius: BorderRadius.circular(18),
           ),
           child: Text(
-            '${inventory.at('quiz_badge')?.emoji ?? '💌'} ${phase == 'self'
+            '${phase == 'self'
                 ? 'Elige tu respuesta secreta'
                 : phase == 'guess'
                 ? widget.mode == 'train'
@@ -776,32 +940,142 @@ class _DuoGameScreenState extends State<DuoGameScreen>
         const SizedBox(height: 20),
         Text(
           q['prompt'] as String? ?? '',
-          style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
+          style: const TextStyle(
+            fontFamily: 'NidoSerif',
+            fontSize: 27,
+            fontWeight: FontWeight.w600,
+            color: Color(0xFF47352D),
+          ),
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: 20),
         for (var i = 0; i < options.length; i++)
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 6),
-            child: OutlinedButton(
-              style: OutlinedButton.styleFrom(
-                padding: const EdgeInsets.all(18),
-                backgroundColor: (s['my_choice'] ?? pendingChoice) == i
-                    ? border.withAlpha(65)
-                    : Colors.white,
-                side: BorderSide(color: border, width: 2),
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 180),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(24),
+                boxShadow: const [
+                  BoxShadow(
+                    color: Color(0x12795C3F),
+                    blurRadius: 10,
+                    offset: Offset(0, 4),
+                  ),
+                ],
               ),
-              onPressed:
-                  ['self', 'guess'].contains(phase) &&
-                      s['my_choice'] == null &&
-                      pendingChoice == null &&
-                      !answerBusy &&
-                      !inFlight
-                  ? () => _choose(i)
-                  : null,
-              child: Text(
-                options[i],
-                style: const TextStyle(fontSize: 17, color: Colors.black87),
+              child: OutlinedButton(
+                key: ValueKey('quiz-option-$i'),
+                style: OutlinedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 7,
+                  ),
+                  backgroundColor:
+                      (s['my_choice'] ?? pendingChoice ?? draftChoice) == i
+                      ? const Color(0xFFFFDFD2)
+                      : const Color(0xFFFFFAEF),
+                  foregroundColor: const Color(0xFF47352D),
+                  disabledForegroundColor: const Color(0xFF47352D),
+                  side: BorderSide(
+                    color: (s['my_choice'] ?? pendingChoice ?? draftChoice) == i
+                        ? border
+                        : const Color(0xFFEAD9C5),
+                    width: 1.6,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(24),
+                  ),
+                ),
+                onPressed:
+                    ['self', 'guess'].contains(phase) &&
+                        s['my_choice'] == null &&
+                        pendingChoice == null &&
+                        !answerBusy
+                    ? () => setState(() => draftChoice = i)
+                    : null,
+                child: Row(
+                  children: [
+                    if (DuoObjectArt.forAnswer(options[i]) case final int art)
+                      DuoObjectArt(index: art, size: 68)
+                    else
+                      Container(
+                        width: 54,
+                        height: 54,
+                        margin: const EdgeInsets.all(7),
+                        alignment: Alignment.center,
+                        decoration: const BoxDecoration(
+                          color: Color(0xFFF1E5D5),
+                          shape: BoxShape.circle,
+                        ),
+                        child: Text(
+                          String.fromCharCode(65 + i),
+                          style: const TextStyle(
+                            fontFamily: 'NidoSerif',
+                            fontSize: 25,
+                            color: Color(0xFF725A45),
+                          ),
+                        ),
+                      ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Text(
+                        options[i],
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w700,
+                          color: Color(0xFF47352D),
+                        ),
+                      ),
+                    ),
+                    if ((s['my_choice'] ?? pendingChoice ?? draftChoice) == i)
+                      const Icon(
+                        Icons.check_circle_rounded,
+                        color: Color(0xFFD45262),
+                        size: 27,
+                      ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        if (['self', 'guess'].contains(phase) &&
+            s['my_choice'] == null &&
+            pendingChoice == null)
+          Padding(
+            padding: const EdgeInsets.only(top: 14, bottom: 10),
+            child: AnimatedBuilder(
+              animation: frames,
+              builder: (context, _) => FilledButton.icon(
+                key: const ValueKey('quiz-confirm'),
+                style: FilledButton.styleFrom(
+                  backgroundColor: const Color(0xFFD34B63),
+                  foregroundColor: Colors.white,
+                  disabledBackgroundColor: const Color(0xFFE9DDD2),
+                  disabledForegroundColor: const Color(0xFF756356),
+                  minimumSize: const Size(double.infinity, 56),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(24),
+                  ),
+                ),
+                onPressed: _canConfirm(s) ? () => _choose(draftChoice!) : null,
+                icon: Icon(
+                  Icons.favorite_rounded,
+                  size: 20,
+                  color: _canConfirm(s)
+                      ? Colors.white
+                      : const Color(0xFF756356),
+                ),
+                label: Text(
+                  'Confirmar',
+                  style: TextStyle(
+                    fontSize: 19,
+                    fontWeight: FontWeight.w700,
+                    color: _canConfirm(s)
+                        ? Colors.white
+                        : const Color(0xFF756356),
+                  ),
+                ),
               ),
             ),
           ),
@@ -840,6 +1114,144 @@ class _DuoGameScreenState extends State<DuoGameScreen>
       ],
     );
   }
+
+  Widget _quizIntermission(
+    Map<String, dynamic> s,
+    String mine,
+    String other,
+    String Function(dynamic) label,
+  ) {
+    final reveal = s['phase'] == 'reveal',
+        question = (s['question_no'] as num? ?? 0).toInt();
+    final players = List<Map<String, dynamic>>.from(
+      (match?['players'] as List? ?? []).map(
+        (p) => Map<String, dynamic>.from(p as Map),
+      ),
+    );
+    Widget reactionCard(String side) {
+      final person = players.where((p) => p['side'] == side).firstOrNull;
+      final correct =
+          s['guess_$side'] != null &&
+          s['guess_$side'] == s['answer_${side == 'a' ? 'b' : 'a'}'];
+      final streak = (s['streak_$side'] as num?)?.toInt() ?? (correct ? 1 : -1);
+      return QuizReactionCard(
+        key: ValueKey('quiz-reaction-$side'),
+        species: PetModelCatalog.speciesFor(
+          person?['species'] as String? ?? SharedPetService.instance.species,
+        ),
+        name:
+            person?['name'] as String? ??
+            (side == mine
+                ? 'Tú'
+                : widget.mode == 'train'
+                ? 'Nube · Bot'
+                : 'Tu pareja'),
+        correct: correct,
+        reaction: QuizReaction.forStreak(streak, question, side),
+        animation: frames,
+        answer: label(s['guess_$side']),
+        expected: label(s['answer_${side == 'a' ? 'b' : 'a'}']),
+      );
+    }
+
+    return ListView(
+      padding: const EdgeInsets.fromLTRB(18, 20, 18, 24),
+      children: [
+        Text(
+          reveal ? '¡Así nos conocemos!' : 'Pregunta ${question + 1}',
+          key: const ValueKey('quiz-intermission-title'),
+          textAlign: TextAlign.center,
+          style: const TextStyle(
+            fontFamily: 'NidoSerif',
+            fontSize: 29,
+            fontWeight: FontWeight.w600,
+            color: Color(0xFF493744),
+          ),
+        ),
+        const SizedBox(height: 18),
+        if (reveal)
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(child: reactionCard(mine)),
+              const SizedBox(width: 10),
+              Expanded(child: reactionCard(other)),
+            ],
+          )
+        else
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 30),
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    _mascotBadge(mine),
+                    const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 22),
+                      child: Icon(
+                        Icons.favorite_rounded,
+                        color: Color(0xFFE46A8B),
+                        size: 34,
+                      ),
+                    ),
+                    _mascotBadge(other),
+                  ],
+                ),
+                const SizedBox(height: 26),
+                const Text(
+                  'Un nuevo detalle por descubrir',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: Color(0xFF735B68), fontSize: 17),
+                ),
+              ],
+            ),
+          ),
+        const SizedBox(height: 24),
+        AnimatedBuilder(
+          animation: frames,
+          builder: (_, __) {
+            final total = reveal
+                ? 5
+                : s['phase'] == 'countdown'
+                ? 3
+                : 2;
+            final seconds =
+                ((s['deadline'] as num? ?? 0) -
+                        (match!['server_time'] as num) -
+                        ((elapsed.elapsedMilliseconds - receivedAt) / 1000))
+                    .ceil()
+                    .clamp(0, total);
+            return Column(
+              children: [
+                Text(
+                  reveal
+                      ? 'Siguiente pregunta en $seconds…'
+                      : '¡Empezamos en $seconds!',
+                  key: const ValueKey('quiz-intermission-clock'),
+                  style: const TextStyle(
+                    color: Color(0xFF8F3E62),
+                    fontSize: 17,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child: LinearProgressIndicator(
+                    value: seconds / total,
+                    minHeight: 7,
+                    color: const Color(0xFFE77998),
+                    backgroundColor: const Color(0xFFF1DEE6),
+                  ),
+                ),
+              ],
+            );
+          },
+        ),
+      ],
+    );
+  }
 }
 
 class _PongPainter extends CustomPainter {
@@ -850,47 +1262,64 @@ class _PongPainter extends CustomPainter {
   _PongPainter(this.s, this.sideB, this.mine, this.dt, this.cosmetics);
   @override
   void paint(Canvas canvas, Size size) {
-    final color = cosmetics['pong_court']?.color ?? const Color(0xFFE6A4D0);
-    final court = Rect.fromLTWH(10, 4, size.width - 20, size.height - 8);
-    canvas.drawRRect(
-      RRect.fromRectAndRadius(court, const Radius.circular(16)),
-      Paint()
-        ..color = color
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 3,
-    );
-    canvas.drawLine(
-      Offset(14, size.height / 2),
-      Offset(size.width - 14, size.height / 2),
-      Paint()..color = color.withAlpha(70),
-    );
+    if (cosmetics['pong_court'] != null)
+      canvas.drawRRect(
+        RRect.fromRectAndRadius(Offset.zero & size, const Radius.circular(18)),
+        Paint()..color = cosmetics['pong_court']!.color.withAlpha(85),
+      );
+    for (double x = 24; x < size.width - 24; x += 15)
+      canvas.drawLine(
+        Offset(x, size.height / 2),
+        Offset(x + 7, size.height / 2),
+        Paint()
+          ..color = Colors.white.withAlpha(195)
+          ..strokeWidth = 2
+          ..strokeCap = StrokeCap.round,
+      );
     final opponent = (s['paddle_${sideB ? 'a' : 'b'}'] as num? ?? .5)
         .toDouble();
     void paddle(double x, double y, Color c, bool wide) {
+      final rect = Rect.fromCenter(
+        center: Offset(x * size.width, y * size.height),
+        width: size.width * (wide ? .34 : .22),
+        height: 16,
+      );
       canvas.drawRRect(
         RRect.fromRectAndRadius(
-          Rect.fromCenter(
-            center: Offset(x * size.width, y * size.height),
-            width: size.width * (wide ? .34 : .22),
-            height: 12,
-          ),
-          const Radius.circular(6),
+          rect.shift(const Offset(0, 4)),
+          const Radius.circular(9),
         ),
-        Paint()..color = c,
+        Paint()..color = const Color(0x23564958),
+      );
+      canvas.drawRRect(
+        RRect.fromRectAndRadius(rect, const Radius.circular(9)),
+        Paint()
+          ..shader = LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [Color.lerp(c, Colors.white, .35)!, c],
+          ).createShader(rect),
+      );
+      canvas.drawRRect(
+        RRect.fromRectAndRadius(rect.deflate(2), const Radius.circular(7)),
+        Paint()
+          ..color = Colors.white.withAlpha(140)
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 1,
       );
     }
 
     paddle(
       mine,
       .9,
-      cosmetics['pong_paddle']?.color ?? const Color(0xFF6393E7),
+      cosmetics['pong_paddle']?.color ?? const Color(0xFFF28D83),
       (s['wide_${sideB ? 'b' : 'a'}'] as num? ?? 0) > 0,
     );
     paddle(
       pongFromServer(opponent, sideB),
       .1,
       s['opponent_paddle_color'] == null
-          ? const Color(0xFFF39D75)
+          ? const Color(0xFFB0A0E3)
           : InventoryItem.parseColor(s['opponent_paddle_color']),
       (s['wide_${sideB ? 'a' : 'b'}'] as num? ?? 0) > 0,
     );
@@ -914,7 +1343,12 @@ class _PongPainter extends CustomPainter {
       canvas.drawCircle(point, 18, Paint()..color = const Color(0xFFFFE7A5));
       final text = TextPainter(
         text: TextSpan(
-          text: s['power_kind'] == 1 ? '↔' : '◇',
+          text: switch (s['power_kind']) {
+            1 => '↔',
+            2 => '♡',
+            3 => '✦',
+            _ => '☁',
+          },
           style: const TextStyle(
             color: Color(0xFF594526),
             fontSize: 24,
@@ -926,7 +1360,9 @@ class _PongPainter extends CustomPainter {
       text.paint(canvas, point - Offset(text.width / 2, text.height / 2));
     }
     final play = s['phase'] == 'play' && s['paused'] != true;
-    final elapsed = play ? dt : 0.0;
+    final elapsed = play
+        ? dt * ((s['tempo_rate'] as num? ?? 1).clamp(.65, 1.4))
+        : 0.0;
     final x = pongBallX(
       (s['x'] as num).toDouble(),
       (s['vx'] as num).toDouble(),
@@ -941,6 +1377,21 @@ class _PongPainter extends CustomPainter {
       pongFromServer(x, sideB) * size.width,
       pongFromServer(y, sideB) * size.height,
     );
+    final direction =
+        Offset((s['vx'] as num).toDouble(), (s['vy'] as num).toDouble()) *
+        (sideB ? -1 : 1);
+    if (play && direction.distance > .001)
+      for (var i = 4; i > 0; i--)
+        canvas.drawCircle(
+          pos - direction / direction.distance * (i * 8.0),
+          6 - i * .7,
+          Paint()
+            ..color =
+                (s['tempo_kind'] == 3
+                        ? const Color(0xFFFFC667)
+                        : const Color(0xFFEFAAC4))
+                    .withAlpha(65 - i * 10),
+        );
     canvas.drawCircle(
       pos,
       14,
@@ -950,7 +1401,14 @@ class _PongPainter extends CustomPainter {
     canvas.drawCircle(
       pos,
       7,
-      Paint()..color = cosmetics['pong_ball']?.color ?? Colors.pink,
+      Paint()
+        ..shader = RadialGradient(
+          center: const Alignment(-.4, -.5),
+          colors: [
+            Colors.white,
+            cosmetics['pong_ball']?.color ?? const Color(0xFFEE7FA8),
+          ],
+        ).createShader(Rect.fromCircle(center: pos, radius: 7)),
     );
   }
 

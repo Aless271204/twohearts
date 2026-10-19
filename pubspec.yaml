@@ -1,7 +1,7 @@
 name: twohearts
 description: A new Flutter project.
 publish_to: none
-version: 1.2.9+24
+version: 1.3.0+25
 
 environment:
   sdk: ^3.9.0
@@ -80,6 +80,9 @@ flutter:
     - assets/fonts/
     - assets/runner/
     - assets/runner/guardian/
+    - assets/runner/maze/
+    - assets/runner/penalties/
+    - assets/runner/penalties/art/
     - assets/runner/guardian/audio/
     - assets/runner/restart/sewn-coverage-bear-coat_cloud.json
     - assets/runner/restart/sewn-coverage-bear-dress_petal.json

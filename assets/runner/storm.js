@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-export function stormIntensity(distance){return Math.max(0,Math.min(1,(distance-1500)/500));}
+export function stormIntensity(distance){return Math.max(0,Math.min(1,(distance-8000)/2000));}
 // One draw call, fixed buffers, no per-frame allocations or post-processing.
 export function createStorm(scene){
  const count=160,positions=new Float32Array(count*6),geometry=new THREE.BufferGeometry();geometry.setAttribute('position',new THREE.BufferAttribute(positions,3));
@@ -22,7 +22,7 @@ export function createStorm(scene){
   }
   geometry.attributes.position.needsUpdate=true;
   // A single soft lightning glow, never rapid strobing.
-  const pulse=distance>=2000&&!reduced?Math.max(0,1-Math.abs(time%8-.3)/.3):0;
+  const pulse=distance>=10000&&!reduced?Math.max(0,1-Math.abs(time%8-.3)/.3):0;
   bolt.visible=pulse>0;boltMaterial.opacity=pulse*.65;bolt.position.x=x;
   material.color.set(pulse>.1?'#eef4ff':'#c3d7e9');
   overlay.style.background=pulse>.1?'#6b7f9b':'#102030';

@@ -5,6 +5,18 @@ export function seedFromSession(id) {
 }
 export function roll(seed,row,salt){let x=(seed^Math.imul(row+1,0x9e3779b9)^salt)>>>0;x^=x>>>16;x=Math.imul(x,0x85ebca6b);x^=x>>>13;return (x>>>0);}
 export function runnerRow(row, distance, version=3, seed=0) {
+  if(version>=10){
+    const base=runnerRow(row,distance,9,seed),hazard=roll(seed,row,131)%100;
+    const kind=distance>=10000&&hazard<28?'tree':distance>=8000&&hazard<58?'collapse':['crate','rock','fence'][roll(seed,row,29)%3];
+    return {...base,kind};
+  }
+  if(version>=9){
+    const base=runnerRow(row,distance,8,seed),tier=Math.max(0,Math.floor((distance-2000)/1000));
+    const safeLane=(base.obstacleLane+1+roll(seed,row,101)%2)%3;
+    const double=tier>0&&roll(seed,row,103)%100<Math.min(78,22+tier*9);
+    const obstacleLanes=double?[0,1,2].filter(lane=>lane!==safeLane):[base.obstacleLane];
+    return {...base,safeLane,obstacleLanes,kind:distance>=2000&&roll(seed,row,107)%100<Math.min(65,30+tier*5)?'collapse':base.kind};
+  }
   if(version>=7){
     const obstacleLane=roll(seed,row,7)%3;
     const coinLane=distance<160?(obstacleLane+1+roll(seed,row,17)%2)%3:roll(seed,row,19)%3;

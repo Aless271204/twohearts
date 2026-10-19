@@ -2,6 +2,76 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:twohearts/core/duo_training.dart';
 
 void main() {
+  test(
+    'each quiz answer has five seconds of reactions and a two-second next-question intro',
+    () {
+      final game = DuoTraining('quiz', seed: 3)..phase = 'self';
+      game.choose(0);
+      game.choose(1);
+      expect(game.phase, 'reveal');
+      expect(game.deadline - game.time, 5);
+      for (var i = 0; i < 49; i++) {
+        game.step(.1, .5);
+      }
+      expect(game.phase, 'reveal');
+      for (var i = 0; i < 2; i++) {
+        game.step(.1, .5);
+      }
+      expect(game.phase, 'question_intro');
+      expect(game.question, 1);
+      expect(game.snapshot(0)['state'], isNot(contains('answer_a')));
+      game.choose(2);
+      expect(game.self, isNull);
+      for (var i = 0; i < 21; i++) {
+        game.step(.1, .5);
+      }
+      expect(game.phase, 'self');
+      expect(game.deadline - game.time, closeTo(20, .11));
+    },
+  );
+  test('quiz grants twenty seconds for both secret and guess answers', () {
+    final game = DuoTraining('quiz', seed: 3);
+    for (var i = 0; i < 11; i++) game.step(.1, .5);
+    expect(game.phase, 'self');
+    expect(game.deadline - game.time, closeTo(20, .11));
+    for (var i = 0; i < 160; i++) game.step(.1, .5);
+    expect(game.phase, 'self');
+    game.choose(1);
+    expect(game.phase, 'guess');
+    expect(game.deadline - game.time, 20);
+    for (var i = 0; i < 160; i++) game.step(.1, .5);
+    expect(game.phase, 'guess');
+    for (var i = 0; i < 41; i++) game.step(.1, .5);
+    expect(game.phase, 'reveal');
+  });
+  test(
+    'spark and calm affect travel temporarily without changing the base velocity',
+    () {
+      for (final kind in [3, 4]) {
+        final game = DuoTraining('pong', seed: 4)
+          ..phase = 'play'
+          ..powerClock = 8.1
+          ..powerNumber = 1
+          ..powerKind = kind
+          ..powerX = .5
+          ..lastHit = 0
+          ..x = .5
+          ..y = .5;
+        game.step(.01, .5);
+        expect(game.tempoKind, kind);
+        expect(game.tempoRemaining, 4);
+        final vx = game.vx, vy = game.vy, y = game.y;
+        game.step(.05, .5);
+        expect(game.y - y, closeTo(vy * .05 * (kind == 3 ? 1.3 : .72), .0001));
+        expect(game.vx, vx);
+        game.tempoRemaining = .01;
+        game.step(.02, .5);
+        expect(game.tempoRate, 1);
+        expect(game.tempoKind, 0);
+        expect(game.snapshot(1)['reward'], 0);
+      }
+    },
+  );
   test('practice power-ups enlarge paddle and shield saves only one miss', () {
     final game = DuoTraining('pong', seed: 9)
       ..phase = 'play'

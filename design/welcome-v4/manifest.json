@@ -1,0 +1,52 @@
+[
+  {
+    "frame": 0,
+    "path": "assets\\images\\ui\\login-welcome-0-v4.webp",
+    "size": [
+      800,
+      1200
+    ],
+    "bytes": 189602,
+    "sha256": "ae74d1420da4268847a9f74930765d99f55398cfcdcd64a11dbb649e6585b5c9"
+  },
+  {
+    "frame": 1,
+    "path": "assets\\images\\ui\\login-welcome-1-v4.webp",
+    "size": [
+      800,
+      1200
+    ],
+    "bytes": 170488,
+    "sha256": "f28b7e1bb9d73368a8fc667d39583aa1f5db46a4c0d005e0975acfad31623ab0"
+  },
+  {
+    "frame": 2,
+    "path": "assets\\images\\ui\\login-welcome-2-v4.webp",
+    "size": [
+      800,
+      1200
+    ],
+    "bytes": 175532,
+    "sha256": "56a48f0e1af235d23a77f8d238bd0e5c6c3a134d05655307ae1b9448370cfcba"
+  },
+  {
+    "frame": 3,
+    "path": "assets\\images\\ui\\login-welcome-3-v4.webp",
+    "size": [
+      800,
+      1200
+    ],
+    "bytes": 163116,
+    "sha256": "5a09c0fe3972599e417d01287f92548cec957a6e7487bc40c40ce2ad9402b00b"
+  },
+  {
+    "frame": 4,
+    "path": "assets\\images\\ui\\login-welcome-4-v4.webp",
+    "size": [
+      800,
+      1200
+    ],
+    "bytes": 207822,
+    "sha256": "e078b9c6e21fe40749daf5ac91d0b3453d1f8e00227e9a23ba10aaf9be563c46"
+  }
+]
