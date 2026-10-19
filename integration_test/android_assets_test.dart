@@ -155,7 +155,7 @@ void main() {
     await waitForJavaScript(
       tester,
       controller,
-      "document.getElementById('title')?.textContent === 'Un paseo con tu mascota' && !document.getElementById('start').disabled",
+      "document.getElementById('title')?.textContent === 'Senderos del Nido' && !document.getElementById('start').disabled",
       'The complete forest, including the model with spaces in its name',
     );
     await waitForJavaScript(

@@ -22,7 +22,17 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
-        run: gh run watch 39187826966 --exit-status --interval 30
+        run: |
+          gh api "repos/$GH_REPO/actions/runs/39187826966/jobs" --jq '.jobs[] | select(.name=="verify") | .conclusion' | grep -qx success
+          for attempt in $(seq 1 40); do
+            NIDO_SMOKE_RUN=$(gh run list --workflow android-release-recheck.yml --commit "$GITHUB_SHA" --json databaseId --jq '.[0].databaseId' 2>/dev/null || true)
+            if [ -n "$NIDO_SMOKE_RUN" ] && [ "$NIDO_SMOKE_RUN" != "null" ]; then break; fi
+            sleep 5
+          done
+          test -n "$NIDO_SMOKE_RUN"
+          test "$NIDO_SMOKE_RUN" != "null"
+          gh run watch "$NIDO_SMOKE_RUN" --exit-status --interval 30
+          echo "NIDO_SMOKE_RUN=$NIDO_SMOKE_RUN" >> "$GITHUB_ENV"
       - uses: actions/download-artifact@v4
         with:
           name: twohearts-web

@@ -2,7 +2,7 @@
 import hashlib,importlib.util,json,os,shutil,subprocess,sys,urllib.error,urllib.parse,urllib.request,zipfile
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
-RUN=int(sys.argv[1]);COMMIT=sys.argv[2];TAG='nido-1.3.0'
+RUN=int(sys.argv[1]);COMMIT=sys.argv[2];SMOKE_RUN=int(sys.argv[3]);TAG='nido-1.3.0'
 source=ROOT/'outputs/android-130/app-arm64-v8a-release.apk'
 assert source.is_file(),'Download the signed build first'
 spec=importlib.util.spec_from_file_location('nido_apk_checks',ROOT/'scripts/verify-wardrobe-apk.py');checks=importlib.util.module_from_spec(spec);spec.loader.exec_module(checks)
@@ -31,8 +31,10 @@ base='https://api.github.com/repos/Aless271204/twohearts/'
 def api(path,method='GET',data=None):
  request=urllib.request.Request(base+path,headers=headers,method=method,data=json.dumps(data).encode() if data is not None else None)
  with urllib.request.urlopen(request,timeout=60) as response:return json.load(response) if response.status!=204 else None
-run=api(f'actions/runs/{RUN}');assert run['head_sha']==COMMIT and run['conclusion']=='success'
-jobs=api(f'actions/runs/{RUN}/jobs')['jobs'];assert all(any(j['name']==name and j['conclusion']=='success' for j in jobs) for name in ('verify','android-smoke'))
+run=api(f'actions/runs/{RUN}');assert run['head_sha']==COMMIT and run['status']=='completed'
+jobs=api(f'actions/runs/{RUN}/jobs')['jobs'];assert any(j['name']=='verify' and j['conclusion']=='success' for j in jobs)
+smoke=api(f'actions/runs/{SMOKE_RUN}');assert smoke['conclusion']=='success' and smoke['name']=='Android release startup recheck'
+assert smoke['head_sha']==subprocess.check_output(['git','rev-parse','HEAD'],text=True,cwd=ROOT).strip()
 notes='''NIDO 1.3.0 — actualización Android.
 
 Bienvenida ilustrada al iniciar sesión y llegada de adopción independiente con cigüeña, cuatro mascotas y sonidos suaves. Juegos sin la antigua pestaña de Actividades. Penales con arco centrado, animaciones articuladas y público; Farolitos con puerta orientada, llaves y sonido de murciélagos. Carrera con estaciones y Guardianes con segundo mapa, ataques aéreos y peces en varias direcciones. Menús sin música; música y efectos dentro de los juegos. Mejoras artísticas en miniaturas e interfaces.
@@ -61,5 +63,5 @@ for path in (apk,checksum):
  print(json.dumps({'uploaded':path.name,'bytes':path.stat().st_size}),flush=True)
 release=api(f'releases/{release["id"]}','PATCH',{'draft':False,'prerelease':False,'body':notes})
 url=next(a['browser_download_url'] for a in uploaded if a['name']==apk.name)
-report={'version':'1.3.0+25','commit':COMMIT,'run':RUN,'url':url,'release':release['html_url'],'bytes':apk.stat().st_size,'sha256':digest,'signer':checks.signer(source),'android_smoke':'success'}
+report={'version':'1.3.0+25','commit':COMMIT,'run':RUN,'smoke_run':SMOKE_RUN,'url':url,'release':release['html_url'],'bytes':apk.stat().st_size,'sha256':digest,'signer':checks.signer(source),'android_smoke':'success'}
 (ROOT/'outputs/delivery-130.json').write_text(json.dumps(report,indent=2));print(json.dumps(report),flush=True)
