@@ -18,10 +18,15 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
+      - name: Wait for the exact tested build
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: gh run watch 39187826966 --exit-status --interval 30
       - uses: actions/download-artifact@v4
         with:
           name: twohearts-web
-          run-id: 39096682460
+          run-id: 39187826966
           github-token: ${{ github.token }}
           path: preview
       - name: Prepare subdirectory hosting

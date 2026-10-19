@@ -1,31 +1,36 @@
-name: Deliver tested NIDO Android 1.2.9
+name: Deliver tested NIDO Android 1.3.0
 on:
   push:
     branches: [codex/web-preview-129]
-    paths: [.github/workflows/android-test-release.yml, scripts/publish-android-129.py]
+    paths: [.github/workflows/android-test-release.yml, scripts/publish-android-130.py]
 permissions:
   contents: write
   actions: read
 concurrency:
-  group: nido-android-129-delivery
+  group: nido-android-130-delivery
   cancel-in-progress: false
 jobs:
   deliver:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
+      - name: Wait for the exact signed build and Android startup checks
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: gh run watch 39187826966 --exit-status --interval 30
       - uses: actions/download-artifact@v4
         with:
           name: twohearts-android-release
-          run-id: 39096682460
+          run-id: 39187826966
           github-token: ${{ github.token }}
-          path: outputs/android-129
+          path: outputs/android-130
       - name: Verify signer, build identity, assets and Android smoke before publication
         env:
           GH_TOKEN: ${{ github.token }}
-        run: python3 scripts/publish-android-129.py
+        run: python3 scripts/publish-android-130.py 39187826966 789a1fee5a828e2e70b01e0cadc55e90c0d6e354
       - uses: actions/upload-artifact@v4
         with:
-          name: nido-129-delivery-proof
-          path: outputs/delivery-129.json
+          name: nido-130-delivery-proof
+          path: outputs/delivery-130.json
