@@ -158,6 +158,20 @@ void main() {
       "document.getElementById('title')?.textContent === 'Senderos del Nido' && !document.getElementById('start').disabled",
       'The complete forest, including the model with spaces in its name',
     );
+    await controller.runJavaScript('''
+      window.publicGameMediaReady = false;
+      Promise.all([
+        fetch('/assets/images/ui/adoption-bear-0-v3.webp').then(async r => {
+          const bytes = new Uint8Array(await r.arrayBuffer());
+          return r.ok && r.headers.get('Content-Type').includes('image/webp') &&
+            String.fromCharCode(...bytes.slice(0,4)) === 'RIFF';
+        }),
+        fetch('/assets/sounds/penalty_crowd_goal.mp3').then(async r =>
+          r.ok && r.headers.get('Content-Type').includes('audio/mpeg') && (await r.arrayBuffer()).byteLength > 1000)
+      ]).then(results => window.publicGameMediaReady = results.every(Boolean));
+    ''');
+    await waitForJavaScript(tester, controller, 'window.publicGameMediaReady === true',
+      'Adoption pictures and stadium audio load from the actual Android asset server');
     await waitForJavaScript(
       tester,
       controller,

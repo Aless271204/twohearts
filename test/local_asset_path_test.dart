@@ -25,4 +25,19 @@ void main() {
       expect(runnerAssetPath(Uri.parse(path)), isNull, reason: path);
     }
   });
+
+  test('adoption and game audio resolve without exposing unrelated app assets', () {
+    for (final path in [
+      '/assets/images/ui/adoption-bear-0-v3.webp',
+      '/assets/sounds/adoption_baby_bear_v3.mp3',
+      '/assets/sounds/penalty_crowd_goal.mp3',
+      '/assets/sounds/maze_theme.mp3',
+    ]) {
+      expect(runnerAssetPath(Uri.parse(path)), path.substring(1));
+    }
+    for (final path in ['/assets/images/ui/private.json', '/assets/sounds/env.json',
+      '/assets/images/other/photo.png', '/assets/images/ui/%2e%2e/env.json']) {
+      expect(runnerAssetPath(Uri.parse(path)), isNull);
+    }
+  });
 }
