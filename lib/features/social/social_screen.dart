@@ -8,6 +8,7 @@ import '../../widgets/rose_ui.dart';
 import 'social_models.dart';
 import 'social_repository.dart';
 import 'nido_news.dart';
+import 'nido_ranking.dart';
 
 class SocialScreen extends StatefulWidget {
   final SocialRepository? repository;
@@ -23,6 +24,7 @@ class _SocialScreenState extends State<SocialScreen>
   List<SocialPost> posts = [];
   final Set<String> busy = {};
   String mode = 'friends';
+  String section = 'feed';
   String? error, account;
   bool loading = true, more = false, loadingMore = false;
   int generation = 0;
@@ -79,7 +81,7 @@ class _SocialScreenState extends State<SocialScreen>
   }
 
   Future<void> _load({bool append = false}) async {
-    if (mode == 'news') return;
+    if (section != 'feed') return;
     final request = ++generation;
     if (repository.userId == null) {
       if (mounted)
@@ -295,22 +297,30 @@ class _SocialScreenState extends State<SocialScreen>
             child: SegmentedButton<String>(
               showSelectedIcon: false,
               segments: const [
-                ButtonSegment(value: 'friends', label: Text('Amigos')),
-                ButtonSegment(value: 'discover', label: Text('Descubrir')),
+                ButtonSegment(value: 'feed', label: Text('Feed')),
+                ButtonSegment(value: 'ranking', label: Text('Ranking')),
                 ButtonSegment(value: 'news', label: Text('Noticias')),
               ],
-              selected: {mode},
+              selected: {section},
               onSelectionChanged: (v) {
                 setState(() {
-                  mode = v.first;
-                  posts = [];
-                  loading = true;
+                  section = v.first;
                 });
-                if (mode != 'news') _load();
+                if (section == 'feed') _load();
               },
             ),
           ),
-          if (error != null && mode != 'news')
+          if (section == 'feed') Padding(
+            padding: const EdgeInsets.fromLTRB(20, 0, 20, 12),
+            child: SegmentedButton<String>(showSelectedIcon: false,
+              segments: const [ButtonSegment(value: 'friends', label: Text('Amigos')),
+                ButtonSegment(value: 'discover', label: Text('Descubrir'))],
+              selected: {mode}, onSelectionChanged: (value) {
+                setState(() { mode = value.first; posts = []; loading = true; });
+                _load();
+              }),
+          ),
+          if (error != null && section == 'feed')
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Column(
@@ -321,7 +331,8 @@ class _SocialScreenState extends State<SocialScreen>
               ),
             ),
           Expanded(
-            child: mode == 'news' ? const NidoNews() : loading
+            child: section == 'news' ? const NidoNews() : section == 'ranking'
+                ? NidoRanking(previewMode: repository.demo) : loading
                 ? const RoseLoading(label: 'Preparamos sus recuerdos…')
                 : RefreshIndicator(
                     onRefresh: _load,

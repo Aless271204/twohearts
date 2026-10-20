@@ -69,6 +69,11 @@ void main() {
       );
       await tester.pumpAndSettle();
       expect(find.textContaining('Demostración'), findsWidgets);
+      await tester.scrollUntilVisible(
+        find.text('Hoy elegimos pasar más tiempo juntos.'), 160,
+        scrollable: find.byType(Scrollable).last,
+      );
+      await tester.pumpAndSettle();
       expect(
         find.text('Hoy elegimos pasar más tiempo juntos.'),
         findsOneWidget,

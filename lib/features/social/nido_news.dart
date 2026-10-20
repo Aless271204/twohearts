@@ -87,7 +87,7 @@ class NidoNews extends StatefulWidget {
 }
 
 class _NidoNewsState extends State<NidoNews> {
-  String filter = 'Todo';
+  String filter = 'Noticias';
   @override
   Widget build(BuildContext context) {
     final articles = nidoArticles.where((a) => filter == 'Todo' || a.category == filter).toList()
@@ -102,8 +102,8 @@ class _NidoNewsState extends State<NidoNews> {
         const Text('Lo nuevo y pequeñas ayudas para disfrutar NIDO.',
             style: TextStyle(color: Color(0xFF6D5864))),
         const SizedBox(height: 12),
-        Wrap(spacing: 8, children: [for (final value in ['Todo', 'Noticias', 'Guía'])
-          ChoiceChip(label: Text(value == 'Guía' ? 'Guías' : value),
+        Wrap(spacing: 8, children: [for (final value in ['Noticias', 'Guía'])
+          ChoiceChip(label: Text(value == 'Guía' ? 'Guías' : 'Actualizaciones'),
             selected: filter == value, onSelected: (_) => setState(() => filter = value),
             selectedColor: const Color(0xFFFFDDE5),
             labelStyle: const TextStyle(color: Color(0xFF553744)))]),

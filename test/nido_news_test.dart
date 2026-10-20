@@ -8,10 +8,12 @@ void main() {
     addTearDown(() => tester.binding.setSurfaceSize(null));
     await tester.pumpWidget(const MaterialApp(home: Scaffold(body: NidoNews())));
     expect(find.text('Noticias y guías'), findsOneWidget);
+    await tester.tap(find.widgetWithText(ChoiceChip, 'Guías'));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Tu pequeña guía de NIDO'));
     await tester.pumpAndSettle();
     expect(find.text('Empieza por su Nido'), findsOneWidget);
-    await tester.tap(find.widgetWithText(ChoiceChip, 'Noticias'));
+    await tester.tap(find.widgetWithText(ChoiceChip, 'Actualizaciones'));
     await tester.pumpAndSettle();
     expect(find.text('Las novedades tienen un lugar aquí'), findsOneWidget);
     expect(find.text('Tu pequeña guía de NIDO'), findsNothing);
