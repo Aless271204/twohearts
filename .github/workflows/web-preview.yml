@@ -18,17 +18,19 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - name: Wait for the exact tested build
-        env:
-          GH_TOKEN: ${{ github.token }}
-          GH_REPO: ${{ github.repository }}
-        run: gh run watch 39190126840 --exit-status --interval 30
-      - uses: actions/download-artifact@v4
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
         with:
-          name: twohearts-web
-          run-id: 39190126840
-          github-token: ${{ github.token }}
-          path: preview
+          channel: stable
+          cache: true
+      - run: flutter pub get
+      - name: Check welcome and Social guides
+        run: flutter test test/login_welcome_test.dart test/nido_news_test.dart test/social_test.dart
+      - name: Build this exact web revision
+        run: |
+          python3 -c "import json; d=json.load(open('env.json')); json.dump({k:d[k] for k in ['SUPABASE_URL','SUPABASE_ANON_KEY','GOOGLE_WEB_CLIENT_ID'] if k in d},open('build-env.json','w'))"
+          flutter build web --release --dart-define-from-file=build-env.json
+          mv build/web preview
       - name: Prepare subdirectory hosting
         run: |
           python3 - <<'PY'

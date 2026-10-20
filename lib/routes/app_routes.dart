@@ -39,7 +39,12 @@ final GoRouter appRouter = GoRouter(
         state.matchedLocation == AppRoutes.initial ||
         state.matchedLocation == AppRoutes.signUpLogin;
 
-    if (isLoggedIn && LoginWelcomeSession.instance.needsWelcome(session.user.id) &&
+    final welcomeDone = session?.user.userMetadata?['nido_welcome_complete'] == true;
+    if (isLoggedIn && state.matchedLocation == AppRoutes.welcomeScreen &&
+        (welcomeDone || !LoginWelcomeSession.instance.needsWelcome(session.user.id))) {
+      return AppRoutes.memoriesScreen;
+    }
+    if (isLoggedIn && !welcomeDone && LoginWelcomeSession.instance.needsWelcome(session.user.id) &&
         state.matchedLocation != AppRoutes.welcomeScreen) {
       final next = isOnAuth ? AppRoutes.memoriesScreen : state.uri.toString();
       return Uri(path: AppRoutes.welcomeScreen, queryParameters: {'next': next}).toString();
@@ -60,10 +65,15 @@ final GoRouter appRouter = GoRouter(
   routes: [
     GoRoute(
       path: AppRoutes.welcomeScreen,
-      builder: (context, state) => NidoWelcomeScreen(onFinished: () {
+      builder: (context, state) => NidoWelcomeScreen(onFinished: () async {
         final user = Supabase.instance.client.auth.currentUser;
         if (user == null) {context.go(AppRoutes.initial); return;}
-        LoginWelcomeSession.instance.complete(user.id);
+        await LoginWelcomeSession.instance.complete(user.id);
+        // Onboarding is presentation state, never an authorization claim.
+        unawaited(Supabase.instance.client.auth.updateUser(UserAttributes(
+          data: {'nido_welcome_complete': true},
+        )).then((_) {}).catchError((Object _) {}));
+        if (!context.mounted) return;
         final next = state.uri.queryParameters['next'];
         const allowed = [AppRoutes.socialScreen, AppRoutes.shopScreen,
           AppRoutes.memoriesScreen, AppRoutes.homeScreen, AppRoutes.activitiesScreen,

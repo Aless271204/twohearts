@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import './services/app_language.dart';
+import './services/login_welcome_session.dart';
 import 'package:sizer/sizer.dart';
 
 import './core/app_export.dart';
@@ -14,6 +15,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await AppLanguage.instance.initialize();
+  await LoginWelcomeSession.instance.initialize();
   bool initialized = false;
   // Initialize Supabase
   try {

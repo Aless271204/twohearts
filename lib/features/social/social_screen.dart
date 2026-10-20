@@ -7,6 +7,7 @@ import '../../widgets/twohearts_ui.dart';
 import '../../widgets/rose_ui.dart';
 import 'social_models.dart';
 import 'social_repository.dart';
+import 'nido_news.dart';
 
 class SocialScreen extends StatefulWidget {
   final SocialRepository? repository;
@@ -295,6 +296,7 @@ class _SocialScreenState extends State<SocialScreen>
               segments: const [
                 ButtonSegment(value: 'friends', label: Text('Amigos')),
                 ButtonSegment(value: 'discover', label: Text('Descubrir')),
+                ButtonSegment(value: 'news', label: Text('Noticias')),
               ],
               selected: {mode},
               onSelectionChanged: (v) {
@@ -303,11 +305,11 @@ class _SocialScreenState extends State<SocialScreen>
                   posts = [];
                   loading = true;
                 });
-                _load();
+                if (mode != 'news') _load();
               },
             ),
           ),
-          if (error != null)
+          if (error != null && mode != 'news')
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Column(
@@ -318,7 +320,7 @@ class _SocialScreenState extends State<SocialScreen>
               ),
             ),
           Expanded(
-            child: loading
+            child: mode == 'news' ? const NidoNews() : loading
                 ? const RoseLoading(label: 'Preparamos sus recuerdos…')
                 : RefreshIndicator(
                     onRefresh: _load,
