@@ -79,6 +79,7 @@ class _SocialScreenState extends State<SocialScreen>
   }
 
   Future<void> _load({bool append = false}) async {
+    if (mode == 'news') return;
     final request = ++generation;
     if (repository.userId == null) {
       if (mounted)
