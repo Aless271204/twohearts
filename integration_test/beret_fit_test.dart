@@ -80,11 +80,14 @@ void main() {
             'appearance': jsonEncode({'pet_head': appearance}),
           },
         );
+        await controller.runJavaScript(
+          "document.body.classList.remove('pet-ready');document.body.dataset.qaStale='1';",
+        );
         await controller.loadRequest(uri);
         await waitFor(
           tester,
           controller,
-          "location.href===${jsonEncode(uri.toString())} && document.body.classList.contains('pet-ready')",
+          "location.href===${jsonEncode(uri.toString())} && !document.body.hasAttribute('data-qa-stale') && document.body.classList.contains('pet-ready') && ${frame.$1 == 'Rest' ? 'true' : "document.body.dataset.petAnimation===${jsonEncode(frame.$1)}"}",
           '$species ${frame.$1}',
         );
         await tester.pump(const Duration(seconds: 2));
