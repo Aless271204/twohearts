@@ -54,7 +54,9 @@ export function addGarden(world,s,art={}){
  // Dense painted ivy gives continuous organic foliage, rather than sparse
  // floating leaf cards. Rounded crowns break the grid silhouette above walls.
  const hedge=new T.InstancedMesh(new T.BoxGeometry(1.96,1.18,1.96,1,1,1),gardenMaterial('#b6cdb3',art.ivy),walls.length);
- const crowns=new T.InstancedMesh(new T.SphereGeometry(1,12,8),gardenMaterial('#b6cdb3',art.ivy),walls.length*2);
+ const breeze={value:0};
+ const ivyMaterial=hedge.material;ivyMaterial.onBeforeCompile=shader=>{shader.uniforms.nidoBreeze=breeze;shader.vertexShader='uniform float nidoBreeze;\n'+shader.vertexShader;shader.vertexShader=shader.vertexShader.replace('#include <begin_vertex>','#include <begin_vertex>\ntransformed.x += sin(nidoBreeze * 0.9 + instanceMatrix[3].x * 0.7 + position.y * 2.0) * 0.012 * max(position.y, 0.0);');};
+ const crowns=new T.InstancedMesh(new T.SphereGeometry(1,12,8),ivyMaterial,walls.length*2);
  walls.forEach((cell,i)=>{const x=cell%s.size,z=Math.floor(cell/s.size),zone=districtAt(s,x,z);
   o.position.set(x*2,1.22,z*2);o.scale.setScalar(1);o.rotation.set(0,0,0);o.updateMatrix();hedge.setMatrixAt(i,o.matrix);
   const tint=new T.Color(['#d8ebd7','#bdded5','#c2cde0'][zone]);hedge.setColorAt(i,tint);
@@ -91,7 +93,7 @@ export function addGarden(world,s,art={}){
  const moon=mesh(new T.SphereGeometry(1.1,20,12),new T.MeshBasicMaterial({color:cream}),world,s.size,16,-24);moon.material.fog=false;
  const stars=new T.InstancedMesh(new T.OctahedronGeometry(.045),new T.MeshBasicMaterial({color:'#f5d8a5',fog:false}),45);
  for(let i=0;i<45;i++){o.position.set(Math.sin(i*7)*s.size+s.size,7+(i%9)*.7,Math.cos(i*5)*s.size+s.size);o.scale.setScalar(.6+(i%3)*.3);o.rotation.set(0,0,0);o.updateMatrix();stars.setMatrixAt(i,o.matrix);}world.add(stars);
- return {update(time){for(let i=0;i<flies.count;i++){const cell=cells[i],x=cell%s.size*2,z=Math.floor(cell/s.size)*2;o.position.set(x+Math.sin(time*.6+i)*.55,.65+(i%4)*.22+Math.sin(time+i)*.12,z+Math.cos(time*.5+i)*.55);o.scale.setScalar(.7+Math.sin(time*2+i)*.3);o.rotation.set(0,0,0);o.updateMatrix();flies.setMatrixAt(i,o.matrix);}flies.instanceMatrix.needsUpdate=true;}};
+ return {lampPositions:lampCells.map(cell=>new T.Vector3(cell%s.size*2,.92,Math.floor(cell/s.size)*2)),update(time){breeze.value=time;for(let i=0;i<flies.count;i++){const cell=cells[i],x=cell%s.size*2,z=Math.floor(cell/s.size)*2;o.position.set(x+Math.sin(time*.6+i)*.55,.65+(i%4)*.22+Math.sin(time+i)*.12,z+Math.cos(time*.5+i)*.55);o.scale.setScalar(.7+Math.sin(time*2+i)*.3);o.rotation.set(0,0,0);o.updateMatrix();flies.setMatrixAt(i,o.matrix);}flies.instanceMatrix.needsUpdate=true;}};
 }
 export function createFriendlyBats(){
  const group=new T.Group(),body=material('#9a79b4'),pink=material('#e6a8b7');
