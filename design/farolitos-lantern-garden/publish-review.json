@@ -1,15 +1,20 @@
 {
-  "review_commit": "764bc0f3053bb246e32b289dd01f84c861d2c47b",
-  "native_run_id": 39672382708,
+  "review_commit": "fe1e6301cb169523952a6ea445317d0cbdaacf0e",
+  "native_run_id": 39676894053,
   "status_context": "nido/farolitos-visual",
   "sources_sha256": {
+    "assets/runner/maze/art-materials.js": "368a739de7c0889fb5330948c02ac23ecc89b7182707bfbfdffde616bfa50d9d",
     "assets/runner/maze/engine.js": "db920d2d99e4285ea7de34e27ce3436417163d3b760e7e40442f3b1bd7e6b519",
-    "assets/runner/maze/garden.js": "4599e3209f5627df16530d94cf5c0b4460e573a8c67ee85bba4e4ee86e1a9d66",
+    "assets/runner/maze/garden.js": "9720304091c9559555f24b45ae5c9c9c0cfda8b01c79baa533f53d062fe8ee1b",
     "assets/runner/maze/halloween.js": "9312062d2a414c18031edca73222531e3093724386e79b5753e47cf7b87f187e",
-    "assets/runner/maze/index.html": "3a90ca38346bbad4b88a03fc30a4ce00d36d019b592ba1c3cd03b33f10427dd5",
-    "assets/runner/maze/main.js": "87ce930ae6cafdb65d984ddd603cc865a2044d5f8b2cdf0ed40576fd1cb923e7",
+    "assets/runner/maze/index.html": "7c83f89fa1067dda9f709eab1f2b31bdd2d729277ae6a679fb0f438b2fceffa8",
+    "assets/runner/maze/main.js": "f896fc9a4c98b1b8e6a9fe50f746820540e7a82b8366aa6cb73715531f805446",
     "assets/runner/maze/navigation.js": "494c647b027169dc5f05fb82e648499a6f99f248fab0f653ed7bd7ba4248696e",
     "assets/runner/maze/partner-motion.js": "fddad849447f751e01bcb20bf58d5367db30a72c670b787e85e95a50c8ebd748",
-    "assets/runner/maze/scene.js": "96ef03b78e711706ff6dc67c50e0bb88f90cf4eafd642b2197ef92c9df8b3fc6"
+    "assets/runner/maze/scene.js": "44627c94ee07bd6e3e67ddea42548ac2ffdd5a8d0a9d383f4a023fdbb630f626",
+    "assets/runner/maze/art/ivy.webp": "c0c4e7e1ea9425bb52e8113615a6de0bad8541c5018526afb2dd133df66a4355",
+    "assets/runner/maze/art/paving.webp": "ca345e8aea96bcb51f0ca24c008a0656c8d25575646a1684c83c7e23a952aef1",
+    "assets/runner/maze/art/sky.webp": "0679b6a512882821b989f9287fb528c337b1a4387bf78b161d38aa2cace2dd7f",
+    "assets/runner/maze/art/stone.webp": "643f9835ea0037013903674bcffbdc835469a6eb7731a31c0ec537d5fbb55f4b"
   }
 }

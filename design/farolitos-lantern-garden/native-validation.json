@@ -1,0 +1,42 @@
+{
+  "native_commit": "764bc0f3053bb246e32b289dd01f84c861d2c47b",
+  "native_run": 39672382708,
+  "frames": [
+    {
+      "file": "outputs/native-maze/39672382708/maze_explore.png",
+      "sha256": "87b2c11f24c910fcdf4ae9ffce5d3f09c3e37b64fb674a5d1688c0c2e0b29ffc",
+      "bytes": 116849,
+      "visually_inspected": true
+    },
+    {
+      "file": "outputs/native-maze/39672382708/maze_puzzle.png",
+      "sha256": "a717fd97f39627686e33a21b0124ebf64547003f9bbe034138ec3c8839bdd7c2",
+      "bytes": 58619,
+      "visually_inspected": true
+    },
+    {
+      "file": "outputs/native-maze/39672382708/maze_lantern_lit.png",
+      "sha256": "aa387947e02ba7ec8e399dc6e34897cc0705a87eb01e8759cfdd6b28bbdc3706",
+      "bytes": 130676,
+      "visually_inspected": true
+    },
+    {
+      "file": "outputs/native-maze/39672382708/maze_bridge.png",
+      "sha256": "169b466bcf42bb06adba6fbf83632c68f8b66b5496ee885471222e908ebbd330",
+      "bytes": 129914,
+      "visually_inspected": true
+    }
+  ],
+  "scope": "Actual Android WebView renderer: garden, symbol puzzle, lit lantern and bridge. Audio buffers loaded. This is not a test on two physical phones or a claim of reference-image equality.",
+  "sources_sha256": {
+    "assets/runner/maze/engine.js": "db920d2d99e4285ea7de34e27ce3436417163d3b760e7e40442f3b1bd7e6b519",
+    "assets/runner/maze/garden.js": "4599e3209f5627df16530d94cf5c0b4460e573a8c67ee85bba4e4ee86e1a9d66",
+    "assets/runner/maze/halloween.js": "9312062d2a414c18031edca73222531e3093724386e79b5753e47cf7b87f187e",
+    "assets/runner/maze/index.html": "3a90ca38346bbad4b88a03fc30a4ce00d36d019b592ba1c3cd03b33f10427dd5",
+    "assets/runner/maze/main.js": "87ce930ae6cafdb65d984ddd603cc865a2044d5f8b2cdf0ed40576fd1cb923e7",
+    "assets/runner/maze/navigation.js": "494c647b027169dc5f05fb82e648499a6f99f248fab0f653ed7bd7ba4248696e",
+    "assets/runner/maze/partner-motion.js": "fddad849447f751e01bcb20bf58d5367db30a72c670b787e85e95a50c8ebd748",
+    "assets/runner/maze/scene.js": "96ef03b78e711706ff6dc67c50e0bb88f90cf4eafd642b2197ef92c9df8b3fc6"
+  },
+  "apk_generated": false
+}

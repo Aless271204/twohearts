@@ -65,6 +65,7 @@ void main() {
     await c.runJavaScript("document.getElementById('begin').click()");
     await wait('qaApp.adventureSnapshot().draws>0');
     await wait('qaApp.adventureSnapshot().audioReady>=10');
+    await wait('qaApp.adventureSnapshot().artReady===4');
     await tester.runAsync(
       () => Future<void>.delayed(const Duration(seconds: 3)),
     );

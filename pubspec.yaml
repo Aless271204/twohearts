@@ -83,6 +83,7 @@ flutter:
     - assets/runner/
     - assets/runner/guardian/
     - assets/runner/maze/
+    - assets/runner/maze/art/
     - assets/runner/penalties/
     - assets/runner/snow/
     - assets/runner/penalties/art/

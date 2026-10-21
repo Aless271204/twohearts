@@ -1,0 +1,17 @@
+{
+  "tool": "built-in image_gen",
+  "purpose": "Playable 3D surface maps, not promotional screenshots",
+  "sources": {
+    "ivy": "exec-61baa258-1c5a-4c27-925f-cb56d53dae45.png",
+    "paving": "exec-604a530e-cbec-4f8e-839e-4e5ca0f468b1.png",
+    "stone": "exec-81b3f964-defe-43af-aa2d-e93e970c5f0b.png",
+    "sky": "exec-d23689c0-3158-490d-86a8-b2d20620f678.png"
+  },
+  "runtime": "Three shared 1024px WebP diffuse surface maps and one 1536x768px sky panorama",
+  "briefs": {
+    "ivy": "seamless dense overlapping teal ivy with tiny golden autumn accents, animated-film tactile detail",
+    "paving": "seamless orthographic irregular lavender grey cobblestones, rounded edges and narrow mossy mortar",
+    "stone": "seamless frontal lavender garden masonry, worn rounded blocks and moss joints",
+    "sky": "panoramic lavender and indigo clouds, warm twilight horizon and delicate stars, no land or props"
+  }
+}
