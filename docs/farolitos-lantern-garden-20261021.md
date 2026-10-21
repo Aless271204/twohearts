@@ -52,3 +52,9 @@ lavanda con remates dorados, sin asignar un color exclusivo a premio o sorpresa.
 
 Pendiente: revisar capturas reales de la candidata corregida en Android y
 actualizar la puerta de publicación solo después de inspeccionarlas.
+
+La primera captura de materiales (`outputs/native-maze/39676212995/`)
+confirma hiedra y adoquines cargados, pero muestra sobreexposición de la aleta
+y de la linterna por su propio foco. Se separó su sombreado pintado de esa
+iluminación cercana para conservar azul y latón. Esta captura todavía no
+incluye el cielo panorámico, los tres focos cálidos ni los cofres esmaltados.

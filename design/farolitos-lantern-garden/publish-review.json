@@ -1,6 +1,6 @@
 {
-  "review_commit": "fe1e6301cb169523952a6ea445317d0cbdaacf0e",
-  "native_run_id": 39676894053,
+  "review_commit": "ddf6a4eb5dc6c472835807b69211068384f2a5e1",
+  "native_run_id": 39677745980,
   "status_context": "nido/farolitos-visual",
   "sources_sha256": {
     "assets/runner/maze/art-materials.js": "368a739de7c0889fb5330948c02ac23ecc89b7182707bfbfdffde616bfa50d9d",
@@ -11,7 +11,7 @@
     "assets/runner/maze/main.js": "f896fc9a4c98b1b8e6a9fe50f746820540e7a82b8366aa6cb73715531f805446",
     "assets/runner/maze/navigation.js": "494c647b027169dc5f05fb82e648499a6f99f248fab0f653ed7bd7ba4248696e",
     "assets/runner/maze/partner-motion.js": "fddad849447f751e01bcb20bf58d5367db30a72c670b787e85e95a50c8ebd748",
-    "assets/runner/maze/scene.js": "44627c94ee07bd6e3e67ddea42548ac2ffdd5a8d0a9d383f4a023fdbb630f626",
+    "assets/runner/maze/scene.js": "245a60fd63ae9d966349f952dc0e045b404be309f62f80278bb8f23bb525cbfd",
     "assets/runner/maze/art/ivy.webp": "c0c4e7e1ea9425bb52e8113615a6de0bad8541c5018526afb2dd133df66a4355",
     "assets/runner/maze/art/paving.webp": "ca345e8aea96bcb51f0ca24c008a0656c8d25575646a1684c83c7e23a952aef1",
     "assets/runner/maze/art/sky.webp": "0679b6a512882821b989f9287fb528c337b1a4387bf78b161d38aa2cace2dd7f",
