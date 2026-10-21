@@ -22,7 +22,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "22"
-      - run: node --test --test-isolation=none test/small_beret_test.mjs test/runner_kilometre_test.mjs
+      - run: node --test test/small_beret_test.mjs test/runner_kilometre_test.mjs
       - uses: subosito/flutter-action@v2
         with:
           channel: stable
