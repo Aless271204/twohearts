@@ -9,16 +9,23 @@ import {bridgeIsOpen} from './engine.js';
 import {doorFacing} from './navigation.js';
 const PALETTES={halloween:{wall:'#a18ca4',ground:'#b7a08b',fog:'#494361',accent:'#ffb256',decor:'#dc813e'},christmas:{wall:'#8ba7a6',ground:'#cbd9db',fog:'#263d54',accent:'#ffd890',decor:'#dc6d6b'},easter:{wall:'#93ac85',ground:'#bda38e',fog:'#354951',accent:'#ffe6ab',decor:'#edbdd1'},garden:{wall:'#81976f',ground:'#9e8c6c',fog:'#243c3c',accent:'#f9d48c',decor:'#f1c882'}};
 function roundedBox(w,h,d,r=.12){const s=new T.Shape(),x=-w/2,y=-h/2;s.moveTo(x+r,y);s.lineTo(x+w-r,y);s.quadraticCurveTo(x+w,y,x+w,y+r);s.lineTo(x+w,y+h-r);s.quadraticCurveTo(x+w,y+h,x+w-r,y+h);s.lineTo(x+r,y+h);s.quadraticCurveTo(x,y+h,x,y+h-r);s.lineTo(x,y+r);s.quadraticCurveTo(x,y,x+r,y);const g=new T.ExtrudeGeometry(s,{depth:d-2*r,bevelEnabled:true,bevelSize:r,bevelThickness:r,bevelSegments:2,steps:1,curveSegments:3});g.translate(0,0,-d/2+r);return g;}
+// The camera-held prop has baked soft shading. Its own spotlight must not
+// bleach the flipper and brass bezel at a few centimetres from the emitter.
+function paintedProp(geometry,color){
+ const normals=geometry.getAttribute('normal'),colors=new Float32Array(normals.count*3),base=new T.Color(color);
+ for(let i=0;i<normals.count;i++){const shade=.66+.34*Math.max(0,normals.getY(i)*.65+normals.getX(i)*-.35+normals.getZ(i)*.45);colors[i*3]=base.r*shade;colors[i*3+1]=base.g*shade;colors[i*3+2]=base.b*shade;}
+ geometry.setAttribute('color',new T.BufferAttribute(colors,3));return new T.Mesh(geometry,new T.MeshBasicMaterial({vertexColors:true}));
+}
 export class MazeScene{
  constructor(canvas){
   this.renderer=new T.WebGLRenderer({canvas,antialias:true,powerPreference:'low-power'});this.renderer.setPixelRatio(Math.min(devicePixelRatio,1.25));this.renderer.outputColorSpace=T.SRGBColorSpace;this.renderer.toneMapping=T.ACESFilmicToneMapping;this.renderer.toneMappingExposure=1.05;
   this.art=loadGardenArt(this.renderer);this.scene=new T.Scene();this.warmLights=Array.from({length:3},()=>{const l=new T.PointLight('#ffbd68',0,4.7,1.7);this.scene.add(l);return l;});this.camera=new T.PerspectiveCamera(68,1,.05,45);this.scene.add(this.camera);this.ambient=new T.HemisphereLight('#c6c9ef','#3d3039',1.6);this.scene.add(this.ambient);this.scene.add(new T.AmbientLight('#fce4d3',.38));const moonlight=new T.DirectionalLight('#b5c4f0',2.3);moonlight.position.set(-4,9,3);this.scene.add(moonlight);
   this.lamp=new T.SpotLight('#ffe8ba',24,9.5,.45,.65,1.3);this.lamp.position.set(.17,-.1,0);this.camera.add(this.lamp);this.lampTarget=new T.Object3D();this.lampTarget.position.set(0,-.18,-6);this.camera.add(this.lampTarget);this.lamp.target=this.lampTarget;
-  const hand=new T.Mesh(new T.SphereGeometry(.14,12,8),new T.MeshStandardMaterial({color:'#263c55',roughness:.9}));hand.scale.set(.85,.85,1.6);hand.position.set(.28,-.3,-.45);this.camera.add(hand);
-  const torch=new T.Mesh(new T.CylinderGeometry(.075,.065,.38,12),new T.MeshStandardMaterial({color:'#b29868',metalness:.45,roughness:.5}));torch.rotation.x=Math.PI/2;torch.position.set(.28,-.26,-.57);this.camera.add(torch);this.torchParts=[hand,torch];this.torchOrigins=new Map([[hand,hand.position.clone()],[torch,torch.position.clone()]]);
-  const bezel=new T.Mesh(new T.CylinderGeometry(.115,.09,.13,16),this.material('#d8b46d'));bezel.rotation.x=Math.PI/2;bezel.position.set(.28,-.26,-.79);this.camera.add(bezel);this.torchParts.push(bezel);this.torchOrigins.set(bezel,bezel.position.clone());
+  const hand=paintedProp(new T.SphereGeometry(.14,12,8),'#26394e');hand.scale.set(.85,.85,1.6);hand.position.set(.28,-.3,-.45);this.camera.add(hand);
+  const torch=paintedProp(new T.CylinderGeometry(.075,.065,.38,12),'#35475c');torch.rotation.x=Math.PI/2;torch.position.set(.28,-.26,-.57);this.camera.add(torch);this.torchParts=[hand,torch];this.torchOrigins=new Map([[hand,hand.position.clone()],[torch,torch.position.clone()]]);
+  const bezel=paintedProp(new T.CylinderGeometry(.115,.09,.13,16),'#e2b460');bezel.rotation.x=Math.PI/2;bezel.position.set(.28,-.26,-.79);this.camera.add(bezel);this.torchParts.push(bezel);this.torchOrigins.set(bezel,bezel.position.clone());
   const lens=new T.Mesh(new T.CircleGeometry(.094,16),new T.MeshBasicMaterial({color:'#fff1bd',side:T.DoubleSide}));lens.position.set(.28,-.26,-.86);this.camera.add(lens);this.torchParts.push(lens);this.torchOrigins.set(lens,lens.position.clone());
-  for(let i=0;i<3;i++){const grip=new T.Mesh(new T.TorusGeometry(.078,.008,5,12),this.material('#846d51'));grip.position.set(.28,-.26,-.48-i*.065);this.camera.add(grip);this.torchParts.push(grip);this.torchOrigins.set(grip,grip.position.clone());}
+  for(let i=0;i<3;i++){const grip=paintedProp(new T.TorusGeometry(.078,.008,5,12),'#c09a59');grip.position.set(.28,-.26,-.48-i*.065);this.camera.add(grip);this.torchParts.push(grip);this.torchOrigins.set(grip,grip.position.clone());}
   this.world=new T.Group();this.scene.add(this.world);this.chests=new Map();this.traps=new Map();this.stations=new Map();this.bridges=new Map();this.yaw=0;this.pitch=0;this.viewYaw=0;this.viewPitch=0;this.preview=null;this.target=new T.Vector3();this.partner=new T.Group();this.partnerTarget=new T.Vector3();this.scene.add(this.partner);this.partner.visible=false;
   this.resize=()=>{this.renderer.setSize(innerWidth,innerHeight,false);this.camera.aspect=innerWidth/innerHeight;this.camera.updateProjectionMatrix();};addEventListener('resize',this.resize);this.resize();this.loadedKey='';this.time=0;
  }
