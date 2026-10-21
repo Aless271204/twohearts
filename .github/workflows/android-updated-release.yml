@@ -1,7 +1,6 @@
 name: NIDO updated Android 1.3.2
 on:
-  push:
-    branches: [codex/web-preview-129]
+  workflow_dispatch:
 permissions:
   contents: read
 concurrency:
