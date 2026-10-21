@@ -1,6 +1,6 @@
 import test from 'node:test';import assert from 'node:assert/strict';
 import {createMaze,publicMaze} from '../assets/runner/maze/engine.js';
-import {movementDirection,nearbyInteraction,objectiveText,MazeTrail,doorFacing} from '../assets/runner/maze/navigation.js';
+import {movementDirection,nearbyInteraction,nearbyInteractions,objectiveText,MazeTrail,doorFacing} from '../assets/runner/maze/navigation.js';
 
 test('exit door faces a walkable arrival corridor for every difficulty',()=>{
  for(const difficulty of ['easy','medium','hard'])for(let seed=0;seed<60;seed++){
@@ -28,4 +28,9 @@ test('trail reveals only immediate surroundings, resets for a new maze and updat
  s.players[0].x++;trail.update(s,0);assert.equal(trail.visited.size,2);
  const next=publicMaze(createMaze(18));trail.update(next,0);assert.equal(trail.visited.size,1);
  assert.match(objectiveText(s),/0\/3/);s.keys=3;assert.match(objectiveText(s),/puerta/);
+});
+
+test('overlapping interactions remain independently selectable rather than hiding a lantern behind a bridge',()=>{
+ const s=publicMaze(createMaze(17)),p=s.players[0];s.traps=[{id:7,x:p.x+1,z:p.z,used:false}];s.bridges=[{id:0,plate:{x:p.x,z:p.z},secured:false}];s.chests=[{id:0,x:p.x,z:p.z+1,lantern:true,revealed:false,opened:false}];
+ const choices=nearbyInteractions(s,0);assert.equal(choices.length,3);assert.deepEqual(choices.map(i=>i.action),['disarm','activate','open']);assert.equal(choices[2].label,'Iluminar');
 });

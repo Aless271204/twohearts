@@ -5,6 +5,7 @@ on:
 permissions:
   contents: read
   actions: read
+  statuses: read
   pages: write
   id-token: write
 concurrency:
@@ -22,7 +23,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "22"
-      - run: node --test test/small_beret_test.mjs test/runner_kilometre_test.mjs
+      - run: node --test test/small_beret_test.mjs test/runner_kilometre_test.mjs test/maze_engine_test.mjs test/maze_navigation_test.mjs test/maze_boot_test.mjs test/maze_adventure_test.mjs test/maze_scene_test.mjs test/maze_playthrough_test.mjs
       - uses: subosito/flutter-action@v2
         with:
           channel: stable
@@ -46,6 +47,10 @@ jobs:
           Path('preview/.nojekyll').touch()
           assert not Path('preview/env.json').exists()
           PY
+      - name: Require verified native Farolitos scene
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 scripts/check-maze-publish-review.py
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:

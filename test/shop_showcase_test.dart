@@ -8,10 +8,7 @@ import 'package:twohearts/core/store_packages.dart';
 
 void main() {
   test('every published bundle has a complete saved WebP showroom', () {
-    final sql = File(
-      'supabase/migrations/20261020204524_balanced_shop_bundles.sql',
-    ).readAsStringSync();
-    final bundles = jsonDecode(sql.split(r'$bundles$')[1]) as List;
+    final bundles = jsonDecode(File('test/fixtures/published-shop-bundles.json').readAsStringSync()) as List;
     expect(bundles, isNotEmpty);
     for (final bundle in bundles) {
       final file = File(
