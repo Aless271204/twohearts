@@ -129,7 +129,7 @@ let checkpointIndex=1,checkpointElapsed=0,checkpointBusy=false,checkpointFailed=
 let bestDistance=0;
 let sessionId=null,frames=[],pendingInputs=[],pendingSave=null,runElapsed=0;
 let lane=1,x=0,height=0,velocity=0,distance=0,coins=0,row=0,untilRow=0,last=performance.now();
-let toastUntil=0,animationId=0,needsRender=true;
+let toastUntil=0,animationId=0,needsRender=true,reviewWarmupFrames=0;
 let replayVersion=10,runSeed=0,powers=freshPowers();
 const speed=()=>runnerDifficulty(distance,replayVersion).speed*(replayVersion>=6?speedMultiplier(powers):1);
 // Read-only diagnostics for the standalone preview; absent in the app WebView.
@@ -287,10 +287,11 @@ function frame(now){
   if(frameSample>=2000){measuredFps=1000*frameCount/frameSample;frameSample=frameCount=0;
     if(measuredFps<42&&renderScale>.75){renderScale=Math.max(.75,renderScale-.125);renderer.setPixelRatio(renderScale);}}
   const microseconds=Math.max(1,Math.round(Math.min((now-last)/1000,.12)*1000000));const dt=microseconds/1000000;last=now;
-  // A paused inspection pose needs one render after loading or resizing.
+  // Let the canvas fade finish before freezing an inspection pose. Android
+  // can discard the first hidden WebGL frame before its compositor presents it.
   // The room and the playable runner keep their normal animation loop.
   const frozenReview=petOnly&&ready&&reviewPhase!==null;
-  if((paused||petOnly&&(document.hidden||petSuspended||frozenReview))&&!needsRender)return;
+  if((paused||petOnly&&(document.hidden||petSuspended||frozenReview&&reviewWarmupFrames>=12))&&!needsRender)return;
   needsRender=false;
   const simulationTime=dt;
   for(let remaining=simulationTime; running&&!paused&&remaining>0;){
@@ -385,6 +386,7 @@ function frame(now){
   if(!petOnly)updateCoinBatch();
   renderer.render(scene,camera);
   if(petOnly&&ready)document.body.classList.add('pet-ready');
+  if(frozenReview){reviewWarmupFrames++;document.body.dataset.reviewRenderedFrames=String(reviewWarmupFrames);}
   if(petOnly&&ready&&params.get('wardrobe_review')==='1'&&!document.body.dataset.reviewRendered){document.body.dataset.reviewRendered='true';window.parent.postMessage({type:'wardrobe-preview-ready',species},location.origin);}
 }
 function boardwalk(){const deck=createBridgeBelt();scene.add(deck);paths.push(deck);}

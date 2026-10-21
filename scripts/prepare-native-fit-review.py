@@ -32,6 +32,8 @@ s=s.replace("['penguin', 'bear', 'pig', 'chick']", "['penguin']")
 s=s.replace("        await tester.pump(const Duration(seconds: 2));", "        await tester.runAsync(() => Future<void>.delayed(const Duration(seconds: 12)));\n        await tester.pump();")
 s=s.replace("        await tester.pump(const Duration(seconds: 4));", "        await tester.runAsync(() => Future<void>.delayed(const Duration(seconds: 8)));\n        await tester.pump();")
 s=s.replace("        ('Rest', 0),\n        ('Rest', 90),\n        ('Rest', 180),\n", "").replace("        ('Regular_Jump', 0),\n", "")
+s=s.replace("    final controller = await ready.future.timeout(const Duration(seconds: 45));", "    final controller = await ready.future.timeout(const Duration(seconds: 45));\n    await tester.pump();")
+s=s.replace("          '$species ${frame.$1}',\n        );", "          '$species ${frame.$1}',\n        );\n        await controller.runJavaScript('window.petResume?.()');\n        await waitFor(tester,controller,\"Number(document.body.dataset.reviewRenderedFrames)>=12 && getComputedStyle(document.getElementById('pet-loader')).display==='none' && Number(getComputedStyle(document.querySelector('canvas')).opacity)===1\",'Visible review frame');")
 s+='''
 Future<void> waitFor(WidgetTester tester, WebViewController controller, String expression, String label) async {
  final end=DateTime.now().add(const Duration(seconds:90));
