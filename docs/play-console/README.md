@@ -8,7 +8,7 @@ Estado: candidata de pruebas, NO autorizada para producción ni enviada a Google
 - Nombre 1.3.2; versionCode 2030; App Bundle firmado con la identidad existente.
 - Identificador Play propuesto: `app.nido.twohearts`. Es permanente una vez publicado: comprobar disponibilidad al crear la app.
 - Las instalaciones laterales antiguas conservan `com.example.twohearts`. No afirmar que el paquete de Play actualiza esas instalaciones; es una instalación distinta. La cuenta online conserva sus datos.
-- Android objetivo mínimo36; Java17; SDK compilación37; firma de depuración prohibida.
+- Android objetivo36; Java17; SDK compilación36; firma de depuración prohibida.
 - No activa compras reales ni anuncios reales. `purchasesEnabled=false`; `NIDO_LIVE_ADS` no definido.
 - El flujo solo genera artefactos; no publica fichas ni sube a Play.
 
