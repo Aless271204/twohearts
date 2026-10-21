@@ -49,6 +49,19 @@ export function addGarden(world,s){
  const walls=[];for(let i=0;i<s.grid.length;i++)if(s.grid[i])walls.push(i);
  const hedge=new T.InstancedMesh(new T.SphereGeometry(1,10,7),material('#ffffff'),walls.length*2),o=new T.Object3D();
  const colors=['#618571','#70988e','#9385a4'];walls.forEach((cell,i)=>{const x=cell%s.size,z=Math.floor(cell/s.size),zone=districtAt(s,x,z);for(let k=0;k<2;k++){o.position.set(x*2+(k?-.3:.3),1.3+(cell%3)*.035,z*2);o.scale.set(.98,.78,1);o.rotation.set(0,cell*.43,0);o.updateMatrix();hedge.setMatrixAt(i*2+k,o.matrix);hedge.setColorAt(i*2+k,new T.Color(colors[zone]));}});world.add(hedge);
+ // Leaf detail follows only faces exposed to a path; one shared geometry/draw.
+ const faces=[];for(const cell of walls){const x=cell%s.size,z=Math.floor(cell/s.size);for(const [dx,dz]of[[1,0],[-1,0],[0,1],[0,-1]]){const nx=x+dx,nz=z+dz;if(nx>=0&&nz>=0&&nx<s.size&&nz<s.size&&!s.grid[nz*s.size+nx])faces.push({x,z,dx,dz});}}
+ const leafShape=new T.Shape();leafShape.moveTo(0,-.1);leafShape.quadraticCurveTo(-.09,-.01,0,.11);leafShape.quadraticCurveTo(.09,.01,0,-.1);
+ const leafMaterial=material('#ffffff');leafMaterial.side=T.DoubleSide;
+ const hedgeLeaves=new T.InstancedMesh(new T.ShapeGeometry(leafShape,3),leafMaterial,faces.length*12);
+ const seams=new T.InstancedMesh(new T.BoxGeometry(1.98,.014,.02),material('#93829b'),faces.length*2);
+ const joints=new T.InstancedMesh(new T.BoxGeometry(.014,.19,.02),material('#93829b'),faces.length*4);
+ const leafColors=['#729774','#a0b67c','#598b72','#90ad95'];
+ faces.forEach((f,i)=>{const yaw=Math.atan2(f.dx,f.dz);for(let k=0;k<12;k++){const row=Math.floor(k/4),u=(k%4-1.5)*.44+Math.sin(i*5+k)*.06;
+  o.position.set(f.x*2+f.dx*1.015+f.dz*u,.85+row*.36+Math.sin(i+k)*.06,f.z*2+f.dz*1.015-f.dx*u);o.rotation.set(0,yaw,Math.sin(k*3+i)*.65);o.scale.setScalar(.85+(k%3)*.25);o.updateMatrix();hedgeLeaves.setMatrixAt(i*12+k,o.matrix);hedgeLeaves.setColorAt(i*12+k,new T.Color(leafColors[(i+k)%leafColors.length]));}
+  for(let k=0;k<2;k++){o.position.set(f.x*2+f.dx*1.015,.19+k*.23,f.z*2+f.dz*1.015);o.rotation.set(0,yaw,0);o.scale.setScalar(1);o.updateMatrix();seams.setMatrixAt(i*2+k,o.matrix);}
+  for(let k=0;k<4;k++){const u=(k%2-.5)*.84+(k>1?.21:0);o.position.set(f.x*2+f.dx*1.025+f.dz*u,.09+Math.floor(k/2)*.23,f.z*2+f.dz*1.025-f.dx*u);o.rotation.set(0,yaw,0);o.updateMatrix();joints.setMatrixAt(i*4+k,o.matrix);}
+ });world.add(hedgeLeaves,seams,joints);
  // Shared instances keep the garden inexpensive: no light or shadow per firefly.
  const cells=[];for(let i=0;i<s.grid.length;i++)if(!s.grid[i]&&i%3===0)cells.push(i);
  const leaves=new T.InstancedMesh(new T.SphereGeometry(1,5,3),material('#d8aa67'),cells.length*3),flies=new T.InstancedMesh(new T.SphereGeometry(.025,5,4),new T.MeshBasicMaterial({color:'#ffdf8f'}),Math.min(90,cells.length));
@@ -62,6 +75,12 @@ export function addGarden(world,s){
   o.scale.setScalar(1);o.rotation.set(0,0,0);o.position.set(x*2+dx,.4,z*2+dz);o.updateMatrix();posts.setMatrixAt(i,o.matrix);
   o.position.y=.89;o.updateMatrix();lamps.setMatrixAt(i,o.matrix);o.position.y=1.065;o.updateMatrix();roofs.setMatrixAt(i,o.matrix);
  });world.add(posts,lamps,roofs);
+ // Small flowering plants along path edges; petals are instanced, not textures.
+ const plants=lampCells.slice(0,12),stalks=new T.InstancedMesh(new T.CylinderGeometry(.012,.016,.25,5),material('#8a9c64'),plants.length),petals=new T.InstancedMesh(new T.SphereGeometry(1,6,4),material('#e8b8bd'),plants.length*5),centers=new T.InstancedMesh(new T.SphereGeometry(.045,7,5),material('#ffe3a1'),plants.length);
+ plants.forEach((cell,i)=>{const x=cell%s.size,z=Math.floor(cell/s.size),edge=[[1,0],[-1,0],[0,1],[0,-1]].find(([dx,dz])=>s.grid[(z+dz)*s.size+x+dx])??[1,0],px=x*2+edge[0]*.7,pz=z*2+edge[1]*.7;
+  o.rotation.set(0,0,0);o.scale.setScalar(1);o.position.set(px,.12,pz);o.updateMatrix();stalks.setMatrixAt(i,o.matrix);
+  for(let k=0;k<5;k++){const a=k*Math.PI*2/5;o.position.set(px+Math.cos(a)*.07,.27+Math.sin(a)*.07,pz);o.scale.set(.06,.065,.025);o.updateMatrix();petals.setMatrixAt(i*5+k,o.matrix);}o.position.set(px,.27,pz+.025);o.scale.setScalar(1);o.updateMatrix();centers.setMatrixAt(i,o.matrix);
+ });world.add(stalks,petals,centers);
  const moon=mesh(new T.SphereGeometry(1.1,20,12),new T.MeshBasicMaterial({color:cream}),world,s.size,16,-24);moon.material.fog=false;
  const stars=new T.InstancedMesh(new T.OctahedronGeometry(.045),new T.MeshBasicMaterial({color:'#f5d8a5',fog:false}),45);
  for(let i=0;i<45;i++){o.position.set(Math.sin(i*7)*s.size+s.size,7+(i%9)*.7,Math.cos(i*5)*s.size+s.size);o.scale.setScalar(.6+(i%3)*.3);o.rotation.set(0,0,0);o.updateMatrix();stars.setMatrixAt(i,o.matrix);}world.add(stars);
