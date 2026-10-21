@@ -1,6 +1,6 @@
 import {SceneSound} from '../scene-sound.js';
 import {createMaze,mazeAction,publicMaze,mazeReward,bridgeIsOpen} from './engine.js';
-import {MazeScene} from './scene.js?revision=lantern-garden-2';
+import {MazeScene} from './scene.js?revision=painted-garden-3';
 import {STEP_MS,movementDirection,nearbyInteraction,nearbyInteractions,objectiveText,MazeTrail,companionBearing,adventureBearing,districtAt,DISTRICTS} from './navigation.js';
 const $=id=>document.getElementById(id);let scene,room=null,practice=false,full=null,state=null,side=0,busy=false,active=false,flashlight=true,noticeRevision=-1,revision=0,gameKey='',partnerRequested=false,poll=null,walking=null,requestID=0,sound=null,volume=.45,surpriseTimer,drawID,last=performance.now(),lastDraw=0;
 const pending=new Map(),bridge=()=>!!globalThis.RunnerBridge||parent!==window;
@@ -77,4 +77,4 @@ try{scene=new MazeScene($('scene'));$('load').textContent='La linterna ilumina s
 addEventListener('pagehide',()=>{active=false;stopWalking();clearInterval(poll);clearInterval(musicTimer);clearTimeout(surpriseTimer);cancelAnimationFrame(drawID);ambience.close();scene?.dispose();for(const p of pending.values()){clearTimeout(p.timer);p.reject(Error('Juego cerrado'));}pending.clear();},{once:true});
 
 // Read-only diagnostics for native rendering and accessibility QA.
-export function adventureSnapshot(){return {state:structuredClone(state),yaw:scene?.yaw,active,paused:helpPaused,draws:scene?.renderer.info.render.calls,geometries:scene?.renderer.info.memory.geometries,audioReady:ambience.buffers.size};}
+export function adventureSnapshot(){return {state:structuredClone(state),yaw:scene?.yaw,active,paused:helpPaused,draws:scene?.renderer.info.render.calls,geometries:scene?.renderer.info.memory.geometries,artReady:Object.values(scene?.art??{}).filter(t=>t.userData.ready).length,artFailed:Object.values(scene?.art??{}).filter(t=>t.userData.failed).length,audioReady:ambience.buffers.size};}
