@@ -39,6 +39,22 @@ void main() {
       fail('Timed out: $expression');
     }
 
+    Future<void> capture(String name) async {
+      for (var i = 0; i < 30; i++) {
+        await tester.runAsync(
+          () => Future<void>.delayed(const Duration(milliseconds: 100)),
+        );
+        await tester.pump();
+      }
+      print('QA_FRAME=$name');
+      for (var i = 0; i < 40; i++) {
+        await tester.runAsync(
+          () => Future<void>.delayed(const Duration(milliseconds: 100)),
+        );
+        await tester.pump();
+      }
+    }
+
     await wait("document.getElementById('solo')?.onclick!=null");
     await c.runJavaScript(
       "window.qaErrors=[];addEventListener('error',e=>qaErrors.push(e.message));window.qaDone=false;window.qaFailure=null;window.qaApp={adventureSnapshot:()=>window.nidoAdventureSnapshot()}",
@@ -53,7 +69,7 @@ void main() {
       () => Future<void>.delayed(const Duration(seconds: 3)),
     );
     await tester.pump();
-    print('QA_FRAME=maze_explore');
+    await capture('maze_explore');
     await tester.runAsync(
       () => Future<void>.delayed(const Duration(seconds: 3)),
     );
@@ -88,7 +104,7 @@ void main() {
       (await c.runJavaScriptReturningResult('window.qaFailure')).toString(),
       'null',
     );
-    print('QA_FRAME=maze_puzzle');
+    await capture('maze_puzzle');
     await tester.runAsync(
       () => Future<void>.delayed(const Duration(seconds: 3)),
     );
@@ -101,7 +117,7 @@ void main() {
       () => Future<void>.delayed(const Duration(seconds: 2)),
     );
     await tester.pump();
-    print('QA_FRAME=maze_lantern_lit');
+    await capture('maze_lantern_lit');
     await tester.runAsync(
       () => Future<void>.delayed(const Duration(seconds: 3)),
     );
@@ -109,7 +125,7 @@ void main() {
       "window.qaDone=false;qaGo(qaApp.adventureSnapshot().state.bridges[0].plate).then(()=>qaApp.adventureSnapshot().state.bridges[0].secured?null:qaChoose('activate',0)).then(()=>{const s=qaApp.adventureSnapshot().state,b=s.bridges[0],p=s.players[0],yaw=Math.atan2(-(b.x-p.x),-(b.z-p.z)),d=yaw-qaApp.adventureSnapshot().yaw,v=document.getElementById('look');v.dispatchEvent(new PointerEvent('pointerdown',{pointerId:1,clientX:400,clientY:180}));v.dispatchEvent(new PointerEvent('pointermove',{pointerId:1,clientX:400-d/.006,clientY:180}));v.dispatchEvent(new PointerEvent('pointerup',{pointerId:1}));window.qaDone=true;}).catch(e=>{window.qaFailure=String(e);window.qaDone=true;})",
     );
     await wait('window.qaDone');
-    print('QA_FRAME=maze_bridge');
+    await capture('maze_bridge');
     await tester.runAsync(
       () => Future<void>.delayed(const Duration(seconds: 3)),
     );

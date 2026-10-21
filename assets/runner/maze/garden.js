@@ -11,7 +11,7 @@ export function symbolTexture(pattern){
 }
 export function createLanternStation(c){
  const group=new T.Group(),stone=material('#8e758d'),rim=material(gold),glow=material('#ffe6a2',.08);
- mesh(new T.CylinderGeometry(.48,.58,.16,12),stone,group,0,.08);
+ mesh(new T.CylinderGeometry(.4,.46,.16,12),stone,group,0,.08);
  mesh(new T.CylinderGeometry(.33,.43,.72,12),stone,group,0,.48);
  mesh(new T.CylinderGeometry(.48,.4,.13,12),rim,group,0,.89);
  const lantern=new T.Group();group.add(lantern);lantern.position.y=.96;
@@ -47,8 +47,8 @@ export function createBridge(b){
 }
 export function addGarden(world,s){
  const walls=[];for(let i=0;i<s.grid.length;i++)if(s.grid[i])walls.push(i);
- const hedge=new T.InstancedMesh(new T.SphereGeometry(1,8,6),material('#42685b'),walls.length*2),o=new T.Object3D();
- const colors=['#618571','#70988e','#9385a4'];walls.forEach((cell,i)=>{const x=cell%s.size,z=Math.floor(cell/s.size),zone=districtAt(s,x,z);for(let k=0;k<2;k++){o.position.set(x*2+(k?-.3:.3),2.45+(cell%3)*.035,z*2);o.scale.set(.98,.78,1);o.rotation.set(0,cell*.43,0);o.updateMatrix();hedge.setMatrixAt(i*2+k,o.matrix);hedge.setColorAt(i*2+k,new T.Color(colors[zone]));}});world.add(hedge);
+ const hedge=new T.InstancedMesh(new T.SphereGeometry(1,10,7),material('#ffffff'),walls.length*2),o=new T.Object3D();
+ const colors=['#618571','#70988e','#9385a4'];walls.forEach((cell,i)=>{const x=cell%s.size,z=Math.floor(cell/s.size),zone=districtAt(s,x,z);for(let k=0;k<2;k++){o.position.set(x*2+(k?-.3:.3),1.3+(cell%3)*.035,z*2);o.scale.set(.98,.78,1);o.rotation.set(0,cell*.43,0);o.updateMatrix();hedge.setMatrixAt(i*2+k,o.matrix);hedge.setColorAt(i*2+k,new T.Color(colors[zone]));}});world.add(hedge);
  // Shared instances keep the garden inexpensive: no light or shadow per firefly.
  const cells=[];for(let i=0;i<s.grid.length;i++)if(!s.grid[i]&&i%3===0)cells.push(i);
  const leaves=new T.InstancedMesh(new T.SphereGeometry(1,5,3),material('#d8aa67'),cells.length*3),flies=new T.InstancedMesh(new T.SphereGeometry(.025,5,4),new T.MeshBasicMaterial({color:'#ffdf8f'}),Math.min(90,cells.length));
