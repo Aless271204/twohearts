@@ -20,7 +20,7 @@ Estado: candidata de pruebas, NO autorizada para producción ni enviada a Google
 4. Confirmar Google Play App Signing y guardar una copia segura de la clave existente; nunca adjuntar el P12 ni contraseñas a esta carpeta.
 5. Completar Seguridad de datos, anuncios, clasificación de contenido, público objetivo y acceso a la app con credenciales de prueba creadas expresamente. No usar credenciales del propietario.
 6. Capturar al menos dos pantallas reales Android de esta compilación y revisar el informe previo al lanzamiento. Las imágenes conceptuales no son capturas.
-7. Comprobar páginas de16KB de todas las bibliotecas nativas y la firma del AAB. El control ZIP no sustituye ese análisis.
+7. Comprobar páginas de16KB de todas las bibliotecas nativas y la firma del AAB. El control ZIP no sustituye ese análisis. El flujo ahora verifica el certificado esperado, recursos de juegos y alineación ELF de bibliotecas de64bits. Falta la prueba en un dispositivo/emulador16KB y el informe de Play.
 8. Probar dos teléfonos: vinculación, inventario/ropa, ubicación consentida, salas y recompensas. La revisión visual de Chrome quedó bloqueada por la herramienta y NO se ha certificado.
 9. Revisar versión nueva y límites de descarga en el explorador del App Bundle. El tamaño bruto de recursos no equivale al tamaño de descarga por dispositivo.
 10. Cuenta personal nueva: prueba cerrada con12 participantes inscritos continuamente14 días; luego solicitar acceso a producción. La prueba interna es opcional y no sustituye esa prueba cerrada.

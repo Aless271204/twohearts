@@ -69,9 +69,9 @@ function createRiverLevel(seed,difficulty){
 }
 
 // Expedition total: 10 remaining loot points per coin; solo earns half.
-// Only the server credits a verified victory. Partner settlement splits this
+// Only the server credits a verified terminal run. Partner settlement splits this
 // total between accounts, so the shared wallet never receives it twice.
 export function rewardFor(state){
-  if(state.status!=='victory')return 0;
-  return Math.floor(Math.max(0,Number(state.gold)||0)/(state.mode==='partner'?10:20));
+  if(!['victory','defeat'].includes(state.status))return 0;
+  return Math.floor(Math.max(0,Number(state.gold)||0)/((state.mode==='partner'?10:20)*(state.status==='defeat'?2:1)));
 }

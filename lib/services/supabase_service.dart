@@ -87,7 +87,7 @@ class SupabaseService {
       if (kIsWeb) {
         await client.auth.signInWithOAuth(
           OAuthProvider.google,
-          redirectTo: 'https://twohearts1104.builtwithrocket.new',
+          redirectTo: Uri.base.replace(query: '', fragment: '').toString(),
         );
         return true;
       } else {

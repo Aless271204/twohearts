@@ -7,7 +7,7 @@ permissions:
   contents: read
 concurrency:
   group: nido-play-candidate
-  cancel-in-progress: false
+  cancel-in-progress: true
 jobs:
   bundle:
     runs-on: ubuntu-latest
@@ -36,6 +36,13 @@ jobs:
           channel: stable
           cache: true
       - run: flutter pub get
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: nido-gradle-${{ runner.os }}-${{ hashFiles('android/**/*.gradle.kts', 'android/gradle/wrapper/gradle-wrapper.properties') }}
+          restore-keys: nido-gradle-${{ runner.os }}-
       - run: flutter analyze --no-fatal-infos --no-fatal-warnings
       - run: flutter test test/login_welcome_test.dart test/local_asset_path_test.dart test/asset_byte_range_test.dart
       - name: Write public runtime configuration
