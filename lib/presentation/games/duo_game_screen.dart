@@ -10,7 +10,7 @@ import '../../services/supabase_service.dart';
 import '../../services/inventory_service.dart';
 import '../../core/duo_pong.dart';
 import '../../widgets/immersive_game.dart';
-import '../../widgets/duo_object_art.dart';
+import '../../widgets/quiz_answer_art.dart';
 import '../../widgets/quiz_reaction_card.dart';
 import '../../core/quiz_reactions.dart';
 
@@ -702,25 +702,21 @@ class _DuoGameScreenState extends State<DuoGameScreen>
           child: LayoutBuilder(
             builder: (context, box) => GestureDetector(
               behavior: HitTestBehavior.opaque,
-              onPanDown: (d) => setState(
-                () => paddle = (d.localPosition.dx / box.maxWidth)
-                    .clamp(.11, .89)
-                    .toDouble(),
-              ),
-              onPanUpdate: (d) => setState(
-                () => paddle = (d.localPosition.dx / box.maxWidth)
-                    .clamp(.11, .89)
-                    .toDouble(),
-              ),
-              child: AnimatedBuilder(
-                animation: frames,
-                builder: (context, _) => CustomPaint(
+              onPanDown: (d) => paddle = (d.localPosition.dx / box.maxWidth)
+                  .clamp(.11, .89)
+                  .toDouble(),
+              onPanUpdate: (d) => paddle = (d.localPosition.dx / box.maxWidth)
+                  .clamp(.11, .89)
+                  .toDouble(),
+              child: RepaintBoundary(
+                child: CustomPaint(
                   painter: _PongPainter(
                     s,
                     sideB,
-                    paddle,
-                    (elapsed.elapsedMilliseconds - receivedAt) / 1000,
+                    () => paddle,
+                    () => (elapsed.elapsedMilliseconds - receivedAt) / 1000,
                     inventory.loadout,
+                    frames,
                   ),
                 ),
               ),
@@ -996,27 +992,10 @@ class _DuoGameScreenState extends State<DuoGameScreen>
                     : null,
                 child: Row(
                   children: [
-                    if (DuoObjectArt.forAnswer(options[i]) case final int art)
-                      DuoObjectArt(index: art, size: 68)
-                    else
-                      Container(
-                        width: 54,
-                        height: 54,
-                        margin: const EdgeInsets.all(7),
-                        alignment: Alignment.center,
-                        decoration: const BoxDecoration(
-                          color: Color(0xFFF1E5D5),
-                          shape: BoxShape.circle,
-                        ),
-                        child: Text(
-                          String.fromCharCode(65 + i),
-                          style: const TextStyle(
-                            fontFamily: 'NidoSerif',
-                            fontSize: 25,
-                            color: Color(0xFF725A45),
-                          ),
-                        ),
-                      ),
+                    QuizAnswerArt(
+                      answer: options[i],
+                      category: q['category']?.toString() ?? '',
+                    ),
                     const SizedBox(width: 10),
                     Expanded(
                       child: Text(
@@ -1257,9 +1236,18 @@ class _DuoGameScreenState extends State<DuoGameScreen>
 class _PongPainter extends CustomPainter {
   final Map<String, dynamic> s;
   final bool sideB;
-  final double mine, dt;
+  final double Function() positionNow, elapsedNow;
+  double get mine => positionNow();
+  double get dt => elapsedNow();
   final Map<String, InventoryItem> cosmetics;
-  _PongPainter(this.s, this.sideB, this.mine, this.dt, this.cosmetics);
+  _PongPainter(
+    this.s,
+    this.sideB,
+    this.positionNow,
+    this.elapsedNow,
+    this.cosmetics,
+    Listenable frames,
+  ) : super(repaint: frames);
   @override
   void paint(Canvas canvas, Size size) {
     if (cosmetics['pong_court'] != null)
@@ -1370,7 +1358,7 @@ class _PongPainter extends CustomPainter {
     );
     final y =
         ((s['y'] as num).toDouble() +
-                (s['vy'] as num).toDouble() * elapsed.clamp(0, .2))
+                (s['vy'] as num).toDouble() * elapsed.clamp(0, .35))
             .clamp(0.02, .98)
             .toDouble();
     final pos = Offset(

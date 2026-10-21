@@ -30,6 +30,7 @@ export class StadiumAudio{
   if(this.samples[kind]){const n=this.ctx.createBufferSource();n.buffer=this.samples[kind];n.connect(this.fx);n.start();n.onended=()=>n.disconnect();return;}
   if(kind==='tick')this.tone(660,660,.16,.12);
   if(kind==='timeup')this.tone(440,115,.48,.14);
+  if(kind==='firework'){this.burst(.32,1250,.24);this.tone(750,190,.35,.05,'triangle');}
   if(kind==='kick'){this.tone(145,42,.19,.7);this.burst(.09,1700,.32);}
   if(kind==='dive')this.burst(.38,900,.42);
   if(kind==='save'){this.burst(.16,430,.9);this.tone(105,55,.13,.25);}

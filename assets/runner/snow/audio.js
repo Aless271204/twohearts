@@ -7,7 +7,9 @@ export class SnowAudio{
   while(this.next<this.ctx.currentTime+.25){const b=this.beat++%32,ch=chords[Math.floor(b/8)],m=melody[Math.floor(b/2)];if(b%2===0)this.tone(440*2**((m-69)/12),this.next,.34,this.music*.11,'sine');if(b%8===0)for(const n of ch)this.tone(440*2**((n-69)/12),this.next,.95,this.music*.035,'triangle');if(b%4===0)this.tone(440*2**((ch[0]-12-69)/12),this.next,.22,this.music*.10,'sine');if(b%2===1)this.tone(1400,this.next,.035,this.music*.012,'triangle');this.next+=60/108/2;}
  }
  fx(kind,volume=1){if(!this.active||!this.ctx)return;const t=this.ctx.currentTime,v=this.effects*volume*.12;
-  if(kind==='throw')this.tone(260,t,.10,v,'sine',140);
+  if(kind==='countdown')this.tone(660,t,.12,v*.8);
+  else if(kind==='go'){this.tone(880,t,.16,v);this.tone(1100,t+.12,.22,v);}
+  else if(kind==='throw')this.tone(260,t,.10,v,'sine',140);
   else if(kind==='hit')this.tone(170,t,.16,v*1.5,'triangle',80);
   else if(kind==='jump')this.tone(280,t,.15,v*.55,'sine',440);
   else if(kind==='pickup'||kind==='gift')for(const [i,f]of [523,659,784].entries())this.tone(f,t+i*.075,.18,v*.65);

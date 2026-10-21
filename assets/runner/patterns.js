@@ -1,3 +1,4 @@
+import {kilometreEvent} from './kilometre-events.js';
 // Shared with the reward validator: a free lane always remains available.
 export function seedFromSession(id) {
   let h=2166136261;for(const c of String(id))h=Math.imul(h^c.charCodeAt(0),16777619);
@@ -5,6 +6,14 @@ export function seedFromSession(id) {
 }
 export function roll(seed,row,salt){let x=(seed^Math.imul(row+1,0x9e3779b9)^salt)>>>0;x^=x>>>16;x=Math.imul(x,0x85ebca6b);x^=x>>>13;return (x>>>0);}
 export function runnerRow(row, distance, version=3, seed=0) {
+  if(version>=11){
+    const base=runnerRow(row,distance,10,seed),event=kilometreEvent(distance),rollValue=roll(seed,row,173)%100;
+    if(!event.km)return base;
+    const safeLane=base.safeLane,extra=rollValue<Math.min(85,18+event.km*6);
+    const obstacleLanes=extra?[0,1,2].filter(lane=>lane!==safeLane):base.obstacleLanes;
+    const kinds={rocks:'rock',fences:'fence',leaves:'rock',ice:'rock',collapse:'collapse',trees:rollValue<45?'tree':'collapse'};
+    return {...base,obstacleLanes,kind:rollValue<70?(kinds[event.id]??base.kind):base.kind};
+  }
   if(version>=10){
     const base=runnerRow(row,distance,9,seed),hazard=roll(seed,row,131)%100;
     const kind=distance>=10000&&hazard<28?'tree':distance>=8000&&hazard<58?'collapse':['crate','rock','fence'][roll(seed,row,29)%3];

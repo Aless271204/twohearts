@@ -1,3 +1,4 @@
+import {kilometreEvent} from './kilometre-events.js';
 import {prepareAccessoryAssets,disposeAccessory} from './accessory-pieces.js?revision=wardrobe-colors-2';
 import {watchAppearance} from './live-appearance.js';
 import {createPetRoom} from './room-pieces.js';
@@ -174,7 +175,7 @@ function updatePowerHud(){
  host.hidden=active.length===0;
 }
 function spawnRow() {
-  const {obstacleLane,obstacleLanes=[obstacleLane],safeLane,kind,coinLane,alternateLane,coins:coinPlan}=runnerRow(row,distance,replayVersion>=10?10:replayVersion>=9?9:replayVersion>=8?8:replayVersion>=7?7:3,runSeed);
+  const {obstacleLane,obstacleLanes=[obstacleLane],safeLane,kind,coinLane,alternateLane,coins:coinPlan}=runnerRow(row,distance,replayVersion>=11?11:replayVersion>=10?10:replayVersion>=9?9:replayVersion>=8?8:replayVersion>=7?7:3,runSeed);
   for(const lane of obstacleLanes){
   const model=kind==='collapse'?collapseTile():kind==='tree'?fallingLog():place(kind,[1.15,.85,.75],LANES[lane],-68,[]);model.position.set(LANES[lane],floorY,-68);
   objects.push({model,kind:'obstacle',collapse:kind==='collapse',tree:kind==='tree',x:LANES[lane],z:-68});}
@@ -191,7 +192,7 @@ function collapseTile(){
  for(let i=1;i<model.children.length;i++){model.children[i].position.y=.32;model.children[i].rotation.x=0;model.children[i].visible=true;}
  scene.add(model);return model;
 }
-let hudKey='',lastMilestone=0,frameSample=0,frameCount=0,measuredFps=60,lastHudTime=0;
+let lastEventKm=0;let hudKey='',lastMilestone=0,frameSample=0,frameCount=0,measuredFps=60,lastHudTime=0;
 function hud(){
  const level=runnerDifficulty(distance,replayVersion).level,m=Math.floor(distance),key=`${level}|${m}|${coins}|${bestDistance}`;
  if(key===hudKey)return;hudKey=key;
@@ -200,10 +201,11 @@ function hud(){
  if($('season-name').textContent!==seasonLabel)$('season-name').textContent=seasonLabel;
  $('season-range').textContent=season.index<4?`${season.index*2}–${season.index*2+2} km`:distance<10000?'8–10 km':'10 km +';
  document.body.dataset.season=season.id;
+ const event=kilometreEvent(distance);if(replayVersion>=11&&event.km>lastEventKm){lastEventKm=event.km;$('toast').textContent=`${event.km} km · ${event.title}`;toastUntil=performance.now()+3500;}
  $('goal').textContent=`Siguiente hito · ${(Math.floor(distance/500)+1)*500} m`;
  $('progress').value=distance%500;$('record').textContent=`🏆 Récord: ${bestDistance} m`;
  const step=Math.floor(distance/500);
- if(step>lastMilestone){lastMilestone=step;music.effect('coin');/* Milestones stay in the HUD. */toastUntil=performance.now()+2400;}
+ if(step>lastMilestone){lastMilestone=step;music.effect('coin');/* Event warnings retain their own lifetime. */}
 }
 
 function jump(){if(running&&!paused&&(replayVersion>=6?canJump(powers,height):height===0)&&pendingInputs.length<8){if(replayVersion>=6)registerJump(powers,height);velocity=8;pendingInputs.push(0);music.effect('jump');}}
@@ -213,7 +215,7 @@ function reset(){
   for(const item of objects)releaseObject(item);objects.length=0;
   lane=1;x=height=velocity=distance=coins=row=cameraX=0;untilRow=0;paused=false;running=true;
   frames=[];pendingInputs=[];pendingSave=null;runElapsed=0;checkpointIndex=1;checkpointElapsed=0;checkpointBusy=false;checkpointFailed=terminalAfterCheckpoint=false;
-  powers=freshPowers();powerHudKey='reset';updatePowerHud();effects.reset();shieldBubble.reset();landingPulse=pickupStreak=lastMilestone=0;hudKey='';backdrop.setPaused(false);
+  powers=freshPowers();powerHudKey='reset';updatePowerHud();effects.reset();shieldBubble.reset();lastEventKm=0;landingPulse=pickupStreak=lastMilestone=0;hudKey='';backdrop.setPaused(false);
   $('toast').textContent='';panel.hidden=true;document.body.classList.remove('menu-open');pause.disabled=false;pause.textContent='Pausa';hud();
   music.start();
 }
@@ -228,7 +230,7 @@ start.onclick=async()=>{
   if(pendingSave){await saveRun();return;}
   if(paused){togglePause();return;}
   start.disabled=true;
-  try{const session=await requestHost('start');sessionId=session.session_id??null;replayVersion=session.guest?10:session.runner_version??session.powerup_version??5;runSeed=sessionId?seedFromSession(sessionId):crypto.getRandomValues(new Uint32Array(1))[0];bestDistance=session.best_distance??bestDistance;reset();}
+  try{const session=await requestHost('start');sessionId=session.session_id??null;replayVersion=session.guest?11:session.runner_version??session.powerup_version??5;runSeed=sessionId?seedFromSession(sessionId):crypto.getRandomValues(new Uint32Array(1))[0];bestDistance=session.best_distance??bestDistance;reset();}
   catch(error){showPanel('No pudimos iniciar la partida',error.message,'Volver a intentar');}
   finally{start.disabled=false;}
 };

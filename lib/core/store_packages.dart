@@ -17,37 +17,28 @@ class StorePackage {
   String get price => 'US\$${(cents / 100).toStringAsFixed(2)}';
 }
 
+// Proposed launch prices; Play Billing must supply the localized checkout price.
 const storePackages = [
   StorePackage(
-    'nido_gold_1000',
-    'Un toque de ternura',
+    'nido_gold_600',
+    'Un detalle bonito',
     199,
-    1000,
-    '1.000 de oro para prendas y pequeños detalles de su habitación. Incluye voz de mascota.',
-    voice: true,
+    600,
+    '600 de oro para combinar prendas y pequeños detalles.',
   ),
   StorePackage(
     'nido_gold_2000',
     'Nuestro estilo',
-    299,
+    599,
     2000,
-    '2.000 de oro para combinar conjuntos y muebles. Voz personalizable y una adopción. Crecimiento para dos mascotas cuando estén disponibles sus etapas.',
-    voice: true,
-    customVoice: true,
-    adoptions: 1,
-    growthPets: 2,
+    '2.000 de oro para varios conjuntos o un mueble legendario.',
   ),
   StorePackage(
-    'nido_gold_5000',
-    'Un nido completo',
-    499,
-    5000,
-    '5.000 de oro para una gran colección. Tres adopciones y voz interactiva. Crecimiento reservado hasta disponer de las etapas.',
-    voice: true,
-    customVoice: true,
-    interactions: true,
-    adoptions: 3,
-    growthPets: 3,
+    'nido_gold_10000',
+    'Un Nido de ensueño',
+    2499,
+    10000,
+    '10.000 de oro: alcanza para una habitación completa, los tres conjuntos actuales y una corona legendaria.',
   ),
 ];
 // Configuration only: no client-side crediting or purchased entitlement grants.

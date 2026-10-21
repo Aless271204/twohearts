@@ -7,9 +7,10 @@ export const POWERS=['triple','speed','mini','shield'];
 const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
 function random(s){s.rng=(Math.imul(s.rng,1664525)+1013904223)>>>0;return s.rng/4294967296;}
 function event(s,type,x,y,extra={}){s.events.push({id:++s.eventId,type,x,y,...extra});if(s.events.length>32)s.events.shift();}
-export function newArena(seed=1,people=[{id:'me',species:'penguin'},{id:'bot',species:'bear',bot:true}],duration=60){
+export function newArena(seed=1,people=[{id:'me',species:'penguin'},{id:'bot',species:'bear',bot:true}],duration=60,countdown=0){
  if(!Array.isArray(people)||people.length<2||people.length>4||!Number.isFinite(duration)||duration<15||duration>180)throw Error('Arena inválida');
- return {version:2,map:(seed>>>0)%MAPS.length,rng:seed>>>0,time:0,duration,status:'playing',nextGift:5,nextPower:8,sequence:0,eventId:0,events:[],shots:[],drops:[],players:people.map((p,i)=>({id:String(p.id),species:['penguin','bear','pig','chick'].includes(p.species)?p.species:'penguin',name:String(p.name??['Tú','Nube','Luna','Copito'][i]).slice(0,24),bot:!!p.bot,x:350+i*185,y:510,vx:0,vy:0,ground:true,jumps:0,heldJump:false,heldSuper:false,face:i%2?-1:1,score:0,falls:0,stacks:0,rescue:0,invulnerable:2,charge:0,shot:0,weapon:'copito',weaponTime:0,buffs:{},lastHit:null,lastHitTime:-100}))};
+ const order=people.map((_,i)=>i);let shuffle=seed>>>0;for(let i=order.length-1;i>0;i--){shuffle=(Math.imul(shuffle,1664525)+1013904223)>>>0;const j=shuffle%(i+1);[order[i],order[j]]=[order[j],order[i]];}
+ return {version:2,map:(seed>>>0)%MAPS.length,rng:seed>>>0,time:0,countdown:clamp(Number(countdown)||0,0,3),duration,status:'playing',nextGift:5,nextPower:8,sequence:0,eventId:0,events:[],shots:[],drops:[],players:people.map((p,i)=>({id:String(p.id),species:['penguin','bear','pig','chick'].includes(p.species)?p.species:'penguin',name:String(p.name??['Tú','Nube','Luna','Copito'][i]).slice(0,24),bot:!!p.bot,x:350+order[i]*185,y:510,vx:0,vy:0,ground:true,jumps:0,heldJump:false,heldSuper:false,face:i%2?-1:1,score:0,falls:0,stacks:0,rescue:0,invulnerable:2,charge:0,shot:0,weapon:'copito',weaponTime:0,buffs:{},lastHit:null,lastHitTime:-100}))};
 }
 export function safeInput(raw={}){return {left:raw.left===true,right:raw.right===true,jump:raw.jump===true,fire:raw.fire===true,super:raw.super===true,aimX:Number.isFinite(raw.aimX)?clamp(raw.aimX,-1,1):0,aimY:Number.isFinite(raw.aimY)?clamp(raw.aimY,-1,1):0};}
 export function botInput(s,p){
@@ -33,7 +34,7 @@ function launch(s,p,input){
  p.shot=p.weapon==='rafaga'?.72:p.weapon==='bola_grande'?.95:.42;event(s,'throw',p.x,p.y-35,{player:p.id});
 }
 export function stepArena(s,inputs={},dt=TICK){
- if(s.status!=='playing')return s;dt=clamp(dt,.001,TICK);s.time=Math.min(s.duration,s.time+dt);
+ if(s.status!=='playing')return s;dt=clamp(dt,.001,TICK);if(s.countdown>0){s.countdown=Math.max(0,s.countdown-dt);return s;}s.time=Math.min(s.duration,s.time+dt);
  if(s.time>=s.nextGift){s.nextGift+=12;const kind=WEAPONS[1+Math.floor(random(s)*3)];s.drops.push({id:++s.sequence,type:'weapon',kind,x:225+random(s)*830,y:-30,vy:0,ttl:18});event(s,'gift',640,90);}
  if(s.time>=s.nextPower){s.nextPower+=10;const kind=POWERS[Math.floor(random(s)*POWERS.length)];s.drops.push({id:++s.sequence,type:'power',kind,x:225+random(s)*830,y:-30,vy:0,ttl:16});}
  for(const p of s.players){

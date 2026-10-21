@@ -1,8 +1,9 @@
 import {platformsFor} from './engine.js';
 export const LABELS={copito:'Copitos',rafaga:'Ráfaga',rebote:'Rebotadora',bola_grande:'Bola gigante',triple:'Triple salto',speed:'Velocidad',mini:'Miniatura',shield:'Escudo'};
 const colors=['#cf7196','#7aaed0','#a7bb91','#d8b36f'];
+export const MAP_BACKGROUNDS=['village.webp','aurora-v1.webp','crystal-v1.webp'];
 export class SnowView{
- constructor(back,front){this.back=back.getContext('2d',{alpha:false});this.front=front.getContext('2d');this.background=new Image();this.background.src=new URL('./village.webp',import.meta.url);this.effects=[];this.lastEvent=0;this.scenery=document.createElement('canvas');this.scenery.width=1280;this.scenery.height=720;this.sceneryContext=this.scenery.getContext('2d',{alpha:false});this.sceneryKey='';this.background.onload=()=>{this.sceneryKey='';};}
+ constructor(back,front){this.back=back.getContext('2d',{alpha:false});this.front=front.getContext('2d');this.background=new Image();this.background.src=new URL('./village.webp',import.meta.url);this.backgrounds=new Map([[0,this.background]]);this.effects=[];this.lastEvent=0;this.scenery=document.createElement('canvas');this.scenery.width=1280;this.scenery.height=720;this.sceneryContext=this.scenery.getContext('2d',{alpha:false});this.sceneryKey='';this.background.onload=()=>{this.sceneryKey='';};}
  events(s,audio,me){for(const e of s.events){if(e.id<=this.lastEvent)continue;this.lastEvent=e.id;audio.fx(e.type,e.player===me?1:.35);this.effects.push({...e,start:performance.now()/1000});}this.effects=this.effects.slice(-40);}
  sceneryDraw(s){const c=this.sceneryContext;c.clearRect(0,0,1280,720);let g=c.createLinearGradient(0,0,0,720);g.addColorStop(0,'#e9bbd1');g.addColorStop(1,'#e8e5f4');c.fillStyle=g;c.fillRect(0,0,1280,720);if(this.background.complete&&this.background.naturalWidth)c.drawImage(this.background,0,0,1280,720);
   for(const p of platformsFor(s)){c.shadowColor='#7c70933a';c.shadowBlur=16;c.shadowOffsetY=12;g=c.createLinearGradient(0,p.y,0,p.y+55);g.addColorStop(0,'#c0a6bd');g.addColorStop(1,'#8c789f');c.fillStyle=g;c.beginPath();c.roundRect(p.x,p.y,p.w,48,18);c.fill();c.shadowBlur=c.shadowOffsetY=0;
@@ -10,7 +11,7 @@ export class SnowView{
    c.fillStyle='#fff8f1';c.beginPath();c.roundRect(p.x-5,p.y-10,p.w+10,24,13);c.fill();for(let i=0;i<p.w/48;i++){c.beginPath();c.ellipse(p.x+15+i*48,p.y+8,12,6+i%3,0,0,Math.PI*2);c.fill();}c.fillStyle='#e3eaf5';c.fillRect(p.x+17,p.y+3,p.w-34,2);
   }
  }
- draw(s,time){const c=this.back,f=this.front,key=JSON.stringify(platformsFor(s));if(key!==this.sceneryKey){this.sceneryDraw(s);this.sceneryKey=key;}c.drawImage(this.scenery,0,0);
+ draw(s,time){const map=s.map??0;if(!this.backgrounds.has(map)){const img=new Image();img.onload=()=>{this.sceneryKey='';};img.src=new URL('./'+MAP_BACKGROUNDS[map%MAP_BACKGROUNDS.length],import.meta.url);this.backgrounds.set(map,img);}this.background=this.backgrounds.get(map);const c=this.back,f=this.front,key=JSON.stringify(platformsFor(s));if(key!==this.sceneryKey){this.sceneryDraw(s);this.sceneryKey=key;}c.drawImage(this.scenery,0,0);
   for(let i=0;i<55;i++){const x=(i*173+time*(8+i%4))%1320-20,y=(i*79+time*(12+i%7))%760-30;c.fillStyle='#ffffffe0';c.beginPath();c.arc(x,y,1+i%3,0,Math.PI*2);c.fill();}
   for(const p of s.players){if(p.rescue)continue;c.fillStyle='#65557735';c.beginPath();c.ellipse(p.x,p.y+3,26*((p.buffs.mini??0)>0?.5:1),6,0,0,Math.PI*2);c.fill();}
   f.clearRect(0,0,1280,720);

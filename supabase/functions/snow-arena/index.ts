@@ -17,7 +17,7 @@ Deno.serve(async req=>{
    const r=await rpc('snow_context',{p_id:data.id,p_user:user.id});if(r.status!=='playing')break;
    const now=Date.now(),sim=Date.parse(r.sim_at);if(now<sim)break;
    const people=r.players.map((p:any)=>({id:p.id,name:p.name,species:p.species}));if(r.mode==='solo')people.push({id:'bot',name:'Nube',species:people[0].species==='bear'?'penguin':'bear',bot:true});
-   const state=r.state??newArena(Number(r.seed)+r.generation,people),inputs=Object.fromEntries(Object.entries(r.inputs).map(([id,value]:[string,any])=>[id,now/1000-value.at<.75?safeInput(value.value):{}]));
+   const state=r.state??newArena(Number(r.seed)+r.generation,people,60,3),inputs=Object.fromEntries(Object.entries(r.inputs).map(([id,value]:[string,any])=>[id,now/1000-value.at<.75?safeInput(value.value):{}]));
    // Real server time controls simulation. Clients never submit position,
    // score, pickups or a reward; compare-and-swap serializes concurrent ticks.
    const frames=Math.min(90,Math.max(0,Math.floor((now-sim)/(TICK*1000))));

@@ -45,7 +45,7 @@ export function replayRun(frames, version = 1) {
 // Version 4 keeps only a short input chunk in the client. Initial state comes
 // exclusively from the server's previous validated checkpoint, never the body.
 export function replayChunk(frames, initial=null, version=4) {
-  if (![4,5,6,7,8,9,10].includes(version) || (initial?.version != null && initial.version !== version)) throw Error('Invalid checkpoint version');
+  if (![4,5,6,7,8,9,10,11].includes(version) || (initial?.version != null && initial.version !== version)) throw Error('Invalid checkpoint version');
   if(!Array.isArray(frames)||frames.length<1||frames.length>10000)throw Error('Invalid replay length');
   let {lane=1,x=0,height=0,velocity=0,distance=0,coins=0,row=0,untilRow=0,elapsed=0}=initial??{};
   const objects=(initial?.objects??[]).map(item=>({...item}));
@@ -64,7 +64,7 @@ export function replayChunk(frames, initial=null, version=4) {
     const travel=runnerDifficulty(distance,version).speed*(version>=6?speedMultiplier(powers):1)*dt;distance+=travel;
     [height,velocity]=jumpStep(height,velocity,dt);if(height===0)powers.jumps=0;x+=(LANES[lane]-x)*(1-Math.exp(-dt*10));untilRow-=travel;
     if(untilRow<=0){
-      const pattern=runnerRow(row,distance,version>=10?10:version>=9?9:version>=8?8:version>=7?7:4,seed);for(const lane of pattern.obstacleLanes??[pattern.obstacleLane])objects.push({kind:'obstacle',x:LANES[lane],z:-68});
+      const pattern=runnerRow(row,distance,version>=11?11:version>=10?10:version>=9?9:version>=8?8:version>=7?7:4,seed);for(const lane of pattern.obstacleLanes??[pattern.obstacleLane])objects.push({kind:'obstacle',x:LANES[lane],z:-68});
       for(const coin of pattern.coins??Array.from({length:5},(_,i)=>({lane:pattern.coinLane,z:-60-i*4,y:i===2?1.8:.7})))objects.push({kind:'coin',x:LANES[coin.lane],z:coin.z,y:coin.y});
       objects.push({kind:'coin',x:LANES[pattern.alternateLane],z:-68,y:.7});const pickup=version>=6?powerForRow(row,distance,pattern.obstacleLane,version>=7?seed:null):null;if(pickup){if(version>=9)pickup.lane=pattern.safeLane;objects.push({...pickup,x:LANES[pickup.lane]});}row++;untilRow+=runnerDifficulty(distance,version).spacing;
     }

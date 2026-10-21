@@ -1,0 +1,15 @@
+/* Shared entry-menu treatment based on Senderos del Nido. Gameplay HUDs keep their own layout. */
+#menu{color:#fff8eb}
+#menu.panel,#menu>.card,#menu>.panel{background:linear-gradient(145deg,#264e3df5,#102d25f5);border:1px solid #ffe4a655;border-radius:28px;box-shadow:0 24px 64px #071b1855;color:#fff8eb}
+#menu:has(>.card),#menu.overlay{background:#0b231c66;backdrop-filter:none}
+#menu h1,#menu h2,#menu h1 em{color:#fff8eb;font-family:Georgia,serif}
+#menu p,#menu small,#menu label,#menu .option-label,#menu .chapter-heading span,#menu .menu-brand{color:#e3ecd9}
+#menu button{background:#305641;color:#fff8eb;border:1px solid #ffffff66;border-radius:18px;box-shadow:none;min-height:44px}
+#menu button.primary,#menu button.blue,#menu #solo,#menu #start,#menu button[aria-pressed=true]{background:#edc568;color:#213b2a;border-color:#f5db9d;font-weight:800}
+#menu button:focus-visible,#menu select:focus-visible,#menu input:focus-visible{outline:3px solid #ffe19a;outline-offset:3px}
+#menu button:disabled{opacity:.55}
+#menu select,#menu input{background:#fff9ec;color:#243c2e;border:1px solid #d5b879}
+#menu .help,#menu #load,#menu #modehint{color:#e3ecd9}
+#menu #error{color:#ffc7c7}
+#menu .adventure-slot .chapter-caption{color:white}
+@media(prefers-reduced-motion:reduce){#menu *{animation:none!important;transition:none!important}}

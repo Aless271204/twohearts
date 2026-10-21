@@ -1,7 +1,9 @@
+import {celebrateVictory} from '../celebration.js';
 import {PenaltyScene} from './scene.js?revision=centered-striker-9';
 import {StadiumAudio} from './audio.js?revision=stadium-sound-8';
 import {newMatch,resolveShot,advanceMatch,shooter} from './rules.js';
 import {watchAppearance} from '../live-appearance.js';
+let whistleRound='',celebrated='',closeCelebration=()=>{};
 const $=id=>document.getElementById(id),audio=new StadiumAudio(),aim={x:.5,y:.5};let scene,room=null,practice=false,pending=false,local=newMatch(),lastRound=-1,generation=-1,animationUntil=0,polling=false,stopped=false,botChoice=null;
 let modelsReady=false,modelKey='',loadingModels=null;let localDeadline=0,serverOffset=0;let timer=null,requestID=0,frameID=0;const requests=new Map(),params=new URLSearchParams(location.search),species=params.get('species')||'penguin';
 const hasBridge=()=>!!globalThis.RunnerBridge||parent!==globalThis;
@@ -61,15 +63,17 @@ function update(){
    scene.setTurn(s.last.side,side);scene.animate(s.last,now);setTimeout(()=>{if(!stopped&&!document.hidden)audio.play('kick');},340);setTimeout(()=>{if(!stopped&&!document.hidden)audio.play('dive');},460);
    setTimeout(()=>{if(!stopped&&!document.hidden)audio.play(s.last.kind);},1240);
    animationUntil=now+2.8;status(({goal:'¡GOOOL!',save:'¡Atajada!',post:'¡Al poste!',miss:'¡Se fue afuera!'})[s.last.kind]);
-  }else {scene.setTurn(shooter(s),side);audio.play('whistle');}
+  }else {scene.setTurn(shooter(s),side);}
   lastRound=s.round;pending=false;
  }
  if(now<animationUntil){$('controls').hidden=true;return;}
  if(info.status==='finished'){
+  const victoryKey=String(info.id??'practice')+':'+info.generation+':'+s.round+':'+s.winner;if(victoryKey!==celebrated){celebrated=victoryKey;if(s.winner===side){closeCelebration();closeCelebration=celebrateVictory({sound:()=>audio.play('firework')});audio.play('goal');}}
   panels('result');$('resultTitle').textContent=s.winner===side?'¡Ganaste la tanda!':'¡Buena partida!';$('resultScore').textContent=`Azul ${s.score[0]} — ${s.score[1]} Rojo`;
   $('reward').textContent=practice?'Entrenamiento · Sin premio de oro':((room?.reward??0)+' de oro guardado.'+(room?.record_bonus?' · ¡Récord! +'+room.record_bonus+' extra.':''));
   $('again').disabled=!practice&&info.ready[side];$('rematchStatus').textContent=!practice&&info.ready[side]?'Esperando a que tu pareja pulse Volver a jugar…':'';return;
  }
+ const whistleKey=String(info.id??'practice')+':'+info.generation+':'+s.round;if(whistleKey!==whistleRound&&audio.active){whistleRound=whistleKey;audio.play('whistle');}
  panels(null);scene.setTurn(shooter(s),side);$('powerWrap').hidden=!mine;$('action').textContent=mine?'PATEAR':'ATAJAR';$('action').className=mine?'primary':'blue';$('aimlabel').textContent=mine?'APUNTAR':'DIRECCIÓN';
  $('action').disabled=pending||info.chosen||!modelsReady;status(pending||info.chosen?'Elección confirmada. Esperando a tu pareja…':mine?'Apunta, ajusta la fuerza y patea.':'Elige dónde lanzarte y confirma la atajada.');
 }
@@ -79,7 +83,7 @@ async function online(action){
 }
 function startPolling(){stopPolling();timer=setInterval(async()=>{if(polling||document.hidden||!room||stopped)return;polling=true;try{room=accept(await request('status',{p_id:room.id}));update();}catch(e){status(e.message);}finally{polling=false;}},650);}
 function stopPolling(){clearInterval(timer);timer=null;}
-function startPractice(){if(!modelsReady)return;stopPolling();practice=true;room=null;local=newMatch();generation=-1;lastRound=-1;animationUntil=0;pending=false;botChoice=null;localDeadline=Date.now()+15000;update();}
+function startPractice(){if(!modelsReady)return;closeCelebration();celebrated=whistleRound='';stopPolling();practice=true;room=null;local=newMatch();generation=-1;lastRound=-1;animationUntil=0;pending=false;botChoice=null;localDeadline=Date.now()+15000;update();}
 async function choose(){
  const info=snapshot();if(!modelsReady||!info||pending||info.chosen||performance.now()/1000<animationUntil||info.status!=='playing')return;
  await unlock();pending=true;update();const choice={x:info.side===shooter(info.state)?aim.x:1-aim.x,y:aim.y,power:Number($('power').value)/100};

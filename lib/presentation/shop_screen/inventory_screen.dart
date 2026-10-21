@@ -1,3 +1,4 @@
+import '../../core/shop_showcase.dart';
 import '../../core/boutique_thumbnails.dart';
 import '../../theme/app_theme.dart';
 import '../../core/store_packages.dart';
@@ -32,6 +33,7 @@ class ShopScreen extends StatefulWidget {
 }
 
 class _ShopScreenState extends State<ShopScreen> {
+  final _showcaseController = PageController();
   final inventory = InventoryService.instance;
   bool loading = true, busy = false, onlyOwned = false;
   String scope = 'pet', query = '';
@@ -57,6 +59,7 @@ class _ShopScreenState extends State<ShopScreen> {
 
   @override
   void dispose() {
+    _showcaseController.dispose();
     inventory.removeListener(_changed);
     SharedPetService.instance.removeListener(_changed);
     super.dispose();
@@ -313,56 +316,243 @@ class _ShopScreenState extends State<ShopScreen> {
     }
   }
 
-  Widget _bundleOffers() {
-    final offers = inventory.bundles.where((b) => b['scope'] == scope).toList();
+  final Map<String, int> _showcasePages = {};
+  Widget _bundleOffers({bool general = false}) {
+    final offers = inventory.bundles
+        .where((b) => general || b['scope'] == scope)
+        .toList();
     if (offers.isEmpty || onlyOwned) return const SizedBox.shrink();
-    return Card(
-      color: const Color(0xFFFFF0EA),
-      elevation: 0,
-      child: ExpansionTile(
-        textColor: const Color(0xFF493B37),
-        collapsedTextColor: const Color(0xFF493B37),
-        title: const Text(
-          'Conjuntos para combinar',
-          style: TextStyle(fontWeight: FontWeight.w700),
+    final selected = (_showcasePages[general ? 'all' : scope] ?? 0).clamp(
+      0,
+      offers.length - 1,
+    );
+    final bundle = offers[selected];
+    final showcaseScope = bundle['scope'] as String;
+    final keys = (bundle['items'] as List? ?? [])
+        .map((e) => (e as Map)['item_key'])
+        .toSet();
+    final products = inventory.catalog
+        .where((i) => keys.contains(i.key) && i.visible)
+        .toList();
+    final look = <String, InventoryItem>{for (final i in products) i.slot: i};
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          showcaseScope == 'room'
+              ? 'Un mundo para su Nido'
+              : 'Descubre su próximo look',
+          style: const TextStyle(
+            fontFamily: 'Georgia',
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            color: Color(0xFF352E35),
+          ),
         ),
-        subtitle: Text(
-          scope == 'room'
-              ? 'Ahorra un 25 % · solo pagas lo que te falta'
-              : 'Ahorra un 10 % · solo pagas lo que te falta',
-        ),
-        children: [
-          for (final bundle in offers)
-            ListTile(
-              leading: Image.asset(
-                bundle['thumbnail_asset'] as String,
-                width: 48,
-                height: 48,
-                fit: BoxFit.contain,
-              ),
-              title: Text(
-                bundle['name'] as String,
-                style: const TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
+        const SizedBox(height: 10),
+        SizedBox(
+          height: showcaseScope == 'room' ? 350 : 310,
+          child: PageView.builder(
+            controller: _showcaseController,
+            key: ValueKey('showcase-${general ? 'all' : scope}'),
+            itemCount: offers.length,
+            onPageChanged: (value) =>
+                setState(() => _showcasePages[general ? 'all' : scope] = value),
+            itemBuilder: (context, index) => Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 3),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(24),
+                child: Stack(
+                  children: [
+                    Positioned.fill(
+                      child: index == selected && look.isNotEmpty
+                          ? InventoryPreview(
+                              key: ValueKey(offers[index]['bundle_key']),
+                              scope: showcaseScope,
+                              loadout: look,
+                              roomLayout: showcaseScope == 'room'
+                                  ? showcaseRoomLayout(products)
+                                  : null,
+                            )
+                          : Image.asset(
+                              offers[index]['thumbnail_asset'] as String,
+                              fit: BoxFit.contain,
+                            ),
+                    ),
+                    Positioned(
+                      top: 12,
+                      left: 12,
+                      child: Chip(
+                        label: Text('${index + 1} / ${offers.length}'),
+                        backgroundColor: const Color(0xFFFFFAF1),
+                      ),
+                    ),
+                    const Positioned(
+                      top: 15,
+                      right: 14,
+                      child: Icon(
+                        Icons.swipe_rounded,
+                        color: Color(0xFF493344),
+                      ),
+                    ),
+                    for (final direction in [-1, 1])
+                      Positioned(
+                        left: direction < 0 ? 10 : null,
+                        right: direction > 0 ? 10 : null,
+                        bottom: 24,
+                        child: IconButton.filledTonal(
+                          tooltip: direction < 0
+                              ? 'Conjunto anterior'
+                              : 'Siguiente conjunto',
+                          onPressed:
+                              index + direction < 0 ||
+                                  index + direction >= offers.length
+                              ? null
+                              : () => _showcaseController.animateToPage(
+                                  index + direction,
+                                  duration: const Duration(milliseconds: 300),
+                                  curve: Curves.easeOutCubic,
+                                ),
+                          icon: Icon(
+                            direction < 0
+                                ? Icons.chevron_left_rounded
+                                : Icons.chevron_right_rounded,
+                          ),
+                        ),
+                      ),
+                  ],
                 ),
               ),
-              subtitle: Text(
-                bundle['missing_count'] == 0
-                    ? 'Ya tienes el conjunto completo'
-                    : '${bundle['missing_count']} objetos · ${bundle['price_coins']} de oro',
-              ),
-              trailing: IconButton(
-                tooltip: 'Ver conjunto',
-                icon: const Icon(Icons.chevron_right_rounded),
-                onPressed: busy || bundle['missing_count'] == 0
-                    ? null
-                    : () => _buyBundle(bundle),
+            ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 10),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: List.generate(
+              offers.length,
+              (i) => AnimatedContainer(
+                duration: const Duration(milliseconds: 180),
+                width: i == selected ? 22 : 7,
+                height: 7,
+                margin: const EdgeInsets.symmetric(horizontal: 3),
+                decoration: BoxDecoration(
+                  color: i == selected
+                      ? const Color(0xFFF05280)
+                      : const Color(0xFFE5CCD3),
+                  borderRadius: BorderRadius.circular(6),
+                ),
               ),
             ),
-        ],
-      ),
+          ),
+        ),
+        Text(
+          bundle['name'] as String,
+          style: const TextStyle(
+            fontSize: 19,
+            fontWeight: FontWeight.w800,
+            color: Color(0xFF352E35),
+          ),
+        ),
+        const SizedBox(height: 7),
+        Text(
+          showcaseScope == 'room'
+              ? 'Los artículos de esta habitación'
+              : 'Completa el conjunto',
+          style: const TextStyle(color: Color(0xFF65515C)),
+        ),
+        SizedBox(
+          height: 189,
+          child: ListView.separated(
+            scrollDirection: Axis.horizontal,
+            padding: const EdgeInsets.symmetric(vertical: 9),
+            itemCount: products.length,
+            separatorBuilder: (_, index) => const SizedBox(width: 8),
+            itemBuilder: (_, index) {
+              final item = products[index];
+              return SizedBox(
+                width: 140,
+                child: Card(
+                  elevation: 0,
+                  color: const Color(0xFFFFFBF6),
+                  clipBehavior: Clip.antiAlias,
+                  child: InkWell(
+                    onTap: () => _openShowcaseProduct(item),
+                    child: Padding(
+                      padding: const EdgeInsets.all(9),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            child: ProductThumbnail(
+                              item: item,
+                              species: SharedPetService.instance.species,
+                            ),
+                          ),
+                          const SizedBox(height: 5),
+                          Text(
+                            item.name,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Text(
+                            inventory.owns(item.key)
+                                ? 'En tu cofre'
+                                : '${item.price} de oro',
+                            style: const TextStyle(
+                              color: Color(0xFF775226),
+                              fontSize: 12,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+        Card(
+          color: const Color(0xFFFFEDE5),
+          elevation: 0,
+          child: Padding(
+            padding: const EdgeInsets.all(13),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    bundle['missing_count'] == 0
+                        ? 'Ya es vuestro'
+                        : '${bundle['price_coins']} de oro · −${bundle['discount_percent']} %',
+                    style: const TextStyle(
+                      color: Color(0xFF493B37),
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+                FilledButton(
+                  onPressed: busy || bundle['missing_count'] == 0
+                      ? null
+                      : () => _buyBundle(bundle),
+                  child: const Text('Ver conjunto'),
+                ),
+              ],
+            ),
+          ),
+        ),
+        const SizedBox(height: 18),
+      ],
     );
+  }
+
+  void _openShowcaseProduct(InventoryItem item) {
+    _viewItem(item);
   }
 
   @override
@@ -401,10 +591,6 @@ class _ShopScreenState extends State<ShopScreen> {
                   .compareTo(inventory.catalog.indexOf(b));
       });
     }
-    final safePage = items.isEmpty
-        ? 0
-        : page.clamp(0, (items.length - 1) ~/ 16).toInt();
-    final pageItems = items.skip(safePage * 16).take(16);
     return Scaffold(
       backgroundColor: const Color(0xFFFFF9FA),
       appBar: AppBar(
@@ -453,6 +639,7 @@ class _ShopScreenState extends State<ShopScreen> {
                 child: ListView(
                   padding: const EdgeInsets.all(20),
                   children: [
+                    if (!onlyOwned && !showCoins) _bundleOffers(general: true),
                     SegmentedButton<bool>(
                       style: const ButtonStyle(
                         foregroundColor: WidgetStatePropertyAll(
@@ -517,7 +704,6 @@ class _ShopScreenState extends State<ShopScreen> {
                     if (showCoins)
                       _coinsPanel()
                     else ...[
-                      _bundleOffers(),
                       SingleChildScrollView(
                         scrollDirection: Axis.horizontal,
                         child: Row(
@@ -686,40 +872,67 @@ class _ShopScreenState extends State<ShopScreen> {
                               'No hay objetos con estos filtros. Prueba otra categoría.',
                           loading: false,
                         ),
-                      LayoutBuilder(
-                        builder: (context, constraints) => Wrap(
-                          spacing: 12,
-                          runSpacing: 12,
-                          children: [
-                            for (final item in pageItems)
-                              SizedBox(
-                                width: (constraints.maxWidth - 12) / 2,
-                                child: _productCard(item),
+                      for (final category
+                          in items
+                              .map(
+                                (i) =>
+                                    InventoryItem.slots[i.slot] ?? i.collection,
+                              )
+                              .toSet()) ...[
+                        Padding(
+                          padding: const EdgeInsets.only(top: 12, bottom: 6),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  category,
+                                  style: const TextStyle(
+                                    fontFamily: 'Georgia',
+                                    fontSize: 21,
+                                    fontWeight: FontWeight.bold,
+                                    color: Color(0xFF352E35),
+                                  ),
+                                ),
                               ),
-                          ],
+                              const Icon(
+                                Icons.swipe_rounded,
+                                size: 20,
+                                color: Color(0xFF86646E),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                      if (items.length > 16)
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            TextButton(
-                              onPressed: safePage > 0
-                                  ? () => setState(() => page = safePage - 1)
-                                  : null,
-                              child: const Text('Anterior'),
+                        SizedBox(
+                          height: 365,
+                          child: ListView.separated(
+                            key: PageStorageKey('products-$scope-$category'),
+                            scrollDirection: Axis.horizontal,
+                            itemCount: items
+                                .where(
+                                  (i) =>
+                                      (InventoryItem.slots[i.slot] ??
+                                          i.collection) ==
+                                      category,
+                                )
+                                .length,
+                            separatorBuilder: (_, index) =>
+                                const SizedBox(width: 8),
+                            itemBuilder: (_, index) => SizedBox(
+                              width: 185,
+                              child: _productCard(
+                                items
+                                    .where(
+                                      (i) =>
+                                          (InventoryItem.slots[i.slot] ??
+                                              i.collection) ==
+                                          category,
+                                    )
+                                    .elementAt(index),
+                              ),
                             ),
-                            Text(
-                              '${safePage + 1} / ${(items.length / 16).ceil()}',
-                            ),
-                            TextButton(
-                              onPressed: (safePage + 1) * 16 < items.length
-                                  ? () => setState(() => page = safePage + 1)
-                                  : null,
-                              child: const Text('Siguiente'),
-                            ),
-                          ],
+                          ),
                         ),
+                      ],
                       const SizedBox(height: 20),
                       const Text(
                         'Cada objeto se prueba sobre tu mascota o habitación antes de comprarlo. Las compras con LoveCoins se conservan en tu inventario.',
@@ -888,10 +1101,12 @@ class _ShopScreenState extends State<ShopScreen> {
 class InventoryPreview extends StatelessWidget {
   final String scope;
   final Map<String, InventoryItem> loadout;
+  final Map<String, dynamic>? roomLayout;
   const InventoryPreview({
     super.key,
     required this.scope,
     required this.loadout,
+    this.roomLayout,
   });
   @override
   Widget build(BuildContext context) {
@@ -904,6 +1119,7 @@ class InventoryPreview extends StatelessWidget {
         petLevel: SharedPetService.instance.level,
         animationName: 'Natural_Rest',
         isolatedRoomPreview: scope == 'room',
+        previewRoomLayout: roomLayout,
         autoPlay: true,
         cameraControls: false,
         cameraOrbit: '0deg 75deg 105%',

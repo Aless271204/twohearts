@@ -1,5 +1,7 @@
+import {kilometreEvent} from './kilometre-events.js';
 // One deterministic curve shared by rendering and reward validation.
 export function runnerDifficulty(distance, version = 5) {
+  if(version>=11){const base=runnerDifficulty(distance,10);return {...base,spacing:base.spacing*kilometreEvent(distance).pressure};}
   if(version>=9&&distance>=2000){
     const km=(distance-2000)/1000;
     // Continuous acceleration, including after every later kilometre. The

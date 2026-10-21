@@ -27,7 +27,7 @@ class GameService {
 
   Future<Map<String, dynamic>> startRunnerSession() async {
     if (_uid == null) return {'guest': true};
-    return _runnerRequest({'action': 'start', 'runner_version': 10});
+    return _runnerRequest({'action': 'start', 'runner_version': 11});
   }
 
   Future<Map<String, dynamic>> checkpointRunnerSession(

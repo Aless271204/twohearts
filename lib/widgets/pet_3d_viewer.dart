@@ -23,6 +23,7 @@ class Pet3DViewer extends StatefulWidget {
   final bool room;
   final bool roomEditing;
   final bool isolatedRoomPreview;
+  final Map<String, dynamic>? previewRoomLayout;
 
   const Pet3DViewer({
     super.key,
@@ -42,6 +43,7 @@ class Pet3DViewer extends StatefulWidget {
     this.room = false,
     this.roomEditing = false,
     this.isolatedRoomPreview = false,
+    this.previewRoomLayout,
   });
 
   Pet3DViewer inRoom(Map<String, InventoryItem> loadout) => Pet3DViewer(
@@ -56,6 +58,7 @@ class Pet3DViewer extends StatefulWidget {
     animationName: 'Natural_Rest',
     previewLoadout: loadout,
     isolatedRoomPreview: isolatedRoomPreview,
+    previewRoomLayout: previewRoomLayout,
     room: true,
   );
 
@@ -97,7 +100,7 @@ class _Pet3DViewerState extends State<Pet3DViewer> {
               'room_options': {
                 'editing': widget.roomEditing,
                 'layout': widget.isolatedRoomPreview
-                    ? <String, dynamic>{}
+                    ? widget.previewRoomLayout ?? <String, dynamic>{}
                     : InventoryService.instance.roomLayout,
               },
           });

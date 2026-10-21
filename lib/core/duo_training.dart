@@ -1,3 +1,4 @@
+import 'quiz_catalog.dart';
 import 'dart:math';
 import 'quiz_reactions.dart';
 
@@ -25,6 +26,7 @@ class DuoTraining {
   static const double quizResponseSeconds = 20;
   static const double quizRevealSeconds = 5, quizIntroSeconds = 2;
   static const questions = [
+    ...extraQuizQuestions,
     [
       'Planes',
       '¿Qué plan elegiría Nube?',
@@ -66,7 +68,14 @@ class DuoTraining {
       ['Fotos', 'Artesanía', 'Una postal'],
     ],
   ];
+  int questionIndex = 0;
+  final List<int> _questionDeck = [];
   void _newQuestion() {
+    if (_questionDeck.isEmpty)
+      _questionDeck.addAll(
+        List.generate(questions.length, (i) => i)..shuffle(random),
+      );
+    questionIndex = _questionDeck.removeLast();
     botSelf = random.nextInt(3);
     botGuess = random.nextInt(3);
     self = guess = null;
@@ -243,7 +252,7 @@ class DuoTraining {
   }
 
   Map<String, dynamic> snapshot(double epoch) {
-    final q = questions[question % questions.length];
+    final q = questions[questionIndex];
     final winnerA = game == 'pong' ? winsA > winsB : scoreA > scoreB;
     return {
       'id': 'practice',
