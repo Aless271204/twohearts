@@ -15,6 +15,9 @@ export class MazeScene{
   this.lamp=new T.SpotLight('#ffe8ba',24,9.5,.45,.65,1.3);this.lamp.position.set(.17,-.1,0);this.camera.add(this.lamp);this.lampTarget=new T.Object3D();this.lampTarget.position.set(0,-.18,-6);this.camera.add(this.lampTarget);this.lamp.target=this.lampTarget;
   const hand=new T.Mesh(new T.SphereGeometry(.14,12,8),new T.MeshStandardMaterial({color:'#263c55',roughness:.9}));hand.scale.set(.85,.85,1.6);hand.position.set(.28,-.3,-.45);this.camera.add(hand);
   const torch=new T.Mesh(new T.CylinderGeometry(.075,.065,.38,12),new T.MeshStandardMaterial({color:'#b29868',metalness:.45,roughness:.5}));torch.rotation.x=Math.PI/2;torch.position.set(.28,-.26,-.57);this.camera.add(torch);
+  const bezel=new T.Mesh(new T.CylinderGeometry(.115,.09,.13,16),this.material('#d8b46d'));bezel.rotation.x=Math.PI/2;bezel.position.set(.28,-.26,-.79);this.camera.add(bezel);
+  const lens=new T.Mesh(new T.CircleGeometry(.094,16),new T.MeshBasicMaterial({color:'#fff1bd',side:T.DoubleSide}));lens.position.set(.28,-.26,-.86);this.camera.add(lens);
+  for(let i=0;i<3;i++){const grip=new T.Mesh(new T.TorusGeometry(.078,.008,5,12),this.material('#846d51'));grip.position.set(.28,-.26,-.48-i*.065);this.camera.add(grip);}
   this.world=new T.Group();this.scene.add(this.world);this.chests=new Map();this.traps=new Map();this.stations=new Map();this.bridges=new Map();this.yaw=0;this.pitch=0;this.viewYaw=0;this.viewPitch=0;this.preview=null;this.target=new T.Vector3();this.partner=new T.Group();this.partnerTarget=new T.Vector3();this.scene.add(this.partner);this.partner.visible=false;
   this.resize=()=>{this.renderer.setSize(innerWidth,innerHeight,false);this.camera.aspect=innerWidth/innerHeight;this.camera.updateProjectionMatrix();};addEventListener('resize',this.resize);this.resize();this.loadedKey='';this.time=0;
  }
