@@ -31,7 +31,7 @@ export function nearbyInteraction(state,side){
  if(chest)return {action:'open',chest:chest.id,label:chest.lantern?(chest.revealed?'Resolver':'Iluminar'):'Abrir cofre',hint:chest.lantern?'Farolito seguro: ilumina la pista y ordena sus símbolos.':chest.hint==='leaf'?'Hoja verde: un cofre seguro con llave u oro.':'Marcas moradas: puede esconder una sorpresa.'};
  return null;
 }
-export function objectiveText(state){return state.keys<3?`Enciende los farolitos con hoja · ${state.keys}/3`:'¡Tres farolitos! Regresa a la puerta iluminada.';}
+export function objectiveText(state){return state.keys<3?`Enciende los farolitos con hoja · ${state.keys}/3`:'¡Tres farolitos! Encuentra la puerta iluminada.';}
 // Only explored cells and their immediate walls are revealed; no hidden prizes.
 export class MazeTrail{
  constructor(){this.key='';this.seen=new Set();this.visited=new Set();}
@@ -48,3 +48,9 @@ export function companionBearing(s,side,yaw){
 }
 export function districtAt(s,x,z){return Math.min(2,Math.floor((x+z)/(2*(s.size-1))*3));}
 export const DISTRICTS=['Jardín de calabazas','Sendero de luciérnagas','Rincón de la luna'];
+
+export function adventureBearing(s,side,yaw){
+ const teammate=companionBearing(s,side,yaw);if(teammate?.fallen||s.keys<3)return teammate;
+ const p=s.players[side],dx=s.exit.x-p.x,dz=s.exit.z-p.z,heading=Math.atan2(dx,-dz)+yaw;
+ return {distance:Math.abs(dx)+Math.abs(dz),angle:Math.atan2(Math.sin(heading),Math.cos(heading)),goal:true};
+}

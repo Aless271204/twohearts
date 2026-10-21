@@ -1,5 +1,5 @@
 export const THEMES=['halloween','christmas','easter','garden'];
-export function createMaze(seed=1,difficulty='easy',mode='solo',theme='halloween'){
+export function createMaze(seed=1,difficulty='easy',mode='solo',theme='halloween',protocol=2){
  if(!['easy','medium','hard'].includes(difficulty)||!['solo','partner'].includes(mode)||!THEMES.includes(theme))throw Error('Opciones inválidas');
  let r=seed>>>0;const rand=()=>{r=(Math.imul(r,1664525)+1013904223)>>>0;return r/4294967296;},size={easy:13,medium:17,hard:21}[difficulty],grid=Array(size*size).fill(1),stack=[[1,1]];grid[size+1]=0;
  while(stack.length){const [x,z]=stack.at(-1),available=[[2,0],[-2,0],[0,2],[0,-2]].filter(([a,b])=>x+a>0&&z+b>0&&x+a<size-1&&z+b<size-1&&grid[(z+b)*size+x+a]);if(!available.length){stack.pop();continue;}const [a,b]=available[Math.floor(rand()*available.length)];grid[(z+b/2)*size+x+a/2]=0;grid[(z+b)*size+x+a]=0;stack.push([x+a,z+b]);}
@@ -15,7 +15,9 @@ export function createMaze(seed=1,difficulty='easy',mode='solo',theme='halloween
  const gate=route.find((c,i)=>i>route.length*.35&&i<route.length-2&&!occupied.has(c)&&!occupied.has(route[i-1]));
  const plate=gate==null?null:parents.get(gate);
  const bridges=gate==null?[]:[{id:0,x:gate%size,z:Math.floor(gate/size),plate:{x:plate%size,z:Math.floor(plate/size)},until:0,secured:false}];
- return {version:2,bridges,seed,difficulty,mode,theme,size,grid,chests,traps,keys:0,gold:0,status:'playing',moves:0,notice:null,revive:1,players:Array.from({length:mode==='partner'?2:1},(_,id)=>({id,x:1,z:1,hp:{easy:5,medium:3,hard:2}[difficulty],facing:0})),exit:{x:size-2,z:size-2}};
+ const result={version:2,bridges,seed,difficulty,mode,theme,size,grid,chests,traps,keys:0,gold:0,status:'playing',moves:0,notice:null,revive:1,players:Array.from({length:mode==='partner'?2:1},(_,id)=>({id,x:1,z:1,hp:{easy:5,medium:3,hard:2}[difficulty],facing:0})),exit:{x:size-2,z:size-2}};
+ if(protocol<2){result.version=1;result.bridges=[];for(const c of result.chests){delete c.lantern;delete c.pattern;delete c.revealed;}}
+ return result;
 }
 export function bridgeIsOpen(s,b,now=Date.now()){
  return b.secured||now<b.until||(s.mode==='partner'&&s.players.some(p=>p.hp>0&&p.x===b.plate.x&&p.z===b.plate.z));

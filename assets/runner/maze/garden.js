@@ -53,6 +53,15 @@ export function addGarden(world,s){
  const cells=[];for(let i=0;i<s.grid.length;i++)if(!s.grid[i]&&i%3===0)cells.push(i);
  const leaves=new T.InstancedMesh(new T.SphereGeometry(1,5,3),material('#d8aa67'),cells.length*3),flies=new T.InstancedMesh(new T.SphereGeometry(.025,5,4),new T.MeshBasicMaterial({color:'#ffdf8f'}),Math.min(90,cells.length));
  cells.forEach((cell,i)=>{const x=cell%s.size*2,z=Math.floor(cell/s.size)*2;for(let k=0;k<3;k++){o.position.set(x+Math.sin(cell+k)*.8,.012,z+Math.cos(cell*2+k)*.8);o.scale.set(.055,.008,.12);o.rotation.set(0,cell+k,0);o.updateMatrix();leaves.setMatrixAt(i*3+k,o.matrix);}});world.add(leaves,flies);
+ // Warm path lamps use shared emissive meshes rather than individual lights.
+ const lampCells=cells.filter((cell,i)=>i%4===0).slice(0,20);
+ const posts=new T.InstancedMesh(new T.CylinderGeometry(.025,.035,.75,6),material(gold),lampCells.length);
+ const lamps=new T.InstancedMesh(new T.CylinderGeometry(.11,.11,.23,6),material('#ffda93',1.1),lampCells.length);
+ const roofs=new T.InstancedMesh(new T.ConeGeometry(.17,.14,6),material('#bf975f'),lampCells.length);
+ lampCells.forEach((cell,i)=>{const x=cell%s.size,z=Math.floor(cell/s.size);let dx=0,dz=0;for(const [a,b]of [[1,0],[-1,0],[0,1],[0,-1]])if(s.grid[(z+b)*s.size+x+a]){dx=a*.77;dz=b*.77;break;}
+  o.scale.setScalar(1);o.rotation.set(0,0,0);o.position.set(x*2+dx,.4,z*2+dz);o.updateMatrix();posts.setMatrixAt(i,o.matrix);
+  o.position.y=.89;o.updateMatrix();lamps.setMatrixAt(i,o.matrix);o.position.y=1.065;o.updateMatrix();roofs.setMatrixAt(i,o.matrix);
+ });world.add(posts,lamps,roofs);
  const moon=mesh(new T.SphereGeometry(1.1,20,12),new T.MeshBasicMaterial({color:cream}),world,s.size,10,-8);moon.material.fog=false;
  const stars=new T.InstancedMesh(new T.OctahedronGeometry(.045),new T.MeshBasicMaterial({color:'#f5d8a5',fog:false}),45);
  for(let i=0;i<45;i++){o.position.set(Math.sin(i*7)*s.size+s.size,7+(i%9)*.7,Math.cos(i*5)*s.size+s.size);o.scale.setScalar(.6+(i%3)*.3);o.rotation.set(0,0,0);o.updateMatrix();stars.setMatrixAt(i,o.matrix);}world.add(stars);
