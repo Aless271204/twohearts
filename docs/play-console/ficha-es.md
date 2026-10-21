@@ -3,7 +3,7 @@
 Título: NIDO: nuestro espacio juntos
 
 Descripción breve:
-Comparte recuerdos, cuida su mascota y disfruta minijuegos juntos.
+Recuerdos, mascotas y minijuegos para disfrutar con alguien especial.
 
 Descripción completa:
 
@@ -23,7 +23,9 @@ Decide qué recuerdos y publicaciones compartir. Los permisos de ubicación, cá
 
 Esta primera versión se encuentra en pruebas. Las compras con dinero real no están habilitadas.
 
-Datos de contacto y enlaces de privacidad: PENDIENTES DE CONFIRMACIÓN DEL PROPIETARIO. No copiar esta última línea a la ficha pública.
+Desarrollador: Alessandro BC.
+Correo público de soporte: alessandroproyectos@gmail.com.
+Enlaces de privacidad y eliminación: pendientes de publicación; no usar una URL inventada en Console.
 
 Notas de versión (pruebas):
 Nuevas opciones de personalización y mejoras en minijuegos. Guerra de Nieve incorpora partidas de un minuto, tres escenarios, ráfaga polar y elección de flechas o joystick. Ajustes de recompensas y preparación de la entrega Android.

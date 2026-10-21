@@ -1,6 +1,8 @@
 # NIDO · Política de privacidad (BORRADOR NO PUBLICADO)
 
-Pendiente: confirmar responsable, correo público, fecha de vigencia, plazos de conservación y proceso de eliminación. No presentar como política final mientras estos datos estén pendientes.
+Desarrollador público: Alessandro BC. Contacto: alessandroproyectos@gmail.com.
+
+Pendiente: fecha de vigencia, plazos de conservación y proceso completo de eliminación. No presentar como política final mientras estos puntos estén pendientes.
 
 NIDO trata datos de cuenta y perfil para autenticar usuarios y ofrecer funciones compartidas. Puede guardar recuerdos, fotografías, dibujos, mensajes y notas que los usuarios decidan subir, además de inventario, partidas, puntuaciones y recompensas.
 
@@ -14,4 +16,4 @@ Las compras reales están desactivadas en la candidata. El oro de juego se usa p
 
 En Perfil puedes solicitar la eliminación de tu cuenta y los datos asociados. La solicitud se registra para revisión y no elimina inmediatamente la cuenta. Antes de publicar deben estar operativos el proceso de respuesta y una vía web externa, con plazos claros y tratamiento de información compartida y retenciones legales.
 
-Responsable y contacto: PENDIENTES DE CONFIRMACIÓN. La disponibilidad de esta plantilla no significa que exista una política pública accesible.
+Para consultas de privacidad o solicitudes de eliminación, escribe a alessandroproyectos@gmail.com desde el correo asociado a tu cuenta de NIDO. No envíes contraseñas ni documentos de identidad. La disponibilidad de esta plantilla no significa que exista una política pública accesible.
