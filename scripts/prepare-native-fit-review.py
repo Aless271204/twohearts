@@ -28,6 +28,9 @@ s=s.replace("import 'package:twohearts/services/supabase_service.dart';",'').rep
 a=s.index('    await tester.pumpWidget(');b=s.index('    await tester.pump(const Duration(seconds: 1));',a)
 s=s[:a]+'    await tester.pumpWidget(FitReview(ready));\n'+s[b:]
 s=s.replace('_v8.glb','_v9.glb').replace('closed-small-v8','folded-small-v9')
+s=s.replace("['penguin', 'bear', 'pig', 'chick']", "['penguin']")
+s=s.replace("        await tester.pump(const Duration(seconds: 2));", "        await tester.runAsync(() => Future<void>.delayed(const Duration(seconds: 12)));\n        await tester.pump();")
+s=s.replace("        await tester.pump(const Duration(seconds: 4));", "        await tester.runAsync(() => Future<void>.delayed(const Duration(seconds: 8)));\n        await tester.pump();")
 s=s.replace("        ('Rest', 0),\n        ('Rest', 90),\n        ('Rest', 180),\n", "").replace("        ('Regular_Jump', 0),\n", "")
 s+='''
 Future<void> waitFor(WidgetTester tester, WebViewController controller, String expression, String label) async {
