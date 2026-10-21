@@ -5,7 +5,7 @@ import {SnowAudio} from './audio.js';
 import {watchAppearance} from '../live-appearance.js';
 const $=id=>document.getElementById(id),params=new URLSearchParams(location.search),audio=new SnowAudio(),view=new SnowView($('back'),$('fx')),pending=new Map();
 let closed=false;let actors,state=null,room=null,practice=false,me='me',appearance={},paused=false,finished=false,busy=false,polling=false,leaving=false,requestId=0,last=performance.now(),accumulator=0,lastNet=0,predicted=0,loading=false,actorKey='',noticeTimer;
-let stickInput={};const held=new Map(),keys=new Set();let aim={aimX:0,aimY:0};
+let stickInput={},stickPointer=null;const held=new Map(),keys=new Set();let aim={aimX:0,aimY:0};
 try{appearance=JSON.parse(params.get('appearance')??'{}');}catch{}
 const bridge=()=>params.get('preview')!=='1'&&(!!globalThis.RunnerBridge||parent!==globalThis);
 function message(text){$('message').textContent=text;$('message').hidden=false;clearTimeout(noticeTimer);noticeTimer=setTimeout(()=>$('message').hidden=true,4500);}
@@ -14,7 +14,7 @@ function request(action,data={}){if(!bridge())return Promise.reject(Error('Abre 
 function receive(raw){let m=raw;if(typeof m==='string'){try{m=JSON.parse(m);}catch{return;}}if(m?.type!=='runner-response')return;const r=pending.get(m.id);if(!r)return;pending.delete(m.id);clearTimeout(r.timer);m.ok?r.resolve(m.result):r.reject(Error(m.error??'No se pudo conectar'));}
 globalThis.runnerBridgeResponse=receive;addEventListener('message',e=>{if(e.origin===location.origin&&e.source===parent)receive(e.data);});
 function panel(id){for(const k of ['menu','lobby','join','settings','help','result'])$(k).hidden=k!==id;const playing=!id;$('hud').hidden=$('controls').hidden=!playing;}
-function clear(){held.clear();keys.clear();stickInput={};if($('joystick'))$('joystick').firstElementChild.style.transform='';aim={aimX:0,aimY:0};}
+function clear(){stickPointer=null;held.clear();keys.clear();stickInput={};if($('joystick'))$('joystick').firstElementChild.style.transform='';aim={aimX:0,aimY:0};}
 function input(){const active=new Set([...held.values(),...keys]);return safeInput({...Object.fromEntries([...active].map(k=>[k,true])),...Object.fromEntries(Object.entries(stickInput).filter(([,v])=>v)),...aim});}
 watchAppearance(async look=>{appearance=look;if(actors&&state){try{await actors.appearance(me,look);}catch(e){message('No se pudo actualizar la ropa: '+e.message);}}});
 async function loadActors(){if(!state||loading)return;const key=JSON.stringify(state.players.map(p=>[p.id,p.species]));loading=true;try{const looks=Object.fromEntries((room?.players??[]).map(p=>[p.id,p.look??{}]));looks[me]=appearance;await actors.load(state.players,looks);actorKey=key;}finally{loading=false;}}
@@ -37,7 +37,7 @@ for(const b of document.querySelectorAll('[data-key]')){b.onpointerdown=e=>{e.pr
 function setControlMode(mode){clear();$('arrows').hidden=mode==='joystick';$('joystick').hidden=mode!=='joystick';try{localStorage.setItem('nido-snow-controls',mode);}catch{}}
 try{$('controlMode').value=localStorage.getItem('nido-snow-controls')==='joystick'?'joystick':'arrows';}catch{}
 setControlMode($('controlMode').value);$('controlMode').onchange=()=>setControlMode($('controlMode').value);
-let stickPointer=null;const stick=$('joystick');
+const stick=$('joystick');
 function moveStick(e){if(e.pointerId!==stickPointer)return;const r=stick.getBoundingClientRect(),dx=e.clientX-r.left-r.width/2,dy=e.clientY-r.top-r.height/2,length=Math.max(1,Math.hypot(dx,dy)),limit=r.width*.28;stick.firstElementChild.style.transform=`translate(${dx/length*Math.min(limit,length)}px,${dy/length*Math.min(limit,length)}px)`;stickInput={left:dx<-r.width*.14,right:dx>r.width*.14,jump:dy<-r.height*.24};}
 stick.onpointerdown=e=>{e.preventDefault();if(stickPointer!==null)return;stickPointer=e.pointerId;stick.setPointerCapture(e.pointerId);moveStick(e);};stick.onpointermove=moveStick;
 stick.onpointerup=stick.onpointercancel=stick.onlostpointercapture=e=>{if(e.pointerId===stickPointer){stickPointer=null;stickInput={};stick.firstElementChild.style.transform='';}};

@@ -16,7 +16,7 @@ Estado: candidata de pruebas, NO autorizada para producción ni enviada a Google
 
 1. Confirmar nombre público y correo de soporte. Se preguntó al propietario; pendiente.
 2. Completar y publicar web de privacidad y solicitud externa de eliminación, accesibles sin instalar la app. Los documentos adjuntos son borradores, no URLs publicadas.
-3. Atender las solicitudes de eliminación: la app registra peticiones autenticadas en `nido_private.account_deletion_requests`, pero NO hay un borrador automático ni una garantía de plazo. Definir responsable y proceso probado antes de publicar. Revisar datos compartidos, archivos de Storage, relación de pareja y dependencias de Auth; no borrar cuentas manualmente sin resolver esos vínculos.
+3. Atender las solicitudes de eliminación: la app registra peticiones autenticadas en `nido_private.account_deletion_requests`, pero NO hay un borrado automático ni una garantía de plazo. Definir responsable y proceso probado antes de publicar. Revisar datos compartidos, archivos de Storage, relación de pareja y dependencias de Auth; no borrar cuentas manualmente sin resolver esos vínculos.
 4. Confirmar Google Play App Signing y guardar una copia segura de la clave existente; nunca adjuntar el P12 ni contraseñas a esta carpeta.
 5. Completar Seguridad de datos, anuncios, clasificación de contenido, público objetivo y acceso a la app con credenciales de prueba creadas expresamente. No usar credenciales del propietario.
 6. Capturar al menos dos pantallas reales Android de esta compilación y revisar el informe previo al lanzamiento. Las imágenes conceptuales no son capturas.
