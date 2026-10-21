@@ -25,7 +25,7 @@ jobs:
           cache: true
       - run: flutter pub get
       - name: Check welcome and Social guides
-        run: flutter test test/login_welcome_test.dart test/nido_news_test.dart test/nido_ranking_test.dart test/social_test.dart test/shop_showcase_test.dart test/duo_training_test.dart test/duo_visual_review_test.dart
+        run: flutter test test/login_welcome_test.dart test/nido_news_test.dart test/nido_ranking_test.dart test/social_test.dart test/shop_showcase_test.dart test/shop_carousel_layout_test.dart test/duo_training_test.dart test/duo_visual_review_test.dart
       - name: Build this exact web revision
         run: |
           python3 -c "import json; d=json.load(open('env.json')); json.dump({k:d[k] for k in ['SUPABASE_URL','SUPABASE_ANON_KEY','GOOGLE_WEB_CLIENT_ID'] if k in d},open('build-env.json','w'))"

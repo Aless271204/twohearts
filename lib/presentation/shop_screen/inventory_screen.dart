@@ -365,19 +365,14 @@ class _ShopScreenState extends State<ShopScreen> {
                 child: Stack(
                   children: [
                     Positioned.fill(
-                      child: index == selected && look.isNotEmpty
-                          ? InventoryPreview(
-                              key: ValueKey(offers[index]['bundle_key']),
-                              scope: showcaseScope,
-                              loadout: look,
-                              roomLayout: showcaseScope == 'room'
-                                  ? showcaseRoomLayout(products)
-                                  : null,
-                            )
-                          : Image.asset(
-                              offers[index]['thumbnail_asset'] as String,
-                              fit: BoxFit.contain,
-                            ),
+                      child: Image.asset(
+                        'assets/images/products/showcases/${offers[index]['bundle_key']}.webp',
+                        key: ValueKey(
+                          'showcase-image-${offers[index]['bundle_key']}',
+                        ),
+                        fit: BoxFit.contain,
+                        gaplessPlayback: true,
+                      ),
                     ),
                     Positioned(
                       top: 12,
@@ -445,6 +440,34 @@ class _ShopScreenState extends State<ShopScreen> {
                 ),
               ),
             ),
+          ),
+        ),
+        Align(
+          alignment: Alignment.centerRight,
+          child: TextButton.icon(
+            icon: const Icon(Icons.view_in_ar_rounded),
+            label: Text(
+              showcaseScope == 'room' ? 'Explorar en 3D' : 'Probar conjunto',
+            ),
+            onPressed: look.isEmpty
+                ? null
+                : () => showModalBottomSheet<void>(
+                    context: context,
+                    isScrollControlled: true,
+                    showDragHandle: true,
+                    builder: (context) => SafeArea(
+                      child: SizedBox(
+                        height: MediaQuery.sizeOf(context).height * .7,
+                        child: InventoryPreview(
+                          scope: showcaseScope,
+                          loadout: look,
+                          roomLayout: showcaseScope == 'room'
+                              ? showcaseRoomLayout(products)
+                              : null,
+                        ),
+                      ),
+                    ),
+                  ),
           ),
         ),
         Text(
