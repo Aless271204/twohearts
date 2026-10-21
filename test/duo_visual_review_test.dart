@@ -14,6 +14,13 @@ void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   setUpAll(() async {
     SharedPreferences.setMockInitialValues({});
+    for (final channel in [
+      'com.llfbandit.app_links/events',
+      'com.llfbandit.app_links/messages',
+    ]) {
+      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+          .setMockMethodCallHandler(MethodChannel(channel), (_) async => null);
+    }
     await Supabase.initialize(
       url: 'https://test.invalid',
       anonKey: 'test-public-key',
@@ -42,7 +49,7 @@ void main() {
             ('NidoSerif', 'assets/fonts/PlayfairDisplay[wght].ttf'),
             (
               'MaterialIcons',
-              'C:/development/flutter/bin/cache/artifacts/material_fonts/MaterialIcons-Regular.otf',
+              'build/unit_test_assets/fonts/MaterialIcons-Regular.otf',
             ),
           ]) {
             final loader = FontLoader(font.$1)
