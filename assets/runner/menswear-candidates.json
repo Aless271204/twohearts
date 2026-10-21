@@ -1,0 +1,242 @@
+[
+  {
+    "item_key": "shirt_sunday",
+    "name": "Camisa de domingo",
+    "scope": "pet",
+    "equip_slot": "pet_body",
+    "appearance": {
+      "style": "shirt_sunday",
+      "color": "#A3C8E2",
+      "model_asset": "assets/runner/accessories/menswear_shirt_sunday_penguin.glb",
+      "species_models": {
+        "penguin": "assets/runner/accessories/menswear_shirt_sunday_penguin.glb",
+        "bear": "assets/runner/accessories/menswear_shirt_sunday_bear.glb",
+        "pig": "assets/runner/accessories/menswear_shirt_sunday_pig.glb",
+        "chick": "assets/runner/accessories/menswear_shirt_sunday_chick.glb"
+      },
+      "fitted_model_space": true,
+      "skinned_model_space": true,
+      "asset_revision": "26c9e9fe606995818b80",
+      "sleeve_coverage": {
+        "penguin": {
+          "min_y": 0.41660043558286364,
+          "max_y": 0.5486004355828636
+        },
+        "bear": {
+          "min_y": 0.4124329012765121,
+          "max_y": 0.5444329012765121
+        },
+        "pig": {
+          "min_y": 0.36964478800103934,
+          "max_y": 0.5016447880010393
+        },
+        "chick": {
+          "min_y": 0.37036480218482115,
+          "max_y": 0.5023648021848212
+        }
+      },
+      "species_model_hashes": {
+        "penguin": "0b4e899d6285ba64d7b64d0433fe99f447bfc4bae1f3c9ba63df32a7e7f1aaa2",
+        "bear": "3bb799f171af8a5245751760da73d45287995d487b7026846b535310fe676ea3",
+        "pig": "6b83683530bea27fc22070eb6d5115d00be2cbcaf25319db1d1076457f917dd1",
+        "chick": "795d220a83d962d2abf059c9efaf68cd7bcea65d55d016b1f5e174dbb8c5901f"
+      },
+      "coverage_assets": {
+        "penguin": "assets/runner/restart/sewn-coverage-penguin-jacket_denim.json",
+        "bear": "assets/runner/restart/sewn-coverage-bear-jacket_denim.json",
+        "pig": "assets/runner/restart/sewn-coverage-pig-jacket_denim.json",
+        "chick": "assets/runner/restart/sewn-coverage-chick-jacket_denim.json"
+      },
+      "color_materials": [
+        "NIDO · shirt_sunday"
+      ],
+      "color_base": "#A3C8E2"
+    },
+    "collection": "Paseos juntos",
+    "price_coins": 110,
+    "color_price_coins": 10,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review"
+  },
+  {
+    "item_key": "sweater_forest",
+    "name": "Suéter bosque",
+    "scope": "pet",
+    "equip_slot": "pet_body",
+    "appearance": {
+      "style": "sweater_forest",
+      "color": "#9AAA85",
+      "model_asset": "assets/runner/accessories/menswear_sweater_forest_penguin.glb",
+      "species_models": {
+        "penguin": "assets/runner/accessories/menswear_sweater_forest_penguin.glb",
+        "bear": "assets/runner/accessories/menswear_sweater_forest_bear.glb",
+        "pig": "assets/runner/accessories/menswear_sweater_forest_pig.glb",
+        "chick": "assets/runner/accessories/menswear_sweater_forest_chick.glb"
+      },
+      "fitted_model_space": true,
+      "skinned_model_space": true,
+      "asset_revision": "cacd866a492cb823d9eb",
+      "sleeve_coverage": {
+        "penguin": {
+          "min_y": 0.3716004355828636,
+          "max_y": 0.5486004355828636
+        },
+        "bear": {
+          "min_y": 0.36743290127651207,
+          "max_y": 0.5444329012765121
+        },
+        "pig": {
+          "min_y": 0.32464478800103935,
+          "max_y": 0.5016447880010393
+        },
+        "chick": {
+          "min_y": 0.3253648021848211,
+          "max_y": 0.5023648021848212
+        }
+      },
+      "species_model_hashes": {
+        "penguin": "17a9cbc8943ec42d2b17a1f8979033772d1abc2271b1ac6e3c254c873fda9fff",
+        "bear": "2e19899d7c6c82c0fd3aeb005bc65af9b482c04b0d81bc539a0a6dd855ea8b58",
+        "pig": "21a99a1357e87efe0ce789ee4b3943aa729b5e22e1553af75cf28a52ea43dcca",
+        "chick": "948b1966caf301947bafbd9e2a912dbd5a55d7f34631ce0d12e6803a855b60b2"
+      },
+      "coverage_assets": {
+        "penguin": "assets/runner/restart/sewn-coverage-penguin-coat_cloud.json",
+        "bear": "assets/runner/restart/sewn-coverage-bear-coat_cloud.json",
+        "pig": "assets/runner/restart/sewn-coverage-pig-coat_cloud.json",
+        "chick": "assets/runner/restart/sewn-coverage-chick-coat_cloud.json"
+      },
+      "color_materials": [
+        "NIDO · sweater_forest"
+      ],
+      "color_base": "#9AAA85"
+    },
+    "collection": "Paseos juntos",
+    "price_coins": 140,
+    "color_price_coins": 10,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review"
+  },
+  {
+    "item_key": "jacket_leather",
+    "name": "Chaqueta café",
+    "scope": "pet",
+    "equip_slot": "pet_body",
+    "appearance": {
+      "style": "jacket_leather",
+      "color": "#50362A",
+      "model_asset": "assets/runner/accessories/menswear_jacket_leather_penguin.glb",
+      "species_models": {
+        "penguin": "assets/runner/accessories/menswear_jacket_leather_penguin.glb",
+        "bear": "assets/runner/accessories/menswear_jacket_leather_bear.glb",
+        "pig": "assets/runner/accessories/menswear_jacket_leather_pig.glb",
+        "chick": "assets/runner/accessories/menswear_jacket_leather_chick.glb"
+      },
+      "fitted_model_space": true,
+      "skinned_model_space": true,
+      "asset_revision": "c12ffcbe83096b2683a0",
+      "sleeve_coverage": {
+        "penguin": {
+          "min_y": 0.41660043558286364,
+          "max_y": 0.5486004355828636
+        },
+        "bear": {
+          "min_y": 0.4124329012765121,
+          "max_y": 0.5444329012765121
+        },
+        "pig": {
+          "min_y": 0.36964478800103934,
+          "max_y": 0.5016447880010393
+        },
+        "chick": {
+          "min_y": 0.37036480218482115,
+          "max_y": 0.5023648021848212
+        }
+      },
+      "species_model_hashes": {
+        "penguin": "fc3255e553fecdc7994df6a733bb631e9a3f9673c9118717136fc13e9be2c457",
+        "bear": "9f0fa36281c350301ecb8e76835a8f9dc15623cad5fbba6d80d90d2992bd4602",
+        "pig": "efafc424cfac2834efe381a2c9213225ae7348db3148c8cd992b171fd4b636f3",
+        "chick": "ff4b79e386d50891ac73032c64684807250dd280eda1d1685464bc156d13aee6"
+      },
+      "coverage_assets": {
+        "penguin": "assets/runner/restart/sewn-coverage-penguin-jacket_denim.json",
+        "bear": "assets/runner/restart/sewn-coverage-bear-jacket_denim.json",
+        "pig": "assets/runner/restart/sewn-coverage-pig-jacket_denim.json",
+        "chick": "assets/runner/restart/sewn-coverage-chick-jacket_denim.json"
+      },
+      "color_materials": [
+        "NIDO · jacket_leather"
+      ],
+      "color_base": "#50362A"
+    },
+    "collection": "Paseos juntos",
+    "price_coins": 190,
+    "color_price_coins": 10,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review"
+  },
+  {
+    "item_key": "tee_everyday",
+    "name": "Camiseta esencial",
+    "scope": "pet",
+    "equip_slot": "pet_body",
+    "appearance": {
+      "style": "tee_everyday",
+      "color": "#E9E0CD",
+      "model_asset": "assets/runner/accessories/menswear_tee_everyday_penguin.glb",
+      "species_models": {
+        "penguin": "assets/runner/accessories/menswear_tee_everyday_penguin.glb",
+        "bear": "assets/runner/accessories/menswear_tee_everyday_bear.glb",
+        "pig": "assets/runner/accessories/menswear_tee_everyday_pig.glb",
+        "chick": "assets/runner/accessories/menswear_tee_everyday_chick.glb"
+      },
+      "fitted_model_space": true,
+      "skinned_model_space": true,
+      "asset_revision": "a2c1b44e6a4a3ef3b23e",
+      "sleeve_coverage": {
+        "penguin": {
+          "min_y": 0.41660043558286364,
+          "max_y": 0.5486004355828636
+        },
+        "bear": {
+          "min_y": 0.4124329012765121,
+          "max_y": 0.5444329012765121
+        },
+        "pig": {
+          "min_y": 0.36964478800103934,
+          "max_y": 0.5016447880010393
+        },
+        "chick": {
+          "min_y": 0.37036480218482115,
+          "max_y": 0.5023648021848212
+        }
+      },
+      "species_model_hashes": {
+        "penguin": "48f5b2cdfadf74182c1194a107e92c232087dfe7e4ac6de6a54dd81d75d401a9",
+        "bear": "1c6f9d3a0e3fd4069b2c194f36e00c909823cf42abf1129a69dc19410d5448f8",
+        "pig": "23a58203beb64534564e0f92bc1b5498371888acade63b186485b64479ef8bca",
+        "chick": "6bf5b203a767d4628a37a5b9dbf9175a4d0d22fc378535d8cebad45538539f48"
+      },
+      "coverage_assets": {
+        "penguin": "assets/runner/restart/shirt-original-coverage-penguin.json",
+        "bear": "assets/runner/restart/shirt-original-coverage-bear.json",
+        "pig": "assets/runner/restart/shirt-original-coverage-pig.json",
+        "chick": "assets/runner/restart/shirt-original-coverage-chick.json"
+      },
+      "color_materials": [
+        "NIDO · tee_everyday"
+      ],
+      "color_base": "#E9E0CD"
+    },
+    "collection": "Paseos juntos",
+    "price_coins": 50,
+    "color_price_coins": 10,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review"
+  }
+]

@@ -1,5 +1,6 @@
 import '../core/feature_flags.dart';
 import 'dart:io';
+import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -19,6 +20,7 @@ class ForestRunnerView extends StatefulWidget {
   final bool guardian;
   final bool penalties;
   final bool maze;
+  final bool snow;
   final bool adoption, arrival;
   final int petReaction;
   final String petSpecies;
@@ -37,6 +39,7 @@ class ForestRunnerView extends StatefulWidget {
     this.guardian = false,
     this.penalties = false,
     this.maze = false,
+    this.snow = false,
     this.adoption = false,
     this.arrival = false,
     this.petReaction = 0,
@@ -152,6 +155,16 @@ class _ForestRunnerViewState extends State<ForestRunnerView>
         );
       await controller.setNavigationDelegate(
         NavigationDelegate(
+          onPageFinished: (_) {
+            if (!mounted || widget.appearance == null) return;
+            unawaited(
+              controller
+                  .runJavaScript(
+                    'window.nidoSetAppearance?.(${jsonEncode(jsonDecode(widget.appearance!))});',
+                  )
+                  .catchError((Object _) {}),
+            );
+          },
           onNavigationRequest: (request) {
             final target = Uri.tryParse(request.url);
             final local =
@@ -222,7 +235,9 @@ class _ForestRunnerViewState extends State<ForestRunnerView>
       };
       await controller.loadRequest(
         Uri.parse(
-          'http://localhost:${server.port}/assets/runner/${widget.maze
+          'http://localhost:${server.port}/assets/runner/${widget.snow
+              ? 'snow/index.html'
+              : widget.maze
               ? 'maze/index.html'
               : widget.penalties
               ? 'penalties/index.html'
@@ -265,6 +280,14 @@ class _ForestRunnerViewState extends State<ForestRunnerView>
   @override
   void didUpdateWidget(covariant ForestRunnerView oldWidget) {
     super.didUpdateWidget(oldWidget);
+    if (widget.appearance != oldWidget.appearance &&
+        widget.appearance != null) {
+      _controller
+          ?.runJavaScript(
+            'window.nidoSetAppearance?.(${jsonEncode(jsonDecode(widget.appearance!))});',
+          )
+          .catchError((Object _) {});
+    }
     if (widget.petOnly && widget.petReaction != oldWidget.petReaction)
       _controller
           ?.runJavaScript('window.petStroke?.();')

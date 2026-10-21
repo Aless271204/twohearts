@@ -21,6 +21,8 @@ class Pet3DViewer extends StatefulWidget {
   final ValueChanged<WebViewController>? onWebViewCreated;
   final Map<String, InventoryItem>? previewLoadout;
   final bool room;
+  final bool roomEditing;
+  final bool isolatedRoomPreview;
 
   const Pet3DViewer({
     super.key,
@@ -38,6 +40,8 @@ class Pet3DViewer extends StatefulWidget {
     this.onWebViewCreated,
     this.previewLoadout,
     this.room = false,
+    this.roomEditing = false,
+    this.isolatedRoomPreview = false,
   });
 
   Pet3DViewer inRoom(Map<String, InventoryItem> loadout) => Pet3DViewer(
@@ -51,6 +55,7 @@ class Pet3DViewer extends StatefulWidget {
     autoPlay: autoPlay,
     animationName: 'Natural_Rest',
     previewLoadout: loadout,
+    isolatedRoomPreview: isolatedRoomPreview,
     room: true,
   );
 
@@ -88,10 +93,17 @@ class _Pet3DViewerState extends State<Pet3DViewer> {
                 in (widget.previewLoadout ?? InventoryService.instance.loadout)
                     .entries)
               entry.key: entry.value.appearance,
+            if (widget.room)
+              'room_options': {
+                'editing': widget.roomEditing,
+                'layout': widget.isolatedRoomPreview
+                    ? <String, dynamic>{}
+                    : InventoryService.instance.roomLayout,
+              },
           });
           return ForestRunnerView(
             key: ValueKey(
-              '$appearance|${widget.animationName}|${widget.modelPath}|${widget.petLevel}|${widget.room}',
+              '${widget.animationName}|${widget.modelPath}|${widget.petLevel}|${widget.room}',
             ),
             room: widget.room,
             petOnly: true,

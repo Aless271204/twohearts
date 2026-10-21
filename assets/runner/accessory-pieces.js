@@ -25,12 +25,12 @@ export async function prepareAccessoryAssets(loadout,species='penguin'){
   const revision=item.asset_revision??new URLSearchParams(globalThis.location?.search??'').get('v')??'wardrobe-volume-20261011';
   if(item.coverage_asset){
    if(!/^assets\/runner\/restart\/(?:shirt-original-coverage-[a-z]+|sewn-coverage-(?:penguin|bear|pig|chick)-(?:jacket_denim|coat_cloud|dress_petal|hoodie_nido))\.json$/.test(item.coverage_asset))throw Error('Cobertura de prenda no válida');
-   const response=await fetch('./restart/'+item.coverage_asset.split('/').pop()+'?v='+encodeURIComponent(revision));
+   const response=await fetch(new URL('./restart/'+item.coverage_asset.split('/').pop()+'?v='+encodeURIComponent(revision),import.meta.url));
    if(!response.ok)throw Error('No se pudo cargar el ajuste de la prenda');
    item.covered_skin_triangles=await response.json();
   }
   if(accessoryAssets.has(path))return;
-  const gltf=await loader.loadAsync('./accessories/'+path.split('/').pop()+'?v='+encodeURIComponent(revision));registerAccessoryAsset(path,gltf.scene);
+  const gltf=await loader.loadAsync(new URL('./accessories/'+path.split('/').pop()+'?v='+encodeURIComponent(revision),import.meta.url).href);registerAccessoryAsset(path,gltf.scene);
  }));
 }
 

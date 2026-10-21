@@ -1,4 +1,5 @@
 import '../../widgets/private_memory_image.dart';
+import '../../widgets/account_deletion_card.dart';
 import '../../services/profile_avatar_service.dart';
 import '../../widgets/partner_link_card.dart';
 import '../../widgets/couple_care_settings.dart';
@@ -250,6 +251,8 @@ class _ProfileScreenState extends State<ProfileScreen>
                       ),
                       const SizedBox(height: 24),
                       _buildSaveButton(),
+                      const SizedBox(height: 24),
+                      const AccountDeletionCard(),
                     ],
                   ),
                 ),

@@ -4,6 +4,8 @@ import '../../services/audio_service.dart';
 import '../../services/shared_pet_service.dart';
 import '../../widgets/scene_status.dart';
 import '../../widgets/immersive_game.dart';
+import '../../services/inventory_service.dart';
+import 'dart:convert';
 
 class PebbleRunnerTest extends StatefulWidget {
   final String? modelPath;
@@ -21,7 +23,12 @@ class _PebbleRunnerTestState extends State<PebbleRunnerTest> {
     body: FutureBuilder<void>(future: _petReady, builder: (context, snapshot) {
       if (snapshot.connectionState != ConnectionState.done) return const SceneStatus(title: 'Nos vamos al bosque', message: 'Cargando vuestra mascota y sus accesorios…');
       if (snapshot.hasError) return SceneStatus(title: 'No pudimos conectar', message: 'Comprueba la conexión y vuelve a entrar.', loading: false, onRetry: () => Navigator.pop(context));
-      return ForestRunnerView(onExit: () => Navigator.maybePop(context), petSpecies: SharedPetService.instance.species,petLevel: SharedPetService.instance.level);
+      return ListenableBuilder(listenable: InventoryService.instance, builder: (context, _) => ForestRunnerView(
+        onExit: () => Navigator.maybePop(context), petSpecies: SharedPetService.instance.species,
+        petLevel: SharedPetService.instance.level,
+        appearance: jsonEncode({for (final entry in InventoryService.instance.loadout.entries)
+          entry.key: {...entry.value.appearance, 'item_key': entry.value.key}}),
+      ));
     }),
   ));
 }

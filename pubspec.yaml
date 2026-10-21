@@ -77,11 +77,13 @@ flutter:
     - assets/images/ui/
     - assets/images/products/
     - assets/images/products/boutique/
+    - assets/images/products/children-rooms/
     - assets/fonts/
     - assets/runner/
     - assets/runner/guardian/
     - assets/runner/maze/
     - assets/runner/penalties/
+    - assets/runner/snow/
     - assets/runner/penalties/art/
     - assets/runner/guardian/audio/
     - assets/runner/restart/sewn-coverage-bear-coat_cloud.json

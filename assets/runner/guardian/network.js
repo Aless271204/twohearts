@@ -40,13 +40,14 @@ export class GuardianSession{
   if(this.role===0&&p.kind==='input'&&Array.isArray(p.packets)){for(const [seq,mask]of p.packets)if(Number.isInteger(seq)&&seq>this.remoteSeq&&seq<=this.remoteSeq+128&&Number.isInteger(mask)&&mask>=0&&mask<=63)this.remoteQueue.set(seq,mask);}
   if(this.role===1&&p.kind==='state'){if(p.state.f<this.lastSnapshot)return;this.lastSnapshot=p.state.f;this.ack=p.state.ack??0;this.unacked=this.unacked.filter(([seq])=>seq>this.ack);this.onPacket(p.state);}
   if(p.kind==='pause')this.onPause(true);if(p.kind==='resume')this.onPause(false);if(p.kind==='leave')this.onLeave();
+  if(p.kind==='wardrobe'&&Array.isArray(p.loadout)&&p.loadout.length<=5)this.onWardrobe?.(p.loadout);
   if(this.role===1&&p.kind==='replay'){this.chunks.set(p.index,p);if(this.chunks.size===p.total&&!this.confirming){this.confirming=this.confirmChunks(p).catch(error=>{this.confirming=null;this.confirmError=error;});}}
  }
  async confirmChunks(packet){if(!Number.isInteger(packet.total)||packet.total<1||packet.total>60)throw Error('Repetición inválida');const events=[],refs=[];
   for(let i=0;i<packet.total;i++){const c=this.chunks.get(i);if(!c||c.hash!==packet.hash||!Array.isArray(c.events)||c.events.length>200)throw Error('Repetición incompleta');events.push(...c.events);refs.push(...c.refs);}
   for(let i=0;i<events.length;i++)if(events[i][1]===1&&this.ownHistory.get(refs[i])!==events[i][2])throw Error('Las entradas de tu mascota no coinciden');
   const hash=await transcriptHash(this.id,packet.frames,events,refs);if(hash!==packet.hash)throw Error('La repetición no coincide');
-  const r=replay(Number(this.info.seed),this.info.difficulty,'partner',events,packet.frames,this.info.species,[4,5,7].includes(this.info.engine_version)?'river':'forest',this.info.engine_version<5?'legacy':'stones',this.info.engine_version>=6?'aerial':'legacy');if(r.state.status!=='victory')throw Error('La victoria no coincide');
+  const r=replay(Number(this.info.seed),this.info.difficulty,'partner',events,packet.frames,this.info.species,[4,5,7].includes(this.info.engine_version)?'river':'forest',this.info.engine_version<5?'legacy':'stones',this.info.engine_version>=6?'aerial':'legacy');if(!['victory','defeat'].includes(r.state.status))throw Error('La partida todavía no ha terminado');
   await this.flush();await this.rpc('confirm',{p_packets:{hash}});this.peerReceipt=true;
  }
  snapshot(s,paused){return this.send({kind:'state',state:packState(s,paused,this.remoteSeq)});}

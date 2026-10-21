@@ -38,6 +38,9 @@ class _ShopScreenState extends State<ShopScreen> {
   String? error;
   String? slot;
   String? roomCategory;
+  String? rarity;
+  String? collection;
+  int page = 0;
   InventoryItem? preview;
   bool showPreview = false;
   bool showCoins = false;
@@ -243,6 +246,125 @@ class _ShopScreenState extends State<ShopScreen> {
     );
   }
 
+  Future<void> _buyBundle(Map<String, dynamic> bundle) async {
+    if (busy || widget.previewMode) return;
+    setState(() => busy = true);
+    try {
+      final quote = await inventory.quoteBundle(bundle['bundle_key'] as String);
+      if (!mounted || quote['missing_count'] == 0) return;
+      final price = quote['price_coins'] as int;
+      final confirmed = await showDialog<bool>(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text(quote['name'] as String),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('${quote['missing_count']} objetos · $price de oro'),
+                const SizedBox(height: 8),
+                Text(
+                  '${quote['discount_percent']} % de descuento sobre los objetos que te faltan. Los que ya tienes no se cobran de nuevo.',
+                ),
+                const SizedBox(height: 12),
+                for (final row in quote['items'] as List)
+                  if (row['owned'] != true)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 5),
+                      child: Text(
+                        '• ${InventoryItem.readableText(row['name'] as String)}',
+                      ),
+                    ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: const Text('Volver'),
+            ),
+            FilledButton(
+              onPressed: inventory.coins >= price
+                  ? () => Navigator.pop(context, true)
+                  : null,
+              child: Text('Comprar · $price'),
+            ),
+          ],
+        ),
+      );
+      if (confirmed == true) {
+        await inventory.purchaseBundle(quote['bundle_key'] as String, price);
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              e is PostgrestException
+                  ? e.message
+                  : 'No se pudo comprar el conjunto. Reintenta.',
+            ),
+          ),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => busy = false);
+    }
+  }
+
+  Widget _bundleOffers() {
+    final offers = inventory.bundles.where((b) => b['scope'] == scope).toList();
+    if (offers.isEmpty || onlyOwned) return const SizedBox.shrink();
+    return Card(
+      color: const Color(0xFFFFF0EA),
+      elevation: 0,
+      child: ExpansionTile(
+        textColor: const Color(0xFF493B37),
+        collapsedTextColor: const Color(0xFF493B37),
+        title: const Text(
+          'Conjuntos para combinar',
+          style: TextStyle(fontWeight: FontWeight.w700),
+        ),
+        subtitle: Text(
+          scope == 'room'
+              ? 'Ahorra un 25 % · solo pagas lo que te falta'
+              : 'Ahorra un 10 % · solo pagas lo que te falta',
+        ),
+        children: [
+          for (final bundle in offers)
+            ListTile(
+              leading: Image.asset(
+                bundle['thumbnail_asset'] as String,
+                width: 48,
+                height: 48,
+                fit: BoxFit.contain,
+              ),
+              title: Text(
+                bundle['name'] as String,
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              subtitle: Text(
+                bundle['missing_count'] == 0
+                    ? 'Ya tienes el conjunto completo'
+                    : '${bundle['missing_count']} objetos · ${bundle['price_coins']} de oro',
+              ),
+              trailing: IconButton(
+                tooltip: 'Ver conjunto',
+                icon: const Icon(Icons.chevron_right_rounded),
+                onPressed: busy || bundle['missing_count'] == 0
+                    ? null
+                    : () => _buyBundle(bundle),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final items = inventory.catalog
@@ -256,6 +378,10 @@ class _ShopScreenState extends State<ShopScreen> {
                   roomCategory == null ||
                   i.roomCategory == roomCategory) &&
               (slot == null || i.slot == slot) &&
+              (rarity == null || i.rarity == rarity) &&
+              (scope != 'room' ||
+                  collection == null ||
+                  i.collection == collection) &&
               (!onlyOwned || inventory.owns(i.key)) &&
               (query.isEmpty ||
                   '${i.name} ${i.collection} ${i.description}'
@@ -275,6 +401,10 @@ class _ShopScreenState extends State<ShopScreen> {
                   .compareTo(inventory.catalog.indexOf(b));
       });
     }
+    final safePage = items.isEmpty
+        ? 0
+        : page.clamp(0, (items.length - 1) ~/ 16).toInt();
+    final pageItems = items.skip(safePage * 16).take(16);
     return Scaffold(
       backgroundColor: const Color(0xFFFFF9FA),
       appBar: AppBar(
@@ -387,7 +517,66 @@ class _ShopScreenState extends State<ShopScreen> {
                     if (showCoins)
                       _coinsPanel()
                     else ...[
+                      _bundleOffers(),
+                      SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          children: [
+                            for (final tier in [
+                              'Todo',
+                              ...StoreEconomy.rarities,
+                            ])
+                              Padding(
+                                padding: const EdgeInsets.only(right: 6),
+                                child: ChoiceChip(
+                                  label: Text(tier),
+                                  labelStyle: const TextStyle(
+                                    color: Color(0xFF302B35),
+                                  ),
+                                  selected: (rarity ?? 'Todo') == tier,
+                                  showCheckmark: false,
+                                  onSelected: (_) => setState(
+                                    () => rarity = tier == 'Todo' ? null : tier,
+                                  ),
+                                ),
+                              ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 10),
                       if (scope == 'room') ...[
+                        DropdownButtonFormField<String>(
+                          initialValue: collection ?? '',
+                          decoration: const InputDecoration(
+                            labelText: 'Colección',
+                          ),
+                          isExpanded: true,
+                          items: [
+                            const DropdownMenuItem(
+                              value: '',
+                              child: Text('Todas las colecciones'),
+                            ),
+                            for (final name
+                                in inventory.catalog
+                                    .where(
+                                      (i) => i.scope == 'room' && i.visible,
+                                    )
+                                    .map((i) => i.collection)
+                                    .toSet())
+                              DropdownMenuItem(
+                                value: name,
+                                child: Text(
+                                  name,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                          ],
+                          onChanged: (value) => setState(() {
+                            collection = value == '' ? null : value;
+                            page = 0;
+                          }),
+                        ),
+                        const SizedBox(height: 12),
                         SingleChildScrollView(
                           scrollDirection: Axis.horizontal,
                           child: Row(
@@ -502,7 +691,7 @@ class _ShopScreenState extends State<ShopScreen> {
                           spacing: 12,
                           runSpacing: 12,
                           children: [
-                            for (final item in items)
+                            for (final item in pageItems)
                               SizedBox(
                                 width: (constraints.maxWidth - 12) / 2,
                                 child: _productCard(item),
@@ -510,6 +699,27 @@ class _ShopScreenState extends State<ShopScreen> {
                           ],
                         ),
                       ),
+                      if (items.length > 16)
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            TextButton(
+                              onPressed: safePage > 0
+                                  ? () => setState(() => page = safePage - 1)
+                                  : null,
+                              child: const Text('Anterior'),
+                            ),
+                            Text(
+                              '${safePage + 1} / ${(items.length / 16).ceil()}',
+                            ),
+                            TextButton(
+                              onPressed: (safePage + 1) * 16 < items.length
+                                  ? () => setState(() => page = safePage + 1)
+                                  : null,
+                              child: const Text('Siguiente'),
+                            ),
+                          ],
+                        ),
                       const SizedBox(height: 20),
                       const Text(
                         'Cada objeto se prueba sobre tu mascota o habitación antes de comprarlo. Las compras con LoveCoins se conservan en tu inventario.',
@@ -625,6 +835,19 @@ class _ShopScreenState extends State<ShopScreen> {
             ),
             const SizedBox(height: 4),
             Text(
+              item.rarity,
+              style: TextStyle(
+                fontSize: 11,
+                fontWeight: FontWeight.w700,
+                color: switch (item.rarity) {
+                  'Legendario' => const Color(0xFF8D591A),
+                  'Exclusivo' => const Color(0xFF75448B),
+                  'Especial' => const Color(0xFF2C6677),
+                  _ => const Color(0xFF4F6855),
+                },
+              ),
+            ),
+            Text(
               boutiqueDescriptions[item.key] ?? item.description,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
@@ -680,6 +903,7 @@ class InventoryPreview extends StatelessWidget {
         ),
         petLevel: SharedPetService.instance.level,
         animationName: 'Natural_Rest',
+        isolatedRoomPreview: scope == 'room',
         autoPlay: true,
         cameraControls: false,
         cameraOrbit: '0deg 75deg 105%',

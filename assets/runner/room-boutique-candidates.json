@@ -1,0 +1,11 @@
+[
+ {"item_key":"furniture_sage_heart_chair","name":"Sillón abrazo salvia","equip_slot":"room_chair","room_category":"Muebles","price_coins":450,"appearance":{"style":"sage_heart_chair","color":"#9AAA85"}},
+ {"item_key":"furniture_oak_side_table","name":"Mesita de domingo","equip_slot":"room_table","room_category":"Muebles","price_coins":250,"appearance":{"style":"oak_side_table","color":"#B8DCCB"}},
+ {"item_key":"furniture_moon_lamp","name":"Luna de buenas noches","equip_slot":"room_lamp","room_category":"Muebles","price_coins":200,"appearance":{"style":"moon_lamp","color":"#FFE4AC"}},
+ {"item_key":"furniture_oak_bookshelf","name":"Biblioteca de historias","equip_slot":"room_dresser","room_category":"Muebles","price_coins":380,"appearance":{"style":"oak_bookshelf","color":"#9AAA85"}},
+ {"item_key":"rug_knit_cream","name":"Alfombra de algodón","equip_slot":"room_rug","room_category":"Suelo","price_coins":160,"appearance":{"style":"knit_rug","color":"#F0E5D2"}},
+ {"item_key":"furniture_coral_beanbag","name":"Puf de abrazos","equip_slot":"room_chair","room_category":"Muebles","price_coins":280,"appearance":{"style":"coral_beanbag","color":"#EFA0AB"}},
+ {"item_key":"furniture_artist_desk","name":"Escritorio creativo","equip_slot":"room_dresser","room_category":"Muebles","price_coins":350,"appearance":{"style":"artist_desk","color":"#B8DCCB"}},
+ {"item_key":"furniture_heart_planter","name":"Maceta cariño","equip_slot":"room_plant","room_category":"Muebles","price_coins":100,"appearance":{"style":"heart_planter","color":"#9AAA85"}},
+ {"item_key":"wall_landscape_frame","name":"Nuestro paisaje","equip_slot":"room_decor","room_category":"Pared","price_coins":70,"appearance":{"style":"landscape_frame","color":"#9AAA85"}}
+]

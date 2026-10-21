@@ -24,12 +24,12 @@ android {
     }
 
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "com.example.twohearts"
+        // Keep existing sideload builds compatible; Play uses a distinct, permanent ID.
+        applicationId = System.getenv("NIDO_APPLICATION_ID") ?: "com.example.twohearts"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = maxOf(flutter.minSdkVersion, 24)
-        targetSdk = flutter.targetSdkVersion
+        targetSdk = maxOf(flutter.targetSdkVersion, 36)
         versionCode = flutter.versionCode
         versionName = flutter.versionName
     }
@@ -47,8 +47,7 @@ android {
     }
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
+            // Never silently publish with a debug certificate.
             signingConfig = if (!releaseStore.isNullOrBlank()) signingConfigs.getByName("nidoRelease")
                 else if (allowTestSigning) signingConfigs.getByName("debug") else null
         }

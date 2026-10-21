@@ -57,6 +57,7 @@ class GameArt extends StatelessWidget {
             3 => 'assets/images/ui/guardian-river-cover-v3.webp',
             5 => 'assets/images/ui/penalty-game-cover-v3.webp',
             6 => 'assets/images/ui/maze-halloween-cover-v3.webp',
+            7 => 'assets/images/ui/snow-game-cover-v2.webp',
             _ => 'assets/images/ui/art-game-cover.webp',
           },
           fit: BoxFit.cover,
@@ -128,7 +129,9 @@ class ProductThumbnail extends StatelessWidget {
   });
   @override
   Widget build(BuildContext context) {
-    final boutique = boutiqueThumbnails[item.key];
+    final boutique =
+        item.appearance['thumbnail_asset'] as String? ??
+        boutiqueThumbnails[item.key];
     if (boutique != null) {
       return _AnimatedProductPreview(
         child: Image.asset(boutique, fit: BoxFit.contain),

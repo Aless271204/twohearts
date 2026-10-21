@@ -1,0 +1,733 @@
+[
+  {
+    "item_key": "room_gamer_desk",
+    "name": "Escritorio de partidas",
+    "scope": "room",
+    "equip_slot": "room_dresser",
+    "room_category": "Muebles",
+    "collection": "Modo abrazo",
+    "theme": "gamer",
+    "price_coins": 340,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "gamer_desk",
+      "color": "#C6B4DD"
+    }
+  },
+  {
+    "item_key": "room_gamer_chair",
+    "name": "Sillón nivel ternura",
+    "scope": "room",
+    "equip_slot": "room_chair",
+    "room_category": "Muebles",
+    "collection": "Modo abrazo",
+    "theme": "gamer",
+    "price_coins": 360,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "gamer_chair",
+      "color": "#C6B4DD"
+    }
+  },
+  {
+    "item_key": "room_gamer_lamp",
+    "name": "Luz de mando",
+    "scope": "room",
+    "equip_slot": "room_lamp",
+    "room_category": "Muebles",
+    "collection": "Modo abrazo",
+    "theme": "gamer",
+    "price_coins": 180,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "gamer_lamp",
+      "color": "#C6B4DD"
+    }
+  },
+  {
+    "item_key": "room_gamer_rug",
+    "name": "Alfombra de controles",
+    "scope": "room",
+    "equip_slot": "room_rug",
+    "room_category": "Suelo",
+    "collection": "Modo abrazo",
+    "theme": "gamer",
+    "price_coins": 150,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "gamer_rug",
+      "color": "#C6B4DD"
+    }
+  },
+  {
+    "item_key": "room_gamer_frame",
+    "name": "Constelación de píxeles",
+    "scope": "room",
+    "equip_slot": "room_decor",
+    "room_category": "Pared",
+    "collection": "Modo abrazo",
+    "theme": "gamer",
+    "price_coins": 70,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "gamer_frame",
+      "color": "#C6B4DD"
+    }
+  },
+  {
+    "item_key": "room_space_chair",
+    "name": "Sillón cápsula",
+    "scope": "room",
+    "equip_slot": "room_chair",
+    "room_category": "Muebles",
+    "collection": "Órbita de sueños",
+    "theme": "space",
+    "price_coins": 380,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "space_chair",
+      "color": "#B8CBEA"
+    }
+  },
+  {
+    "item_key": "room_space_shelf",
+    "name": "Biblioteca cohete",
+    "scope": "room",
+    "equip_slot": "room_dresser",
+    "room_category": "Muebles",
+    "collection": "Órbita de sueños",
+    "theme": "space",
+    "price_coins": 390,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "space_shelf",
+      "color": "#B8CBEA"
+    }
+  },
+  {
+    "item_key": "room_space_lamp",
+    "name": "Lámpara Saturno",
+    "scope": "room",
+    "equip_slot": "room_lamp",
+    "room_category": "Muebles",
+    "collection": "Órbita de sueños",
+    "theme": "space",
+    "price_coins": 220,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "space_lamp",
+      "color": "#B8CBEA"
+    }
+  },
+  {
+    "item_key": "room_space_rug",
+    "name": "Alfombra estelar",
+    "scope": "room",
+    "equip_slot": "room_rug",
+    "room_category": "Suelo",
+    "collection": "Órbita de sueños",
+    "theme": "space",
+    "price_coins": 160,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "space_rug",
+      "color": "#B8CBEA"
+    }
+  },
+  {
+    "item_key": "room_space_frame",
+    "name": "Ventana al cosmos",
+    "scope": "room",
+    "equip_slot": "room_decor",
+    "room_category": "Pared",
+    "collection": "Órbita de sueños",
+    "theme": "space",
+    "price_coins": 80,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "space_frame",
+      "color": "#B8CBEA"
+    }
+  },
+  {
+    "item_key": "room_cars_bed",
+    "name": "Cama de cuatro ruedas",
+    "scope": "room",
+    "equip_slot": "room_bed",
+    "room_category": "Muebles",
+    "collection": "Ruta de aventuras",
+    "theme": "cars",
+    "price_coins": 450,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "cars_bed",
+      "color": "#D9A19A"
+    }
+  },
+  {
+    "item_key": "room_cars_dresser",
+    "name": "Cómoda de boxes",
+    "scope": "room",
+    "equip_slot": "room_dresser",
+    "room_category": "Muebles",
+    "collection": "Ruta de aventuras",
+    "theme": "cars",
+    "price_coins": 320,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "cars_dresser",
+      "color": "#D9A19A"
+    }
+  },
+  {
+    "item_key": "room_cars_lamp",
+    "name": "Semáforo de sueños",
+    "scope": "room",
+    "equip_slot": "room_lamp",
+    "room_category": "Muebles",
+    "collection": "Ruta de aventuras",
+    "theme": "cars",
+    "price_coins": 180,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "cars_lamp",
+      "color": "#D9A19A"
+    }
+  },
+  {
+    "item_key": "room_cars_rug",
+    "name": "Pista del Nido",
+    "scope": "room",
+    "equip_slot": "room_rug",
+    "room_category": "Suelo",
+    "collection": "Ruta de aventuras",
+    "theme": "cars",
+    "price_coins": 160,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "cars_rug",
+      "color": "#D9A19A"
+    }
+  },
+  {
+    "item_key": "room_cars_frame",
+    "name": "Bandera de llegada",
+    "scope": "room",
+    "equip_slot": "room_decor",
+    "room_category": "Pared",
+    "collection": "Ruta de aventuras",
+    "theme": "cars",
+    "price_coins": 70,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "cars_frame",
+      "color": "#D9A19A"
+    }
+  },
+  {
+    "item_key": "room_dolls_sofa",
+    "name": "Sofá de merienda",
+    "scope": "room",
+    "equip_slot": "room_chair",
+    "room_category": "Muebles",
+    "collection": "Casita de algodón",
+    "theme": "dolls",
+    "price_coins": 430,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "dolls_sofa",
+      "color": "#EAB5C8"
+    }
+  },
+  {
+    "item_key": "room_dolls_vanity",
+    "name": "Tocador de cuento",
+    "scope": "room",
+    "equip_slot": "room_dresser",
+    "room_category": "Muebles",
+    "collection": "Casita de algodón",
+    "theme": "dolls",
+    "price_coins": 350,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "dolls_vanity",
+      "color": "#EAB5C8"
+    }
+  },
+  {
+    "item_key": "room_dolls_lamp",
+    "name": "Luz margarita",
+    "scope": "room",
+    "equip_slot": "room_lamp",
+    "room_category": "Muebles",
+    "collection": "Casita de algodón",
+    "theme": "dolls",
+    "price_coins": 190,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "dolls_lamp",
+      "color": "#EAB5C8"
+    }
+  },
+  {
+    "item_key": "room_dolls_rug",
+    "name": "Alfombra de encaje",
+    "scope": "room",
+    "equip_slot": "room_rug",
+    "room_category": "Suelo",
+    "collection": "Casita de algodón",
+    "theme": "dolls",
+    "price_coins": 150,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "dolls_rug",
+      "color": "#EAB5C8"
+    }
+  },
+  {
+    "item_key": "room_dolls_shelf",
+    "name": "Librero casita",
+    "scope": "room",
+    "equip_slot": "room_dresser",
+    "room_category": "Muebles",
+    "collection": "Casita de algodón",
+    "theme": "dolls",
+    "price_coins": 260,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "dolls_shelf",
+      "color": "#EAB5C8"
+    }
+  },
+  {
+    "item_key": "room_castle_throne",
+    "name": "Trono de cariño",
+    "scope": "room",
+    "equip_slot": "room_chair",
+    "room_category": "Muebles",
+    "collection": "Castillo de nubes",
+    "theme": "castle",
+    "price_coins": 390,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "castle_throne",
+      "color": "#C9B8E2"
+    }
+  },
+  {
+    "item_key": "room_castle_shelf",
+    "name": "Biblioteca de torres",
+    "scope": "room",
+    "equip_slot": "room_dresser",
+    "room_category": "Muebles",
+    "collection": "Castillo de nubes",
+    "theme": "castle",
+    "price_coins": 400,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "castle_shelf",
+      "color": "#C9B8E2"
+    }
+  },
+  {
+    "item_key": "room_castle_lamp",
+    "name": "Torre de buenas noches",
+    "scope": "room",
+    "equip_slot": "room_lamp",
+    "room_category": "Muebles",
+    "collection": "Castillo de nubes",
+    "theme": "castle",
+    "price_coins": 210,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "castle_lamp",
+      "color": "#C9B8E2"
+    }
+  },
+  {
+    "item_key": "room_castle_rug",
+    "name": "Tapiz de corazones",
+    "scope": "room",
+    "equip_slot": "room_rug",
+    "room_category": "Suelo",
+    "collection": "Castillo de nubes",
+    "theme": "castle",
+    "price_coins": 160,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "castle_rug",
+      "color": "#C9B8E2"
+    }
+  },
+  {
+    "item_key": "room_castle_frame",
+    "name": "Castillo entre nubes",
+    "scope": "room",
+    "equip_slot": "room_decor",
+    "room_category": "Pared",
+    "collection": "Castillo de nubes",
+    "theme": "castle",
+    "price_coins": 80,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "castle_frame",
+      "color": "#C9B8E2"
+    }
+  },
+  {
+    "item_key": "room_worldcup_chair",
+    "name": "Sillón del goleador",
+    "scope": "room",
+    "equip_slot": "room_chair",
+    "room_category": "Muebles",
+    "collection": "La copa del Nido",
+    "theme": "worldcup",
+    "price_coins": 360,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "worldcup_chair",
+      "color": "#9BC8AE"
+    }
+  },
+  {
+    "item_key": "room_worldcup_shelf",
+    "name": "Vitrina de trofeos",
+    "scope": "room",
+    "equip_slot": "room_dresser",
+    "room_category": "Muebles",
+    "collection": "La copa del Nido",
+    "theme": "worldcup",
+    "price_coins": 380,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "worldcup_shelf",
+      "color": "#9BC8AE"
+    }
+  },
+  {
+    "item_key": "room_worldcup_lamp",
+    "name": "Arquito luminoso",
+    "scope": "room",
+    "equip_slot": "room_lamp",
+    "room_category": "Muebles",
+    "collection": "La copa del Nido",
+    "theme": "worldcup",
+    "price_coins": 200,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "worldcup_lamp",
+      "color": "#9BC8AE"
+    }
+  },
+  {
+    "item_key": "room_worldcup_rug",
+    "name": "Nuestra pequeña cancha",
+    "scope": "room",
+    "equip_slot": "room_rug",
+    "room_category": "Suelo",
+    "collection": "La copa del Nido",
+    "theme": "worldcup",
+    "price_coins": 170,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "worldcup_rug",
+      "color": "#9BC8AE"
+    }
+  },
+  {
+    "item_key": "room_worldcup_frame",
+    "name": "Banderines de celebración",
+    "scope": "room",
+    "equip_slot": "room_decor",
+    "room_category": "Pared",
+    "collection": "La copa del Nido",
+    "theme": "worldcup",
+    "price_coins": 70,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "worldcup_frame",
+      "color": "#9BC8AE"
+    }
+  },
+  {
+    "item_key": "room_knights_chair",
+    "name": "Trono del guardián",
+    "scope": "room",
+    "equip_slot": "room_chair",
+    "room_category": "Muebles",
+    "collection": "Caballeros del corazón",
+    "theme": "knights",
+    "price_coins": 380,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "knights_chair",
+      "color": "#A8BFCC"
+    }
+  },
+  {
+    "item_key": "room_knights_table",
+    "name": "Mesa redonda",
+    "scope": "room",
+    "equip_slot": "room_table",
+    "room_category": "Muebles",
+    "collection": "Caballeros del corazón",
+    "theme": "knights",
+    "price_coins": 290,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "knights_table",
+      "color": "#A8BFCC"
+    }
+  },
+  {
+    "item_key": "room_knights_stand",
+    "name": "Armadura de bienvenida",
+    "scope": "room",
+    "equip_slot": "room_dresser",
+    "room_category": "Muebles",
+    "collection": "Caballeros del corazón",
+    "theme": "knights",
+    "price_coins": 300,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "knights_stand",
+      "color": "#A8BFCC"
+    }
+  },
+  {
+    "item_key": "room_knights_lamp",
+    "name": "Antorcha acogedora",
+    "scope": "room",
+    "equip_slot": "room_lamp",
+    "room_category": "Muebles",
+    "collection": "Caballeros del corazón",
+    "theme": "knights",
+    "price_coins": 180,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "knights_lamp",
+      "color": "#A8BFCC"
+    }
+  },
+  {
+    "item_key": "room_knights_frame",
+    "name": "Escudo del Nido",
+    "scope": "room",
+    "equip_slot": "room_decor",
+    "room_category": "Pared",
+    "collection": "Caballeros del corazón",
+    "theme": "knights",
+    "price_coins": 80,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "knights_frame",
+      "color": "#A8BFCC"
+    }
+  },
+  {
+    "item_key": "room_city_paris",
+    "name": "París de miel",
+    "scope": "room",
+    "equip_slot": "room_decor",
+    "room_category": "Pared",
+    "collection": "Ciudades para soñar",
+    "theme": "cities",
+    "price_coins": 80,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "city_paris",
+      "color": "#B99C91"
+    }
+  },
+  {
+    "item_key": "room_city_newyork",
+    "name": "Nueva York al amanecer",
+    "scope": "room",
+    "equip_slot": "room_decor",
+    "room_category": "Pared",
+    "collection": "Ciudades para soñar",
+    "theme": "cities",
+    "price_coins": 80,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "city_newyork",
+      "color": "#A3B4CC"
+    }
+  },
+  {
+    "item_key": "room_city_london",
+    "name": "Londres entre nubes",
+    "scope": "room",
+    "equip_slot": "room_decor",
+    "room_category": "Pared",
+    "collection": "Ciudades para soñar",
+    "theme": "cities",
+    "price_coins": 80,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "city_london",
+      "color": "#B7A49B"
+    }
+  },
+  {
+    "item_key": "room_city_rio",
+    "name": "Río de abrazos",
+    "scope": "room",
+    "equip_slot": "room_decor",
+    "room_category": "Pared",
+    "collection": "Ciudades para soñar",
+    "theme": "cities",
+    "price_coins": 80,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "city_rio",
+      "color": "#8BAF92"
+    }
+  },
+  {
+    "item_key": "room_city_kyoto",
+    "name": "Kioto en primavera",
+    "scope": "room",
+    "equip_slot": "room_decor",
+    "room_category": "Pared",
+    "collection": "Ciudades para soñar",
+    "theme": "cities",
+    "price_coins": 80,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "city_kyoto",
+      "color": "#C99AA4"
+    }
+  },
+  {
+    "item_key": "room_city_quito",
+    "name": "Quito entre montañas",
+    "scope": "room",
+    "equip_slot": "room_decor",
+    "room_category": "Pared",
+    "collection": "Ciudades para soñar",
+    "theme": "cities",
+    "price_coins": 80,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "city_quito",
+      "color": "#A7B3A1"
+    }
+  },
+  {
+    "item_key": "room_city_venice",
+    "name": "Venecia de paseo",
+    "scope": "room",
+    "equip_slot": "room_decor",
+    "room_category": "Pared",
+    "collection": "Ciudades para soñar",
+    "theme": "cities",
+    "price_coins": 80,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "city_venice",
+      "color": "#CBAF94"
+    }
+  },
+  {
+    "item_key": "room_city_barcelona",
+    "name": "Barcelona de colores",
+    "scope": "room",
+    "equip_slot": "room_decor",
+    "room_category": "Pared",
+    "collection": "Ciudades para soñar",
+    "theme": "cities",
+    "price_coins": 80,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "city_barcelona",
+      "color": "#BEA5BD"
+    }
+  }
+]

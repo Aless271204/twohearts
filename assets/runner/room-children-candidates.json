@@ -1,0 +1,2586 @@
+[
+  {
+    "item_key": "room_nursery_gamer_bed",
+    "name": "Cama · Gamer",
+    "scope": "room",
+    "equip_slot": "room_bed",
+    "room_category": "Muebles",
+    "collection": "Habitación infantil · Gamer",
+    "theme": "gamer",
+    "part": "bed",
+    "price_coins": 460,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_gamer_bed",
+      "color": "#625299"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_gamer_chair",
+    "name": "Sillón · Gamer",
+    "scope": "room",
+    "equip_slot": "room_chair",
+    "room_category": "Muebles",
+    "collection": "Habitación infantil · Gamer",
+    "theme": "gamer",
+    "part": "chair",
+    "price_coins": 290,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_gamer_chair",
+      "color": "#625299"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_gamer_desk",
+    "name": "Escritorio · Gamer",
+    "scope": "room",
+    "equip_slot": "room_dresser",
+    "room_category": "Muebles",
+    "collection": "Habitación infantil · Gamer",
+    "theme": "gamer",
+    "part": "desk",
+    "price_coins": 340,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_gamer_desk",
+      "color": "#625299"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_gamer_shelf",
+    "name": "Librero · Gamer",
+    "scope": "room",
+    "equip_slot": "room_dresser",
+    "room_category": "Muebles",
+    "collection": "Habitación infantil · Gamer",
+    "theme": "gamer",
+    "part": "shelf",
+    "price_coins": 320,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_gamer_shelf",
+      "color": "#625299"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_gamer_dresser",
+    "name": "Cómoda · Gamer",
+    "scope": "room",
+    "equip_slot": "room_dresser",
+    "room_category": "Muebles",
+    "collection": "Habitación infantil · Gamer",
+    "theme": "gamer",
+    "part": "dresser",
+    "price_coins": 300,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_gamer_dresser",
+      "color": "#625299"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_gamer_lamp",
+    "name": "Lámpara de pie · Gamer",
+    "scope": "room",
+    "equip_slot": "room_lamp",
+    "room_category": "Iluminación",
+    "collection": "Habitación infantil · Gamer",
+    "theme": "gamer",
+    "part": "lamp",
+    "price_coins": 160,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_gamer_lamp",
+      "color": "#625299"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_gamer_rug",
+    "name": "Alfombra · Gamer",
+    "scope": "room",
+    "equip_slot": "room_rug",
+    "room_category": "Muebles",
+    "collection": "Habitación infantil · Gamer",
+    "theme": "gamer",
+    "part": "rug",
+    "price_coins": 150,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_gamer_rug",
+      "color": "#625299"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_gamer_frame",
+    "name": "Cuadro · Gamer",
+    "scope": "room",
+    "equip_slot": "room_decor",
+    "room_category": "Pared",
+    "collection": "Habitación infantil · Gamer",
+    "theme": "gamer",
+    "part": "frame",
+    "price_coins": 90,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_gamer_frame",
+      "color": "#625299"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_gamer_pendant",
+    "name": "Lámpara de techo · Gamer",
+    "scope": "room",
+    "equip_slot": "room_ceiling",
+    "room_category": "Iluminación",
+    "collection": "Habitación infantil · Gamer",
+    "theme": "gamer",
+    "part": "pendant",
+    "price_coins": 180,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_gamer_pendant",
+      "color": "#625299"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_gamer_curtain",
+    "name": "Cortinas · Gamer",
+    "scope": "room",
+    "equip_slot": "room_decor",
+    "room_category": "Pared",
+    "collection": "Habitación infantil · Gamer",
+    "theme": "gamer",
+    "part": "curtain",
+    "price_coins": 140,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_gamer_curtain",
+      "color": "#625299"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_gamer_chest",
+    "name": "Baúl · Gamer",
+    "scope": "room",
+    "equip_slot": "room_dresser",
+    "room_category": "Muebles",
+    "collection": "Habitación infantil · Gamer",
+    "theme": "gamer",
+    "part": "chest",
+    "price_coins": 210,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_gamer_chest",
+      "color": "#625299"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_gamer_plant",
+    "name": "Maceta · Gamer",
+    "scope": "room",
+    "equip_slot": "room_plant",
+    "room_category": "Decoración",
+    "collection": "Habitación infantil · Gamer",
+    "theme": "gamer",
+    "part": "plant",
+    "price_coins": 110,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_gamer_plant",
+      "color": "#625299"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_gamer_toy",
+    "name": "Objeto decorativo · Gamer",
+    "scope": "room",
+    "equip_slot": "room_plant",
+    "room_category": "Decoración",
+    "collection": "Habitación infantil · Gamer",
+    "theme": "gamer",
+    "part": "toy",
+    "price_coins": 85,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_gamer_toy",
+      "color": "#625299"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_gamer_wall",
+    "name": "Pared temática · Gamer",
+    "scope": "room",
+    "equip_slot": "room_wall",
+    "room_category": "Revestimientos",
+    "collection": "Habitación infantil · Gamer",
+    "theme": "gamer",
+    "part": "wall",
+    "price_coins": 200,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_gamer_wall",
+      "color": "#625299"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_gamer_floor",
+    "name": "Suelo de madera · Gamer",
+    "scope": "room",
+    "equip_slot": "room_floor",
+    "room_category": "Revestimientos",
+    "collection": "Habitación infantil · Gamer",
+    "theme": "gamer",
+    "part": "floor",
+    "price_coins": 160,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_gamer_floor",
+      "color": "#625299"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_space_bed",
+    "name": "Cama cápsula estelar",
+    "scope": "room",
+    "equip_slot": "room_bed",
+    "room_category": "Muebles",
+    "collection": "Habitación infantil · Espacio",
+    "theme": "space",
+    "part": "bed",
+    "price_coins": 460,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_space_bed",
+      "color": "#29456D"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_space_chair",
+    "name": "Sillón · Espacio",
+    "scope": "room",
+    "equip_slot": "room_chair",
+    "room_category": "Muebles",
+    "collection": "Habitación infantil · Espacio",
+    "theme": "space",
+    "part": "chair",
+    "price_coins": 290,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_space_chair",
+      "color": "#29456D"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_space_desk",
+    "name": "Escritorio · Espacio",
+    "scope": "room",
+    "equip_slot": "room_dresser",
+    "room_category": "Muebles",
+    "collection": "Habitación infantil · Espacio",
+    "theme": "space",
+    "part": "desk",
+    "price_coins": 340,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_space_desk",
+      "color": "#29456D"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_space_shelf",
+    "name": "Librero cohete",
+    "scope": "room",
+    "equip_slot": "room_dresser",
+    "room_category": "Muebles",
+    "collection": "Habitación infantil · Espacio",
+    "theme": "space",
+    "part": "shelf",
+    "price_coins": 320,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_space_shelf",
+      "color": "#29456D"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_space_dresser",
+    "name": "Cómoda · Espacio",
+    "scope": "room",
+    "equip_slot": "room_dresser",
+    "room_category": "Muebles",
+    "collection": "Habitación infantil · Espacio",
+    "theme": "space",
+    "part": "dresser",
+    "price_coins": 300,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_space_dresser",
+      "color": "#29456D"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_space_lamp",
+    "name": "Lámpara Saturno",
+    "scope": "room",
+    "equip_slot": "room_lamp",
+    "room_category": "Iluminación",
+    "collection": "Habitación infantil · Espacio",
+    "theme": "space",
+    "part": "lamp",
+    "price_coins": 160,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_space_lamp",
+      "color": "#29456D"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_space_rug",
+    "name": "Alfombra · Espacio",
+    "scope": "room",
+    "equip_slot": "room_rug",
+    "room_category": "Muebles",
+    "collection": "Habitación infantil · Espacio",
+    "theme": "space",
+    "part": "rug",
+    "price_coins": 150,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_space_rug",
+      "color": "#29456D"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_space_frame",
+    "name": "Cuadro · Espacio",
+    "scope": "room",
+    "equip_slot": "room_decor",
+    "room_category": "Pared",
+    "collection": "Habitación infantil · Espacio",
+    "theme": "space",
+    "part": "frame",
+    "price_coins": 90,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_space_frame",
+      "color": "#29456D"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_space_pendant",
+    "name": "Móvil de planetas",
+    "scope": "room",
+    "equip_slot": "room_ceiling",
+    "room_category": "Iluminación",
+    "collection": "Habitación infantil · Espacio",
+    "theme": "space",
+    "part": "pendant",
+    "price_coins": 180,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_space_pendant",
+      "color": "#29456D"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_space_curtain",
+    "name": "Cortinas · Espacio",
+    "scope": "room",
+    "equip_slot": "room_decor",
+    "room_category": "Pared",
+    "collection": "Habitación infantil · Espacio",
+    "theme": "space",
+    "part": "curtain",
+    "price_coins": 140,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_space_curtain",
+      "color": "#29456D"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_space_chest",
+    "name": "Baúl · Espacio",
+    "scope": "room",
+    "equip_slot": "room_dresser",
+    "room_category": "Muebles",
+    "collection": "Habitación infantil · Espacio",
+    "theme": "space",
+    "part": "chest",
+    "price_coins": 210,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_space_chest",
+      "color": "#29456D"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_space_plant",
+    "name": "Maceta · Espacio",
+    "scope": "room",
+    "equip_slot": "room_plant",
+    "room_category": "Decoración",
+    "collection": "Habitación infantil · Espacio",
+    "theme": "space",
+    "part": "plant",
+    "price_coins": 110,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_space_plant",
+      "color": "#29456D"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_space_toy",
+    "name": "Globo espacial",
+    "scope": "room",
+    "equip_slot": "room_plant",
+    "room_category": "Decoración",
+    "collection": "Habitación infantil · Espacio",
+    "theme": "space",
+    "part": "toy",
+    "price_coins": 85,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_space_toy",
+      "color": "#29456D"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_space_wall",
+    "name": "Pared temática · Espacio",
+    "scope": "room",
+    "equip_slot": "room_wall",
+    "room_category": "Revestimientos",
+    "collection": "Habitación infantil · Espacio",
+    "theme": "space",
+    "part": "wall",
+    "price_coins": 200,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_space_wall",
+      "color": "#29456D"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_space_floor",
+    "name": "Suelo de madera · Espacio",
+    "scope": "room",
+    "equip_slot": "room_floor",
+    "room_category": "Revestimientos",
+    "collection": "Habitación infantil · Espacio",
+    "theme": "space",
+    "part": "floor",
+    "price_coins": 160,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_space_floor",
+      "color": "#29456D"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_cars_bed",
+    "name": "Cama de carreras",
+    "scope": "room",
+    "equip_slot": "room_bed",
+    "room_category": "Muebles",
+    "collection": "Habitación infantil · Carros",
+    "theme": "cars",
+    "part": "bed",
+    "price_coins": 460,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_cars_bed",
+      "color": "#DF4F46"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_cars_chair",
+    "name": "Sillón · Carros",
+    "scope": "room",
+    "equip_slot": "room_chair",
+    "room_category": "Muebles",
+    "collection": "Habitación infantil · Carros",
+    "theme": "cars",
+    "part": "chair",
+    "price_coins": 290,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_cars_chair",
+      "color": "#DF4F46"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_cars_desk",
+    "name": "Escritorio · Carros",
+    "scope": "room",
+    "equip_slot": "room_dresser",
+    "room_category": "Muebles",
+    "collection": "Habitación infantil · Carros",
+    "theme": "cars",
+    "part": "desk",
+    "price_coins": 340,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_cars_desk",
+      "color": "#DF4F46"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_cars_shelf",
+    "name": "Librero · Carros",
+    "scope": "room",
+    "equip_slot": "room_dresser",
+    "room_category": "Muebles",
+    "collection": "Habitación infantil · Carros",
+    "theme": "cars",
+    "part": "shelf",
+    "price_coins": 320,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_cars_shelf",
+      "color": "#DF4F46"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_cars_dresser",
+    "name": "Cómoda · Carros",
+    "scope": "room",
+    "equip_slot": "room_dresser",
+    "room_category": "Muebles",
+    "collection": "Habitación infantil · Carros",
+    "theme": "cars",
+    "part": "dresser",
+    "price_coins": 300,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_cars_dresser",
+      "color": "#DF4F46"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_cars_lamp",
+    "name": "Lámpara semáforo",
+    "scope": "room",
+    "equip_slot": "room_lamp",
+    "room_category": "Iluminación",
+    "collection": "Habitación infantil · Carros",
+    "theme": "cars",
+    "part": "lamp",
+    "price_coins": 160,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_cars_lamp",
+      "color": "#DF4F46"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_cars_rug",
+    "name": "Alfombra circuito",
+    "scope": "room",
+    "equip_slot": "room_rug",
+    "room_category": "Muebles",
+    "collection": "Habitación infantil · Carros",
+    "theme": "cars",
+    "part": "rug",
+    "price_coins": 150,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_cars_rug",
+      "color": "#DF4F46"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_cars_frame",
+    "name": "Cuadro · Carros",
+    "scope": "room",
+    "equip_slot": "room_decor",
+    "room_category": "Pared",
+    "collection": "Habitación infantil · Carros",
+    "theme": "cars",
+    "part": "frame",
+    "price_coins": 90,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_cars_frame",
+      "color": "#DF4F46"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_cars_pendant",
+    "name": "Lámpara de techo · Carros",
+    "scope": "room",
+    "equip_slot": "room_ceiling",
+    "room_category": "Iluminación",
+    "collection": "Habitación infantil · Carros",
+    "theme": "cars",
+    "part": "pendant",
+    "price_coins": 180,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_cars_pendant",
+      "color": "#DF4F46"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_cars_curtain",
+    "name": "Cortinas · Carros",
+    "scope": "room",
+    "equip_slot": "room_decor",
+    "room_category": "Pared",
+    "collection": "Habitación infantil · Carros",
+    "theme": "cars",
+    "part": "curtain",
+    "price_coins": 140,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_cars_curtain",
+      "color": "#DF4F46"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_cars_chest",
+    "name": "Baúl · Carros",
+    "scope": "room",
+    "equip_slot": "room_dresser",
+    "room_category": "Muebles",
+    "collection": "Habitación infantil · Carros",
+    "theme": "cars",
+    "part": "chest",
+    "price_coins": 210,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_cars_chest",
+      "color": "#DF4F46"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_cars_plant",
+    "name": "Maceta · Carros",
+    "scope": "room",
+    "equip_slot": "room_plant",
+    "room_category": "Decoración",
+    "collection": "Habitación infantil · Carros",
+    "theme": "cars",
+    "part": "plant",
+    "price_coins": 110,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_cars_plant",
+      "color": "#DF4F46"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_cars_toy",
+    "name": "Coche de juguete",
+    "scope": "room",
+    "equip_slot": "room_plant",
+    "room_category": "Decoración",
+    "collection": "Habitación infantil · Carros",
+    "theme": "cars",
+    "part": "toy",
+    "price_coins": 85,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_cars_toy",
+      "color": "#DF4F46"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_cars_wall",
+    "name": "Pared temática · Carros",
+    "scope": "room",
+    "equip_slot": "room_wall",
+    "room_category": "Revestimientos",
+    "collection": "Habitación infantil · Carros",
+    "theme": "cars",
+    "part": "wall",
+    "price_coins": 200,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_cars_wall",
+      "color": "#DF4F46"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_cars_floor",
+    "name": "Suelo de madera · Carros",
+    "scope": "room",
+    "equip_slot": "room_floor",
+    "room_category": "Revestimientos",
+    "collection": "Habitación infantil · Carros",
+    "theme": "cars",
+    "part": "floor",
+    "price_coins": 160,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_cars_floor",
+      "color": "#DF4F46"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_dolls_bed",
+    "name": "Cama con dosel",
+    "scope": "room",
+    "equip_slot": "room_bed",
+    "room_category": "Muebles",
+    "collection": "Habitación infantil · Casa de muñecas",
+    "theme": "dolls",
+    "part": "bed",
+    "price_coins": 460,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_dolls_bed",
+      "color": "#E7A6B8"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_dolls_chair",
+    "name": "Sillón · Casa de muñecas",
+    "scope": "room",
+    "equip_slot": "room_chair",
+    "room_category": "Muebles",
+    "collection": "Habitación infantil · Casa de muñecas",
+    "theme": "dolls",
+    "part": "chair",
+    "price_coins": 290,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_dolls_chair",
+      "color": "#E7A6B8"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_dolls_desk",
+    "name": "Tocador de flores",
+    "scope": "room",
+    "equip_slot": "room_dresser",
+    "room_category": "Muebles",
+    "collection": "Habitación infantil · Casa de muñecas",
+    "theme": "dolls",
+    "part": "desk",
+    "price_coins": 340,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_dolls_desk",
+      "color": "#E7A6B8"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_dolls_shelf",
+    "name": "Librero casita",
+    "scope": "room",
+    "equip_slot": "room_dresser",
+    "room_category": "Muebles",
+    "collection": "Habitación infantil · Casa de muñecas",
+    "theme": "dolls",
+    "part": "shelf",
+    "price_coins": 320,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_dolls_shelf",
+      "color": "#E7A6B8"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_dolls_dresser",
+    "name": "Cómoda · Casa de muñecas",
+    "scope": "room",
+    "equip_slot": "room_dresser",
+    "room_category": "Muebles",
+    "collection": "Habitación infantil · Casa de muñecas",
+    "theme": "dolls",
+    "part": "dresser",
+    "price_coins": 300,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_dolls_dresser",
+      "color": "#E7A6B8"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_dolls_lamp",
+    "name": "Lámpara flor",
+    "scope": "room",
+    "equip_slot": "room_lamp",
+    "room_category": "Iluminación",
+    "collection": "Habitación infantil · Casa de muñecas",
+    "theme": "dolls",
+    "part": "lamp",
+    "price_coins": 160,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_dolls_lamp",
+      "color": "#E7A6B8"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_dolls_rug",
+    "name": "Alfombra · Casa de muñecas",
+    "scope": "room",
+    "equip_slot": "room_rug",
+    "room_category": "Muebles",
+    "collection": "Habitación infantil · Casa de muñecas",
+    "theme": "dolls",
+    "part": "rug",
+    "price_coins": 150,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_dolls_rug",
+      "color": "#E7A6B8"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_dolls_frame",
+    "name": "Cuadro · Casa de muñecas",
+    "scope": "room",
+    "equip_slot": "room_decor",
+    "room_category": "Pared",
+    "collection": "Habitación infantil · Casa de muñecas",
+    "theme": "dolls",
+    "part": "frame",
+    "price_coins": 90,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_dolls_frame",
+      "color": "#E7A6B8"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_dolls_pendant",
+    "name": "Lámpara de techo · Casa de muñecas",
+    "scope": "room",
+    "equip_slot": "room_ceiling",
+    "room_category": "Iluminación",
+    "collection": "Habitación infantil · Casa de muñecas",
+    "theme": "dolls",
+    "part": "pendant",
+    "price_coins": 180,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_dolls_pendant",
+      "color": "#E7A6B8"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_dolls_curtain",
+    "name": "Cortinas · Casa de muñecas",
+    "scope": "room",
+    "equip_slot": "room_decor",
+    "room_category": "Pared",
+    "collection": "Habitación infantil · Casa de muñecas",
+    "theme": "dolls",
+    "part": "curtain",
+    "price_coins": 140,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_dolls_curtain",
+      "color": "#E7A6B8"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_dolls_chest",
+    "name": "Baúl · Casa de muñecas",
+    "scope": "room",
+    "equip_slot": "room_dresser",
+    "room_category": "Muebles",
+    "collection": "Habitación infantil · Casa de muñecas",
+    "theme": "dolls",
+    "part": "chest",
+    "price_coins": 210,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_dolls_chest",
+      "color": "#E7A6B8"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_dolls_plant",
+    "name": "Maceta · Casa de muñecas",
+    "scope": "room",
+    "equip_slot": "room_plant",
+    "room_category": "Decoración",
+    "collection": "Habitación infantil · Casa de muñecas",
+    "theme": "dolls",
+    "part": "plant",
+    "price_coins": 110,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_dolls_plant",
+      "color": "#E7A6B8"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_dolls_toy",
+    "name": "Objeto decorativo · Casa de muñecas",
+    "scope": "room",
+    "equip_slot": "room_plant",
+    "room_category": "Decoración",
+    "collection": "Habitación infantil · Casa de muñecas",
+    "theme": "dolls",
+    "part": "toy",
+    "price_coins": 85,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_dolls_toy",
+      "color": "#E7A6B8"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_dolls_wall",
+    "name": "Pared temática · Casa de muñecas",
+    "scope": "room",
+    "equip_slot": "room_wall",
+    "room_category": "Revestimientos",
+    "collection": "Habitación infantil · Casa de muñecas",
+    "theme": "dolls",
+    "part": "wall",
+    "price_coins": 200,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_dolls_wall",
+      "color": "#E7A6B8"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_dolls_floor",
+    "name": "Suelo de madera · Casa de muñecas",
+    "scope": "room",
+    "equip_slot": "room_floor",
+    "room_category": "Revestimientos",
+    "collection": "Habitación infantil · Casa de muñecas",
+    "theme": "dolls",
+    "part": "floor",
+    "price_coins": 160,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_dolls_floor",
+      "color": "#E7A6B8"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_castle_bed",
+    "name": "Cama castillo",
+    "scope": "room",
+    "equip_slot": "room_bed",
+    "room_category": "Muebles",
+    "collection": "Habitación infantil · Castillo",
+    "theme": "castle",
+    "part": "bed",
+    "price_coins": 460,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_castle_bed",
+      "color": "#B59BD5"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_castle_chair",
+    "name": "Sillón · Castillo",
+    "scope": "room",
+    "equip_slot": "room_chair",
+    "room_category": "Muebles",
+    "collection": "Habitación infantil · Castillo",
+    "theme": "castle",
+    "part": "chair",
+    "price_coins": 290,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_castle_chair",
+      "color": "#B59BD5"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_castle_desk",
+    "name": "Escritorio · Castillo",
+    "scope": "room",
+    "equip_slot": "room_dresser",
+    "room_category": "Muebles",
+    "collection": "Habitación infantil · Castillo",
+    "theme": "castle",
+    "part": "desk",
+    "price_coins": 340,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_castle_desk",
+      "color": "#B59BD5"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_castle_shelf",
+    "name": "Librero de torres",
+    "scope": "room",
+    "equip_slot": "room_dresser",
+    "room_category": "Muebles",
+    "collection": "Habitación infantil · Castillo",
+    "theme": "castle",
+    "part": "shelf",
+    "price_coins": 320,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_castle_shelf",
+      "color": "#B59BD5"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_castle_dresser",
+    "name": "Cómoda · Castillo",
+    "scope": "room",
+    "equip_slot": "room_dresser",
+    "room_category": "Muebles",
+    "collection": "Habitación infantil · Castillo",
+    "theme": "castle",
+    "part": "dresser",
+    "price_coins": 300,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_castle_dresser",
+      "color": "#B59BD5"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_castle_lamp",
+    "name": "Lámpara de pie · Castillo",
+    "scope": "room",
+    "equip_slot": "room_lamp",
+    "room_category": "Iluminación",
+    "collection": "Habitación infantil · Castillo",
+    "theme": "castle",
+    "part": "lamp",
+    "price_coins": 160,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_castle_lamp",
+      "color": "#B59BD5"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_castle_rug",
+    "name": "Alfombra de nubes",
+    "scope": "room",
+    "equip_slot": "room_rug",
+    "room_category": "Muebles",
+    "collection": "Habitación infantil · Castillo",
+    "theme": "castle",
+    "part": "rug",
+    "price_coins": 150,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_castle_rug",
+      "color": "#B59BD5"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_castle_frame",
+    "name": "Cuadro · Castillo",
+    "scope": "room",
+    "equip_slot": "room_decor",
+    "room_category": "Pared",
+    "collection": "Habitación infantil · Castillo",
+    "theme": "castle",
+    "part": "frame",
+    "price_coins": 90,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_castle_frame",
+      "color": "#B59BD5"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_castle_pendant",
+    "name": "Lámpara de techo · Castillo",
+    "scope": "room",
+    "equip_slot": "room_ceiling",
+    "room_category": "Iluminación",
+    "collection": "Habitación infantil · Castillo",
+    "theme": "castle",
+    "part": "pendant",
+    "price_coins": 180,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_castle_pendant",
+      "color": "#B59BD5"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_castle_curtain",
+    "name": "Cortinas · Castillo",
+    "scope": "room",
+    "equip_slot": "room_decor",
+    "room_category": "Pared",
+    "collection": "Habitación infantil · Castillo",
+    "theme": "castle",
+    "part": "curtain",
+    "price_coins": 140,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_castle_curtain",
+      "color": "#B59BD5"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_castle_chest",
+    "name": "Baúl · Castillo",
+    "scope": "room",
+    "equip_slot": "room_dresser",
+    "room_category": "Muebles",
+    "collection": "Habitación infantil · Castillo",
+    "theme": "castle",
+    "part": "chest",
+    "price_coins": 210,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_castle_chest",
+      "color": "#B59BD5"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_castle_plant",
+    "name": "Maceta · Castillo",
+    "scope": "room",
+    "equip_slot": "room_plant",
+    "room_category": "Decoración",
+    "collection": "Habitación infantil · Castillo",
+    "theme": "castle",
+    "part": "plant",
+    "price_coins": 110,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_castle_plant",
+      "color": "#B59BD5"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_castle_toy",
+    "name": "Objeto decorativo · Castillo",
+    "scope": "room",
+    "equip_slot": "room_plant",
+    "room_category": "Decoración",
+    "collection": "Habitación infantil · Castillo",
+    "theme": "castle",
+    "part": "toy",
+    "price_coins": 85,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_castle_toy",
+      "color": "#B59BD5"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_castle_wall",
+    "name": "Pared temática · Castillo",
+    "scope": "room",
+    "equip_slot": "room_wall",
+    "room_category": "Revestimientos",
+    "collection": "Habitación infantil · Castillo",
+    "theme": "castle",
+    "part": "wall",
+    "price_coins": 200,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_castle_wall",
+      "color": "#B59BD5"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_castle_floor",
+    "name": "Suelo de madera · Castillo",
+    "scope": "room",
+    "equip_slot": "room_floor",
+    "room_category": "Revestimientos",
+    "collection": "Habitación infantil · Castillo",
+    "theme": "castle",
+    "part": "floor",
+    "price_coins": 160,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_castle_floor",
+      "color": "#B59BD5"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_worldcup_bed",
+    "name": "Cama portería",
+    "scope": "room",
+    "equip_slot": "room_bed",
+    "room_category": "Muebles",
+    "collection": "Habitación infantil · Mundial",
+    "theme": "worldcup",
+    "part": "bed",
+    "price_coins": 460,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_worldcup_bed",
+      "color": "#408C61"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_worldcup_chair",
+    "name": "Sillón · Mundial",
+    "scope": "room",
+    "equip_slot": "room_chair",
+    "room_category": "Muebles",
+    "collection": "Habitación infantil · Mundial",
+    "theme": "worldcup",
+    "part": "chair",
+    "price_coins": 290,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_worldcup_chair",
+      "color": "#408C61"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_worldcup_desk",
+    "name": "Escritorio · Mundial",
+    "scope": "room",
+    "equip_slot": "room_dresser",
+    "room_category": "Muebles",
+    "collection": "Habitación infantil · Mundial",
+    "theme": "worldcup",
+    "part": "desk",
+    "price_coins": 340,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_worldcup_desk",
+      "color": "#408C61"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_worldcup_shelf",
+    "name": "Librero · Mundial",
+    "scope": "room",
+    "equip_slot": "room_dresser",
+    "room_category": "Muebles",
+    "collection": "Habitación infantil · Mundial",
+    "theme": "worldcup",
+    "part": "shelf",
+    "price_coins": 320,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_worldcup_shelf",
+      "color": "#408C61"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_worldcup_dresser",
+    "name": "Cómoda de trofeos",
+    "scope": "room",
+    "equip_slot": "room_dresser",
+    "room_category": "Muebles",
+    "collection": "Habitación infantil · Mundial",
+    "theme": "worldcup",
+    "part": "dresser",
+    "price_coins": 300,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_worldcup_dresser",
+      "color": "#408C61"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_worldcup_lamp",
+    "name": "Lámpara de pie · Mundial",
+    "scope": "room",
+    "equip_slot": "room_lamp",
+    "room_category": "Iluminación",
+    "collection": "Habitación infantil · Mundial",
+    "theme": "worldcup",
+    "part": "lamp",
+    "price_coins": 160,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_worldcup_lamp",
+      "color": "#408C61"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_worldcup_rug",
+    "name": "Alfombra de cancha",
+    "scope": "room",
+    "equip_slot": "room_rug",
+    "room_category": "Muebles",
+    "collection": "Habitación infantil · Mundial",
+    "theme": "worldcup",
+    "part": "rug",
+    "price_coins": 150,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_worldcup_rug",
+      "color": "#408C61"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_worldcup_frame",
+    "name": "Cuadro · Mundial",
+    "scope": "room",
+    "equip_slot": "room_decor",
+    "room_category": "Pared",
+    "collection": "Habitación infantil · Mundial",
+    "theme": "worldcup",
+    "part": "frame",
+    "price_coins": 90,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_worldcup_frame",
+      "color": "#408C61"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_worldcup_pendant",
+    "name": "Lámpara de techo · Mundial",
+    "scope": "room",
+    "equip_slot": "room_ceiling",
+    "room_category": "Iluminación",
+    "collection": "Habitación infantil · Mundial",
+    "theme": "worldcup",
+    "part": "pendant",
+    "price_coins": 180,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_worldcup_pendant",
+      "color": "#408C61"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_worldcup_curtain",
+    "name": "Cortinas · Mundial",
+    "scope": "room",
+    "equip_slot": "room_decor",
+    "room_category": "Pared",
+    "collection": "Habitación infantil · Mundial",
+    "theme": "worldcup",
+    "part": "curtain",
+    "price_coins": 140,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_worldcup_curtain",
+      "color": "#408C61"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_worldcup_chest",
+    "name": "Baúl · Mundial",
+    "scope": "room",
+    "equip_slot": "room_dresser",
+    "room_category": "Muebles",
+    "collection": "Habitación infantil · Mundial",
+    "theme": "worldcup",
+    "part": "chest",
+    "price_coins": 210,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_worldcup_chest",
+      "color": "#408C61"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_worldcup_plant",
+    "name": "Maceta · Mundial",
+    "scope": "room",
+    "equip_slot": "room_plant",
+    "room_category": "Decoración",
+    "collection": "Habitación infantil · Mundial",
+    "theme": "worldcup",
+    "part": "plant",
+    "price_coins": 110,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_worldcup_plant",
+      "color": "#408C61"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_worldcup_toy",
+    "name": "Balón de fútbol",
+    "scope": "room",
+    "equip_slot": "room_plant",
+    "room_category": "Decoración",
+    "collection": "Habitación infantil · Mundial",
+    "theme": "worldcup",
+    "part": "toy",
+    "price_coins": 85,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_worldcup_toy",
+      "color": "#408C61"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_worldcup_wall",
+    "name": "Pared temática · Mundial",
+    "scope": "room",
+    "equip_slot": "room_wall",
+    "room_category": "Revestimientos",
+    "collection": "Habitación infantil · Mundial",
+    "theme": "worldcup",
+    "part": "wall",
+    "price_coins": 200,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_worldcup_wall",
+      "color": "#408C61"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_worldcup_floor",
+    "name": "Suelo de madera · Mundial",
+    "scope": "room",
+    "equip_slot": "room_floor",
+    "room_category": "Revestimientos",
+    "collection": "Habitación infantil · Mundial",
+    "theme": "worldcup",
+    "part": "floor",
+    "price_coins": 160,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_worldcup_floor",
+      "color": "#408C61"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_knights_bed",
+    "name": "Cama del caballero",
+    "scope": "room",
+    "equip_slot": "room_bed",
+    "room_category": "Muebles",
+    "collection": "Habitación infantil · Caballeros",
+    "theme": "knights",
+    "part": "bed",
+    "price_coins": 460,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_knights_bed",
+      "color": "#35654E"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_knights_chair",
+    "name": "Trono del corazón",
+    "scope": "room",
+    "equip_slot": "room_chair",
+    "room_category": "Muebles",
+    "collection": "Habitación infantil · Caballeros",
+    "theme": "knights",
+    "part": "chair",
+    "price_coins": 290,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_knights_chair",
+      "color": "#35654E"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_knights_desk",
+    "name": "Escritorio · Caballeros",
+    "scope": "room",
+    "equip_slot": "room_dresser",
+    "room_category": "Muebles",
+    "collection": "Habitación infantil · Caballeros",
+    "theme": "knights",
+    "part": "desk",
+    "price_coins": 340,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_knights_desk",
+      "color": "#35654E"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_knights_shelf",
+    "name": "Librero · Caballeros",
+    "scope": "room",
+    "equip_slot": "room_dresser",
+    "room_category": "Muebles",
+    "collection": "Habitación infantil · Caballeros",
+    "theme": "knights",
+    "part": "shelf",
+    "price_coins": 320,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_knights_shelf",
+      "color": "#35654E"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_knights_dresser",
+    "name": "Cómoda · Caballeros",
+    "scope": "room",
+    "equip_slot": "room_dresser",
+    "room_category": "Muebles",
+    "collection": "Habitación infantil · Caballeros",
+    "theme": "knights",
+    "part": "dresser",
+    "price_coins": 300,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_knights_dresser",
+      "color": "#35654E"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_knights_lamp",
+    "name": "Lámpara de pie · Caballeros",
+    "scope": "room",
+    "equip_slot": "room_lamp",
+    "room_category": "Iluminación",
+    "collection": "Habitación infantil · Caballeros",
+    "theme": "knights",
+    "part": "lamp",
+    "price_coins": 160,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_knights_lamp",
+      "color": "#35654E"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_knights_rug",
+    "name": "Alfombra · Caballeros",
+    "scope": "room",
+    "equip_slot": "room_rug",
+    "room_category": "Muebles",
+    "collection": "Habitación infantil · Caballeros",
+    "theme": "knights",
+    "part": "rug",
+    "price_coins": 150,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_knights_rug",
+      "color": "#35654E"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_knights_frame",
+    "name": "Escudo del Nido",
+    "scope": "room",
+    "equip_slot": "room_decor",
+    "room_category": "Pared",
+    "collection": "Habitación infantil · Caballeros",
+    "theme": "knights",
+    "part": "frame",
+    "price_coins": 90,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_knights_frame",
+      "color": "#35654E"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_knights_pendant",
+    "name": "Lámpara de techo · Caballeros",
+    "scope": "room",
+    "equip_slot": "room_ceiling",
+    "room_category": "Iluminación",
+    "collection": "Habitación infantil · Caballeros",
+    "theme": "knights",
+    "part": "pendant",
+    "price_coins": 180,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_knights_pendant",
+      "color": "#35654E"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_knights_curtain",
+    "name": "Cortinas · Caballeros",
+    "scope": "room",
+    "equip_slot": "room_decor",
+    "room_category": "Pared",
+    "collection": "Habitación infantil · Caballeros",
+    "theme": "knights",
+    "part": "curtain",
+    "price_coins": 140,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_knights_curtain",
+      "color": "#35654E"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_knights_chest",
+    "name": "Baúl · Caballeros",
+    "scope": "room",
+    "equip_slot": "room_dresser",
+    "room_category": "Muebles",
+    "collection": "Habitación infantil · Caballeros",
+    "theme": "knights",
+    "part": "chest",
+    "price_coins": 210,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_knights_chest",
+      "color": "#35654E"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_knights_plant",
+    "name": "Maceta · Caballeros",
+    "scope": "room",
+    "equip_slot": "room_plant",
+    "room_category": "Decoración",
+    "collection": "Habitación infantil · Caballeros",
+    "theme": "knights",
+    "part": "plant",
+    "price_coins": 110,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_knights_plant",
+      "color": "#35654E"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_knights_toy",
+    "name": "Armadura de juguete",
+    "scope": "room",
+    "equip_slot": "room_plant",
+    "room_category": "Decoración",
+    "collection": "Habitación infantil · Caballeros",
+    "theme": "knights",
+    "part": "toy",
+    "price_coins": 85,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_knights_toy",
+      "color": "#35654E"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_knights_wall",
+    "name": "Pared temática · Caballeros",
+    "scope": "room",
+    "equip_slot": "room_wall",
+    "room_category": "Revestimientos",
+    "collection": "Habitación infantil · Caballeros",
+    "theme": "knights",
+    "part": "wall",
+    "price_coins": 200,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_knights_wall",
+      "color": "#35654E"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_knights_floor",
+    "name": "Suelo de madera · Caballeros",
+    "scope": "room",
+    "equip_slot": "room_floor",
+    "room_category": "Revestimientos",
+    "collection": "Habitación infantil · Caballeros",
+    "theme": "knights",
+    "part": "floor",
+    "price_coins": 160,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_knights_floor",
+      "color": "#35654E"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_cities_bed",
+    "name": "Cama · Ciudades",
+    "scope": "room",
+    "equip_slot": "room_bed",
+    "room_category": "Muebles",
+    "collection": "Habitación infantil · Ciudades",
+    "theme": "cities",
+    "part": "bed",
+    "price_coins": 460,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_cities_bed",
+      "color": "#5AADB1"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_cities_chair",
+    "name": "Sillón · Ciudades",
+    "scope": "room",
+    "equip_slot": "room_chair",
+    "room_category": "Muebles",
+    "collection": "Habitación infantil · Ciudades",
+    "theme": "cities",
+    "part": "chair",
+    "price_coins": 290,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_cities_chair",
+      "color": "#5AADB1"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_cities_desk",
+    "name": "Escritorio · Ciudades",
+    "scope": "room",
+    "equip_slot": "room_dresser",
+    "room_category": "Muebles",
+    "collection": "Habitación infantil · Ciudades",
+    "theme": "cities",
+    "part": "desk",
+    "price_coins": 340,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_cities_desk",
+      "color": "#5AADB1"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_cities_shelf",
+    "name": "Librero · Ciudades",
+    "scope": "room",
+    "equip_slot": "room_dresser",
+    "room_category": "Muebles",
+    "collection": "Habitación infantil · Ciudades",
+    "theme": "cities",
+    "part": "shelf",
+    "price_coins": 320,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_cities_shelf",
+      "color": "#5AADB1"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_cities_dresser",
+    "name": "Cómoda · Ciudades",
+    "scope": "room",
+    "equip_slot": "room_dresser",
+    "room_category": "Muebles",
+    "collection": "Habitación infantil · Ciudades",
+    "theme": "cities",
+    "part": "dresser",
+    "price_coins": 300,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_cities_dresser",
+      "color": "#5AADB1"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_cities_lamp",
+    "name": "Lámpara de pie · Ciudades",
+    "scope": "room",
+    "equip_slot": "room_lamp",
+    "room_category": "Iluminación",
+    "collection": "Habitación infantil · Ciudades",
+    "theme": "cities",
+    "part": "lamp",
+    "price_coins": 160,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_cities_lamp",
+      "color": "#5AADB1"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_cities_rug",
+    "name": "Alfombra · Ciudades",
+    "scope": "room",
+    "equip_slot": "room_rug",
+    "room_category": "Muebles",
+    "collection": "Habitación infantil · Ciudades",
+    "theme": "cities",
+    "part": "rug",
+    "price_coins": 150,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_cities_rug",
+      "color": "#5AADB1"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_cities_frame",
+    "name": "Panorámica de ciudades",
+    "scope": "room",
+    "equip_slot": "room_decor",
+    "room_category": "Pared",
+    "collection": "Habitación infantil · Ciudades",
+    "theme": "cities",
+    "part": "frame",
+    "price_coins": 90,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_cities_frame",
+      "color": "#5AADB1"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_cities_pendant",
+    "name": "Lámpara de techo · Ciudades",
+    "scope": "room",
+    "equip_slot": "room_ceiling",
+    "room_category": "Iluminación",
+    "collection": "Habitación infantil · Ciudades",
+    "theme": "cities",
+    "part": "pendant",
+    "price_coins": 180,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_cities_pendant",
+      "color": "#5AADB1"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_cities_curtain",
+    "name": "Cortinas · Ciudades",
+    "scope": "room",
+    "equip_slot": "room_decor",
+    "room_category": "Pared",
+    "collection": "Habitación infantil · Ciudades",
+    "theme": "cities",
+    "part": "curtain",
+    "price_coins": 140,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_cities_curtain",
+      "color": "#5AADB1"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_cities_chest",
+    "name": "Baúl viajero",
+    "scope": "room",
+    "equip_slot": "room_dresser",
+    "room_category": "Muebles",
+    "collection": "Habitación infantil · Ciudades",
+    "theme": "cities",
+    "part": "chest",
+    "price_coins": 210,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_cities_chest",
+      "color": "#5AADB1"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_cities_plant",
+    "name": "Maceta · Ciudades",
+    "scope": "room",
+    "equip_slot": "room_plant",
+    "room_category": "Decoración",
+    "collection": "Habitación infantil · Ciudades",
+    "theme": "cities",
+    "part": "plant",
+    "price_coins": 110,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_cities_plant",
+      "color": "#5AADB1"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_cities_toy",
+    "name": "Globo de viajes",
+    "scope": "room",
+    "equip_slot": "room_plant",
+    "room_category": "Decoración",
+    "collection": "Habitación infantil · Ciudades",
+    "theme": "cities",
+    "part": "toy",
+    "price_coins": 85,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_cities_toy",
+      "color": "#5AADB1"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_cities_wall",
+    "name": "Pared temática · Ciudades",
+    "scope": "room",
+    "equip_slot": "room_wall",
+    "room_category": "Revestimientos",
+    "collection": "Habitación infantil · Ciudades",
+    "theme": "cities",
+    "part": "wall",
+    "price_coins": 200,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_cities_wall",
+      "color": "#5AADB1"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_cities_floor",
+    "name": "Suelo de madera · Ciudades",
+    "scope": "room",
+    "equip_slot": "room_floor",
+    "room_category": "Revestimientos",
+    "collection": "Habitación infantil · Ciudades",
+    "theme": "cities",
+    "part": "floor",
+    "price_coins": 160,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_cities_floor",
+      "color": "#5AADB1"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_gamer_special_one",
+    "name": "Torre de ordenador",
+    "scope": "room",
+    "equip_slot": "room_dresser",
+    "room_category": "Muebles",
+    "collection": "Habitación infantil · Gamer",
+    "theme": "gamer",
+    "part": "special_one",
+    "price_coins": 220,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_gamer_special_one",
+      "color": "#625299"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_gamer_special_two",
+    "name": "Altavoces",
+    "scope": "room",
+    "equip_slot": "room_plant",
+    "room_category": "Muebles",
+    "collection": "Habitación infantil · Gamer",
+    "theme": "gamer",
+    "part": "special_two",
+    "price_coins": 220,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_gamer_special_two",
+      "color": "#625299"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_space_special_one",
+    "name": "Telescopio",
+    "scope": "room",
+    "equip_slot": "room_plant",
+    "room_category": "Muebles",
+    "collection": "Habitación infantil · Espacio",
+    "theme": "space",
+    "part": "special_one",
+    "price_coins": 220,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_space_special_one",
+      "color": "#29456D"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_space_special_two",
+    "name": "Puf lunar",
+    "scope": "room",
+    "equip_slot": "room_chair",
+    "room_category": "Muebles",
+    "collection": "Habitación infantil · Espacio",
+    "theme": "space",
+    "part": "special_two",
+    "price_coins": 220,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_space_special_two",
+      "color": "#29456D"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_cars_special_one",
+    "name": "Asiento neumático",
+    "scope": "room",
+    "equip_slot": "room_chair",
+    "room_category": "Muebles",
+    "collection": "Habitación infantil · Carros",
+    "theme": "cars",
+    "part": "special_one",
+    "price_coins": 220,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_cars_special_one",
+      "color": "#DF4F46"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_cars_special_two",
+    "name": "Cono de tráfico de juguete",
+    "scope": "room",
+    "equip_slot": "room_plant",
+    "room_category": "Muebles",
+    "collection": "Habitación infantil · Carros",
+    "theme": "cars",
+    "part": "special_two",
+    "price_coins": 220,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_cars_special_two",
+      "color": "#DF4F46"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_dolls_special_one",
+    "name": "Mesa de té",
+    "scope": "room",
+    "equip_slot": "room_table",
+    "room_category": "Muebles",
+    "collection": "Habitación infantil · Casa de muñecas",
+    "theme": "dolls",
+    "part": "special_one",
+    "price_coins": 220,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_dolls_special_one",
+      "color": "#E7A6B8"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_dolls_special_two",
+    "name": "Taburete floral",
+    "scope": "room",
+    "equip_slot": "room_chair",
+    "room_category": "Muebles",
+    "collection": "Habitación infantil · Casa de muñecas",
+    "theme": "dolls",
+    "part": "special_two",
+    "price_coins": 220,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_dolls_special_two",
+      "color": "#E7A6B8"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_castle_special_one",
+    "name": "Tocador de torres",
+    "scope": "room",
+    "equip_slot": "room_dresser",
+    "room_category": "Muebles",
+    "collection": "Habitación infantil · Castillo",
+    "theme": "castle",
+    "part": "special_one",
+    "price_coins": 220,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_castle_special_one",
+      "color": "#B59BD5"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_castle_special_two",
+    "name": "Puf nube",
+    "scope": "room",
+    "equip_slot": "room_chair",
+    "room_category": "Muebles",
+    "collection": "Habitación infantil · Castillo",
+    "theme": "castle",
+    "part": "special_two",
+    "price_coins": 220,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_castle_special_two",
+      "color": "#B59BD5"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_worldcup_special_one",
+    "name": "Banco del equipo",
+    "scope": "room",
+    "equip_slot": "room_chair",
+    "room_category": "Muebles",
+    "collection": "Habitación infantil · Mundial",
+    "theme": "worldcup",
+    "part": "special_one",
+    "price_coins": 220,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_worldcup_special_one",
+      "color": "#408C61"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_worldcup_special_two",
+    "name": "Camiseta decorativa",
+    "scope": "room",
+    "equip_slot": "room_decor",
+    "room_category": "Pared",
+    "collection": "Habitación infantil · Mundial",
+    "theme": "worldcup",
+    "part": "special_two",
+    "price_coins": 90,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_worldcup_special_two",
+      "color": "#408C61"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_knights_special_one",
+    "name": "Mesa redonda",
+    "scope": "room",
+    "equip_slot": "room_table",
+    "room_category": "Muebles",
+    "collection": "Habitación infantil · Caballeros",
+    "theme": "knights",
+    "part": "special_one",
+    "price_coins": 220,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_knights_special_one",
+      "color": "#35654E"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_knights_special_two",
+    "name": "Estandarte del corazón",
+    "scope": "room",
+    "equip_slot": "room_decor",
+    "room_category": "Pared",
+    "collection": "Habitación infantil · Caballeros",
+    "theme": "knights",
+    "part": "special_two",
+    "price_coins": 90,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_knights_special_two",
+      "color": "#35654E"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_cities_special_one",
+    "name": "Maleta viajera",
+    "scope": "room",
+    "equip_slot": "room_dresser",
+    "room_category": "Muebles",
+    "collection": "Habitación infantil · Ciudades",
+    "theme": "cities",
+    "part": "special_one",
+    "price_coins": 220,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_cities_special_one",
+      "color": "#5AADB1"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  },
+  {
+    "item_key": "room_nursery_cities_special_two",
+    "name": "Avión de pared",
+    "scope": "room",
+    "equip_slot": "room_decor",
+    "room_category": "Pared",
+    "collection": "Habitación infantil · Ciudades",
+    "theme": "cities",
+    "part": "special_two",
+    "price_coins": 90,
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review",
+    "appearance": {
+      "style": "nursery_cities_special_two",
+      "color": "#5AADB1"
+    },
+    "reference": "design/room-themes-v2/children-themed-rooms-reference.png"
+  }
+]

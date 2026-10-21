@@ -145,6 +145,13 @@ class _GameHubScreenState extends State<GameHubScreen> {
             () => _open(const GuardianGameScreen(maze: true)),
             subtitle: 'Laberinto de Halloween',
           ),
+          const SizedBox(height: 16),
+          _tile(
+            'Guerra de Nieve',
+            7,
+            () => _open(const GuardianGameScreen(snow: true)),
+            subtitle: 'Regalos, superpoderes y copitos',
+          ),
           const SizedBox(height: 20),
           const Text(
             'Todos los juegos',

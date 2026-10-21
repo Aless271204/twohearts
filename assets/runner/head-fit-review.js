@@ -2,8 +2,7 @@ import * as THREE from 'three';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 import {createNaturalRest} from './pet-rest-pose.js';
 import {refinePip} from './pip-delicate.js';
-import {equipRunnerCosmetics} from './cosmetics.js';
-import {prepareAccessoryAssets,releaseAccessoryAssets,disposeAccessory} from './accessory-pieces.js';
+import {equipRunnerCosmetics,prepareAccessoryAssets,releaseAccessoryAssets,disposeAccessory} from './cosmetics.js';
 
 const blender=new URLSearchParams(location.search).has('blender');
 const catalog=await fetch(blender?'blender-head-models.json':'head-models.json',{cache:'no-store'}).then(r=>r.json()).then(items=>items.filter(item=>item.visible!==false));

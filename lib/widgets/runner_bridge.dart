@@ -16,6 +16,37 @@ class RunnerBridge {
     try {
       final payload = message['payload'] as Map<String, dynamic>? ?? {};
       switch (message['action']) {
+        case 'snow':
+          final snow = await SupabaseService.instance.client.functions.invoke(
+            'snow-arena',
+            body: payload,
+          );
+          if (snow.status != 200 ||
+              snow.data is! Map ||
+              (snow.data as Map)['error'] != null) {
+            response['ok'] = false;
+            response['error'] = snow.data is Map
+                ? (snow.data as Map)['error'] ??
+                      'No se pudo actualizar la sala.'
+                : 'No se pudo actualizar la sala.';
+            return response;
+          }
+          response['result'] = snow.data;
+          final snowData = snow.data as Map;
+          if (snowData['status'] == 'finished' &&
+              _settledPenaltyRounds.add(
+                'snow:${snowData['id']}:${snowData['generation']}',
+              )) {
+            InventoryService.instance.refresh().catchError((Object _) {});
+          }
+          break;
+        case 'room_layout':
+          response['result'] = await SupabaseService.instance.client.rpc(
+            'room_layout',
+            params: payload,
+          );
+          await InventoryService.instance.refresh();
+          break;
         case 'maze':
           final result = await SupabaseService.instance.client.functions.invoke(
             'maze-adventure',

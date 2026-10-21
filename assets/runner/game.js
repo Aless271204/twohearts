@@ -1,5 +1,9 @@
-import {prepareAccessoryAssets} from './accessory-pieces.js?revision=wardrobe-colors-2';
+import {prepareAccessoryAssets,disposeAccessory} from './accessory-pieces.js?revision=wardrobe-colors-2';
+import {watchAppearance} from './live-appearance.js';
 import {createPetRoom} from './room-pieces.js';
+import {createRoomEditor} from './room-editor.js';
+import {createPetSeatPose} from './pet-seat-pose.js';
+import {createSoleContactSampler} from './pet-sole-contact.js';
 import {POWER_UPS,freshPowers,tickPowers,activatePower,powerForRow,canJump,registerJump,coinMultiplier,speedMultiplier,protectsCollision,magnetCollects} from './power-ups.js';
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
@@ -34,6 +38,7 @@ const reviewMotion=petOnly&&['Running','Regular_Jump','Natural_Jump','Wardrobe_R
 const reviewPhase=reviewMotion&&params.has('review_phase')?THREE.MathUtils.clamp(Number(params.get('review_phase'))||0,0,1):null;
 const roomMode=petOnly&&params.get('room')==='1';
 let petRoom;
+let roomEditor=null,seatPelvisHeight=0,currentAppearance={};
 let roomSupport=0;
 let sceneClosing=false;
 const species=['penguin','bear','pig','chick'].includes(params.get('species'))?params.get('species'):'penguin';
@@ -48,7 +53,7 @@ const backdrop=petOnly?{load:async()=>{},update(){},setPaused(){},dispose(){}}:c
 const shieldBubble=createShieldBubble(scene);
 const effects=createRunnerEffects(scene),butterflies=createButterflies(scene);
 let visualTime=0,landingPulse=0,pickupStreak=0;
-let restSole=null,petMotion=null,petSuspended=false;
+let restSole=null,soleContact=null,petMotion=null,petSuspended=false;
 const renderer=new THREE.WebGLRenderer({antialias:true,alpha:petOnly,powerPreference:'high-performance'});
 let renderScale=Math.min(devicePixelRatio,1.25);renderer.setPixelRatio(renderScale);renderer.setSize(innerWidth,innerHeight);
 renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.NoToneMapping;renderer.toneMappingExposure=1;
@@ -76,6 +81,40 @@ coinGlowGeometry.setAttribute('position',new THREE.BufferAttribute(coinGlowPosit
 const coinGlows=new THREE.Points(coinGlowGeometry,new THREE.PointsMaterial({map:glowMaterial.map,color:'#ffe18a',size:.9,transparent:true,opacity:.7,depthWrite:false,blending:THREE.AdditiveBlending}));coinGlows.frustumCulled=false;scene.add(coinGlows);
 function updateCoinBatch(){let count=0;for(const item of objects){if(item.kind!=='coin')continue;if(count>=128)break;item.model.updateMatrix();coinBatch.setMatrixAt(count,item.model.matrix);coinGlowPositions.set([item.x,item.model.position.y,item.z],count*3);count++;}coinBatch.count=count;coinBatch.instanceMatrix.needsUpdate=true;coinGlowGeometry.setDrawRange(0,count);coinGlowGeometry.attributes.position.needsUpdate=true;}
 let penguin,mixer,actions={},activeAction,cameraX=0;
+let pendingAppearance=null,applyingAppearance=false;
+async function updateLiveAppearance(){
+ if(!ready||!penguin||applyingAppearance||sceneClosing)return;
+ applyingAppearance=true;
+ try{while(pendingAppearance&&!sceneClosing){
+  const look=pendingAppearance;pendingAppearance=null;
+  const clothingChanged=JSON.stringify(Object.entries(look).filter(([s])=>s.startsWith('pet_')))!==JSON.stringify(Object.entries(currentAppearance).filter(([s])=>s.startsWith('pet_')));
+  if(clothingChanged)await prepareAccessoryAssets(look,species);
+  if(sceneClosing)return;if(pendingAppearance)continue;
+  if(clothingChanged){
+   // Fitted meshes were authored in natural rest. Bind in that same pose,
+   // then restore the ongoing animation, rather than rebasing into mid-stride.
+   const playing=Object.values(actions).filter(a=>a.isScheduled()).map(a=>({a,time:a.time,weight:a.getEffectiveWeight(),scale:a.timeScale,paused:a.paused}));
+   mixer.stopAllAction();actions.Natural_Rest.reset().play();mixer.update(0);penguin.updateMatrixWorld(true);
+   equipRunnerCosmetics(penguin,look);
+   if(petOnly)soleContact=createSoleContactSampler(penguin);
+   mixer.stopAllAction();for(const state of playing){state.a.play();state.a.time=state.time;state.a.setEffectiveWeight(state.weight);state.a.timeScale=state.scale;state.a.paused=state.paused;}mixer.update(0);
+   if(!playing.length)activeAction=null;
+  }
+  currentAppearance=look;
+  useTailoredMotion=!!look.pet_feet?.fitted_model_space||!!look.pet_body?.skinned_model_space;
+  if(useTailoredMotion&&!actions.Wardrobe_Run&&actions.Running){const clip=createWardrobeRun(penguin,actions.Running.getClip());if(clip)actions.Wardrobe_Run=mixer.clipAction(clip);}
+  if(useTailoredMotion&&!actions.Natural_Jump&&actions.Regular_Jump){const clip=createWardrobeJump(penguin,actions.Regular_Jump.getClip());if(clip){actions.Natural_Jump=mixer.clipAction(clip);actions.Natural_Jump.setLoop(THREE.LoopOnce,1);actions.Natural_Jump.clampWhenFinished=true;}}
+  if(roomMode)replaceRoom(look);
+  if(petOnly){restSole=measurePetSoles(penguin);petFraming=null;}
+  needsRender=true;
+ }}catch(error){console.warn('No se pudo actualizar la prenda',error);}finally{applyingAppearance=false;}
+}
+watchAppearance(look=>{pendingAppearance=look;return updateLiveAppearance();});
+function replaceRoom(look){
+ const old=petRoom;petRoom=createPetRoom(look);roomSupport=petRoom.userData.petFloor??0;petRoom.position.y=floorY;scene.add(petRoom);
+ if(!roomEditor)roomEditor=createRoomEditor({renderer,camera,onSaved(layout){currentAppearance={...currentAppearance,room_options:{...currentAppearance.room_options,layout}};replaceRoom(currentAppearance);}});
+ roomEditor.setRoom(petRoom,look.room_options??{});if(old){scene.remove(old);disposeAccessory(old);}
+}
 const floorY=.18;
 const shadow=new THREE.Mesh(new THREE.CircleGeometry(.55,24),new THREE.MeshBasicMaterial({color:0x1b3020,transparent:true,opacity:.22,depthWrite:false}));
 if(petOnly){const canvas=document.createElement('canvas');canvas.width=canvas.height=64;const context=canvas.getContext('2d');const fade=context.createRadialGradient(32,32,0,32,32,32);fade.addColorStop(0,'rgba(255,255,255,1)');fade.addColorStop(.35,'rgba(255,255,255,.6)');fade.addColorStop(1,'rgba(255,255,255,0)');context.fillStyle=fade;context.fillRect(0,0,64,64);shadow.material.map=new THREE.CanvasTexture(canvas);shadow.material.color.set('#35353d');}
@@ -299,20 +338,24 @@ function frame(now){
     penguin.scale.set(growth*(1+landingPulse*.07),growth*(1-landingPulse*.09),growth*(1+landingPulse*.07));
     penguin.rotation.x=THREE.MathUtils.lerp(penguin.rotation.x,height>0?-.08:0,1-Math.exp(-dt*8));
     penguin.rotation.z=THREE.MathUtils.lerp(penguin.rotation.z,(LANES[lane]-x)*-.08,1-Math.exp(-dt*8));
-    const name=petOnly?(reviewMotion??(!petOrbit?'Natural_Rest':params.get('animation')??'Natural_Rest')):running?(height>.01?(useTailoredMotion?'Natural_Jump':'Regular_Jump'):(useTailoredMotion?'Wardrobe_Run':'Running')):'Natural_Rest';
+    const name=roomEditor?.seated?'Room_Sit':roomEditor?.walking?(actions.Walking?'Walking':'Wardrobe_Run'):petOnly?(reviewMotion??(!petOrbit?'Natural_Rest':params.get('animation')??'Natural_Rest')):running?(height>.01?(useTailoredMotion?'Natural_Jump':'Regular_Jump'):(useTailoredMotion?'Wardrobe_Run':'Running')):'Natural_Rest';
     if(activeAction!==name&&actions[name]){
       const next=actions[name];next.reset().fadeIn(.16).play();
       if(activeAction)actions[activeAction].fadeOut(.16);activeAction=name;
     }
     if(!paused){music.intensity=Math.max(0,Math.min(1,(speed()-10)/14));if(actions.Running)actions.Running.timeScale=Math.min(1.7,speed()/14);if(useTailoredMotion&&actions.Wardrobe_Run)actions.Wardrobe_Run.timeScale=Math.min(1.7,speed()/14);if(reviewPhase!==null){actions[reviewMotion].timeScale=1;mixer.setTime(actions[reviewMotion].getClip().duration*reviewPhase);}else mixer.update(dt);}
     if(petOnly){
-      if(!petOrbit&&!petSuspended&&!reviewMotion)petMotion?.update(dt);
+      if(!petOrbit&&!petSuspended&&!reviewMotion&&!roomEditor?.seated&&!roomEditor?.walking)petMotion?.update(dt);
       const feet=[];penguin.traverse(o=>{if(o.isBone&&/(LeftToeBase|RightToeBase)$/.test(o.name))feet.push(o.getWorldPosition(new THREE.Vector3()).y);});
-      if(restSole!==null)penguin.position.y=floorY+roomSupport+.006-restSole;
+      if((reviewMotion==='Wardrobe_Run'||reviewMotion==='Running'||roomEditor?.walking)&&soleContact){
+        penguin.updateMatrixWorld(true);penguin.userData.cosmetics?.userData.updateSleeves?.();
+        penguin.position.y=floorY+roomSupport+.006-soleContact.measure();
+      }else if(restSole!==null)penguin.position.y=floorY+roomSupport+.006-restSole;
       else if(feet.length)penguin.position.y+=floorY+.065-Math.min(...feet);
       document.body.dataset.petGrounded='true';document.body.dataset.petBreathing=String(penguin.userData.breathing??0);document.body.dataset.petAffection=String(penguin.userData.affection??0);
     }
     if(petOnly){document.body.dataset.petAnimation=activeAction??'';if(!petOrbit){const angle=Number(params.get('review_angle')??0);penguin.rotation.set(0,Number.isFinite(angle)?THREE.MathUtils.degToRad(angle):0,0);document.body.dataset.petPosition=penguin.position.toArray().join(',');}}
+    roomEditor?.apply(penguin,dt,seatPelvisHeight);
     penguin.userData.cosmetics?.userData.updateSleeves?.();
   }
   shadow.position.x=x;shadow.material.opacity=.22/(1+height);shadow.scale.set(petOnly?.7:1+height*.18,petOnly?.45:.65+height*.1,1);
@@ -383,9 +426,11 @@ async function boot(){
         if(petOnly||useTailoredMotion){const naturalJump=createWardrobeJump(penguin,gltf.animations.find(c=>c.name==='Regular_Jump'));if(naturalJump){actions.Natural_Jump=mixer.clipAction(naturalJump);if(!petOnly){actions.Natural_Jump.setLoop(THREE.LoopOnce,1);actions.Natural_Jump.clampWhenFinished=true;}}const tailoredRun=createWardrobeRun(penguin,gltf.animations.find(c=>c.name==='Running'));if(tailoredRun)actions.Wardrobe_Run=mixer.clipAction(tailoredRun);}
         await prepareAccessoryAssets(loadout,species);
         const equipped=equipRunnerCosmetics(penguin,loadout);
+        if(petOnly)soleContact=createSoleContactSampler(penguin);
         if(reviewMotion&&actions[reviewMotion]){actions[reviewMotion].setLoop(THREE.LoopRepeat,Infinity);actions[reviewMotion].clampWhenFinished=false;if(reviewPhase!==null){mixer.stopAllAction();actions[reviewMotion].reset().play();activeAction=reviewMotion;mixer.setTime(actions[reviewMotion].getClip().duration*reviewPhase);}}
         if(petOnly){document.body.dataset.petAnchors=equipped.userData.slots.map(slot=>slot.parent.name).join(',');restSole=measurePetSoles(penguin);petFraming=null;}
-        if(roomMode){petRoom=createPetRoom(loadout);roomSupport=petRoom.userData.petFloor??0;petRoom.position.y=floorY;scene.add(petRoom);document.body.dataset.room='3d';}
+        currentAppearance=loadout;
+        if(roomMode){const seated=createPetSeatPose(penguin);seatPelvisHeight=seated.pelvisHeight;actions.Room_Sit=mixer.clipAction(seated.clip);replaceRoom(loadout);document.body.dataset.room='3d';}
         needsRender=true;
       }
     }
@@ -393,6 +438,7 @@ async function boot(){
     if(!petOnly)boardwalk();
     penguin.traverse(o=>{if(o.isMesh)o.castShadow=true;});
     clearTimeout(window.runnerBootTimer);ready=true;start.disabled=false;
+    if(pendingAppearance)await updateLiveAppearance();
     showPanel('Senderos del Nido','Tu aventura comienza aquí.','Correr con tu mascota');
     if(petOnly){document.body.classList.add('pet-only');scene.background=roomMode?new THREE.Color('#fff9fa'):null;scene.fog=null;renderer.setClearColor(0,0);for(const child of scene.children)if(child!==penguin&&child!==shadow&&child!==petRoom&&!child.isLight)child.visible=false;}
     last=performance.now();animationId=requestAnimationFrame(frame);
@@ -403,6 +449,7 @@ async function boot(){
 }
 addEventListener('pagehide',()=>{
   sceneClosing=true;clearTimeout(window.runnerBootTimer);
+  roomEditor?.dispose();
   music.dispose();
   backdrop.dispose();storm?.dispose();shieldBubble.dispose();
   cancelAnimationFrame(animationId);const geometries=new Set(),materials=new Set(),textures=new Set();

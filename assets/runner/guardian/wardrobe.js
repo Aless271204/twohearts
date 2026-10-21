@@ -1,5 +1,6 @@
 // Pixel wardrobe layers use the same inventory IDs as the shop. No prices or
 // purchase state live here: the authenticated app supplies the equipped items.
+import {PIXEL_EXTENSIONS,drawPixelDetail} from './wardrobe-extensions.js';
 export const ITEMS={
  cap_pink:['pet_head',15,105,264,158],beanie_cloud:['pet_head',279,77,228,205],hat_garden:['pet_head',507,102,274,172],beret_chic:['pet_head',780,110,231,151],
  glasses_heart:['pet_eyes',1025,126,245,139],glasses_round:['pet_eyes',1281,121,244,139],glasses_star:['pet_eyes',14,323,264,172],patch_pirate:['pet_eyes',287,344,213,152],mask_sleep:['pet_eyes',512,332,272,163],
@@ -7,7 +8,13 @@ export const ITEMS={
  shirt_love:['pet_body',510,530,249,193],jacket_denim:['pet_body',766,535,244,200],coat_cloud:['pet_body',1023,527,249,211],dress_petal:['pet_body',1274,525,250,214],hoodie_nido:['pet_body',10,743,259,209],
  shoes_heart:['pet_feet',280,787,251,162],boots_rain:['pet_feet',537,769,219,179],slippers_cloud:['pet_feet',762,767,250,187],shoes_chic:['pet_feet',1025,783,251,165],sandals_summer:['pet_feet',1283,777,248,173],
 };
+for(const [key,definition]of Object.entries(PIXEL_EXTENSIONS))ITEMS[key]=[...ITEMS[definition.base]];
 export const OUTFITS={dulce:['cap_pink','shirt_love','bow_neck','shoes_heart'],cozy:['beanie_cloud','coat_cloud','scarf_hearts','boots_rain'],jardin:['hat_garden','glasses_round','jacket_denim','bandana_sage','boots_rain'],chic:['beret_chic','dress_petal','necklace_heart','shoes_chic'],pastel:['glasses_star','hoodie_nido','sandals_summer']};
+Object.assign(OUTFITS,{
+ racer:[{item_key:'cap_pink',color:'#C52D32'},'jacket_racer',{item_key:'shoes_heart',color:'#C52D32'}],
+ space:[{item_key:'beanie_cloud',color:'#E5E9E1'},'suit_astronaut',{item_key:'slippers_cloud',color:'#E5E9E1'}],
+ princess:['tiara_princess','dress_princess','necklace_heart',{item_key:'shoes_chic',color:'#B7A1DB'}],
+});
 const PRIMARY={cap_pink:'#F05280',beanie_cloud:'#FFF2DF',hat_garden:'#B8DCCB',beret_chic:'#BAA2DB',glasses_heart:'#F05280',glasses_round:'#E2B957',glasses_star:'#BAA2DB',patch_pirate:'#30303D',mask_sleep:'#EFA0AB',scarf_hearts:'#EFA0AB',bandana_sage:'#B8DCCB',necklace_heart:'#EFA0AB',chain_gold:'#E2B957',bow_neck:'#F05280',shirt_love:'#FFF2DF',jacket_denim:'#91B6D6',coat_cloud:'#B8DCCB',dress_petal:'#EFA0AB',hoodie_nido:'#BAA2DB',shoes_heart:'#F05280',boots_rain:'#B8DCCB',slippers_cloud:'#FFF2DF',shoes_chic:'#F05280',sandals_summer:'#F2B29B'};
 const rgb=hex=>[1,3,5].map(i=>parseInt(hex.slice(i,i+2),16));
 function hsv(r,g,b){const v=Math.max(r,g,b),min=Math.min(r,g,b),d=v-min;let h=!d?0:v===r?((g-b)/d+6)%6:v===g?(b-r)/d+2:(r-g)/d+4;return [h/6,v?d/v:0,v/255];}
@@ -105,6 +112,30 @@ export class PixelWardrobe{
   for(let n=0;n<mask.length;n++)if(!cloth[n]&&exterior[n])data.data[n*4+3]=0;ctx.putImageData(data,0,0);tint(c,item.item_key,item.color);this.items.set(key,c);return c;
  }
  frame(species,pose,raw=[]){if(!Object.hasOwn(SPECIES,species))species='penguin';const loadout=cleanLoadout(raw),profile=SPECIES[species]??SPECIES.penguin;pose=Math.max(0,Math.min(5,pose|0));const key=species+pose+JSON.stringify(loadout);if(this.cache.has(key))return this.cache.get(key);
+  const tiara=loadout.find(i=>i.item_key==='tiara_princess');
+  if(tiara){
+   const canvas=this.makeCanvas();canvas.width=canvas.height=320;const context=canvas.getContext('2d');context.imageSmoothingEnabled=false;context.drawImage(this.frame(species,pose,loadout.filter(i=>i!==tiara)),0,0);
+   const center=Math.round(POSES[pose].head[0]+32+10),eye=EYES[species][pose][1]+40,data=context.getImageData(0,0,320,320).data,tops=[];
+   // Measure the actual central skull pixels, avoiding ears and the crown tuft.
+   for(let x=center-16;x<=center+16;x+=2)for(let y=Math.max(0,eye-90);y<eye-30;y++)if(data[(y*320+x)*4+3]>200){tops.push(y);break;}
+   tops.sort((a,b)=>a-b);const bottom=(tops[Math.floor(tops.length/2)]??eye-65)+9;
+   context.save();context.translate(center,bottom);context.fillStyle=tiara.color??'#D4A17D';
+   for(let x=-24;x<=24;x+=2)context.fillRect(x,Math.round(x*x/140),2,3);
+   for(const sign of [-1,1]){for(let i=0;i<=10;i++){const t=i/10;context.fillRect(Math.round(sign*(5+t*17)),Math.round(-Math.sin(t*Math.PI)*8),2,2);}}
+   context.fillStyle='#A96571';context.fillRect(-6,-19,4,3);context.fillRect(2,-19,4,3);context.fillRect(-8,-16,16,6);context.fillRect(-6,-10,12,3);context.fillRect(-3,-7,6,3);
+   context.fillStyle='#D8AFE4';context.fillRect(-4,-16,3,3);context.fillRect(1,-16,3,3);context.fillRect(-4,-13,8,3);context.fillRect(-2,-10,4,3);context.restore();
+   if(this.cache.size>48)this.cache.delete(this.cache.keys().next().value);this.cache.set(key,canvas);return canvas;
+  }
+  const extended=loadout.find(i=>PIXEL_EXTENSIONS[i.item_key]);
+  if(extended){
+   const definition=PIXEL_EXTENSIONS[extended.item_key],resolved=loadout.map(i=>PIXEL_EXTENSIONS[i.item_key]?{item_key:PIXEL_EXTENSIONS[i.item_key].base,color:i.color??PIXEL_EXTENSIONS[i.item_key].color}:i);
+   const canvas=this.makeCanvas();canvas.width=canvas.height=320;const context=canvas.getContext('2d');context.imageSmoothingEnabled=false;context.drawImage(this.frame(species,pose,resolved),0,0);
+   const detail=this.makeCanvas();detail.width=detail.height=256;const dc=detail.getContext('2d');dc.imageSmoothingEnabled=false;drawPixelDetail(dc,definition.detail,POSES[pose].body);
+   // Clip decoration to the fitted garment pixels, preserving face and paws.
+   const garment=this.garment(species,pose,{item_key:definition.base,color:extended.color??definition.color},profile);
+   if(garment){dc.globalCompositeOperation='destination-in';dc.drawImage(garment,0,0);dc.globalCompositeOperation='source-over';context.drawImage(detail,32,40);}
+   if(this.cache.size>48)this.cache.delete(this.cache.keys().next().value);this.cache.set(key,canvas);return canvas;
+  }
   const c=this.makeCanvas();c.width=320;c.height=320;const ctx=c.getContext('2d');ctx.imageSmoothingEnabled=false;ctx.translate(32,40);const p=POSES[pose],scale=this.base.width/1536,sx=pose*256*scale,sy=profile.row*256*scale;
   const selected=loadout.find(i=>ITEMS[i.item_key][0]==='pet_body'),footItem=loadout.find(i=>ITEMS[i.item_key][0]==='pet_feet'),integrated=footItem&&this.feet[footItem.item_key];
   const source=integrated??this.bodies[selected?.item_key]??this.base;

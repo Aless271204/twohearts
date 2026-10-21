@@ -5,7 +5,7 @@ import {createFootball} from './football.js';
 import {createNaturalRest} from '../pet-rest-pose.js';
 import {createFootballPose,shotPresentation,keeperPresentation,CONTACT_TIME,IMPACT_TIME} from './motion.js';
 import {limitTextureMemory} from '../texture_budget.js';
-import {registerAccessoryAsset,releaseAccessoryAssets,equipRunnerCosmetics} from '../cosmetics.js?revision=registry-api-6';
+import {registerAccessoryAsset,releaseAccessoryAssets,equipRunnerCosmetics,prepareAccessoryAssets} from '../cosmetics.js?revision=registry-api-6';
 export class PenaltyScene{
  constructor(canvas){
   this.renderer=new T.WebGLRenderer({canvas,antialias:true,powerPreference:'low-power'});this.renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));this.renderer.outputColorSpace=T.SRGBColorSpace;this.renderer.toneMapping=T.ACESFilmicToneMapping;
@@ -59,10 +59,28 @@ export class PenaltyScene{
    registerAccessoryAsset(asset,shirt.scene);
    const coverage=await fetch(new URL('../restart/'+`shirt-original-coverage-${name}.json`,import.meta.url));
    const item={style:'shirt_love',model_asset:asset,fitted_model_space:true,skinned_model_space:true,garment_color:i?'#df4d59':'#2c70ce',color_base:'#FFF0D9',color_materials:['Algodón crema grueso'],...(coverage.ok?{covered_skin_triangles:await coverage.json()}:{})};
+   model.userData.defaultAppearance={pet_body:item};
    const outfit=equipRunnerCosmetics(model,{pet_body:item});outfit.traverse(o=>{if(o.isMesh&&(/coraz|bordado|heart/i.test(o.name)||/Bordado/.test(o.material?.name??'')))o.visible=false;});
    model.userData.cosmetics=outfit;model.userData.footballPose=createFootballPose(model);
+   if(this.appearanceBySide?.[i])await this.setAppearance(this.appearanceBySide[i],i);
 
   }
+ }
+ async setAppearance(appearance,side=0){
+  if(side!==0&&side!==1)return;
+  this.appearanceBySide??=[null,null];this.appearanceBySide[side]=structuredClone(appearance??{});
+  const model=this.actors[side]?.children[0];if(!model?.userData.defaultAppearance)return;
+  const revision=(model.userData.appearanceRevision??0)+1;model.userData.appearanceRevision=revision;
+  const selected=Object.fromEntries(Object.entries(appearance??{}).filter(([slot,item])=>/^pet_(head|body|neck|feet|eyes|face|back)$/.test(slot)&&item&&typeof item==='object'&&!Array.isArray(item)));
+  const loadout=structuredClone({...model.userData.defaultAppearance,...selected});
+  // Prepare the replacement before removing the current outfit. A failed
+  // download must not leave an undressed actor or restart the penalty turn.
+  await prepareAccessoryAssets(loadout,model.userData.species);
+  if(model.userData.appearanceRevision!==revision||this.actors[side]?.children[0]!==model)return;
+  const equip=()=>equipRunnerCosmetics(model,loadout);
+  const outfit=model.userData.footballPose?.withRest?model.userData.footballPose.withRest(equip):equip();
+  if(!selected.pet_body)outfit.traverse(o=>{if(o.isMesh&&(/coraz|bordado|heart/i.test(o.name)||/Bordado/.test(o.material?.name??'')))o.visible=false;});
+  model.userData.cosmetics=outfit;
  }
  setTurn(shooting,side){if(this.turnReady&&this.role===shooting&&this.side===side&&!this.progress)return;this.turnReady=true;this.role=shooting;this.side=side;this.progress=null;this.gloves.rotation.set(0,0,0);this.ball.rotation.set(0,0,0);this.ball.position.set(0,.23,10);this.ball.visible=true;this.actors.forEach((g,i)=>{g.position.set(i===shooting?-.32:0,0,i===shooting?11.3:.4);g.rotation.set(0,i===shooting?Math.PI:0,0);});
   const keeper=side!==shooting;this.actors[side].visible=!keeper;this.actors[1-side].visible=true;this.gloves.visible=keeper;this.camera.position.set(0,keeper?1.7:2.7,keeper?-.75:15.8);this.camera.lookAt(0,keeper?.8:1.2,keeper?11:0);this.cameraHome=this.camera.position.clone();this.cameraRest=this.camera.quaternion.clone();this.aim.visible=!keeper;

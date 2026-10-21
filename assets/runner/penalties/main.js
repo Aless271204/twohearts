@@ -1,9 +1,20 @@
 import {PenaltyScene} from './scene.js?revision=centered-striker-9';
 import {StadiumAudio} from './audio.js?revision=stadium-sound-8';
 import {newMatch,resolveShot,advanceMatch,shooter} from './rules.js';
+import {watchAppearance} from '../live-appearance.js';
 const $=id=>document.getElementById(id),audio=new StadiumAudio(),aim={x:.5,y:.5};let scene,room=null,practice=false,pending=false,local=newMatch(),lastRound=-1,generation=-1,animationUntil=0,polling=false,stopped=false,botChoice=null;
 let modelsReady=false,modelKey='',loadingModels=null;let localDeadline=0,serverOffset=0;let timer=null,requestID=0,frameID=0;const requests=new Map(),params=new URLSearchParams(location.search),species=params.get('species')||'penguin';
 const hasBridge=()=>!!globalThis.RunnerBridge||parent!==globalThis;
+let ownAppearance={},ownAppearanceSide=0;try{ownAppearance=JSON.parse(params.get('appearance')??'{}');}catch{}
+let appliedAppearanceKey='',pendingAppearanceKey='';
+async function refreshAppearance(){if(scene&&modelsReady){
+ const side=practice?0:room?.side??0,look=structuredClone(ownAppearance),key=JSON.stringify([scene.actors?.[side]?.children[0]?.uuid??modelKey,side,look]);
+ if(key===appliedAppearanceKey||key===pendingAppearanceKey)return;
+ pendingAppearanceKey=key;
+ try{if(side!==ownAppearanceSide)await scene.setAppearance({},ownAppearanceSide);ownAppearanceSide=side;await scene.setAppearance(look,side);appliedAppearanceKey=key;}
+ finally{if(pendingAppearanceKey===key)pendingAppearanceKey='';}
+}}
+watchAppearance(async value=>{ownAppearance=value;try{await refreshAppearance();}catch(error){status('No se pudo actualizar la ropa. '+error.message);}});
 // Restoring a room is optional: restricted WebViews may deny storage entirely.
 const roomStorage={
  get(){try{return sessionStorage.getItem('nido-penalty-room');}catch{return null;}},
@@ -23,7 +34,8 @@ async function unlock(){try{await audio.unlock();}catch{/* Sound may be unavaila
 function panels(id){for(const name of ['menu','lobby','result'])$(name).hidden=name!==id;$('controls').hidden=!!id;}
 function snapshot(){return practice?{state:local,side:0,status:local.winner===null?'playing':'finished',generation:0,species:[species,'bear']}:room;}
 function accept(next){room=next;
- const key=JSON.stringify(next.species);if(next.joined&&key!==modelKey&&!loadingModels){modelsReady=false;loadingModels=scene.load(next.species).then(()=>{modelKey=key;modelsReady=true;lastRound=-1;}).catch(()=>status('No se pudo cargar la mascota. Recarga para reintentar.')).finally(()=>loadingModels=null);}
+ const key=JSON.stringify(next.species);if(next.joined&&key!==modelKey&&!loadingModels){modelsReady=false;loadingModels=scene.load(next.species).then(()=>{modelKey=key;modelsReady=true;lastRound=-1;return refreshAppearance();}).catch(()=>status('No se pudo cargar la mascota. Recarga para reintentar.')).finally(()=>loadingModels=null);}
+ if(modelsReady&&!loadingModels)refreshAppearance().catch(error=>status('No se pudo actualizar la ropa. '+error.message));
  serverOffset=Date.parse(next.server_time)-Date.now();return next;}
 function update(){
  const info=snapshot();if(!info)return;const s=info.state,side=info.side,mine=side===shooter(s),now=performance.now()/1000;
@@ -91,7 +103,7 @@ for(const [id,key]of [['ambient','ambientVolume'],['effects','effectsVolume']]){
 document.addEventListener('visibilitychange',()=>{if(document.hidden)audio.pause();else if(snapshot())status('Toca un control para reactivar el sonido.');});
 let previous=performance.now(),nextUI=0;
 function frame(now){if(stopped)return;const t=now/1000,dt=Math.min(.06,(now-previous)/1000);previous=now;if(!document.hidden){scene?.draw(t,dt,aim);if(t>nextUI){nextUI=t+.12;if(practice&&!botChoice)botChoice={x:.08+Math.random()*.84,y:.15+Math.random()*.7,power:.4+Math.random()*.48};update();}}frameID=requestAnimationFrame(frame);}
-try{scene=new PenaltyScene($('scene'));await scene.load([species,species==='bear'?'penguin':'bear'],text=>$('load').textContent=text);modelKey=JSON.stringify([species,species==='bear'?'penguin':'bear']);modelsReady=true;$('load').textContent='Camisetas azul y roja incluidas.';frameID=requestAnimationFrame(frame);
+try{scene=new PenaltyScene($('scene'));await scene.load([species,species==='bear'?'penguin':'bear'],text=>$('load').textContent=text);modelKey=JSON.stringify([species,species==='bear'?'penguin':'bear']);modelsReady=true;await refreshAppearance();$('load').textContent='Tu mascota está lista para jugar.';frameID=requestAnimationFrame(frame);
  const saved=roomStorage.get();if(saved&&hasBridge())try{room=accept(await request('status',{p_id:saved}));if(room.status!=='cancelled'){update();startPolling();}}catch{roomStorage.clear();}
 }catch(e){$('load').textContent='No se pudo preparar el estadio. '+(e?.message||'Revisa la conexión o libera memoria.');$('retryLoad').hidden=false;globalThis.penaltyLoadError={message:e?.message,stage:'stadium'};console.error(e);}
 addEventListener('pagehide',()=>{stopped=true;stopPolling();cancelAnimationFrame(frameID);audio.close();scene?.dispose();for(const r of requests.values()){clearTimeout(r.timeout);r.reject(Error('Juego cerrado'));}requests.clear();},{once:true});

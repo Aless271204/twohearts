@@ -1,0 +1,14 @@
+<!doctype html><html lang="es"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Objeto 3D · NIDO</title>
+<style>html,body{margin:0;height:100%;overflow:hidden;background:#fff8ee;color:#493b37;font:14px system-ui}canvas{display:block;touch-action:none}p{position:absolute;bottom:0;width:100%;text-align:center;pointer-events:none}#error{padding:24px}</style>
+<script type="importmap">{"imports":{"three":"./vendor/three.module.js"}}</script>
+<p id="hint">Arrastra para girar · rueda para acercar</p><div id="error" role="alert"></div>
+<script type="module">
+import * as THREE from 'three';import {createRoomPiece} from './room-pieces.js';
+let renderer,root;const scene=new THREE.Scene();scene.background=new THREE.Color('#fff8ee');const camera=new THREE.PerspectiveCamera(36,1,.01,60);let yaw=.40,pitch=.32,distance=2,target=new THREE.Vector3(),drag;
+try{const response=await fetch('./room-children-candidates.json');if(!response.ok)throw Error('No se pudo leer el catálogo');const items=await response.json(),item=items.find(i=>i.item_key===new URLSearchParams(location.search).get('item'))??items[0];root=createRoomPiece(item.appearance,item.equip_slot);scene.add(root);const b=new THREE.Box3().setFromObject(root),size=b.getSize(new THREE.Vector3());b.getCenter(target);distance=Math.max(...size.toArray())*2.5;
+renderer=new THREE.WebGLRenderer({antialias:true});renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.15;document.body.prepend(renderer.domElement);scene.add(new THREE.HemisphereLight('#fff5e8','#746378',2));for(const [p,intensity] of [[[2,4,4],3],[[-3,2,1],1.5]]){const l=new THREE.DirectionalLight('#ffffff',intensity);l.position.set(...p);scene.add(l);}
+function draw(){const w=innerWidth,h=innerHeight;renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();camera.position.copy(target).add(new THREE.Vector3(Math.sin(yaw)*Math.cos(pitch),Math.sin(pitch),Math.cos(yaw)*Math.cos(pitch)).multiplyScalar(distance));camera.lookAt(target);renderer.render(scene,camera);}draw();addEventListener('resize',draw);
+const canvas=renderer.domElement;canvas.onpointerdown=e=>{drag=[e.clientX,e.clientY];canvas.setPointerCapture(e.pointerId);};canvas.onpointermove=e=>{if(!drag)return;yaw-=(e.clientX-drag[0])*.009;pitch=THREE.MathUtils.clamp(pitch+(e.clientY-drag[1])*.006,-.35,1.25);drag=[e.clientX,e.clientY];draw();};canvas.onpointerup=canvas.onpointercancel=()=>drag=null;canvas.onwheel=e=>{e.preventDefault();distance=THREE.MathUtils.clamp(distance*Math.exp(e.deltaY*.001),.25,25);draw();};
+addEventListener('pagehide',()=>{root.traverse(m=>{if(m.isMesh){m.geometry.dispose();m.material.dispose();}});renderer.dispose();},{once:true});
+}catch(e){document.getElementById('error').textContent='No se pudo mostrar el objeto: '+e.message;}
+</script></html>

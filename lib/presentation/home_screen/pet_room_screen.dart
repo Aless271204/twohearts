@@ -125,6 +125,7 @@ class _PetRoomScreenState extends State<PetRoomScreen> {
                           modelPath: PetModelCatalog.modelPathFor(pet.species),
                           petLevel: pet.level,
                           room: true,
+                          roomEditing: openPanel == 'decorate',
                           previewLoadout: inventory.loadout,
                           petReaction: reaction,
                           onPetStroke: () => setState(() => reaction++),
@@ -251,7 +252,11 @@ class _RoomDecorationPanelState extends State<RoomDecorationPanel> {
     setState(() => busy = item.key);
     try {
       if (!inventory.owns(item.key)) await inventory.purchase(item);
-      await inventory.equip(item, !inventory.equipped(item.key));
+      if (['room_wall', 'room_floor', 'room_ceiling'].contains(item.slot)) {
+        await inventory.equip(item, !inventory.equipped(item.key));
+      } else {
+        await inventory.placeRoomItem(item);
+      }
     } catch (_) {
       if (mounted)
         ScaffoldMessenger.of(context).showSnackBar(
@@ -280,7 +285,7 @@ class _RoomDecorationPanelState extends State<RoomDecorationPanel> {
               'Decorar',
               style: TextStyle(fontWeight: FontWeight.w700),
             ),
-            subtitle: const Text('Tu habitación cambia mientras eliges'),
+            subtitle: const Text('Coloca, mueve y gira los muebles en tu habitación'),
             trailing: IconButton(
               onPressed: widget.onClose,
               tooltip: 'Cerrar decoración',
@@ -364,7 +369,8 @@ class _RoomDecorationPanelState extends State<RoomDecorationPanel> {
                                   ? 'Guardando…'
                                   : item.previewOnly
                                   ? 'Próximamente'
-                                  : inventory.equipped(item.key)
+                                  : (inventory.roomPlaced(item.key) ||
+                                      inventory.equipped(item.key))
                                   ? 'Quitar'
                                   : inventory.owns(item.key)
                                   ? 'Colocar'

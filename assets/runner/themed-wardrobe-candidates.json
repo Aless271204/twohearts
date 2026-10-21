@@ -1,0 +1,226 @@
+[
+  {
+    "item_key": "jacket_racer",
+    "name": "Piloto de carreras",
+    "scope": "pet",
+    "equip_slot": "pet_body",
+    "appearance": {
+      "style": "jacket_racer",
+      "color": "#C52D32",
+      "model_asset": "assets/runner/accessories/themed_jacket_racer_penguin.glb",
+      "species_models": {
+        "penguin": "assets/runner/accessories/themed_jacket_racer_penguin.glb",
+        "bear": "assets/runner/accessories/themed_jacket_racer_bear.glb",
+        "pig": "assets/runner/accessories/themed_jacket_racer_pig.glb",
+        "chick": "assets/runner/accessories/themed_jacket_racer_chick.glb"
+      },
+      "fitted_model_space": true,
+      "skinned_model_space": true,
+      "asset_revision": "8616b7aea10f9c28e5fc",
+      "sleeve_coverage": {
+        "penguin": {
+          "min_y": 0.41660043558286364,
+          "max_y": 0.5486004355828636
+        },
+        "bear": {
+          "min_y": 0.4124329012765121,
+          "max_y": 0.5444329012765121
+        },
+        "pig": {
+          "min_y": 0.36964478800103934,
+          "max_y": 0.5016447880010393
+        },
+        "chick": {
+          "min_y": 0.37036480218482115,
+          "max_y": 0.5023648021848212
+        }
+      },
+      "species_model_hashes": {
+        "penguin": "8b6d214fc9769dc139b734a881b5f978293dc3c40f4ec0cd342efbb3713e1291",
+        "bear": "c9343e504b716b23fb336eba435c0b0fbdb373272e84e9edc63a43978b7deed4",
+        "pig": "864230b7b3202567d1882b2edf6302ada91948a0c29934737e67aa146707f34f",
+        "chick": "00d3d64948f7546c36b6e1d48e6f58b06c279b4b9778dde7fb78116637eae0c3"
+      },
+      "coverage_assets": {
+        "penguin": "assets/runner/restart/sewn-coverage-penguin-jacket_denim.json",
+        "bear": "assets/runner/restart/sewn-coverage-bear-jacket_denim.json",
+        "pig": "assets/runner/restart/sewn-coverage-pig-jacket_denim.json",
+        "chick": "assets/runner/restart/sewn-coverage-chick-jacket_denim.json"
+      },
+      "color_materials": [
+        "NIDO · jacket_racer"
+      ],
+      "color_base": "#C52D32"
+    },
+    "collection": "Aventuras de vestir",
+    "theme": "cars",
+    "price_coins": 400,
+    "color_price_coins": 10,
+    "rarity": "exclusive",
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review"
+  },
+  {
+    "item_key": "suit_astronaut",
+    "name": "Explorador espacial",
+    "scope": "pet",
+    "equip_slot": "pet_body",
+    "appearance": {
+      "style": "suit_astronaut",
+      "color": "#E5E9E1",
+      "model_asset": "assets/runner/accessories/themed_suit_astronaut_penguin.glb",
+      "species_models": {
+        "penguin": "assets/runner/accessories/themed_suit_astronaut_penguin.glb",
+        "bear": "assets/runner/accessories/themed_suit_astronaut_bear.glb",
+        "pig": "assets/runner/accessories/themed_suit_astronaut_pig.glb",
+        "chick": "assets/runner/accessories/themed_suit_astronaut_chick.glb"
+      },
+      "fitted_model_space": true,
+      "skinned_model_space": true,
+      "asset_revision": "661e9d4792e2d9872a67",
+      "sleeve_coverage": {
+        "penguin": {
+          "min_y": 0.3716004355828636,
+          "max_y": 0.5486004355828636
+        },
+        "bear": {
+          "min_y": 0.36743290127651207,
+          "max_y": 0.5444329012765121
+        },
+        "pig": {
+          "min_y": 0.32464478800103935,
+          "max_y": 0.5016447880010393
+        },
+        "chick": {
+          "min_y": 0.3253648021848211,
+          "max_y": 0.5023648021848212
+        }
+      },
+      "species_model_hashes": {
+        "penguin": "a6fdc9f4d1c4fa464685730d49da8976900434c7409dbbde44f0af2eb2d96710",
+        "bear": "fdb17108c1bb04b9d41bf48647407981632318be3d21df1b9e72905c0c34ad84",
+        "pig": "54e19d387565f618bded1a516ce044f69a92c7c2847a1ae972fd8f6d60ca0c92",
+        "chick": "2600cdc08fa7e12d07c1f06050f24a894bbf924911c2813c658bc2ba19de4edb"
+      },
+      "coverage_assets": {
+        "penguin": "assets/runner/restart/sewn-coverage-penguin-coat_cloud.json",
+        "bear": "assets/runner/restart/sewn-coverage-bear-coat_cloud.json",
+        "pig": "assets/runner/restart/sewn-coverage-pig-coat_cloud.json",
+        "chick": "assets/runner/restart/sewn-coverage-chick-coat_cloud.json"
+      },
+      "color_materials": [
+        "NIDO · suit_astronaut"
+      ],
+      "color_base": "#E5E9E1"
+    },
+    "collection": "Aventuras de vestir",
+    "theme": "space",
+    "price_coins": 450,
+    "color_price_coins": 10,
+    "rarity": "exclusive",
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review"
+  },
+  {
+    "item_key": "dress_princess",
+    "name": "Princesa del Nido",
+    "scope": "pet",
+    "equip_slot": "pet_body",
+    "appearance": {
+      "style": "dress_princess",
+      "color": "#B7A1DB",
+      "model_asset": "assets/runner/accessories/themed_dress_princess_penguin.glb",
+      "species_models": {
+        "penguin": "assets/runner/accessories/themed_dress_princess_penguin.glb",
+        "bear": "assets/runner/accessories/themed_dress_princess_bear.glb",
+        "pig": "assets/runner/accessories/themed_dress_princess_pig.glb",
+        "chick": "assets/runner/accessories/themed_dress_princess_chick.glb"
+      },
+      "fitted_model_space": true,
+      "skinned_model_space": true,
+      "asset_revision": "b4de1ff1995de4d34a1d",
+      "sleeve_coverage": {
+        "penguin": {
+          "min_y": 0.41660043558286364,
+          "max_y": 0.5486004355828636
+        },
+        "bear": {
+          "min_y": 0.4124329012765121,
+          "max_y": 0.5444329012765121
+        },
+        "pig": {
+          "min_y": 0.36964478800103934,
+          "max_y": 0.5016447880010393
+        },
+        "chick": {
+          "min_y": 0.37036480218482115,
+          "max_y": 0.5023648021848212
+        }
+      },
+      "species_model_hashes": {
+        "penguin": "b059e23b1bf31b8d5aca0a7824d585c8a4f743275c49e025a66be1255fb5a75d",
+        "bear": "9f461b7910739e6623292ee82a9c527ac7c2eac2e73011d42e81df5f4cc5a7c6",
+        "pig": "d3d22df857f7663a4b056290a410934357524f23cd1a2ba2507142eb08c8775f",
+        "chick": "0aa9ca554f270a88f5ad861e531508d5ad41233debe3cafd0285cf617ecfd667"
+      },
+      "coverage_assets": {
+        "penguin": "assets/runner/restart/sewn-coverage-penguin-dress_petal.json",
+        "bear": "assets/runner/restart/sewn-coverage-bear-dress_petal.json",
+        "pig": "assets/runner/restart/sewn-coverage-pig-dress_petal.json",
+        "chick": "assets/runner/restart/sewn-coverage-chick-dress_petal.json"
+      },
+      "color_materials": [
+        "NIDO · dress_princess"
+      ],
+      "color_base": "#B7A1DB"
+    },
+    "collection": "Aventuras de vestir",
+    "theme": "castle",
+    "price_coins": 380,
+    "color_price_coins": 10,
+    "rarity": "exclusive",
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review"
+  },
+  {
+    "item_key": "tiara_princess",
+    "name": "Tiara corazón",
+    "scope": "pet",
+    "equip_slot": "pet_head",
+    "appearance": {
+      "style": "tiara_princess",
+      "model_asset": "assets/runner/accessories/themed_tiara_princess_penguin.glb",
+      "species_models": {
+        "penguin": "assets/runner/accessories/themed_tiara_princess_penguin.glb",
+        "bear": "assets/runner/accessories/themed_tiara_princess_bear.glb",
+        "pig": "assets/runner/accessories/themed_tiara_princess_pig.glb",
+        "chick": "assets/runner/accessories/themed_tiara_princess_chick.glb"
+      },
+      "species_model_hashes": {
+        "penguin": "0419631f516fa0ce49c2b84b04551af8efc5a8ffa1ef54e59238d371ae5d0f45",
+        "bear": "26a856e186a3472a1136cd1ac7ce42f65952697d057014dd385665121743df06",
+        "pig": "4012dfc0776dc27369e171c3c45724b098cdbbdf8d5509317af98ad7eff76802",
+        "chick": "0562b7f7d6e5cd111e53cf536afab9ad628c14baeca7049faabda2aedc614e3f"
+      },
+      "fitted_model_space": true,
+      "skinned_model_space": false,
+      "asset_revision": "6069f66691504e076d29",
+      "color_materials": [
+        "Oro rosa de tiara"
+      ],
+      "color_base": "#D4A17D",
+      "color": "#D4A17D"
+    },
+    "collection": "Aventuras de vestir",
+    "theme": "castle",
+    "price_coins": 250,
+    "color_price_coins": 10,
+    "rarity": "special",
+    "preview_only": true,
+    "visible": false,
+    "status": "candidate_pending_app_review"
+  }
+]

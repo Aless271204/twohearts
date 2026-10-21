@@ -15,6 +15,7 @@ class ForestRunnerView extends StatefulWidget {
   final bool guardian;
   final bool penalties;
   final bool maze;
+  final bool snow;
   final bool adoption, arrival;
   final int petReaction;
   final String petSpecies;
@@ -31,6 +32,7 @@ class ForestRunnerView extends StatefulWidget {
     this.guardian = false,
     this.penalties = false,
     this.maze = false,
+    this.snow = false,
     this.adoption = false,
     this.arrival = false,
     this.petReaction = 0,
@@ -50,6 +52,7 @@ class _ForestRunnerViewState extends State<ForestRunnerView>
   late final String _viewType;
   late final web.HTMLIFrameElement _frame;
   late final JSFunction _listener;
+  late final JSFunction _loadListener;
   final _bridge = RunnerBridge();
   final _guardianBridge = GuardianBridge();
   @override
@@ -60,7 +63,9 @@ class _ForestRunnerViewState extends State<ForestRunnerView>
     _frame = web.HTMLIFrameElement()
       ..src = Uri.parse(web.document.baseURI)
           .resolve(
-            widget.maze
+            widget.snow
+                ? 'assets/assets/runner/snow/index.html'
+                : widget.maze
                 ? 'assets/assets/runner/maze/index.html'
                 : widget.penalties
                 ? 'assets/assets/runner/penalties/index.html'
@@ -95,6 +100,8 @@ class _ForestRunnerViewState extends State<ForestRunnerView>
       ..style.width = '100%'
       ..style.height = '100%';
     _updatePointerPolicy();
+    _loadListener = ((web.Event _) => _sendAppearance()).toJS;
+    _frame.addEventListener('load', _loadListener);
     ui_web.platformViewRegistry.registerViewFactory(_viewType, (_) => _frame);
     _listener = ((web.Event event) {
       final message = event as web.MessageEvent;
@@ -152,6 +159,10 @@ class _ForestRunnerViewState extends State<ForestRunnerView>
   void didUpdateWidget(covariant ForestRunnerView oldWidget) {
     super.didUpdateWidget(oldWidget);
     _updatePointerPolicy();
+    if (widget.appearance != oldWidget.appearance &&
+        widget.appearance != null) {
+      _sendAppearance();
+    }
     if (widget.petOnly && widget.petReaction != oldWidget.petReaction)
       _frame.contentWindow?.postMessage(
         'pet-stroke'.toJS,
@@ -165,6 +176,17 @@ class _ForestRunnerViewState extends State<ForestRunnerView>
         widget.petOnly && !widget.petOrbit && widget.onPetStroke == null
         ? 'none'
         : 'auto';
+  }
+
+  void _sendAppearance() {
+    if (widget.appearance == null) return;
+    _frame.contentWindow?.postMessage(
+      {
+        'type': 'nido-appearance',
+        'appearance': jsonDecode(widget.appearance!),
+      }.jsify(),
+      Uri.base.origin.toJS,
+    );
   }
 
   @override
@@ -185,6 +207,7 @@ class _ForestRunnerViewState extends State<ForestRunnerView>
       Uri.base.origin.toJS,
     );
     web.window.removeEventListener('message', _listener);
+    _frame.removeEventListener('load', _loadListener);
     _frame.src = 'about:blank';
     super.dispose();
   }

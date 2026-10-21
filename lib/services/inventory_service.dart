@@ -1,10 +1,13 @@
 import 'dart:convert';
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'supabase_service.dart';
 import 'shared_pet_service.dart';
 import '../core/pet_accessory_catalog.dart';
 import '../core/room_catalog.dart';
+import '../core/shop_economy_v2.dart';
+import '../core/store_economy.dart';
 
 class InventoryItem {
   final Map<String, dynamic> data;
@@ -13,6 +16,7 @@ class InventoryItem {
   bool get visible => data['visible'] != false;
   String get roomCategory =>
       data['room_category'] as String? ??
+      appearance['room_category'] as String? ??
       (slot == 'room_ceiling'
           ? 'Techo'
           : [
@@ -42,7 +46,7 @@ class InventoryItem {
   String get slot => data['equip_slot'] as String? ?? '';
   String get description => readableText(data['description'] as String? ?? '');
   String get collection => data['collection'] as String? ?? 'Clásica';
-  String get rarity => data['rarity'] as String? ?? 'Común';
+  String get rarity => readableText(data['rarity'] as String? ?? 'Común');
   int get price => data['price_coins'] as int? ?? 0;
   Map<String, dynamic> get appearance =>
       Map<String, dynamic>.from(data['appearance'] as Map? ?? {});
@@ -106,8 +110,45 @@ class InventoryService extends ChangeNotifier {
   String? _account;
   int coins = 0;
   List<InventoryItem> catalog = [];
+  List<Map<String, dynamic>> bundles = [];
   Map<String, Map<String, dynamic>> owned = {};
+  Map<String, dynamic> roomLayout = {};
+  bool roomPlaced(String key) => (roomLayout['items'] as List? ?? []).any(
+    (item) => item is Map && item['item_key'] == key,
+  );
   int _generation = 0;
+  RealtimeChannel? _wardrobeChannel;
+  String? _watchingUser;
+  Timer? _wardrobeDebounce;
+  void _watchWardrobe(String uid) {
+    if (_watchingUser == uid) return;
+    final old = _wardrobeChannel;
+    if (old != null) unawaited(_db.removeChannel(old));
+    _watchingUser = uid;
+    _wardrobeChannel =
+        _db
+            .channel(
+              'nido-wardrobe:$uid',
+              opts: const RealtimeChannelConfig(private: true),
+            )
+            .onBroadcast(
+              event: 'wardrobe',
+              callback: (_) {
+                if (_uid != uid) return;
+                _wardrobeDebounce?.cancel();
+                _wardrobeDebounce = Timer(
+                  const Duration(milliseconds: 140),
+                  () {
+                    if (_uid == uid) {
+                      unawaited(refresh().catchError((Object _) {}));
+                    }
+                  },
+                );
+              },
+            )
+          ..subscribe();
+  }
+
   Map<String, InventoryItem>? _sharedLoadout;
   Map<String, Set<String>> colorUnlocks = {};
   final Map<String, InventoryItem> roomDraft = {};
@@ -119,6 +160,7 @@ class InventoryService extends ChangeNotifier {
 
   void clearRoomDraft() {
     roomDraft.clear();
+    roomLayout = {};
     notifyListeners();
   }
 
@@ -151,9 +193,15 @@ class InventoryService extends ChangeNotifier {
     ...roomDraft,
   };
   void _clear() {
+    _wardrobeDebounce?.cancel();
+    final channel = _wardrobeChannel;
+    _wardrobeChannel = null;
+    _watchingUser = null;
+    if (channel != null) unawaited(_db.removeChannel(channel));
     _generation++;
     _account = _uid;
     coins = 0;
+    bundles = [];
     _sharedLoadout = null;
     roomDraft.clear();
     colorUnlocks.clear();
@@ -172,7 +220,7 @@ class InventoryService extends ChangeNotifier {
     }
     final generation = ++_generation;
     final raw = Map<String, dynamic>.from(
-      await _db.rpc('inventory_snapshot') as Map,
+      await _db.rpc('shop_v2', params: {'p_action': 'status'}) as Map,
     );
     if (_uid != uid || generation != _generation || raw['user_id'] != uid) {
       return;
@@ -195,10 +243,24 @@ class InventoryService extends ChangeNotifier {
     } catch (_) {
       /* Older servers retain personal equipment until migration. */
     }
+    Map<String, dynamic> layout = {};
+    try {
+      layout = Map<String, dynamic>.from(
+        await _db.rpc('room_layout', params: {'p_action': 'status'}) as Map,
+      );
+    } catch (_) {
+      // The ordinary room remains usable when layout storage is unavailable.
+      if (_account == uid) layout = roomLayout;
+    }
     if (_uid != uid || generation != _generation) return;
+    roomLayout = layout;
     _sharedLoadout = shared;
     _account = uid;
+    _watchWardrobe(uid);
     coins = raw['coins'] as int;
+    bundles = (raw['bundles'] as List? ?? [])
+        .map((row) => Map<String, dynamic>.from(row as Map))
+        .toList();
     colorUnlocks = {};
     for (final r in raw['colors'] as List? ?? []) {
       colorUnlocks
@@ -237,34 +299,104 @@ class InventoryService extends ChangeNotifier {
 
   static List<InventoryItem> mergeAccessoryConcepts(
     List<InventoryItem> published,
-  ) => [
-    for (final item in published)
-      [...petAccessoryConcepts, ...roomConcepts].any(
-            (local) =>
-                local['item_key'] == item.key && local['visible'] == false,
-          )
-          ? InventoryItem({...item.data, 'visible': false})
-          : _withLocalAppearance(item),
-    for (final data in [...petAccessoryConcepts, ...roomConcepts])
-      if (data['visible'] != false &&
-          !published.any((i) => i.key == data['item_key']))
-        InventoryItem(data),
-  ];
+  ) {
+    final concepts = <String, Map<String, dynamic>>{
+      for (final row in [
+        ...roomConcepts,
+        ...roomShopV2,
+        ...petAccessoryConcepts,
+      ])
+        row['item_key'] as String: row,
+    };
+    final hiddenKeys = {...roomConcepts, ...petAccessoryConcepts}
+        .where((row) => row['visible'] == false)
+        .map((row) => row['item_key'])
+        .toSet();
+    return [
+      for (final item in published)
+        hiddenKeys.contains(item.key)
+            ? InventoryItem({...item.data, 'visible': false})
+            : _withLocalAppearance(item),
+      for (final data in concepts.values)
+        if (data['visible'] != false &&
+            !hiddenKeys.contains(data['item_key']) &&
+            !published.any((i) => i.key == data['item_key']))
+          InventoryItem({
+            ...data,
+            'price_coins': StoreEconomy.price(
+              data['item_key'] as String,
+              data['equip_slot'] as String,
+            ),
+            'rarity': StoreEconomy.rarity(data['item_key'] as String),
+          }),
+    ];
+  }
 
   Future<void> purchase(InventoryItem item) async {
     if (item.previewOnly) {
       throw StateError('Este accesorio aun esta en preparacion.');
     }
-    await _db.rpc('inventory_purchase', params: {'p_item_key': item.key});
+    await _db.rpc(
+      'shop_v2',
+      params: {
+        'p_action': 'purchase',
+        'p_key': item.key,
+        'p_expected_price': item.price,
+      },
+    );
+    await refresh();
+  }
+
+  Future<Map<String, dynamic>> quoteBundle(String key) async =>
+      Map<String, dynamic>.from(
+        await _db.rpc('shop_v2', params: {'p_action': 'quote', 'p_key': key})
+            as Map,
+      );
+
+  Future<void> purchaseBundle(String key, int expectedPrice) async {
+    await _db.rpc(
+      'shop_v2',
+      params: {
+        'p_action': 'bundle',
+        'p_key': key,
+        'p_expected_price': expectedPrice,
+      },
+    );
     await refresh();
   }
 
   Future<void> equip(InventoryItem item, bool enabled) async {
+    if (item.scope == 'room' &&
+        !['room_wall', 'room_floor', 'room_ceiling'].contains(item.slot)) {
+      return placeRoomItem(item, enabled: enabled);
+    }
     await _db.rpc(
       ['pet', 'room'].contains(item.scope)
           ? 'shared_pet_equip'
           : 'inventory_equip',
       params: {'p_item_key': item.key, 'p_equipped': enabled},
+    );
+    await refresh();
+  }
+
+  Future<void> placeRoomItem(InventoryItem item, {bool? enabled}) async {
+    if (item.scope != 'room' || item.previewOnly) {
+      throw StateError('Este objeto no está disponible para colocar.');
+    }
+    final placed =
+        roomPlaced(item.key) ||
+        (roomLayout['items'] == null && equipped(item.key));
+    final shouldPlace = enabled ?? !placed;
+    await _db.rpc(
+      'room_layout',
+      params: {
+        'p_action': shouldPlace ? 'place' : 'remove',
+        'p_data': {
+          'item_key': item.key,
+          'id': item.key,
+          'revision': roomLayout['revision'] ?? 0,
+        },
+      },
     );
     await refresh();
   }

@@ -41,7 +41,13 @@ export function createFootballPose(model){
  function sole(){model.updateMatrixWorld(true);let y=Infinity;for(const {mesh,indices}of samples){mesh.skeleton.update();for(const i of indices){vertex.fromBufferAttribute(mesh.geometry.attributes.position,i);mesh.applyBoneTransform(i,vertex);mesh.localToWorld(vertex);y=Math.min(y,vertex.y);}}model.parent.getWorldPosition(actorPosition);return y-actorPosition.y;}
  const ground=sole();
  function turn(name,x,y,z,angle){const b=bones.get(name);if(!b||Math.abs(angle)<1e-8)return;model.updateWorldMatrix(true,false);model.getWorldQuaternion(worldQ);b.parent.getWorldQuaternion(parentQ);axis.set(x,y,z).applyQuaternion(worldQ).applyQuaternion(parentQ.invert()).normalize();delta.setFromAxisAngle(axis,angle);b.quaternion.premultiply(delta);b.updateMatrixWorld(true);}
- return {bones,update(time,{role='striker',seconds=null,result=null}={}){
+ return {bones,withRest(action){
+  // Clothes are authored in natural rest, not in the middle of a kick/dive.
+  // Binding is synchronous: restore the exact visible pose before drawing.
+  const saved=new Map([...bones].map(([name,b])=>[name,b.quaternion.clone()])),position=model.position.clone();
+  try{for(const [name,b]of bones)b.quaternion.copy(base.get(name));model.position.copy(root);model.updateMatrixWorld(true);return action();}
+  finally{for(const [name,b]of bones)b.quaternion.copy(saved.get(name));model.position.copy(position);model.updateMatrixWorld(true);model.userData.cosmetics?.userData.updateSleeves?.();}
+ },update(time,{role='striker',seconds=null,result=null}={}){
   for(const [name,b]of bones)b.quaternion.copy(base.get(name));model.position.copy(root);
   const ready=seconds===null,m=ready?null:shotPresentation(seconds,result);
   turn('Spine2',1,0,0,.009*Math.sin(time*2.1));

@@ -1,6 +1,10 @@
-/// Initial economy. Prices describe the product, not the size of its wearer.
-/// Server prices remain authoritative for purchases.
+// Prices describe the product, not the size of its wearer.
+// Server prices remain authoritative for purchases.
+import 'shop_economy_v2.dart';
+
 class StoreEconomy {
+  static const rarities = ['Común', 'Especial', 'Exclusivo', 'Legendario'];
+  static String rarity(String key) => economyRaritiesV2[key] ?? 'Común';
   static const colorPrice = 10;
   static const colors = {
     'coral': '#F05280',
@@ -16,52 +20,7 @@ class StoreEconomy {
     'cream': 'Crema',
     'sky': 'Cielo',
   };
-  static const itemPrices = {
-    'cap_pink': 70,
-    'beanie_cloud': 90,
-    'hat_garden': 120,
-    'beret_chic': 80,
-    'glasses_heart': 50,
-    'glasses_round': 60,
-    'glasses_star': 75,
-    'patch_pirate': 50,
-    'mask_sleep': 55,
-    'scarf_hearts': 80,
-    'bandana_sage': 50,
-    'necklace_heart': 90,
-    'chain_gold': 110,
-    'bow_neck': 50,
-    'shirt_love': 50,
-    'jacket_denim': 140,
-    'coat_cloud': 180,
-    'dress_petal': 160,
-    'hoodie_nido': 120,
-    'shoes_heart': 130,
-    'boots_rain': 140,
-    'slippers_cloud': 100,
-    'shoes_chic': 120,
-    'sandals_summer': 100,
-    'ceiling_cloud': 160,
-    'ceiling_petal': 180,
-    'ceiling_mobile': 120,
-    'ceiling_lights': 100,
-    'ceiling_beams': 250,
-    'wall_floral': 140,
-    'wall_sage_panel': 180,
-    'wall_heart_frame': 60,
-    'wall_arch_mirror': 160,
-    'wall_memory_shelf': 220,
-    'floor_honey': 180,
-    'floor_cream': 180,
-    'floor_rose': 180,
-    'rug_cloud': 140,
-    'rug_garden': 160,
-    'furniture_cloud_bed': 400,
-    'furniture_cuddle_chair': 450,
-    'furniture_heart_table': 250,
-    'furniture_nido_dresser': 350,
-    'furniture_companion_plant': 100,
-  };
+  static const itemPrices = economyPricesV2;
   static int price(String key, String slot) =>
       itemPrices[key] ??
       switch (slot) {
