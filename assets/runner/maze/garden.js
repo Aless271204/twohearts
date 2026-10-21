@@ -48,7 +48,7 @@ export function createBridge(b){
 export function addGarden(world,s){
  const walls=[];for(let i=0;i<s.grid.length;i++)if(s.grid[i])walls.push(i);
  const hedge=new T.InstancedMesh(new T.SphereGeometry(1,8,6),material('#42685b'),walls.length*2),o=new T.Object3D();
- const colors=['#42685b','#53716d','#6c657c'];walls.forEach((cell,i)=>{const x=cell%s.size,z=Math.floor(cell/s.size),zone=districtAt(s,x,z);for(let k=0;k<2;k++){o.position.set(x*2+(k?-.3:.3),2.45+(cell%3)*.035,z*2);o.scale.set(.98,.78,1);o.rotation.set(0,cell*.43,0);o.updateMatrix();hedge.setMatrixAt(i*2+k,o.matrix);hedge.setColorAt(i*2+k,new T.Color(colors[zone]));}});world.add(hedge);
+ const colors=['#618571','#70988e','#9385a4'];walls.forEach((cell,i)=>{const x=cell%s.size,z=Math.floor(cell/s.size),zone=districtAt(s,x,z);for(let k=0;k<2;k++){o.position.set(x*2+(k?-.3:.3),2.45+(cell%3)*.035,z*2);o.scale.set(.98,.78,1);o.rotation.set(0,cell*.43,0);o.updateMatrix();hedge.setMatrixAt(i*2+k,o.matrix);hedge.setColorAt(i*2+k,new T.Color(colors[zone]));}});world.add(hedge);
  // Shared instances keep the garden inexpensive: no light or shadow per firefly.
  const cells=[];for(let i=0;i<s.grid.length;i++)if(!s.grid[i]&&i%3===0)cells.push(i);
  const leaves=new T.InstancedMesh(new T.SphereGeometry(1,5,3),material('#d8aa67'),cells.length*3),flies=new T.InstancedMesh(new T.SphereGeometry(.025,5,4),new T.MeshBasicMaterial({color:'#ffdf8f'}),Math.min(90,cells.length));
@@ -62,7 +62,7 @@ export function addGarden(world,s){
   o.scale.setScalar(1);o.rotation.set(0,0,0);o.position.set(x*2+dx,.4,z*2+dz);o.updateMatrix();posts.setMatrixAt(i,o.matrix);
   o.position.y=.89;o.updateMatrix();lamps.setMatrixAt(i,o.matrix);o.position.y=1.065;o.updateMatrix();roofs.setMatrixAt(i,o.matrix);
  });world.add(posts,lamps,roofs);
- const moon=mesh(new T.SphereGeometry(1.1,20,12),new T.MeshBasicMaterial({color:cream}),world,s.size,10,-8);moon.material.fog=false;
+ const moon=mesh(new T.SphereGeometry(1.1,20,12),new T.MeshBasicMaterial({color:cream}),world,s.size,16,-24);moon.material.fog=false;
  const stars=new T.InstancedMesh(new T.OctahedronGeometry(.045),new T.MeshBasicMaterial({color:'#f5d8a5',fog:false}),45);
  for(let i=0;i<45;i++){o.position.set(Math.sin(i*7)*s.size+s.size,7+(i%9)*.7,Math.cos(i*5)*s.size+s.size);o.scale.setScalar(.6+(i%3)*.3);o.rotation.set(0,0,0);o.updateMatrix();stars.setMatrixAt(i,o.matrix);}world.add(stars);
  return {update(time){for(let i=0;i<flies.count;i++){const cell=cells[i],x=cell%s.size*2,z=Math.floor(cell/s.size)*2;o.position.set(x+Math.sin(time*.6+i)*.55,.65+(i%4)*.22+Math.sin(time+i)*.12,z+Math.cos(time*.5+i)*.55);o.scale.setScalar(.7+Math.sin(time*2+i)*.3);o.rotation.set(0,0,0);o.updateMatrix();flies.setMatrixAt(i,o.matrix);}flies.instanceMatrix.needsUpdate=true;}};

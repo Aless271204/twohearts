@@ -59,23 +59,31 @@ void main() {
     );
     // Navigate by the same pointer and keyboard input as a player; no teleporting.
     await c.runJavaScript(r'''
-  (async()=>{try{
-   const sleep=ms=>new Promise(r=>setTimeout(r,ms));
-   const snap=()=>qaApp.adventureSnapshot();
-   function path(s,target){const p=s.players[0],q=[[p.x,p.z,[]]],seen=new Set([p.z*s.size+p.x]);for(let i=0;i<q.length;i++){const [x,z,steps]=q[i];if(x===target.x&&z===target.z)return steps;for(const [dx,dz] of [[1,0],[-1,0],[0,1],[0,-1]]){const nx=x+dx,nz=z+dz,id=nz*s.size+nx;if(nx<0||nz<0||nx>=s.size||nz>=s.size||s.grid[id]||seen.has(id))continue;seen.add(id);q.push([nx,nz,[...steps,[dx,dz]]]);}}throw Error('No route');}
-   const steps=path(snap().state,snap().state.chests[0]);for(const [dx,dz] of steps.slice(0,-1)){
-    let s=snap().state,p=s.players[0];const trap=s.traps.find(t=>!t.used&&Math.abs(t.x-p.x)+Math.abs(t.z-p.z)<=1);if(trap){document.getElementById('open').click();await sleep(320);}
-    s=snap().state;p=s.players[0];const b=s.bridges?.find(b=>!b.secured&&Math.abs(b.plate.x-p.x)+Math.abs(b.plate.z-p.z)<=1);if(b){document.getElementById('open').click();await sleep(320);}
-    const desired=Math.atan2(-dx,-dz),delta=Math.atan2(Math.sin(desired-snap().yaw),Math.cos(desired-snap().yaw));
-    const look=document.getElementById('look');look.dispatchEvent(new PointerEvent('pointerdown',{pointerId:1,clientX:400,clientY:180}));look.dispatchEvent(new PointerEvent('pointermove',{pointerId:1,clientX:400-delta/.006,clientY:180}));look.dispatchEvent(new PointerEvent('pointerup',{pointerId:1}));
-    window.dispatchEvent(new KeyboardEvent('keydown',{code:'KeyW'}));await sleep(80);window.dispatchEvent(new KeyboardEvent('keyup',{code:'KeyW'}));await sleep(280);
-   }
-   const target=snap().state.chests[0],player=snap().state.players[0],face=Math.atan2(-(target.x-player.x),-(target.z-player.z)),turn=Math.atan2(Math.sin(face-snap().yaw),Math.cos(face-snap().yaw)),view=document.getElementById('look');view.dispatchEvent(new PointerEvent('pointerdown',{pointerId:1,clientX:400,clientY:180}));view.dispatchEvent(new PointerEvent('pointermove',{pointerId:1,clientX:400-turn/.006,clientY:180}));view.dispatchEvent(new PointerEvent('pointerup',{pointerId:1}));document.getElementById('open').click();await sleep(600);
-   if(document.getElementById('puzzle').hidden)throw Error('Puzzle did not open');
-   window.qaDone=true;
-  }catch(e){window.qaFailure=String(e);window.qaDone=true;}})();
+(async()=>{try{
+ const sleep=ms=>new Promise(r=>setTimeout(r,ms)),snap=()=>qaApp.adventureSnapshot();
+ async function until(fn){for(let i=0;i<80;i++){if(fn())return;await sleep(35);}throw Error('Input timed out: '+JSON.stringify({p:snap().state.players[0],paused:snap().paused,context:document.getElementById('open').textContent}));}
+ function face(dx,dz){const desired=Math.atan2(-dx,-dz),delta=Math.atan2(Math.sin(desired-snap().yaw),Math.cos(desired-snap().yaw)),view=document.getElementById('look');view.dispatchEvent(new PointerEvent('pointerdown',{pointerId:1,clientX:400,clientY:180}));view.dispatchEvent(new PointerEvent('pointermove',{pointerId:1,clientX:400-delta/.006,clientY:180}));view.dispatchEvent(new PointerEvent('pointerup',{pointerId:1}));}
+ async function choose(action,id){const buttons=[...document.querySelectorAll('#interactions button')],button=buttons.find(b=>b.dataset.action===action&&b.dataset.chest===String(id)),seq=snap().state.players[0].sequence??0;if(!button)throw Error('Missing interaction '+action+' '+id);if(buttons.length===1)document.getElementById('open').click();else button.click();await until(()=>(snap().state.players[0].sequence??0)>seq||!document.getElementById('puzzle').hidden);await sleep(250);}
+ function path(s,target){const p=s.players[0],q=[[p.x,p.z,[]]],seen=new Set([p.z*s.size+p.x]);for(let i=0;i<q.length;i++){const[x,z,steps]=q[i];if(x===target.x&&z===target.z)return steps;for(const[dx,dz]of[[1,0],[-1,0],[0,1],[0,-1]]){const nx=x+dx,nz=z+dz,id=nz*s.size+nx;if(nx<0||nz<0||nx>=s.size||nz>=s.size||s.grid[id]||seen.has(id))continue;seen.add(id);q.push([nx,nz,[...steps,[dx,dz]]]);}}throw Error('No route');}
+ async function go(target,before=false){const steps=path(snap().state,target);for(const[dx,dz]of(before?steps.slice(0,-1):steps)){
+  let s=snap().state,p=s.players[0];const nx=p.x+dx,nz=p.z+dz,trap=s.traps.find(t=>!t.used&&t.x===nx&&t.z===nz);if(trap)await choose('disarm',trap.id);
+  s=snap().state;p=s.players[0];const b=s.bridges?.find(b=>!b.secured&&b.x===nx&&b.z===nz);if(b)await choose('activate',b.id);
+  face(dx,dz);window.dispatchEvent(new KeyboardEvent('keydown',{code:'KeyW'}));try{await until(()=>{const q=snap().state.players[0];return q.x!==p.x||q.z!==p.z;});}finally{window.dispatchEvent(new KeyboardEvent('keyup',{code:'KeyW'}));}
+  const q=snap().state.players[0];if(q.x!==nx||q.z!==nz)throw Error('Unexpected movement');await sleep(300);
+ }const p=snap().state.players[0];face(target.x-p.x,target.z-p.z);await sleep(200);}
+ window.qaGo=go;window.qaChoose=choose;
+ const target=snap().state.chests[0];await go(target,true);await choose('open',target.id);await until(()=>!document.getElementById('puzzle').hidden);window.qaDone=true;
+}catch(e){window.qaFailure=String(e);window.qaDone=true;}})();
+
   ''');
     await wait('window.qaDone');
+    if ((await c.runJavaScriptReturningResult('window.qaFailure')).toString() !=
+        'null') {
+      print('QA_FRAME=maze_failure');
+      await tester.runAsync(
+        () => Future<void>.delayed(const Duration(seconds: 3)),
+      );
+    }
     expect(
       (await c.runJavaScriptReturningResult('window.qaFailure')).toString(),
       'null',
@@ -94,6 +102,14 @@ void main() {
     );
     await tester.pump();
     print('QA_FRAME=maze_lantern_lit');
+    await tester.runAsync(
+      () => Future<void>.delayed(const Duration(seconds: 3)),
+    );
+    await c.runJavaScript(
+      "window.qaDone=false;qaGo(qaApp.adventureSnapshot().state.bridges[0].plate).then(()=>qaApp.adventureSnapshot().state.bridges[0].secured?null:qaChoose('activate',0)).then(()=>{const s=qaApp.adventureSnapshot().state,b=s.bridges[0],p=s.players[0],yaw=Math.atan2(-(b.x-p.x),-(b.z-p.z)),d=yaw-qaApp.adventureSnapshot().yaw,v=document.getElementById('look');v.dispatchEvent(new PointerEvent('pointerdown',{pointerId:1,clientX:400,clientY:180}));v.dispatchEvent(new PointerEvent('pointermove',{pointerId:1,clientX:400-d/.006,clientY:180}));v.dispatchEvent(new PointerEvent('pointerup',{pointerId:1}));window.qaDone=true;}).catch(e=>{window.qaFailure=String(e);window.qaDone=true;})",
+    );
+    await wait('window.qaDone');
+    print('QA_FRAME=maze_bridge');
     await tester.runAsync(
       () => Future<void>.delayed(const Duration(seconds: 3)),
     );

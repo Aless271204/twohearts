@@ -6,12 +6,12 @@ import {createMazePartnerMotion} from './partner-motion.js';
 import {createLanternStation,updateLanternStation,createBridge,addGarden,createFriendlyBats} from './garden.js';
 import {bridgeIsOpen} from './engine.js';
 import {doorFacing} from './navigation.js';
-const PALETTES={halloween:{wall:'#77697d',ground:'#99867a',fog:'#25283e',accent:'#ffb256',decor:'#dc813e'},christmas:{wall:'#8ba7a6',ground:'#cbd9db',fog:'#263d54',accent:'#ffd890',decor:'#dc6d6b'},easter:{wall:'#93ac85',ground:'#bda38e',fog:'#354951',accent:'#ffe6ab',decor:'#edbdd1'},garden:{wall:'#81976f',ground:'#9e8c6c',fog:'#243c3c',accent:'#f9d48c',decor:'#f1c882'}};
+const PALETTES={halloween:{wall:'#a18ca4',ground:'#b7a08b',fog:'#494361',accent:'#ffb256',decor:'#dc813e'},christmas:{wall:'#8ba7a6',ground:'#cbd9db',fog:'#263d54',accent:'#ffd890',decor:'#dc6d6b'},easter:{wall:'#93ac85',ground:'#bda38e',fog:'#354951',accent:'#ffe6ab',decor:'#edbdd1'},garden:{wall:'#81976f',ground:'#9e8c6c',fog:'#243c3c',accent:'#f9d48c',decor:'#f1c882'}};
 function roundedBox(w,h,d,r=.12){const s=new T.Shape(),x=-w/2,y=-h/2;s.moveTo(x+r,y);s.lineTo(x+w-r,y);s.quadraticCurveTo(x+w,y,x+w,y+r);s.lineTo(x+w,y+h-r);s.quadraticCurveTo(x+w,y+h,x+w-r,y+h);s.lineTo(x+r,y+h);s.quadraticCurveTo(x,y+h,x,y+h-r);s.lineTo(x,y+r);s.quadraticCurveTo(x,y,x+r,y);const g=new T.ExtrudeGeometry(s,{depth:d-2*r,bevelEnabled:true,bevelSize:r,bevelThickness:r,bevelSegments:2,steps:1,curveSegments:3});g.translate(0,0,-d/2+r);return g;}
 export class MazeScene{
  constructor(canvas){
-  this.renderer=new T.WebGLRenderer({canvas,antialias:true,powerPreference:'low-power'});this.renderer.setPixelRatio(Math.min(devicePixelRatio,1.25));this.renderer.outputColorSpace=T.SRGBColorSpace;this.renderer.toneMapping=T.ACESFilmicToneMapping;
-  this.scene=new T.Scene();this.camera=new T.PerspectiveCamera(68,1,.05,45);this.scene.add(this.camera);this.ambient=new T.HemisphereLight('#c9c0e5','#71624e',1.05);this.scene.add(this.ambient);const moonlight=new T.DirectionalLight('#a2b4e3',1.1);moonlight.position.set(-4,9,3);this.scene.add(moonlight);
+  this.renderer=new T.WebGLRenderer({canvas,antialias:true,powerPreference:'low-power'});this.renderer.setPixelRatio(Math.min(devicePixelRatio,1.25));this.renderer.outputColorSpace=T.SRGBColorSpace;this.renderer.toneMapping=T.ACESFilmicToneMapping;this.renderer.toneMappingExposure=1.25;
+  this.scene=new T.Scene();this.camera=new T.PerspectiveCamera(68,1,.05,45);this.scene.add(this.camera);this.ambient=new T.HemisphereLight('#fff0df','#a99d94',2.2);this.scene.add(this.ambient);this.scene.add(new T.AmbientLight('#fce4d3',.85));const moonlight=new T.DirectionalLight('#c9c5f0',2);moonlight.position.set(-4,9,3);this.scene.add(moonlight);
   this.lamp=new T.SpotLight('#ffe8ba',24,9.5,.45,.65,1.3);this.lamp.position.set(.17,-.1,0);this.camera.add(this.lamp);this.lampTarget=new T.Object3D();this.lampTarget.position.set(0,-.18,-6);this.camera.add(this.lampTarget);this.lamp.target=this.lampTarget;
   const hand=new T.Mesh(new T.SphereGeometry(.14,12,8),new T.MeshStandardMaterial({color:'#263c55',roughness:.9}));hand.scale.set(.85,.85,1.6);hand.position.set(.28,-.3,-.45);this.camera.add(hand);
   const torch=new T.Mesh(new T.CylinderGeometry(.075,.065,.38,12),new T.MeshStandardMaterial({color:'#b29868',metalness:.45,roughness:.5}));torch.rotation.x=Math.PI/2;torch.position.set(.28,-.26,-.57);this.camera.add(torch);
@@ -21,7 +21,7 @@ export class MazeScene{
  material(color){return new T.MeshStandardMaterial({color,roughness:.95});}
  clearWorld(){const geos=new Set(),mats=new Set();this.world.traverse(o=>{if(o.geometry)geos.add(o.geometry);if(o.material)for(const m of Array.isArray(o.material)?o.material:[o.material])mats.add(m);});this.world.clear();geos.forEach(g=>g.dispose());mats.forEach(m=>{m.map?.dispose();m.dispose();});this.chests.clear();this.traps.clear();this.stations.clear();this.bridges.clear();this.bats=null;this.garden=null;}
  build(s,side){
-  const key=`${s.seed}:${s.theme}:${s.size}`;if(this.loadedKey===key)return;this.loadedKey=key;this.clearWorld();const p=PALETTES[s.theme];this.scene.background=new T.Color(p.fog);this.scene.fog=new T.FogExp2(p.fog,.055);
+  const key=`${s.seed}:${s.theme}:${s.size}`;if(this.loadedKey===key)return;this.loadedKey=key;this.clearWorld();this.partnerInitialized=false;const p=PALETTES[s.theme];this.scene.background=new T.Color(p.fog);this.scene.fog=new T.FogExp2(p.fog,.045);
   const walls=s.grid.reduce((a,v,i)=>v?[...a,i]:a,[]),wall=new T.InstancedMesh(roundedBox(2,1.65,2),this.material(p.wall),walls.length),floor=new T.InstancedMesh(roundedBox(.97,.12,.97,.05),this.material(p.ground),s.size*s.size*4),m=new T.Matrix4();
   walls.forEach((cell,i)=>{m.makeTranslation(cell%s.size*2,.78,Math.floor(cell/s.size)*2);wall.setMatrixAt(i,m);wall.setColorAt(i,new T.Color(p.wall).multiplyScalar(.86+(cell%7)*.025));});
   for(let z=0;z<s.size;z++)for(let x=0;x<s.size;x++)for(let k=0;k<4;k++){const index=(z*s.size+x)*4+k;m.makeTranslation(x*2+(k%2-.5),-.1,z*2+(Math.floor(k/2)-.5));floor.setMatrixAt(index,m);floor.setColorAt(index,new T.Color(p.ground).multiplyScalar(.86+((x*7+z*3+k)%7)*.035));}this.world.add(wall,floor);
@@ -56,13 +56,13 @@ export class MazeScene{
   for(let i=0;i<8;i++){const spark=new T.Mesh(new T.OctahedronGeometry(.035),new T.MeshBasicMaterial({color:'#ffe9a6'}));spark.position.set(Math.cos(i*Math.PI/4)*.32,Math.sin(i*Math.PI/4)*.32,0);group.add(spark);}
   group.position.set(x*2,1,z*2);this.world.add(group);this.keyEffects??=[];this.keyEffects.push({group,age:0});
  }
- surprise(x,z){
+ surprise(x,z,intensity=1){
   if(this.bats){this.bats.group.removeFromParent();this.bats.group.traverse(o=>{o.geometry?.dispose();o.material?.dispose();});}
-  this.bats=createFriendlyBats();this.bats.group.position.set(x*2,.55,z*2);this.world.add(this.bats.group);
+  this.bats=createFriendlyBats();this.bats.group.scale.setScalar(intensity);this.bats.group.position.set(x*2,.55,z*2);this.world.add(this.bats.group);
  }
  draw(s,side,dt,flashlight=true){
   this.time+=dt;this.lamp.intensity=flashlight?24:3;this.build(s,side);const p=this.preview??s.players[side];this.target.set(p.x*2,1.25,p.z*2);const moving=this.camera.position.distanceToSquared(this.target)>.002;this.target.y+=moving?Math.sin(this.time*9)*.012:0;this.camera.position.lerp(this.target,1-Math.exp(-dt*14));this.viewYaw+=Math.atan2(Math.sin(this.yaw-this.viewYaw),Math.cos(this.yaw-this.viewYaw))*(1-Math.exp(-dt*18));this.viewPitch+=(this.pitch-this.viewPitch)*(1-Math.exp(-dt*18));this.camera.rotation.order='YXZ';this.camera.rotation.set(this.viewPitch,this.viewYaw,0);
-  this.garden?.update(this.time);this.ambient.intensity=1.05+s.keys*.12;if(this.beacon)this.beacon.intensity=3+s.keys*1.5;
+  this.garden?.update(this.time);this.ambient.intensity=2.2+s.keys*.15;if(this.beacon)this.beacon.intensity=3+s.keys*1.5;
   for(const c of s.chests){const station=this.stations.get(c.id);if(station)updateLanternStation(station,c,this.viewYaw,this.time);const item=this.chests.get(c.id);if(item){item.lid.rotation.x+=((c.opened?-1.1:0)-item.lid.rotation.x)*(1-Math.exp(-dt*8));item.clue.visible=!c.opened;item.clue.rotation.y=this.viewYaw;item.clue.position.y=.8+Math.sin(this.time*2+c.id)*.035;}}
   for(const b of s.bridges??[]){const item=this.bridges.get(b.id);if(item){const open=bridgeIsOpen(s,b);item.deck.position.y+=((open?0:-.45)-item.deck.position.y)*(1-Math.exp(-dt*7));item.deck.visible=open;item.plate.material.emissiveIntensity=open?.5:0;}}
   if(this.bats){const fx=this.bats;fx.age+=dt;fx.group.children.forEach((bat,i)=>{bat.position.set(Math.sin(i*2+fx.age*3)*(.2+fx.age*.3),fx.age*.6+i*.07,Math.cos(i+fx.age*2)*.4);bat.rotation.z=Math.sin(fx.age*13+i)*.22;});if(fx.age>2.8){fx.group.removeFromParent();fx.group.traverse(o=>{o.geometry?.dispose();o.material?.dispose();});this.bats=null;}}
