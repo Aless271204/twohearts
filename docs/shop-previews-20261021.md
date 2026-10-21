@@ -13,3 +13,13 @@ Evidence: `design/store-showcases/room_set_*.json` records room source hashes an
 The active large/open beret was compared with the approved lavender felt boutique reference. Candidate v8 replaces the open crown with a small closed crown based on each original skull profile, with 6 mm lining, a short stem and heart detail. It eliminates the v7 surface-raycast transition that produced tuft spikes. Original pet files and animation clips are unchanged.
 
 First offline penguin views at 0, 90 and 180 degrees and the full pig Chic outfit were inspected. Native Android capture was requested for all four original pets, front/profile/back, running and jumping. Candidate files remain experimental until those actual-renderer images are inspected. No APK is published by this check.
+
+## Folded beret v9, validated and applied
+
+The user rejected the smooth v8 crown and asked for felt relief and waves while keeping a footprint smaller than the head. V9 has an asymmetric slouching crown, gathered edge and soft folds. The reviewed set contains 20 actual Android-host frames: all four original pets, front/profile/back, a running sample and a jumping sample. See `design/wardrobe-restart/experiments/beret-fit-v9/native-validation.json` for frame hashes and the three final source runs. Loading-screen captures were retained separately and excluded from acceptance.
+
+A frozen inspection could stop drawing before its canvas fade became visible on Android. The inspection now renders twelve frames before freezing; the phase stays fixed and playable animations are unchanged. This resolved the final penguin running capture in run39634660827.
+
+The existing four beret asset paths are retained for compatibility with older clients; their contents, per-species hashes and cache revision are updated together. Old accessory sources are archived under the v9 `sources` directory for material/heart provenance. Four editable Blender masters and the fitting generator are retained. All original pet GLBs match the previous delivery byte for byte. Prices, item identity and ownership are preserved. The Chic showroom image now shows the same folded beret.
+
+Validation is limited to the reviewed poses and geometric motion samples; it is not a certification of every garment or every animation frame.

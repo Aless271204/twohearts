@@ -1,3 +1,5 @@
+import 'dart:convert';
+import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:twohearts/core/shop_showcase.dart';
 import 'package:twohearts/core/shop_economy_v2.dart';
@@ -5,6 +7,27 @@ import 'package:twohearts/services/inventory_service.dart';
 import 'package:twohearts/core/store_packages.dart';
 
 void main() {
+  test('every published bundle has a complete saved WebP showroom', () {
+    final sql = File(
+      'supabase/migrations/20261020204524_balanced_shop_bundles.sql',
+    ).readAsStringSync();
+    final bundles = jsonDecode(sql.split(r'$bundles$')[1]) as List;
+    expect(bundles, isNotEmpty);
+    for (final bundle in bundles) {
+      final file = File(
+        'assets/images/products/showcases/${bundle['bundle_key']}.webp',
+      );
+      expect(
+        file.existsSync(),
+        isTrue,
+        reason: '${bundle['bundle_key']} has no complete preview',
+      );
+      final bytes = file.readAsBytesSync();
+      expect(ascii.decode(bytes.sublist(0, 4)), 'RIFF');
+      expect(ascii.decode(bytes.sublist(8, 12)), 'WEBP');
+    }
+  });
+
   test(
     'whole room showroom retains every furniture item without overwriting shared slots',
     () {

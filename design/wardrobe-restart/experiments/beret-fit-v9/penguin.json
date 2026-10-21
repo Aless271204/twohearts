@@ -1,0 +1,10 @@
+{
+  "species": "penguin",
+  "candidate": "assets\\runner\\accessories\\experimental_beret_chic_penguin_v9.glb",
+  "source_pet_snapshot": "outputs\\beret-review\\small-fit-7\\penguin-Rest-0-before.json",
+  "surface_fit": "small asymmetric felt crown with gathered folds; app QA pending",
+  "angle_limit": 0.76,
+  "lining": 0.006,
+  "catalog_updated": false,
+  "sha256": "d60230772bbfac8a999bf442f26f0aab736d216a4c0569ab1b0e3010c9de3c95"
+}

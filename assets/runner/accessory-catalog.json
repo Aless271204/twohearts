@@ -197,12 +197,12 @@
       },
       "fitted_model_space": true,
       "tuck_crown_tuft": true,
-      "asset_revision": "fd89fc4ec886b3394149",
+      "asset_revision": "d23ac564c0cddc14df5b",
       "species_model_hashes": {
-        "penguin": "3d160230e42ecfe0478e25df4824648ec70934d087deedcbdde4a909f25a655a",
-        "bear": "6a305f782233ee0776dbff1f5c4035f3f6bc1193304a6118ed7e4739968133c1",
-        "pig": "bd944e018495c5216c6828bb45205d0d8cbe2bccd2e1d7e826813ff0188f7eb3",
-        "chick": "64a2c7266ab69fef171da8d490976dbd44d3fd770bc764b6b004a7239fa4a600"
+        "penguin": "d60230772bbfac8a999bf442f26f0aab736d216a4c0569ab1b0e3010c9de3c95",
+        "bear": "646dd3f7b0c83fca981a1d087e61087176c128eb502b60cdf272fc74ad578163",
+        "pig": "47243759533ea851080f35830f376b5fe48c879e06052da6e5e5e7ab4dde3866",
+        "chick": "48b81083456a1267d62c19f37e19490d5fa1fef206bf817e10ee021aeafff83c"
       },
       "skinned_model_space": false,
       "color_materials": [

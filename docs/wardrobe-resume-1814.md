@@ -333,3 +333,64 @@ Entrega 1.2.1: corrida CI 38660699207 completada con éxito. Android smoke corre
 - Flutter: 22 pruebas de nuevas funciones y 3 del bot aprobadas. SQL online y retratos con dos cuentas y rechazo de tercero aprobado. Pendiente confirmar compilación Android y pruebas visuales de esta versión.
 
 Correcciones posteriores: el Stack de habitación se encogía a 52 px; se forzó expansión y una prueba real mide viewport y ambas mitades, conservando el mismo elemento de escena. Captura real: outputs/room-split-preview.png. Se añadió desactivación local persistente de GPS para no volver a publicar si falla la red o se reinicia. Cinco pruebas de ubicación/panel aprobadas. Primer CI falló por Maven 429, no por código; se añadió caché Gradle y un único reintento con espera. No reincorporar cambios locales de vestuario/movimiento.
+
+## Entrega confirmada 1.2.2+17
+- Commit publicado: 268a07c. CI 38766607551: verify, android-smoke y publicación exitosos.
+- APK firmado: https://github.com/Aless271204/twohearts/releases/download/nido-1.2.2/NIDO-1.2.2-ligera.apk
+- Peso real 219.294.643 bytes frente a 546.936.067 de 1.2.1: reducción del 59,9 %.
+- SHA256 ec3d1e22f468964b90b0555f27c9df914a5252b24fbb9595cb2d0c142bb53f95. Firma anterior conservada 6991bdb5af84789e9770c5cbe43b6bd0e9aec9a2d0a8c0947c1b8ee79cf908a5.
+- Verificador examinó los 96 modelos, 96 miniaturas, imágenes compartidas, código de render y manifiesto del APK descargado.
+- QR: outputs/nido-1.2.2-qr.png. Capturas reales: room-split-preview.png; training-pong-browser.png y training-quiz-browser.png (las dos últimas previas a los botones finales de audio y salida en cabecera).
+- Ubicación solo en primer plano; comparte con pareja recíproca y conserva el último punto. Fotos privadas (propietario/pareja), no públicas.
+- Versión de prueba para amigos: cobros y publicación oficial en las tiendas siguen pendientes. Notas de auditoría previa en outputs/new-features-security-notes.md. No afirmar cumplimiento absoluto de seguridad/producción.
+
+
+## 2026-10-15 — habitación como pestaña y catálogo disponible
+- PetRoomScreen conserva las cinco pestañas y elimina la X de salida. No hay una ruta adicional para entrar en la habitación. AppScaffold conserva barra en Mascota incluso ante notificaciones de navegación internas; juegos continúan inmersivos.
+- Cofre y decoración ocupan la mitad inferior dentro de la misma pantalla, transición 360 ms con reducir movimiento respetado. Escena no se recrea al abrir/cerrar. Iconos laterales izquierdos en oro, lavanda y salvia.
+- 96 fotografías de los GLB reales renderizadas de nuevo en Blender sin fondo; PNG RGBA con alpha y hashes comprobados. Tarjetas con oscilación y escala más visibles; reducir movimiento desactiva la animación.
+- Rotación del calzado en runtime conserva el giro completo del anclaje, sin el límite que causaba retraso respecto a la pata. 11 pruebas de anclajes/orden y 25 pruebas de catálogo/cuerpos/complementos aprobaron. No se reincorporaron cambios experimentales de hombro ni salto.
+- 24 productos visibles habilitados para comprar/equipar con oro en catálogo local y servidor; peluca continúa oculta. Migración publish_tailored_pet_catalog aplicada. Prueba SQL con cuenta temporal: 24 compras, equipamiento y descuento correcto; rollback sin datos de prueba persistentes.
+- 10 pruebas Flutter de inventario, habitación y ubicación aprobaron. Web preview compilado en build/design-preview. Activos actualizados posteriormente. La herramienta de navegador rechazó la inspección: no se certifica una revisión visual completa en minijuegos ni perfección artística.
+- No se generó APK nuevo; la versión instalada 1.2.2 no incluye estos cambios de UI hasta la siguiente compilación.
+
+
+## Pausa de diagnóstico: ropa en carrera, nueva idea de Boss Rush
+- Usuario reporta camiseta del oso que no sigue al cuerpo; no está resuelto visualmente.
+- Nuevo diagnóstico scripts/check-garment-follow.mjs compara desplazamientos de 20 combinaciones. Ajuste actual rígido del torso difiere del movimiento de la superficie original. La métrica usa vértice cercano, no es criterio artístico absoluto.
+- Prueba de transferencia de pesos en scripts/blender-transfer-garment-motion.py y helper pet-garment-binding.js guardados como experimentales. Mejora parcial numérica; no verificada visualmente. NO publicar ni certificar como solución.
+- Se restauró el GLB del oso desde before-motion-transfer y se retiró el enlace experimental de cosmetics.js. Catálogo/hashes activos conservados.
+- Usuario dirige ahora una propuesta de nuevo minijuego 2D pixel art Boss Rush: imágenes, historia y mecánicas antes de implementar.
+
+### Retomar después de entrega 1.2.3
+Leer docs/release-123.md antes de volver a modificar prendas. Código de entrega ff40893; nueva vinculación al skin original y APK separadas por arquitectura. Hay experimentos antiguos sin commit en scripts/blender-sewn-shirt.py, scripts/wardrobe_gltf.py y test/pet_wardrobe_jump_test.mjs: NO incorporarlos automáticamente. Guardianes tiene arte y prototipo aislado sin publicar; el APK solo lleva tarjeta Próximamente. Instrucción más reciente humana: optimizar y compartir APK con amigos. La impresión sigue aplazada.
+
+
+## Continuación automática 2026-10-17: evitar regresiones tras 1.2.8
+- Entrega vigente: NIDO 1.2.8+23, commit21edbe65598e6b3d65cec272d1d00a93a18e2916. Ver docs/release-128.md. No rehacer entregas antiguas ni el diagnóstico de vinculación ya resuelto en1.2.3.
+- Las 24 miniaturas boutique y el sillón ya se generaron, revisaron e incorporaron. Son ilustraciones de presentación; no equivalen a cambios de malla ni cierran los pendientes artísticos. Maestros locales en design/store-boutique, mapa lib/core/boutique_thumbnails.dart y procedimiento docs/store-boutique.md.
+- No se alteraron prendas ni mascotas en esta revisión automática: los activos de ropa siguen siendo los verificados en la entrega actual. No volver a aplicar experimentos locales antiguos.
+- Pendientes artísticos que deben revisarse con evidencia nueva antes de tocar geometría: hombro del pollito, bajo/entrepierna de cerdito, abertura superior de boina de pingüino y orientación de sandalias, documentados en release-123. No presentar las métricas técnicas como aprobación visual.
+- La preferencia de movimiento dejó de estar pendiente: el usuario autorizó una prueba dinámica; respetar lo publicado y sus mensajes posteriores. La automatización se actualizó para leer las entregas actuales y evitar trabajo repetido.
+- Siguiente: inspección focalizada de una de esas zonas sobre el estado actual en un visor experimental. Si sigue bloqueada la inspección de navegador, no eludirla; los renders offline deben identificarse como tales. No publicar nuevos APK desde el heartbeat.
+
+## Revisión focalizada de boina —18octubre, candidata v5
+
+Se confirmó una abertura grande en la parte superior de la boina de pingüino mediante geometría posada con las funciones reales de equipamiento y render offline. El patrón anterior aplastaba la corona antes de recortar la cabeza y dejaba el centro abierto. scripts/blender-fit-beret-v5.py construye una corona cerrada con forro de9mm y banda continua, conservando el material y recolocando corazón/rabito sobre la superficie. No modifica la mascota original.
+
+Maestro y procedencia: design/wardrobe-restart/experiments/beret-fit-v5/penguin.blend y penguin.json. Candidata NO incorporada al catálogo: assets/runner/accessories/experimental_beret_chic_penguin_v5.glb. Vista tres cuartos en outputs/beret-review/penguin-Rest-0-after-40.png; es Blender, no el renderizador de la app, y su material aparece más pálido. La corona está cerrada; todavía requiere frente/perfil/espalda y carrera/salto antes de activar o extender a otras especies. No reincorporar experimentos antiguos ni presentar el conjunto del vestuario como final.
+
+## 2026-10-21: proporción pequeña y forma de boina
+- El usuario reiteró que la boina debe ser menor que la cabeza. V8 cerró la abertura y redujo la copa; sus renders offline están en outputs/beret-review/small-fit-8.
+- El usuario rechazó expresamente la forma lisa de v8: parece un gorro religioso. No activar ni recuperar ese diseño como terminado. Pidió relieve y formas onduladas, conservando el tamaño pequeño.
+- V9 experimental: copa asimétrica ladeada, volumen superior y pliegues de fieltro que se extinguen en una banda estrecha. Generador scripts/blender-fit-beret-v9.py. Primero pingüino, sin tocar las mascotas originales. Renders offline en outputs/beret-review/small-fit-9, pendientes de inspección al guardar esta nota.
+- Las pruebas nativas de v8 se cancelaron por quedar superadas por esta corrección artística; no son aprobación de v9. Comprobar el diseño nuevo en el renderizador real y movimiento antes de activar.
+- Tienda: once imágenes completas WebP guardadas y carrusel corregido, prueba de ocho habitaciones ida/vuelta sin errores. Commit de publicación fd2c5306414459a0491a80cda34b545fc11f3b5a; confirmar despliegue antes de anunciarlo disponible.
+
+- V9: frente y perfil del pingüino inspeccionados; también contacto frontal de las cuatro mascotas en outputs/beret-review/small-fit-9/all-Rest-0-after-0.png (Blender offline). Copa ladeada y ondulada; banda interior al ancho del cráneo. Prueba test/small_beret_test.mjs pasó: cuatro especies, anchura inferior al 82% del perfil de cráneo y anclaje estable al hueso original durante 45 muestras de carrera y salto.
+- Prueba nativa v9: commit c648c5102d2388817c3503978b858c756f0409bc, run39629426173. El visor Android aislado usa los mismos assets y JS del renderizador de la app; no es la app completa ni una captura de navegador de Windows. Esperar capturas, no convertir un test geométrico en aprobación visual.
+- Tienda publicada y comprobada: run39627883369 SUCCESS, once WebP públicos con hashes idénticos a los locales; recibo outputs/store-previews-20261021/web-verification.json. Las cuatro pruebas de Flutter de carrusel/escena/economía pasaron. La boina v9 todavía no está activada al escribir esta nota.
+
+- Cierre de boina v9: veinte capturas nativas válidas revisadas; las tomas de carrera que mostraban carga quedaron excluidas. Runs39629426173 (reposo/perfil/espalda/salto),39631697533 (carrera de oso/cerdito/pollito),39634660827 (carrera de pingüino). Recibo completo design/wardrobe-restart/experiments/beret-fit-v9/native-validation.json. El visor estático necesitaba doce dibujados antes de congelarse para completar la transición de visibilidad; no se cambiaron las animaciones jugables.
+- Se aplicó la copa pequeña, ladeada y ondulada en los cuatro archivos activos de boina, manteniendo los mismos nombres de recurso y actualizando hashes/revisión. Materiales/fuentes antiguos archivados en design/wardrobe-restart/experiments/beret-fit-v9/sources; maestros .blend individuales en el mismo directorio superior. No recuperar v8 lisa rechazada. Las mascotas originales conservan exactamente sus bytes.
+- Pruebas geométricas y eventos por kilómetro: tres aprobadas. Continuar con los otros pendientes artísticos documentados, sin rehacer esta boina como si siguiera abierta. Publicación web de este cierre todavía pendiente al escribir la nota.

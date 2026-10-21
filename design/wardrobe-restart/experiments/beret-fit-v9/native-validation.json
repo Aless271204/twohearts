@@ -1,0 +1,172 @@
+{
+  "visual_reviewed": true,
+  "asset_commit": "c648c5102d2388817c3503978b858c756f0409bc",
+  "capture_commits": [
+    "c648c5102d2388817c3503978b858c756f0409bc",
+    "efbb4325164e007fcdc26945f0415bc04a8b1387",
+    "bfd9834d6ff2f7cb96b8828f996c63c48e4dc9d8"
+  ],
+  "source": "isolated Android host using the app renderer, original pets and original animation clips",
+  "scope": "front/profile/back and fixed run/jump sample; not a certification of every animation frame",
+  "findings": [
+    "crown narrower than the skull",
+    "asymmetric felt volume and folds visible",
+    "ears visible",
+    "attachment follows reviewed movement samples"
+  ],
+  "reviewed_at": "2026-10-21T19:34:25.407096+00:00",
+  "models": {
+    "penguin": "d60230772bbfac8a999bf442f26f0aab736d216a4c0569ab1b0e3010c9de3c95",
+    "bear": "646dd3f7b0c83fca981a1d087e61087176c128eb502b60cdf272fc74ad578163",
+    "pig": "47243759533ea851080f35830f376b5fe48c879e06052da6e5e5e7ab4dde3866",
+    "chick": "48b81083456a1267d62c19f37e19490d5fa1fef206bf817e10ee021aeafff83c"
+  },
+  "original_pets_unchanged": {
+    "penguin": "5ea59a0b7c43b753fd8d40fd9cb865a6851adedaa00ab8bd721e893519987b5b",
+    "bear": "4d9e91f9bccfd49675e626f91b26eccc0b43906b7bdb5ddc3ac44de6decbdd17",
+    "pig": "80ac179d65a825666357740ec40d501a8bd5fc1b1ceb10c22f858c07034f3d25",
+    "chick": "7f6401f46026acb66a9e14e8ee5e8e33f38df5a7732ba0846af111ca773e83a8"
+  },
+  "frames": [
+    {
+      "species": "penguin",
+      "pose": "Rest_0",
+      "run": "39629426173",
+      "path": "outputs/native-beret-fit/39629426173/penguin_Rest_0.png",
+      "sha256": "cf6e40d4a2c1f0c28b5a619fc405c5a7e8cc4138c808d1cb6f7f6730dc06c124"
+    },
+    {
+      "species": "penguin",
+      "pose": "Rest_90",
+      "run": "39629426173",
+      "path": "outputs/native-beret-fit/39629426173/penguin_Rest_90.png",
+      "sha256": "917d78747e305d2dd066fac7e3b6bddbbba38524bada8d067b325476f539ed9c"
+    },
+    {
+      "species": "penguin",
+      "pose": "Rest_180",
+      "run": "39629426173",
+      "path": "outputs/native-beret-fit/39629426173/penguin_Rest_180.png",
+      "sha256": "a4feb694c2e478688392afb4a13af3262f18e21ea71c2e71fbb7ac7aa7832bfc"
+    },
+    {
+      "species": "penguin",
+      "pose": "Running_0",
+      "run": "39634660827",
+      "path": "outputs/native-beret-fit/39634660827/penguin_Running_0.png",
+      "sha256": "ad19ea797c51b41bc4809664c9cdc8fe94e87362f717c08e274c0659d4cb5aac"
+    },
+    {
+      "species": "penguin",
+      "pose": "Regular_Jump_0",
+      "run": "39629426173",
+      "path": "outputs/native-beret-fit/39629426173/penguin_Regular_Jump_0.png",
+      "sha256": "2fa54b838c0a72c2310b10614a2b239810132f4ab2ecfaa1c40f40d2f6bf3d26"
+    },
+    {
+      "species": "bear",
+      "pose": "Rest_0",
+      "run": "39629426173",
+      "path": "outputs/native-beret-fit/39629426173/bear_Rest_0.png",
+      "sha256": "e5a9dfde8ff150e89194f86f0c3aeef0965d150c9fdbfd470275d1b1bd6de437"
+    },
+    {
+      "species": "bear",
+      "pose": "Rest_90",
+      "run": "39629426173",
+      "path": "outputs/native-beret-fit/39629426173/bear_Rest_90.png",
+      "sha256": "cba8c99ff8f1981f5610e9d641eda0212c4c0f0b1dd7dafed85e01dfdb2fc594"
+    },
+    {
+      "species": "bear",
+      "pose": "Rest_180",
+      "run": "39629426173",
+      "path": "outputs/native-beret-fit/39629426173/bear_Rest_180.png",
+      "sha256": "6a47ea87349e32c479eef6a7be3f72d341ae220d10e0480d1a20b1efac35929c"
+    },
+    {
+      "species": "bear",
+      "pose": "Running_0",
+      "run": "39631697533",
+      "path": "outputs/native-beret-fit/39631697533/bear_Running_0.png",
+      "sha256": "f83ca408eebd81b044237f401baaa25398875676135bf00fdd28e29dec0eac5a"
+    },
+    {
+      "species": "bear",
+      "pose": "Regular_Jump_0",
+      "run": "39629426173",
+      "path": "outputs/native-beret-fit/39629426173/bear_Regular_Jump_0.png",
+      "sha256": "4c68b76d2be9762a730a61652f4e90637bac4b3e204e0d599f4fe70fbe457e77"
+    },
+    {
+      "species": "pig",
+      "pose": "Rest_0",
+      "run": "39629426173",
+      "path": "outputs/native-beret-fit/39629426173/pig_Rest_0.png",
+      "sha256": "3018bbfa53a2d6e3f787672a7f40e6f90fd8ef185f00a76cbb17c7603e9214ff"
+    },
+    {
+      "species": "pig",
+      "pose": "Rest_90",
+      "run": "39629426173",
+      "path": "outputs/native-beret-fit/39629426173/pig_Rest_90.png",
+      "sha256": "9341ff8f7db28cca478ee4788b6dce6589513cea4849316694e9652a489c0262"
+    },
+    {
+      "species": "pig",
+      "pose": "Rest_180",
+      "run": "39629426173",
+      "path": "outputs/native-beret-fit/39629426173/pig_Rest_180.png",
+      "sha256": "2420094aa9eea8896a4222663b90e805209c2c0525a0448f1e446dc128be2cd6"
+    },
+    {
+      "species": "pig",
+      "pose": "Running_0",
+      "run": "39631697533",
+      "path": "outputs/native-beret-fit/39631697533/pig_Running_0.png",
+      "sha256": "df0ee1c2b4f280131c768179a4a481d5e63c9ed6961034665be226871b39e47b"
+    },
+    {
+      "species": "pig",
+      "pose": "Regular_Jump_0",
+      "run": "39629426173",
+      "path": "outputs/native-beret-fit/39629426173/pig_Regular_Jump_0.png",
+      "sha256": "c40287737a17fa51406dc95d6052a94c79c2c81dd1ee98f82ccfe070d6ceae62"
+    },
+    {
+      "species": "chick",
+      "pose": "Rest_0",
+      "run": "39629426173",
+      "path": "outputs/native-beret-fit/39629426173/chick_Rest_0.png",
+      "sha256": "1a8c31106ba184e715d64f8f5b09799d6f54d594ff8ac33e66c72f1c8da99a09"
+    },
+    {
+      "species": "chick",
+      "pose": "Rest_90",
+      "run": "39629426173",
+      "path": "outputs/native-beret-fit/39629426173/chick_Rest_90.png",
+      "sha256": "ed581281f1febf567a3e8d0fefbc58bffab18efde0e471bda1c8254d3d5f555b"
+    },
+    {
+      "species": "chick",
+      "pose": "Rest_180",
+      "run": "39629426173",
+      "path": "outputs/native-beret-fit/39629426173/chick_Rest_180.png",
+      "sha256": "4e971ef2a8a8f213e8c4578d0246ad9edfa7cf3ff90f46c666855e261799ee5c"
+    },
+    {
+      "species": "chick",
+      "pose": "Running_0",
+      "run": "39631697533",
+      "path": "outputs/native-beret-fit/39631697533/chick_Running_0.png",
+      "sha256": "5407729fc1be5facc426fd1340679dcf1568d348173bbbc0bb20dabdb2c29fb7"
+    },
+    {
+      "species": "chick",
+      "pose": "Regular_Jump_0",
+      "run": "39629426173",
+      "path": "outputs/native-beret-fit/39629426173/chick_Regular_Jump_0.png",
+      "sha256": "5d4940f8cb5bd19a294b174246c33c552ea375498354e832d049f6a16bc44aaf"
+    }
+  ]
+}
