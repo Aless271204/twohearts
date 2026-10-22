@@ -1,15 +1,39 @@
-/* Shared entry-menu treatment based on Senderos del Nido. Gameplay HUDs keep their own layout. */
-#menu{color:#fff8eb}
-#menu.panel,#menu>.card,#menu>.panel{background:linear-gradient(145deg,#264e3df5,#102d25f5);border:1px solid #ffe4a655;border-radius:28px;box-shadow:0 24px 64px #071b1855;color:#fff8eb}
-#menu:has(>.card),#menu.overlay{background:#0b231c66;backdrop-filter:none}
-#menu h1,#menu h2,#menu h1 em{color:#fff8eb;font-family:Georgia,serif}
-#menu p,#menu small,#menu label,#menu .option-label,#menu .chapter-heading span,#menu .menu-brand{color:#e3ecd9}
-#menu button{background:#305641;color:#fff8eb;border:1px solid #ffffff66;border-radius:18px;box-shadow:none;min-height:44px}
-#menu button.primary,#menu button.blue,#menu #solo,#menu #start,#menu button[aria-pressed=true]{background:#edc568;color:#213b2a;border-color:#f5db9d;font-weight:800}
-#menu button:focus-visible,#menu select:focus-visible,#menu input:focus-visible{outline:3px solid #ffe19a;outline-offset:3px}
-#menu button:disabled{opacity:.55}
-#menu select,#menu input{background:#fff9ec;color:#243c2e;border:1px solid #d5b879}
-#menu .help,#menu #load,#menu #modehint{color:#e3ecd9}
-#menu #error{color:#ffc7c7}
+/* Guardianes chapter-menu palette, shared by the launchers only. */
+#menu{color:#fff6df}
+#menu.panel,#menu>.card,#menu>.panel{background:linear-gradient(145deg,#214c3ff7,#16382ff7);border:1px solid #d0c48c70;border-radius:28px;box-shadow:0 22px 70px #0a242b66;color:#fff6df}
+#menu:has(>.card),#menu.overlay{background:#132d2b44;backdrop-filter:blur(3px)}
+#menu h1,#menu h2,#menu h1 em{color:#fff6df;font-family:Georgia,serif}
+#menu p,#menu small,#menu label,#menu .option-label,#menu .chapter-heading span,#menu .menu-brand{color:#dce9d3}
+#menu button{background:#f0e8dc;color:#304936;border:1px solid #d6c8b3;border-radius:17px;box-shadow:none;min-height:44px;font-weight:700}
+#menu button.primary,#menu button.blue,#menu #solo,#menu #start,#menu button[aria-pressed=true]{background:#e9c776;color:#243d2d;border-color:#c5a04f}
+#menu button:focus-visible,#menu select:focus-visible,#menu input:focus-visible{outline:3px solid #35766b;outline-offset:3px}
+#menu button:disabled{opacity:.6}
+#menu select,#menu input{background:#fffefa;color:#304435;border:1px solid #c9bba7}
+#menu .help,#menu #load,#menu #modehint{color:#dce9d3}
+#menu #error{color:#ffd0d0}
 #menu .adventure-slot .chapter-caption{color:white}
+#menu .adventure-slot .chapter-caption small{color:#fff2db}
+#menu .menu-art{display:block;width:100%;height:140px;object-fit:cover;border-radius:19px;margin:10px 0 16px}
+#menu .map-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:12px 0}
+#menu .map-card{padding:0;overflow:hidden;text-align:left;border:2px solid #e0d6c7;position:relative;min-width:0}
+#menu .map-card img{display:block;width:100%;height:95px;object-fit:cover}
+#menu .map-card span{display:block;padding:9px;font-size:11px;line-height:1.25}
+#menu .map-card[aria-pressed=true]{border-color:#ab853d;box-shadow:0 0 0 2px #eacf8a}
+#menu .menu-kicker{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#dfebcf}
+#menu .menu-options{display:flex;gap:10px;justify-content:center;align-items:center;flex-wrap:wrap;margin:10px 0}
+#menu #mapChoice{display:none}
+#menu.panel{inset:3% 7%;max-width:880px;margin:auto}
+body:has(#menu:not([hidden])){background:#102e31}
+#menu.panel.snow-menu{inset:auto;left:50%;top:50%;transform:translate(-50%,-50%);width:min(88vw,880px);max-height:94dvh;margin:0}
+#panel #card{background:linear-gradient(145deg,#214c3ff7,#16382ff7);color:#fff6df;border:1px solid #d0c48c70;border-radius:28px;box-shadow:0 22px 70px #17362f45}
+#panel #card h1,#panel #card p{color:#fff6df}
+#panel #card button{border-radius:17px;min-height:44px;background:#f0e8dc;color:#304936;border:1px solid #d6c8b3}
+#panel #card #start{background:#e9c776;color:#243d2d}
+#menu .pet-portraits{display:flex;gap:10px;justify-content:center;margin:10px 0 18px}
+#menu .pet-portraits button{width:66px;height:72px;padding:3px;border:2px solid #a0b89c;border-radius:18px;background:#dce6cf}
+#menu .pet-portraits img{width:100%;height:100%;object-fit:contain}
+#menu .pet-portraits button[aria-pressed=true]{background:#ffe5c4;border-color:#efa980}
+#menu .map-card[aria-disabled=true]{filter:saturate(.25);border-color:#84978a}
+#menu .chapter-lock{display:block;font-size:11px;color:#fff4d4;margin-top:5px}
+@media(max-height:480px){#menu .map-card img{height:60px}#menu .menu-art{height:90px}#menu.panel{padding:14px}#menu h1{font-size:26px}}
 @media(prefers-reduced-motion:reduce){#menu *{animation:none!important;transition:none!important}}

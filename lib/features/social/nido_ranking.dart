@@ -5,7 +5,7 @@ import '../../services/supabase_service.dart';
 const rankingGames = {
   'pebble_runner': 'Senderos del Nido',
   'guardian': 'Guardianes del Alba',
-  'pong': 'Peloteo con amor',
+  'pong': 'Ping pong',
   'quiz': '¿Cuánto nos conocemos?',
   'art': 'Pincel en pareja',
   'penalties': 'Goles y abrazos',

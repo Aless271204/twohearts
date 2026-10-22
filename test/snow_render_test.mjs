@@ -15,7 +15,7 @@ test('snow scenery is drawn once, refreshed for maps and late image loading',()=
   globalThis.Image=class{complete=false;naturalWidth=0;};
   globalThis.document={createElement:()=>canvas()};
   const view=new SnowView(canvas(),canvas()),scenery=contexts[2],back=contexts[0];
-  const state=newArena(0,[{id:'a'},{id:'b'}]);state.players=[];
+  const state=newArena(0,[{id:'a'},{id:'b'}]);state.players[0].buffs.shield=10;state.players[1].rescue=1;state.shots=[{x:250,y:200,vx:150,vy:0,r:12,type:'super'}];
   view.draw(state,1);const initial=scenery.gradients;assert.ok(initial>0);
   for(let i=0;i<90;i++)view.draw(state,2+i/30);
   assert.equal(scenery.gradients,initial,'static shadows/platforms must not redraw each frame');

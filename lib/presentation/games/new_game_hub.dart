@@ -1,3 +1,4 @@
+import '../../widgets/game_launch_menu.dart';
 import 'guardian_game_screen.dart';
 import 'art_game_screen.dart';
 import '../../widgets/animated_game_cover.dart';
@@ -51,34 +52,9 @@ class _GameHubScreenState extends State<GameHubScreen> {
   }
 
   Future<void> _choosePlayers(String game) async {
-    final mode = await showModalBottomSheet<String>(
+    final mode = await showDialog<String>(
       context: context,
-      backgroundColor: const Color(0xFFFFF9FA),
-      showDragHandle: true,
-      builder: (context) => SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const ListTile(title: Text('¿Con quién quieres jugar?')),
-            for (final option in const [
-              ('partner', 'Con mi pareja', Icons.favorite_outline),
-              (
-                'train',
-                'Entrenar con Nube · Bot de práctica',
-                Icons.smart_toy_outlined,
-              ),
-              ('create', 'Crear sala para amigos', Icons.add_circle_outline),
-              ('join', 'Entrar con código de sala', Icons.key_outlined),
-              ('random', 'Buscar rival online', Icons.public),
-            ])
-              ListTile(
-                leading: Icon(option.$3),
-                title: Text(option.$2),
-                onTap: () => Navigator.pop(context, option.$1),
-              ),
-          ],
-        ),
-      ),
+      builder: (_) => GameLaunchMenu(game: game),
     );
     if (mode == null || !mounted) return;
     String code = '';
@@ -147,7 +123,7 @@ class _GameHubScreenState extends State<GameHubScreen> {
           ),
           const SizedBox(height: 16),
           _tile(
-            'Peloteo con amor',
+            'Ping pong',
             1,
             () => _choosePlayers('pong'),
             subtitle: 'Ping pong · Regalos y potenciadores',

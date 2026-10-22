@@ -43,7 +43,7 @@ final nidoArticles = <NidoArticle>[
     ('Farolitos y defensa', 'Cuando la defensa del jefe se cierre, sigue la indicación de los faroles. Acércate y mantén Disparar para encenderlos; aprovecha la apertura para atacar.'),
     ('Elige tu reto', 'Fácil empieza con cinco vidas, medio con tres y difícil con una. En difícil no hay corazones extra: coordinarse y leer los ataques es esencial.'),
   ]),
-  NidoArticle('pong', 'Peloteo con amor · Una más y ganamos',
+  NidoArticle('pong', 'Ping pong · Una más y ganamos',
       'Domina la paleta y aprovecha los regalos del campo.', 'Guía',
       DateTime(2026, 10, 20, 10, 5), Icons.sports_tennis_rounded, const [
     ('Tu objetivo', 'Devuelve la pelota y haz que sobrepase la paleta rival. Cada persona ve su propia paleta abajo.'),

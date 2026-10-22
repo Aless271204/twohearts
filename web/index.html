@@ -15,6 +15,18 @@
     ></script>
   </head>
   <body>
+    <script>
+      // Retire the old app-shell cache without touching accounts or local saves.
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.getRegistrations().then(async registrations => {
+          const scope = new URL('.', document.baseURI).href;
+          const own = registrations.filter(registration => registration.scope === scope);
+          const controlled = !!navigator.serviceWorker.controller;
+          await Promise.all(own.map(registration => registration.unregister()));
+          if (controlled && own.length) location.reload();
+        }).catch(() => {});
+      }
+    </script>
     <script src="flutter_bootstrap.js" async></script>
   </body>
 </html>

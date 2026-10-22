@@ -421,8 +421,8 @@ class _DuoGameScreenState extends State<DuoGameScreen>
                   title: Text(
                     dark
                         ? (widget.mode == 'train'
-                              ? 'Peloteo con amor · Entrenar'
-                              : 'Peloteo con amor')
+                              ? 'Ping pong · Entrenar'
+                              : 'Ping pong')
                         : '¿Cuánto nos conocemos?',
                   ),
                 ),
@@ -487,7 +487,7 @@ class _DuoGameScreenState extends State<DuoGameScreen>
                     Padding(
                       padding: const EdgeInsets.fromLTRB(12, 12, 12, 4),
                       child: Text(
-                        dark ? 'Peloteo con amor' : '¿Cuánto nos conocemos?',
+                        dark ? 'Ping pong' : '¿Cuánto nos conocemos?',
                         textAlign: TextAlign.center,
                         style: const TextStyle(
                           fontFamily: 'NidoSerif',

@@ -1,3 +1,4 @@
+import '../../widgets/game_launch_menu.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
@@ -585,516 +586,545 @@ class _ArtGameScreenState extends State<ArtGameScreen>
         if (context.mounted) Navigator.pop(context);
       }
     },
-    child: Scaffold(
-      backgroundColor: const Color(0xFFFFF7F5),
-      appBar: AppBar(
-        title: Text(
-          widget.freeDraw ? 'Dibuja para tu pareja' : 'Pincel en pareja',
-        ),
-        backgroundColor: const Color(0xFFFFF7F5),
-        actions: [
-          IconButton(
-            tooltip: 'Música y sonidos',
-            onPressed: () => setState(audio.toggle),
-            icon: Icon(audio.muted ? Icons.volume_off : Icons.volume_up),
+    child: Theme(
+      data: room == null && !started
+          ? ThemeData.from(
+              colorScheme: const ColorScheme.dark(
+                primary: Color(0xFFE9C776),
+                onPrimary: Color(0xFF243D2D),
+                surface: Color(0xFF214C3F),
+                onSurface: Color(0xFFFFF6DF),
+              ),
+            ).copyWith(
+              textTheme: Theme.of(context).textTheme.apply(
+                bodyColor: const Color(0xFFFFF6DF),
+                displayColor: const Color(0xFFFFF6DF),
+              ),
+            )
+          : Theme.of(context),
+      child: Scaffold(
+        backgroundColor: room == null && !started
+            ? const Color(0xFF173D33)
+            : const Color(0xFFFFF7F5),
+        appBar: AppBar(
+          title: Text(
+            widget.freeDraw ? 'Dibuja para tu pareja' : 'Pincel en pareja',
           ),
-          if (started && !widget.freeDraw)
-            Padding(
-              padding: const EdgeInsets.all(12),
-              child: Text(
-                '${seconds ~/ 60}:${(seconds % 60).toString().padLeft(2, '0')}',
-                style: const TextStyle(
-                  fontSize: 23,
-                  fontWeight: FontWeight.w800,
-                ),
-              ),
+          backgroundColor: room == null && !started
+              ? const Color(0xFF173D33)
+              : const Color(0xFFFFF7F5),
+          foregroundColor: room == null && !started
+              ? const Color(0xFFFFF6DF)
+              : null,
+          actions: [
+            IconButton(
+              tooltip: 'Música y sonidos',
+              onPressed: () => setState(audio.toggle),
+              icon: Icon(audio.muted ? Icons.volume_off : Icons.volume_up),
             ),
-        ],
-      ),
-      body: SafeArea(
-        child: ListView(
-          padding: const EdgeInsets.fromLTRB(16, 4, 16, 24),
-          children: [
-            if (error != null)
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(12),
-                  child: Text(error!),
-                ),
-              ),
-            if (!started && room?['reference_revealed_at'] == null) ...[
-              const Text(
-                'Cinco minutos, dos miradas, una misma inspiración.',
-                style: TextStyle(fontSize: 23, fontWeight: FontWeight.w800),
-              ),
-              const SizedBox(height: 8),
-              const Text(
-                'Mascotas, paisajes, carros y pequeñas aventuras. Una referencia distinta en cada partida; ambos dibujan la misma imagen durante cinco minutos.',
-              ),
-              const SizedBox(height: 12),
-              Wrap(
-                spacing: 8,
-                children: [
-                  for (var i = 0; i < 3; i++)
-                    ChoiceChip(
-                      label: Text(['Fácil', 'Medio', 'Difícil'][i]),
-                      selected: difficulty == i,
-                      onSelected: room == null && !preparingReference
-                          ? (_) {
-                              setState(() => difficulty = i);
-                              if (catalogMode) {
-                                _nextCatalogReference();
-                              } else {
-                                _prepareReference();
-                              }
-                            }
-                          : null,
-                    ),
-                ],
-              ),
-              const Card(
-                child: Padding(
-                  padding: EdgeInsets.all(24),
-                  child: Column(
-                    children: [
-                      Icon(Icons.lock_outline_rounded, size: 42),
-                      SizedBox(height: 10),
-                      Text(
-                        'Imagen sorpresa',
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                      Text(
-                        'Se revela al empezar. Desde ahí tienen cinco minutos.',
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
+            if (started && !widget.freeDraw)
+              Padding(
+                padding: const EdgeInsets.all(12),
+                child: Text(
+                  '${seconds ~/ 60}:${(seconds % 60).toString().padLeft(2, '0')}',
+                  style: const TextStyle(
+                    fontSize: 23,
+                    fontWeight: FontWeight.w800,
                   ),
                 ),
               ),
-              if (room == null) ...[
-                Text(
-                  [
-                    'Fácil · composición sencilla',
-                    'Medio · pocos objetos y fondo mayormente blanco',
-                    'Difícil · escenas con fondo, objetos y acciones',
-                  ][difficulty],
-                  style: const TextStyle(fontWeight: FontWeight.w700),
-                ),
-                FilledButton.tonalIcon(
-                  onPressed: preparingReference ? null : _pickReference,
-                  icon: const Icon(Icons.photo_library),
-                  label: const Text('Sus fotos, viajes y destinos'),
-                ),
-                if (!catalogMode)
-                  TextButton.icon(
-                    onPressed: preparingReference
-                        ? null
-                        : _nextCatalogReference,
-                    icon: const Icon(Icons.shuffle),
-                    label: const Text('Volver al catálogo aleatorio'),
-                  ),
-                if (!catalogMode && sourceReference != null)
-                  Wrap(
-                    spacing: 5,
-                    children: [
-                      for (final style in ReferenceStyle.values)
-                        ChoiceChip(
-                          label: Text(referenceStyleLabels[style.index]),
-                          selected: referenceStyle == style,
-                          onSelected: preparingReference
-                              ? null
-                              : (_) {
-                                  setState(() => referenceStyle = style);
-                                  _prepareReference();
-                                },
-                        ),
-                    ],
-                  ),
-                if (preparingReference) const LinearProgressIndicator(),
-                if (!catalogMode &&
-                    sourceReference != null &&
-                    (referenceStyle == ReferenceStyle.mascot3d ||
-                        referenceStyle == ReferenceStyle.pixel))
-                  DropdownButtonFormField<int>(
-                    isExpanded: true,
-                    initialValue: scene ~/ 3,
-                    decoration: const InputDecoration(
-                      labelText: 'Mascota que viaja con ustedes',
-                    ),
-                    items: [
-                      for (var i = 0; i < 4; i++)
-                        DropdownMenuItem(value: i, child: Text(artPetNames[i])),
-                    ],
-                    onChanged: preparingReference
-                        ? null
-                        : (value) async {
-                            if (value == null) return;
-                            setState(() => scene = value * 3);
-                            await _loadPet();
-                            if (mounted) _prepareReference();
-                          },
-                  ),
-                Text(
-                  'Una referencia nueva para esta partida',
-                  style: const TextStyle(fontWeight: FontWeight.w600),
-                ),
-                FilledButton.icon(
-                  onPressed: busy || preparingReference
-                      ? null
-                      : () => _act('create', {
-                          'protocol': 2,
-                          'difficulty': difficulty,
-                          'scene': scene,
-                          if (referencePng != null)
-                            'reference_image': base64Encode(referencePng!),
-                          'reference_title': referenceTitle,
-                          'reference_style': referenceStyle.name,
-                        }),
-                  icon: const Icon(Icons.favorite),
-                  label: const Text('Crear partida con mi pareja'),
-                ),
-                OutlinedButton(
-                  onPressed: busy ? null : () => _act('join'),
-                  child: const Text('Unirme a la partida de mi pareja'),
-                ),
-                TextButton(
-                  onPressed: busy ? null : _resume,
-                  child: const Text('Continuar partida guardada'),
-                ),
-                TextButton(
-                  onPressed: preparingReference
-                      ? null
-                      : () {
-                          setState(() {
-                            solo = true;
-                            started = true;
-                            deadline = DateTime.now().toUtc().add(
-                              const Duration(minutes: 5),
-                            );
-                          });
-                          audio.start();
-                        },
-                  child: const Text('Practicar a solas · 5 minutos'),
-                ),
-                DropdownButtonFormField<int>(
-                  isExpanded: true,
-                  initialValue: scene,
-                  decoration: const InputDecoration(
-                    labelText: 'Escenas básicas de las mascotas',
-                  ),
-                  items: [
-                    for (var i = 0; i < 12; i++)
-                      DropdownMenuItem(
-                        value: i,
-                        child: Text(
-                          '${artPetNames[i ~/ 3]} · ${artScenes[i % 3]}',
-                        ),
-                      ),
-                  ],
-                  onChanged: preparingReference
-                      ? null
-                      : (v) {
-                          if (v != null) {
-                            setState(() {
-                              scene = v;
-                              catalogMode = false;
-                              sourceReference = null;
-                              difficultyPrefix = null;
-                              referenceGeneration++;
-                              referencePng = null;
-                              customReference?.dispose();
-                              customReference = null;
-                              referenceTitle =
-                                  '${artPetNames[v ~/ 3]} · ${artScenes[v % 3]}';
-                            });
-                            _loadPet();
-                          }
-                        },
-                ),
-              ] else ...[
-                Text(
-                  'Sala ${room!['code']} · tu pareja puede unirse desde este mismo juego',
-                ),
-                Text(
-                  'Tú: ${(room![room!['host'] == uid ? 'host_ready' : 'guest_ready'] == true) ? 'listo' : 'preparándote'} · Pareja: ${(room![room!['host'] == uid ? 'guest_ready' : 'host_ready'] == true) ? 'lista' : 'esperando'}',
-                ),
-                FilledButton(
-                  onPressed: busy ? null : () => _act('ready'),
-                  child: const Text('Estoy listo · empezar juntos'),
-                ),
-              ],
-              const SizedBox(height: 12),
-              const Text(
-                'Mismas herramientas y tiempo en las tres dificultades. La escena incorpora más detalles en medio y difícil. La valoración automática mide parecido visual, composición y avance; la estética la deciden ustedes. Completar la partida en pareja entrega oro validado; practicar sigue siendo gratis.',
-                style: TextStyle(fontSize: 12, height: 1.5),
-              ),
-            ] else if (!finished) ...[
-              if (!widget.freeDraw && reference != null)
+          ],
+        ),
+        body: SafeArea(
+          child: ListView(
+            padding: const EdgeInsets.fromLTRB(16, 4, 16, 24),
+            children: [
+              if (error != null)
                 Card(
                   child: Padding(
-                    padding: const EdgeInsets.all(10),
-                    child: Row(
+                    padding: const EdgeInsets.all(12),
+                    child: Text(error!),
+                  ),
+                ),
+              if (!started && room?['reference_revealed_at'] == null) ...[
+                const GameMenuHero(
+                  title: 'Pincel en pareja',
+                  subtitle: 'Cinco minutos · Una imagen sorpresa',
+                  panel: 4,
+                ),
+                const SizedBox(height: 8),
+                const SizedBox(height: 12),
+                Wrap(
+                  spacing: 8,
+                  children: [
+                    for (var i = 0; i < 3; i++)
+                      ChoiceChip(
+                        label: Text(['Fácil', 'Medio', 'Difícil'][i]),
+                        selected: difficulty == i,
+                        onSelected: room == null && !preparingReference
+                            ? (_) {
+                                setState(() => difficulty = i);
+                                if (catalogMode) {
+                                  _nextCatalogReference();
+                                } else {
+                                  _prepareReference();
+                                }
+                              }
+                            : null,
+                      ),
+                  ],
+                ),
+                const Card(
+                  child: Padding(
+                    padding: EdgeInsets.all(24),
+                    child: Column(
                       children: [
-                        SizedBox(
-                          width: 120,
-                          height: 120,
-                          child: CustomPaint(painter: reference),
-                        ),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                customReference != null
-                                    ? referenceTitle
-                                    : '${artPetNames[scene ~/ 3]} · ${artScenes[scene % 3]}',
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              ),
-                              Text(
-                                [
-                                  'Fácil · composición sencilla',
-                                  'Medio · más elementos y paisaje',
-                                  'Difícil · escena completa y texturas',
-                                ][difficulty],
-                              ),
-                              TextButton(
-                                onPressed: () => showDialog<void>(
-                                  context: context,
-                                  builder: (ctx) => Dialog(
-                                    child: AspectRatio(
-                                      aspectRatio: 1,
-                                      child: CustomPaint(painter: reference),
-                                    ),
-                                  ),
-                                ),
-                                child: const Text('Ampliar referencia'),
-                              ),
-                            ],
+                        Icon(Icons.lock_outline_rounded, size: 42),
+                        SizedBox(height: 10),
+                        Text(
+                          'Imagen sorpresa',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w700,
                           ),
+                        ),
+                        Text(
+                          'Se revela al empezar. Desde ahí tienen cinco minutos.',
+                          textAlign: TextAlign.center,
                         ),
                       ],
                     ),
                   ),
                 ),
-              if (submitted)
-                const Padding(
-                  padding: EdgeInsets.all(14),
-                  child: Text(
-                    'Dibujo enviado. Esperando a tu pareja… Puedes guardarlo mientras tanto.',
+                if (room == null) ...[
+                  Text(
+                    [
+                      'Fácil · composición sencilla',
+                      'Medio · pocos objetos y fondo mayormente blanco',
+                      'Difícil · escenas con fondo, objetos y acciones',
+                    ][difficulty],
+                    style: const TextStyle(fontWeight: FontWeight.w700),
                   ),
-                ),
-              if (!submitted)
-                ArtStudio(
-                  key: ValueKey(draftKey),
-                  document: document,
-                  enabled:
-                      !sending &&
-                      started &&
-                      !preparingReference &&
-                      (widget.freeDraw ||
-                          seconds > 0 &&
-                              (room == null ||
-                                  deadline == null ||
-                                  !DateTime.now()
-                                      .toUtc()
-                                      .add(clockOffset)
-                                      .isBefore(
-                                        deadline!.subtract(
-                                          const Duration(minutes: 5),
-                                        ),
-                                      ))),
-                  draftKey: draftKey,
-                ),
-              if (frozen != null && submitted)
-                Image.memory(frozen!, height: 260),
-              if (seconds == 0 && !submitted && !widget.freeDraw)
-                FilledButton(
-                  onPressed: sending ? null : _submit,
-                  child: Text(sending ? 'Enviando…' : 'Reintentar envío'),
-                ),
-              if (widget.freeDraw)
-                FilledButton.icon(
-                  onPressed: busy
-                      ? null
-                      : () async {
-                          setState(() => busy = true);
-                          try {
-                            final png = await document.png();
-                            await _rpc('note', {
-                              'kind': 'image',
-                              'content': base64Encode(png),
+                  FilledButton.tonalIcon(
+                    onPressed: preparingReference ? null : _pickReference,
+                    icon: const Icon(Icons.photo_library),
+                    label: const Text('Sus fotos, viajes y destinos'),
+                  ),
+                  if (!catalogMode)
+                    TextButton.icon(
+                      onPressed: preparingReference
+                          ? null
+                          : _nextCatalogReference,
+                      icon: const Icon(Icons.shuffle),
+                      label: const Text('Volver al catálogo aleatorio'),
+                    ),
+                  if (!catalogMode && sourceReference != null)
+                    Wrap(
+                      spacing: 5,
+                      children: [
+                        for (final style in ReferenceStyle.values)
+                          ChoiceChip(
+                            label: Text(referenceStyleLabels[style.index]),
+                            selected: referenceStyle == style,
+                            onSelected: preparingReference
+                                ? null
+                                : (_) {
+                                    setState(() => referenceStyle = style);
+                                    _prepareReference();
+                                  },
+                          ),
+                      ],
+                    ),
+                  if (preparingReference) const LinearProgressIndicator(),
+                  if (!catalogMode &&
+                      sourceReference != null &&
+                      (referenceStyle == ReferenceStyle.mascot3d ||
+                          referenceStyle == ReferenceStyle.pixel))
+                    DropdownButtonFormField<int>(
+                      isExpanded: true,
+                      initialValue: scene ~/ 3,
+                      decoration: const InputDecoration(
+                        labelText: 'Mascota que viaja con ustedes',
+                      ),
+                      items: [
+                        for (var i = 0; i < 4; i++)
+                          DropdownMenuItem(
+                            value: i,
+                            child: Text(artPetNames[i]),
+                          ),
+                      ],
+                      onChanged: preparingReference
+                          ? null
+                          : (value) async {
+                              if (value == null) return;
+                              setState(() => scene = value * 3);
+                              await _loadPet();
+                              if (mounted) _prepareReference();
+                            },
+                    ),
+                  Text(
+                    'Una referencia nueva para esta partida',
+                    style: const TextStyle(fontWeight: FontWeight.w600),
+                  ),
+                  FilledButton.icon(
+                    onPressed: busy || preparingReference
+                        ? null
+                        : () => _act('create', {
+                            'protocol': 2,
+                            'difficulty': difficulty,
+                            'scene': scene,
+                            if (referencePng != null)
+                              'reference_image': base64Encode(referencePng!),
+                            'reference_title': referenceTitle,
+                            'reference_style': referenceStyle.name,
+                          }),
+                    icon: const Icon(Icons.favorite),
+                    label: const Text('Crear partida con mi pareja'),
+                  ),
+                  OutlinedButton(
+                    onPressed: busy ? null : () => _act('join'),
+                    child: const Text('Unirme a la partida de mi pareja'),
+                  ),
+                  TextButton(
+                    onPressed: busy ? null : _resume,
+                    child: const Text('Continuar partida guardada'),
+                  ),
+                  TextButton(
+                    onPressed: preparingReference
+                        ? null
+                        : () {
+                            setState(() {
+                              solo = true;
+                              started = true;
+                              deadline = DateTime.now().toUtc().add(
+                                const Duration(minutes: 5),
+                              );
                             });
-                            if (mounted)
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text('Dibujo enviado a tu pareja'),
-                                ),
-                              );
-                          } catch (_) {
-                            if (mounted)
-                              setState(
-                                () => error =
-                                    'No se pudo enviar. Comprueba la conexión y el vínculo de pareja.',
-                              );
-                          } finally {
-                            if (mounted) setState(() => busy = false);
-                          }
-                        },
-                  icon: const Icon(Icons.favorite),
-                  label: const Text('Enviar a mi pareja'),
-                ),
-            ] else ...[
-              const Text(
-                '¡Sus pequeñas obras de arte!',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.w800),
-              ),
-              if (frozen != null)
-                Card(
-                  child: Column(
-                    children: [
-                      const Padding(
-                        padding: EdgeInsets.all(8),
-                        child: Text('Tu dibujo'),
-                      ),
-                      Image.memory(frozen!, height: 250),
-                    ],
+                            audio.start();
+                          },
+                    child: const Text('Practicar a solas · 5 minutos'),
                   ),
-                ),
-              if (!solo && room != null)
-                Card(
-                  child: Column(
-                    children: [
-                      const Padding(
-                        padding: EdgeInsets.all(8),
-                        child: Text('Dibujo de tu pareja'),
-                      ),
-                      Image.memory(
-                        base64Decode(
-                          room![room!['host'] == uid ? 'guest_art' : 'host_art']
-                              as String,
+                  DropdownButtonFormField<int>(
+                    isExpanded: true,
+                    initialValue: scene,
+                    decoration: const InputDecoration(
+                      labelText: 'Escenas básicas de las mascotas',
+                    ),
+                    items: [
+                      for (var i = 0; i < 12; i++)
+                        DropdownMenuItem(
+                          value: i,
+                          child: Text(
+                            '${artPetNames[i ~/ 3]} · ${artScenes[i % 3]}',
+                          ),
                         ),
-                        height: 250,
+                    ],
+                    onChanged: preparingReference
+                        ? null
+                        : (v) {
+                            if (v != null) {
+                              setState(() {
+                                scene = v;
+                                catalogMode = false;
+                                sourceReference = null;
+                                difficultyPrefix = null;
+                                referenceGeneration++;
+                                referencePng = null;
+                                customReference?.dispose();
+                                customReference = null;
+                                referenceTitle =
+                                    '${artPetNames[v ~/ 3]} · ${artScenes[v % 3]}';
+                              });
+                              _loadPet();
+                            }
+                          },
+                  ),
+                ] else ...[
+                  Text(
+                    'Sala ${room!['code']} · tu pareja puede unirse desde este mismo juego',
+                  ),
+                  Text(
+                    'Tú: ${(room![room!['host'] == uid ? 'host_ready' : 'guest_ready'] == true) ? 'listo' : 'preparándote'} · Pareja: ${(room![room!['host'] == uid ? 'guest_ready' : 'host_ready'] == true) ? 'lista' : 'esperando'}',
+                  ),
+                  FilledButton(
+                    onPressed: busy ? null : () => _act('ready'),
+                    child: const Text('Estoy listo · empezar juntos'),
+                  ),
+                ],
+                const SizedBox(height: 12),
+                const Text(
+                  'Mismas herramientas y tiempo en las tres dificultades. La escena incorpora más detalles en medio y difícil. La valoración automática mide parecido visual, composición y avance; la estética la deciden ustedes. Completar la partida en pareja entrega oro validado; practicar sigue siendo gratis.',
+                  style: TextStyle(fontSize: 12, height: 1.5),
+                ),
+              ] else if (!finished) ...[
+                if (!widget.freeDraw && reference != null)
+                  Card(
+                    child: Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: Row(
+                        children: [
+                          SizedBox(
+                            width: 120,
+                            height: 120,
+                            child: CustomPaint(painter: reference),
+                          ),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  customReference != null
+                                      ? referenceTitle
+                                      : '${artPetNames[scene ~/ 3]} · ${artScenes[scene % 3]}',
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                                Text(
+                                  [
+                                    'Fácil · composición sencilla',
+                                    'Medio · más elementos y paisaje',
+                                    'Difícil · escena completa y texturas',
+                                  ][difficulty],
+                                ),
+                                TextButton(
+                                  onPressed: () => showDialog<void>(
+                                    context: context,
+                                    builder: (ctx) => Dialog(
+                                      child: AspectRatio(
+                                        aspectRatio: 1,
+                                        child: CustomPaint(painter: reference),
+                                      ),
+                                    ),
+                                  ),
+                                  child: const Text('Ampliar referencia'),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
-                      TextButton(
-                        onPressed: () => _export(
-                          bytes: base64Decode(
+                    ),
+                  ),
+                if (submitted)
+                  const Padding(
+                    padding: EdgeInsets.all(14),
+                    child: Text(
+                      'Dibujo enviado. Esperando a tu pareja… Puedes guardarlo mientras tanto.',
+                    ),
+                  ),
+                if (!submitted)
+                  ArtStudio(
+                    key: ValueKey(draftKey),
+                    document: document,
+                    enabled:
+                        !sending &&
+                        started &&
+                        !preparingReference &&
+                        (widget.freeDraw ||
+                            seconds > 0 &&
+                                (room == null ||
+                                    deadline == null ||
+                                    !DateTime.now()
+                                        .toUtc()
+                                        .add(clockOffset)
+                                        .isBefore(
+                                          deadline!.subtract(
+                                            const Duration(minutes: 5),
+                                          ),
+                                        ))),
+                    draftKey: draftKey,
+                  ),
+                if (frozen != null && submitted)
+                  Image.memory(frozen!, height: 260),
+                if (seconds == 0 && !submitted && !widget.freeDraw)
+                  FilledButton(
+                    onPressed: sending ? null : _submit,
+                    child: Text(sending ? 'Enviando…' : 'Reintentar envío'),
+                  ),
+                if (widget.freeDraw)
+                  FilledButton.icon(
+                    onPressed: busy
+                        ? null
+                        : () async {
+                            setState(() => busy = true);
+                            try {
+                              final png = await document.png();
+                              await _rpc('note', {
+                                'kind': 'image',
+                                'content': base64Encode(png),
+                              });
+                              if (mounted)
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text('Dibujo enviado a tu pareja'),
+                                  ),
+                                );
+                            } catch (_) {
+                              if (mounted)
+                                setState(
+                                  () => error =
+                                      'No se pudo enviar. Comprueba la conexión y el vínculo de pareja.',
+                                );
+                            } finally {
+                              if (mounted) setState(() => busy = false);
+                            }
+                          },
+                    icon: const Icon(Icons.favorite),
+                    label: const Text('Enviar a mi pareja'),
+                  ),
+              ] else ...[
+                const Text(
+                  '¡Sus pequeñas obras de arte!',
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.w800),
+                ),
+                if (frozen != null)
+                  Card(
+                    child: Column(
+                      children: [
+                        const Padding(
+                          padding: EdgeInsets.all(8),
+                          child: Text('Tu dibujo'),
+                        ),
+                        Image.memory(frozen!, height: 250),
+                      ],
+                    ),
+                  ),
+                if (!solo && room != null)
+                  Card(
+                    child: Column(
+                      children: [
+                        const Padding(
+                          padding: EdgeInsets.all(8),
+                          child: Text('Dibujo de tu pareja'),
+                        ),
+                        Image.memory(
+                          base64Decode(
                             room![room!['host'] == uid
                                     ? 'guest_art'
                                     : 'host_art']
                                 as String,
                           ),
+                          height: 250,
                         ),
-                        child: const Text(
-                          'Compartir o guardar dibujo de mi pareja',
+                        TextButton(
+                          onPressed: () => _export(
+                            bytes: base64Decode(
+                              room![room!['host'] == uid
+                                      ? 'guest_art'
+                                      : 'host_art']
+                                  as String,
+                            ),
+                          ),
+                          child: const Text(
+                            'Compartir o guardar dibujo de mi pareja',
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-              if (score != null) ...[
-                Text(
-                  'Valoración visual: ${score!['total']}/100${otherScore == null ? '' : ' · Pareja: ${otherScore!['total']}/100'}',
-                  style: const TextStyle(
-                    fontSize: 19,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-                Text(
-                  'Parecido ${score!['parecido']} · Avance ${score!['avance']} · Composición ${score!['composicion']}',
-                ),
-                if (otherScore != null)
+                if (score != null) ...[
                   Text(
-                    score!['total'] == otherScore!['total']
-                        ? 'Empate en la valoración automática'
-                        : score!['total']! > otherScore!['total']!
-                        ? 'Tu dibujo tiene mayor parecido visual'
-                        : 'El dibujo de tu pareja tiene mayor parecido visual',
+                    'Valoración visual: ${score!['total']}/100${otherScore == null ? '' : ' · Pareja: ${otherScore!['total']}/100'}',
+                    style: const TextStyle(
+                      fontSize: 19,
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
-                const Text(
-                  'Es una comparación de formas y colores, no un juicio sobre tu talento. Voten para decidir cuál les gusta más.',
-                  style: TextStyle(fontSize: 12),
-                ),
-              ],
-              if (!solo) ...[
-                FilledButton.tonal(
-                  onPressed: busy ? null : () => _act('vote', {'winner': uid}),
-                  child: const Text('Votar por mi dibujo'),
-                ),
-                FilledButton.tonal(
-                  onPressed: busy
-                      ? null
-                      : () => _act('vote', {
-                          'winner': room!['host'] == uid
-                              ? room!['guest']
-                              : room!['host'],
-                        }),
-                  child: const Text('Votar por el de mi pareja'),
-                ),
-                TextButton(
-                  onPressed: () => _act('status'),
-                  child: const Text('Actualizar votos'),
-                ),
-                if (room!['host_vote'] != null && room!['guest_vote'] != null)
                   Text(
-                    room!['host_vote'] == room!['guest_vote']
-                        ? (room!['host_vote'] == uid
-                              ? '¡Ganaste la votación!'
-                              : '¡Tu pareja ganó la votación!')
-                        : '¡Empate! Cada uno tiene una mirada especial.',
+                    'Parecido ${score!['parecido']} · Avance ${score!['avance']} · Composición ${score!['composicion']}',
                   ),
-              ],
-              TextButton(
-                onPressed: () async {
-                  final prefs = await SharedPreferences.getInstance();
-                  await prefs.remove(draftKey);
-                  if (!mounted) return;
-                  document.clear();
-                  setState(() {
-                    room = null;
-                    _roomReferenceLoaded = false;
-                    _referenceReady = false;
-                    solo = false;
-                    deadline = null;
-                    started = false;
-                    submitted = false;
-                    finished = false;
-                    score = null;
-                    otherScore = null;
-                    frozen = null;
-                    seconds = 300;
-                  });
-                  await _nextCatalogReference();
-                },
-                child: const Text('Otra ronda'),
-              ),
-            ],
-            if (started)
-              Wrap(
-                spacing: 8,
-                children: [
-                  OutlinedButton.icon(
-                    onPressed: _download,
-                    icon: const Icon(Icons.download),
-                    label: const Text('Descargar PNG'),
+                  if (otherScore != null)
+                    Text(
+                      score!['total'] == otherScore!['total']
+                          ? 'Empate en la valoración automática'
+                          : score!['total']! > otherScore!['total']!
+                          ? 'Tu dibujo tiene mayor parecido visual'
+                          : 'El dibujo de tu pareja tiene mayor parecido visual',
+                    ),
+                  const Text(
+                    'Es una comparación de formas y colores, no un juicio sobre tu talento. Voten para decidir cuál les gusta más.',
+                    style: TextStyle(fontSize: 12),
                   ),
-                  OutlinedButton.icon(
-                    onPressed: () => _export(),
-                    icon: const Icon(Icons.share),
-                    label: const Text('Compartir PNG'),
+                ],
+                if (!solo) ...[
+                  FilledButton.tonal(
+                    onPressed: busy
+                        ? null
+                        : () => _act('vote', {'winner': uid}),
+                    child: const Text('Votar por mi dibujo'),
                   ),
-                  if (!submitted)
-                    TextButton(
-                      onPressed: () => _export(transparent: true),
-                      child: const Text('PNG transparente'),
+                  FilledButton.tonal(
+                    onPressed: busy
+                        ? null
+                        : () => _act('vote', {
+                            'winner': room!['host'] == uid
+                                ? room!['guest']
+                                : room!['host'],
+                          }),
+                    child: const Text('Votar por el de mi pareja'),
+                  ),
+                  TextButton(
+                    onPressed: () => _act('status'),
+                    child: const Text('Actualizar votos'),
+                  ),
+                  if (room!['host_vote'] != null && room!['guest_vote'] != null)
+                    Text(
+                      room!['host_vote'] == room!['guest_vote']
+                          ? (room!['host_vote'] == uid
+                                ? '¡Ganaste la votación!'
+                                : '¡Tu pareja ganó la votación!')
+                          : '¡Empate! Cada uno tiene una mirada especial.',
                     ),
                 ],
-              ),
-          ],
+                TextButton(
+                  onPressed: () async {
+                    final prefs = await SharedPreferences.getInstance();
+                    await prefs.remove(draftKey);
+                    if (!mounted) return;
+                    document.clear();
+                    setState(() {
+                      room = null;
+                      _roomReferenceLoaded = false;
+                      _referenceReady = false;
+                      solo = false;
+                      deadline = null;
+                      started = false;
+                      submitted = false;
+                      finished = false;
+                      score = null;
+                      otherScore = null;
+                      frozen = null;
+                      seconds = 300;
+                    });
+                    await _nextCatalogReference();
+                  },
+                  child: const Text('Otra ronda'),
+                ),
+              ],
+              if (started)
+                Wrap(
+                  spacing: 8,
+                  children: [
+                    OutlinedButton.icon(
+                      onPressed: _download,
+                      icon: const Icon(Icons.download),
+                      label: const Text('Descargar PNG'),
+                    ),
+                    OutlinedButton.icon(
+                      onPressed: () => _export(),
+                      icon: const Icon(Icons.share),
+                      label: const Text('Compartir PNG'),
+                    ),
+                    if (!submitted)
+                      TextButton(
+                        onPressed: () => _export(transparent: true),
+                        child: const Text('PNG transparente'),
+                      ),
+                  ],
+                ),
+            ],
+          ),
         ),
       ),
     ),
