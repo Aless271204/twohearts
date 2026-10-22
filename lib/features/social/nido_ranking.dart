@@ -9,11 +9,13 @@ const rankingGames = {
   'quiz': '¿Cuánto nos conocemos?',
   'art': 'Pincel en pareja',
   'penalties': 'Goles y abrazos',
+  'snow': 'Guerra de nieve',
   'maze': 'Farolitos del Nido',
 };
 Map<String, String> rankingScopes(String game) {
   const levels = {'hard': 'Difícil'};
   if (game == 'pebble_runner') return {'distance': 'Mayor distancia'};
+  if (game == 'snow') return {'scores': 'Mayor puntuación'};
   if (game == 'art')
     return {
       'wins:2': 'Difícil · Racha',
@@ -36,6 +38,7 @@ Map<String, String> rankingScopes(String game) {
 String rankingScore(String game, num value) {
   final score = value.toInt();
   if (game == 'pebble_runner') return '$score m';
+  if (game == 'snow') return '$score puntos';
   if (game == 'guardian') {
     final seconds = ((21601 - score).clamp(0, 21600) / 60).round();
     return '${seconds ~/ 60}:${(seconds % 60).toString().padLeft(2, '0')}';

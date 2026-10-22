@@ -26,12 +26,13 @@ for(const [game,scope]of [['guardian','easy:solo:forest'],['guardian','medium:pa
  assert.equal(await bonus(game,scope,'1',100),0);assert.equal(await bonus(game,scope,'2',101),0);
  assert.equal(await scalar('select count(*)::int v from nido_private.game_record_receipts where game=$1 and scope=$2',[game,scope]),0);
 }
-for(const [game,scope]of [['guardian','hard:partner:forest'],['maze','hard:solo'],['art','wins:2'],['penalties','wins'],['pong','wins'],['quiz','wins'],['pebble_runner','distance']]){
+for(const [game,scope]of [['guardian','hard:partner:forest'],['maze','hard:solo'],['art','wins:2'],['penalties','wins'],['pong','wins'],['quiz','wins'],['pebble_runner','distance'],['snow','scores']]){
  assert.equal(await bonus(game,scope,'1',100),0);assert.equal(await bonus(game,scope,'2',101),2);assert.equal(await bonus(game,scope,'2',101),0);
 }
 await db.query("insert into nido_private.game_record_receipts(user_id,game,scope,run,score,base_reward,bonus,is_record) values($1,'guardian','easy:solo:forest','historical',9999,1,0,false)",[a]);
 assert.equal((await scalar("select public.social_weekly_ranking('guardian','friends','easy:solo:forest') v")).mine,null);
 assert.equal((await scalar("select public.social_weekly_ranking('guardian','friends','hard:partner:forest') v")).mine.score,101);
+assert.equal((await scalar("select public.social_weekly_ranking('snow','friends','scores') v")).mine.score,101);
 const status=await scalar('select public.rewarded_ad_status() v');assert.equal(status.unlimited,true);assert.equal(status.remaining,null);assert.equal(status.gold,3);
 for(let i=0;i<21;i++){
  const ticket=(await scalar('select public.rewarded_ad_begin() v')).ticket;

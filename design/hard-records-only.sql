@@ -6,7 +6,7 @@ CREATE OR REPLACE FUNCTION nido_private.record_bonus(p_user uuid, p_game text, p
 AS $function$
 declare previous nido_private.game_record_scores; score bigint; extra integer; beaten boolean;
 begin
- if p_user is null or p_game not in ('pebble_runner','guardian','pong','quiz','penalties','maze','art') or p_scope is null or p_run is null or p_base<0 or p_capacity<0 then raise exception 'Invalid record settlement';end if;
+ if p_user is null or p_game not in ('pebble_runner','guardian','pong','quiz','penalties','maze','art','snow') or p_scope is null or p_run is null or p_base<0 or p_capacity<0 then raise exception 'Invalid record settlement';end if;
 
  -- Only hard-mode settlements qualify in games that expose a difficulty.
  if (p_game in ('guardian','maze') and split_part(p_scope,':',1)<>'hard')
@@ -32,8 +32,8 @@ AS $function$
 declare u uuid:=auth.uid(); start_at timestamptz; end_at timestamptz; result jsonb; visible boolean;
 begin
  if u is null then raise exception 'Inicia sesión para ver el ranking' using errcode='42501';end if;
- if p_game is null or p_audience is null or p_scope is null or p_game not in ('pebble_runner','guardian','pong','quiz','penalties','maze','art') or p_audience not in ('friends','global') or length(p_scope)>80 then raise exception 'Ranking no válido';end if;
- if p_game='pebble_runner' and p_scope<>'distance' or p_game in ('pong','quiz','penalties') and p_scope<>'wins'
+ if p_game is null or p_audience is null or p_scope is null or p_game not in ('pebble_runner','guardian','pong','quiz','penalties','maze','art','snow') or p_audience not in ('friends','global') or length(p_scope)>80 then raise exception 'Ranking no válido';end if;
+ if p_game='snow' and p_scope<>'scores' or p_game='pebble_runner' and p_scope<>'distance' or p_game in ('pong','quiz','penalties') and p_scope<>'wins'
  or p_game='guardian' and p_scope!~'^(easy|medium|hard):(solo|partner):(forest|river)$'
  or p_game='maze' and p_scope!~'^(easy|medium|hard):(solo|partner)$'
  or p_game='art' and p_scope!~'^wins:[012]$' then raise exception 'Categoría no válida';end if;

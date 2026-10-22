@@ -10,6 +10,8 @@ void main() {
     expect(rankingScore('guardian', 18001), '1:00');
     expect(rankingScore('maze', 999958), '42 pasos');
     expect(rankingScore('pong', 3), '3 victorias');
+    expect(rankingScore('snow', 12), '12 puntos');
+    expect(rankingScopes('snow').keys, ['scores']);
     expect(rankingScopes('guardian').length, 4);
     expect(rankingScopes('guardian').keys.every((key) => key.startsWith('hard:')), isTrue);
     expect(rankingScopes('maze').keys.every((key) => key.startsWith('hard:')), isTrue);
