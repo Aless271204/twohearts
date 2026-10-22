@@ -79,6 +79,7 @@ flutter:
     - assets/images/products/boutique/
     - assets/images/products/children-rooms/
     - assets/images/products/showcases/
+    - assets/images/products/showcases-v2/
     - assets/fonts/
     - assets/runner/
     - assets/runner/guardian/

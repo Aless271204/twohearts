@@ -1,4 +1,4 @@
-export const WIDTH=1280,HEIGHT=720,TICK=1/30;
+export const WIDTH=1280,HEIGHT=720,TICK=1/30,MATCH_DURATION=180;
 export const PLATFORMS=[{x:150,y:510,w:980},{x:35,y:350,w:300},{x:945,y:350,w:300},{x:515,y:280,w:250}];
 export const MAPS=[{name:'Refugio de Copitos',platforms:PLATFORMS},{name:'Terrazas de Aurora',platforms:[{x:150,y:510,w:980},{x:45,y:395,w:270},{x:965,y:395,w:270},{x:350,y:315,w:240},{x:690,y:315,w:240},{x:505,y:175,w:270}]},{name:'Cumbres de Cristal',platforms:[{x:150,y:510,w:980},{x:170,y:390,w:240},{x:870,y:390,w:240},{x:510,y:295,w:260},{x:65,y:220,w:260},{x:955,y:220,w:260},{x:465,y:125,w:350}]}];
 export const platformsFor=s=>MAPS[s.map??0]?.platforms??PLATFORMS;
@@ -7,7 +7,7 @@ export const POWERS=['triple','speed','mini','shield'];
 const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
 function random(s){s.rng=(Math.imul(s.rng,1664525)+1013904223)>>>0;return s.rng/4294967296;}
 function event(s,type,x,y,extra={}){s.events.push({id:++s.eventId,type,x,y,...extra});if(s.events.length>32)s.events.shift();}
-export function newArena(seed=1,people=[{id:'me',species:'penguin'},{id:'bot',species:'bear',bot:true}],duration=60,countdown=0){
+export function newArena(seed=1,people=[{id:'me',species:'penguin'},{id:'bot',species:'bear',bot:true}],duration=MATCH_DURATION,countdown=0){
  if(!Array.isArray(people)||people.length<2||people.length>4||!Number.isFinite(duration)||duration<15||duration>180)throw Error('Arena inválida');
  const order=people.map((_,i)=>i);let shuffle=seed>>>0;for(let i=order.length-1;i>0;i--){shuffle=(Math.imul(shuffle,1664525)+1013904223)>>>0;const j=shuffle%(i+1);[order[i],order[j]]=[order[j],order[i]];}
  return {version:2,map:(seed>>>0)%MAPS.length,rng:seed>>>0,time:0,countdown:clamp(Number(countdown)||0,0,3),duration,status:'playing',nextGift:5,nextPower:8,sequence:0,eventId:0,events:[],shots:[],drops:[],players:people.map((p,i)=>({id:String(p.id),species:['penguin','bear','pig','chick'].includes(p.species)?p.species:'penguin',name:String(p.name??['Tú','Nube','Luna','Copito'][i]).slice(0,24),bot:!!p.bot,x:350+order[i]*185,y:510,vx:0,vy:0,ground:true,jumps:0,heldJump:false,heldSuper:false,face:i%2?-1:1,score:0,falls:0,stacks:0,rescue:0,invulnerable:2,charge:0,shot:0,weapon:'copito',weaponTime:0,buffs:{},lastHit:null,lastHitTime:-100}))};

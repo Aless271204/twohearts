@@ -110,6 +110,11 @@ void main() {
         ),
       );
       await tester.pumpAndSettle();
+      final cover = tester.widget<Image>(
+        find.byKey(const ValueKey('showcase-image-room_set_space')),
+      );
+      expect((cover.image as AssetImage).assetName, contains('showcases-v2/'));
+      expect(cover.fit, BoxFit.contain);
       final pages = find.byType(PageView).first;
       for (final theme in [
         'space',

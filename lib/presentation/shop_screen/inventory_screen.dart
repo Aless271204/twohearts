@@ -366,7 +366,7 @@ class _ShopScreenState extends State<ShopScreen> {
                   children: [
                     Positioned.fill(
                       child: Image.asset(
-                        'assets/images/products/showcases/${offers[index]['bundle_key']}.webp',
+                        'assets/images/products/showcases-v2/${offers[index]['bundle_key']}.webp',
                         key: ValueKey(
                           'showcase-image-${offers[index]['bundle_key']}',
                         ),
