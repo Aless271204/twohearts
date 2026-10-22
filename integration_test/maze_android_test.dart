@@ -3,7 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:integration_test/integration_test.dart';
-import '../lib/main.dart';
+// This scene test is copied into an isolated host by prepare-maze-native-review.
+import '../tools/native-fit-review/main.dart';
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
