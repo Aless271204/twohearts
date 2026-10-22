@@ -1,7 +1,7 @@
 import '../../core/shop_showcase.dart';
 import '../../core/boutique_thumbnails.dart';
 import '../../theme/app_theme.dart';
-import '../../core/store_packages.dart';
+import '../../widgets/play_gold_packages.dart';
 import '../../core/store_economy.dart';
 import '../../widgets/garment_color_picker.dart';
 import '../../widgets/rewarded_gold_card.dart';
@@ -442,34 +442,33 @@ class _ShopScreenState extends State<ShopScreen> {
             ),
           ),
         ),
-        Align(
-          alignment: Alignment.centerRight,
-          child: TextButton.icon(
-            icon: const Icon(Icons.view_in_ar_rounded),
-            label: Text(
-              showcaseScope == 'room' ? 'Explorar en 3D' : 'Probar conjunto',
-            ),
-            onPressed: look.isEmpty
-                ? null
-                : () => showModalBottomSheet<void>(
-                    context: context,
-                    isScrollControlled: true,
-                    showDragHandle: true,
-                    builder: (context) => SafeArea(
-                      child: SizedBox(
-                        height: MediaQuery.sizeOf(context).height * .7,
-                        child: InventoryPreview(
-                          scope: showcaseScope,
-                          loadout: look,
-                          roomLayout: showcaseScope == 'room'
-                              ? showcaseRoomLayout(products)
-                              : null,
+        if (showcaseScope != 'room')
+          Align(
+            alignment: Alignment.centerRight,
+            child: TextButton.icon(
+              icon: const Icon(Icons.view_in_ar_rounded),
+              label: Text('Probar conjunto'),
+              onPressed: look.isEmpty
+                  ? null
+                  : () => showModalBottomSheet<void>(
+                      context: context,
+                      isScrollControlled: true,
+                      showDragHandle: true,
+                      builder: (context) => SafeArea(
+                        child: SizedBox(
+                          height: MediaQuery.sizeOf(context).height * .7,
+                          child: InventoryPreview(
+                            scope: showcaseScope,
+                            loadout: look,
+                            roomLayout: showcaseScope == 'room'
+                                ? showcaseRoomLayout(products)
+                                : null,
+                          ),
                         ),
                       ),
                     ),
-                  ),
+            ),
           ),
-        ),
         Text(
           bundle['name'] as String,
           style: const TextStyle(
@@ -979,59 +978,11 @@ class _ShopScreenState extends State<ShopScreen> {
       Text('Oro para su nido', style: Theme.of(context).textTheme.titleLarge),
       const SizedBox(height: 8),
       const Text(
-        'Correr: 50 puntos = 1 moneda. Guardianes: 10 puntos de botín restante = 1 moneda en pareja; en solitario, la mitad. Superar un récord anterior da un 10 % extra dentro del límite diario.',
+        'Gana oro jugando y comparte su cofre. En juegos con dificultad, solo Difícil cuenta para los récords y su bonificación del 10 %.',
       ),
       const SizedBox(height: 12),
       RewardedGoldCard(previewMode: widget.previewMode),
-      for (final pack in storePackages)
-        Card(
-          child: Padding(
-            padding: const EdgeInsets.all(18),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    const Icon(
-                      Icons.monetization_on_rounded,
-                      color: Color(0xFFD49B23),
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Text(
-                        pack.name,
-                        style: const TextStyle(fontWeight: FontWeight.w700),
-                      ),
-                    ),
-                    Text(
-                      pack.price,
-                      style: const TextStyle(fontWeight: FontWeight.w700),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 10),
-                Text(
-                  '${pack.gold} monedas de oro',
-                  style: const TextStyle(
-                    fontSize: 21,
-                    fontWeight: FontWeight.w800,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Text(pack.description),
-                const SizedBox(height: 12),
-                const HeartButton(label: 'Disponible cuando activemos pagos'),
-              ],
-            ),
-          ),
-        ),
-      const Padding(
-        padding: EdgeInsets.all(8),
-        child: Text(
-          'Precios de referencia en USD. Crecimiento pendiente de los modelos por etapas. No se realizan cobros todavía.',
-          style: TextStyle(fontSize: 12, color: Color(0xFF716B78)),
-        ),
-      ),
+      PlayGoldPackages(previewMode: widget.previewMode),
     ],
   );
 

@@ -12,12 +12,10 @@ const rankingGames = {
   'maze': 'Farolitos del Nido',
 };
 Map<String, String> rankingScopes(String game) {
-  const levels = {'easy': 'Fácil', 'medium': 'Medio', 'hard': 'Difícil'};
+  const levels = {'hard': 'Difícil'};
   if (game == 'pebble_runner') return {'distance': 'Mayor distancia'};
   if (game == 'art')
     return {
-      'wins:0': 'Fácil · Racha',
-      'wins:1': 'Medio · Racha',
       'wins:2': 'Difícil · Racha',
     };
   if (game == 'guardian' || game == 'maze')

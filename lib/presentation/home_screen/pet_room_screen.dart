@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pointer_interceptor/pointer_interceptor.dart';
 import '../../core/store_packages.dart';
 import '../../core/pet_model_catalog.dart';
 import '../../services/inventory_service.dart';
@@ -61,7 +62,7 @@ class _PetRoomScreenState extends State<PetRoomScreen> {
     backgroundColor: const Color(0xFFFFF9FA),
     barrierColor: const Color(0x55756672),
     showDragHandle: true,
-    builder: (_) => const PetFamilySheet(),
+    builder: (_) => PointerInterceptor(child: const PetFamilySheet()),
   );
   Widget _roomIcon(
     IconData icon,
@@ -70,29 +71,31 @@ class _PetRoomScreenState extends State<PetRoomScreen> {
     VoidCallback action,
   ) => Padding(
     padding: const EdgeInsets.only(bottom: 10),
-    child: DecoratedBox(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [Colors.white, color.withAlpha(45)],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: color.withAlpha(90)),
-        boxShadow: [
-          BoxShadow(
-            color: color.withAlpha(40),
-            blurRadius: 12,
-            offset: const Offset(0, 4),
+    child: PointerInterceptor(
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Colors.white, color.withAlpha(45)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
           ),
-        ],
-      ),
-      child: IconButton(
-        tooltip: label,
-        color: color,
-        onPressed: action,
-        icon: Icon(icon, size: 29),
-        padding: const EdgeInsets.all(12),
+          borderRadius: BorderRadius.circular(18),
+          border: Border.all(color: color.withAlpha(90)),
+          boxShadow: [
+            BoxShadow(
+              color: color.withAlpha(40),
+              blurRadius: 12,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: IconButton(
+          tooltip: label,
+          color: color,
+          onPressed: action,
+          icon: Icon(icon, size: 29),
+          padding: const EdgeInsets.all(12),
+        ),
       ),
     ),
   );
@@ -178,25 +181,27 @@ class _PetRoomScreenState extends State<PetRoomScreen> {
                         ? constraints.maxHeight / 2
                         : constraints.maxHeight,
                     height: constraints.maxHeight / 2,
-                    child: RepaintBoundary(
-                      child: ClipRRect(
-                        borderRadius: const BorderRadius.vertical(
-                          top: Radius.circular(24),
-                        ),
-                        child: ColoredBox(
-                          color: const Color(0xFFFFF9FA),
-                          child: openPanel == 'chest'
-                              ? PetChest(
-                                  previewMode: widget.previewMode,
-                                  embedded: true,
-                                  onClose: () =>
-                                      setState(() => openPanel = null),
-                                )
-                              : RoomDecorationPanel(
-                                  previewMode: widget.previewMode,
-                                  onClose: () =>
-                                      setState(() => openPanel = null),
-                                ),
+                    child: PointerInterceptor(
+                      child: RepaintBoundary(
+                        child: ClipRRect(
+                          borderRadius: const BorderRadius.vertical(
+                            top: Radius.circular(24),
+                          ),
+                          child: ColoredBox(
+                            color: const Color(0xFFFFF9FA),
+                            child: openPanel == 'chest'
+                                ? PetChest(
+                                    previewMode: widget.previewMode,
+                                    embedded: true,
+                                    onClose: () =>
+                                        setState(() => openPanel = null),
+                                  )
+                                : RoomDecorationPanel(
+                                    previewMode: widget.previewMode,
+                                    onClose: () =>
+                                        setState(() => openPanel = null),
+                                  ),
+                          ),
                         ),
                       ),
                     ),
@@ -285,7 +290,9 @@ class _RoomDecorationPanelState extends State<RoomDecorationPanel> {
               'Decorar',
               style: TextStyle(fontWeight: FontWeight.w700),
             ),
-            subtitle: const Text('Coloca, mueve y gira los muebles en tu habitación'),
+            subtitle: const Text(
+              'Coloca, mueve y gira los muebles en tu habitación',
+            ),
             trailing: IconButton(
               onPressed: widget.onClose,
               tooltip: 'Cerrar decoración',
@@ -370,7 +377,7 @@ class _RoomDecorationPanelState extends State<RoomDecorationPanel> {
                                   : item.previewOnly
                                   ? 'Próximamente'
                                   : (inventory.roomPlaced(item.key) ||
-                                      inventory.equipped(item.key))
+                                        inventory.equipped(item.key))
                                   ? 'Quitar'
                                   : inventory.owns(item.key)
                                   ? 'Colocar'

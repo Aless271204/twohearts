@@ -13,20 +13,6 @@ class RewardedGoldCard extends StatefulWidget {
 
 class _RewardedGoldCardState extends State<RewardedGoldCard> {
   bool busy = false;
-  int? remaining;
-  @override
-  void initState() {
-    super.initState();
-    _refresh();
-  }
-
-  Future<void> _refresh() async {
-    if (widget.previewMode || RewardedAdsService.instance.testMode) return;
-    try {
-      final status = await RewardedAdsService.instance.status();
-      if (mounted) setState(() => remaining = status['remaining'] as int?);
-    } catch (_) {}
-  }
 
   Future<void> _watch() async {
     setState(() => busy = true);
@@ -36,7 +22,6 @@ class _RewardedGoldCardState extends State<RewardedGoldCard> {
     ScaffoldMessenger.of(
       context,
     ).showSnackBar(SnackBar(content: Text(message)));
-    await _refresh();
   }
 
   @override
@@ -60,13 +45,11 @@ class _RewardedGoldCardState extends State<RewardedGoldCard> {
           ),
           const SizedBox(height: 8),
           const Text(
-            '+$rewardedAdGold de oro por vídeo completado · $rewardedAdsWindowLimit vídeos cada $rewardedAdsWindowHours horas por persona.',
+            '+$rewardedAdGold de oro por vídeo completado · Sin límite diario ni tiempo de espera.',
           ),
           const SizedBox(height: 6),
-          Text(
-            remaining == null
-                ? 'Tú eliges cuándo verlo. Sin interrupciones durante el juego.'
-                : 'Te quedan $remaining vídeos en las últimas 12 horas.',
+          const Text(
+            'Tú eliges cada vídeo, según disponibilidad. Sin interrupciones durante el juego.',
             style: const TextStyle(fontSize: 12, color: Color(0xFF716B78)),
           ),
           const SizedBox(height: 12),
@@ -82,8 +65,7 @@ class _RewardedGoldCardState extends State<RewardedGoldCard> {
             onPressed:
                 busy ||
                     widget.previewMode ||
-                    !RewardedAdsService.instance.supported ||
-                    remaining == 0
+                    !RewardedAdsService.instance.supported
                 ? null
                 : _watch,
           ),

@@ -34,19 +34,17 @@ const storePackages = [
     '2.500 monedas para combinar conjuntos y muebles.',
   ),
   StorePackage(
-    'nido_gold_9000',
+    'nido_gold_10000',
     'Un Nido de ensueño',
     999,
-    9000,
-    '9.000 monedas para una habitación temática completa y varios conjuntos.',
+    10000,
+    '10.000 monedas para una habitación temática completa y varios conjuntos.',
   ),
 ];
 // Configuration only: no client-side crediting or purchased entitlement grants.
-const purchasesEnabled = false;
+const purchasesEnabled = bool.fromEnvironment('NIDO_PLAY_BILLING');
 
 // Proposed balance, configurable before publishing the rewarded ad placement.
 // Never credit these amounts from an unverified client callback.
 const rewardedAdsEnabled = true;
 const rewardedAdGold = 3;
-const rewardedAdsWindowLimit = 5;
-const rewardedAdsWindowHours = 12;

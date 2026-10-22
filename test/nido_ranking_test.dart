@@ -10,8 +10,10 @@ void main() {
     expect(rankingScore('guardian', 18001), '1:00');
     expect(rankingScore('maze', 999958), '42 pasos');
     expect(rankingScore('pong', 3), '3 victorias');
-    expect(rankingScopes('guardian').length, 12);
-    expect(rankingScopes('art').length, 3);
+    expect(rankingScopes('guardian').length, 4);
+    expect(rankingScopes('guardian').keys.every((key) => key.startsWith('hard:')), isTrue);
+    expect(rankingScopes('maze').keys.every((key) => key.startsWith('hard:')), isTrue);
+    expect(rankingScopes('art').keys, ['wins:2']);
   });
   testWidgets('weekly record and global filter load on a narrow screen', (tester) async {
     await tester.binding.setSurfaceSize(const Size(360, 780));

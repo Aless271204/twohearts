@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import './services/app_language.dart';
 import './services/login_welcome_session.dart';
+import './services/play_billing_service.dart';
 import 'package:sizer/sizer.dart';
 
 import './core/app_export.dart';
@@ -21,6 +22,7 @@ void main() async {
   try {
     await SupabaseService.initialize();
     initialized = true;
+    PlayBillingService.instance.initialize();
   } catch (e) {
     debugPrint('Failed to initialize Supabase: $e');
   }
