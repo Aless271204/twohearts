@@ -20,25 +20,25 @@ class StorePackage {
 // Proposed launch prices; Play Billing must supply the localized checkout price.
 const storePackages = [
   StorePackage(
-    'nido_gold_600',
+    'nido_gold_500',
     'Un detalle bonito',
-    199,
-    600,
-    '600 de oro para combinar prendas y pequeños detalles.',
+    99,
+    500,
+    '500 monedas para prendas y pequeños detalles.',
   ),
   StorePackage(
-    'nido_gold_2000',
+    'nido_gold_2500',
     'Nuestro estilo',
-    599,
-    2000,
-    '2.000 de oro para varios conjuntos o un mueble legendario.',
+    399,
+    2500,
+    '2.500 monedas para combinar conjuntos y muebles.',
   ),
   StorePackage(
-    'nido_gold_10000',
+    'nido_gold_9000',
     'Un Nido de ensueño',
-    2499,
-    10000,
-    '10.000 de oro: alcanza para una habitación completa, los tres conjuntos actuales y una corona legendaria.',
+    999,
+    9000,
+    '9.000 monedas para una habitación temática completa y varios conjuntos.',
   ),
 ];
 // Configuration only: no client-side crediting or purchased entitlement grants.

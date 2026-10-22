@@ -140,24 +140,12 @@ class _GameHubScreenState extends State<GameHubScreen> {
           ),
           const SizedBox(height: 16),
           _tile(
-            'Farolitos del Nido',
-            6,
-            () => _open(const GuardianGameScreen(maze: true)),
-            subtitle: 'Laberinto de Halloween',
-          ),
-          const SizedBox(height: 16),
-          _tile(
             'Guerra de Nieve',
             7,
             () => _open(const GuardianGameScreen(snow: true)),
             subtitle: 'Regalos, superpoderes y copitos',
           ),
-          const SizedBox(height: 20),
-          const Text(
-            'Todos los juegos',
-            style: TextStyle(fontSize: 19, fontWeight: FontWeight.w700),
-          ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 16),
           _tile(
             'Peloteo con amor',
             1,
@@ -184,7 +172,7 @@ class _GameHubScreenState extends State<GameHubScreen> {
               builder: (_) => const AlertDialog(
                 title: Text('Recompensas'),
                 content: Text(
-                  'Correr: 50 puntos = 1 moneda al guardar la partida. Guardianes: 10 puntos de botín restante = 1 moneda al vencer al jefe; en solitario recibes la mitad. El premio de Guardianes se abona una sola vez y se comparte entre ambos jugadores. Superar un récord anterior da un 10 % extra, redondeado hacia arriba y dentro del límite diario. Correr: distancia; Guardianes: tiempo por dificultad y mapa; Farolitos: menos pasos; juegos competitivos y pintura: mejor racha de victorias (en pintura, por voto de ambos). El primer resultado fija el récord. En los otros juegos en pareja, quien gana recibe 20 monedas y su pareja 8, hasta 300 al día.',
+                  'Correr: 50 puntos = 1 moneda al guardar la partida. Guardianes: 10 puntos de botín restante = 1 moneda al vencer al jefe; en solitario recibes la mitad. El premio de Guardianes se abona una sola vez y se comparte entre ambos jugadores. Superar un récord anterior da un 10 % extra, redondeado hacia arriba y dentro del límite diario. Correr: distancia; Guardianes: tiempo por dificultad y mapa; juegos competitivos y pintura: mejor racha de victorias (en pintura, por voto de ambos). El primer resultado fija el récord. En los otros juegos en pareja, quien gana recibe 20 monedas y su pareja 8, hasta 300 al día.',
                 ),
               ),
             ),
