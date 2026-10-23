@@ -15,6 +15,31 @@ class _ContactSettingsState extends State<ContactSettings> {
   final _suggestion = TextEditingController();
   bool _opening = false;
 
+  Future<void> _openPolicy(String page) async {
+    final uri = Uri.parse('https://aless271204.github.io/twohearts/legal/$page');
+    bool opened;
+    try {
+      opened = await launchUrl(uri, mode: LaunchMode.externalApplication);
+    } catch (_) {
+      opened = false;
+    }
+    if (opened || !mounted) return;
+    await showDialog<void>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Abre este enlace en tu navegador'),
+        content: SelectableText(uri.toString()),
+        actions: [
+          TextButton(
+            onPressed: () => Clipboard.setData(ClipboardData(text: uri.toString())),
+            child: const Text('Copiar enlace'),
+          ),
+          TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cerrar')),
+        ],
+      ),
+    );
+  }
+
   @override
   void dispose() {
     _suggestion.dispose();
@@ -136,6 +161,24 @@ class _ContactSettingsState extends State<ContactSettings> {
                       'Adjunto mi CV a este correo.\n\nSaludos.',
                 ),
         ),
+      ),
+      const SizedBox(height: 8),
+      Card(
+        elevation: 0,
+        child: Column(children: [
+          ListTile(
+            leading: const Icon(Icons.privacy_tip_outlined),
+            title: const Text('Política de privacidad'),
+            trailing: const Icon(Icons.open_in_new_rounded, size: 19),
+            onTap: () => _openPolicy('privacidad.html'),
+          ),
+          ListTile(
+            leading: const Icon(Icons.groups_outlined),
+            title: const Text('Normas de comunidad'),
+            trailing: const Icon(Icons.open_in_new_rounded, size: 19),
+            onTap: () => _openPolicy('comunidad.html'),
+          ),
+        ]),
       ),
     ],
   );
