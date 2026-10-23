@@ -12,7 +12,7 @@ with zipfile.ZipFile(p) as z:
  assert z.testzip() is None,'Invalid archive'
  manifest=z.read('base/manifest/AndroidManifest.xml')
  assert b'app.nido.twohearts' in manifest,'Wrong application ID'
- assert b'1.3.3' in manifest,'Wrong version name'
+ assert b'1.3.4' in manifest,'Wrong version name'
  assert b'com.android.vending.BILLING' in manifest,'Missing Play Billing permission'
  native=[]
  for name in z.namelist():
