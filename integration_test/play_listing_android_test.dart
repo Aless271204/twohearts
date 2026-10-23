@@ -8,7 +8,7 @@ void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
   testWidgets('capture real Android entry screens without personal data', (tester) async {
     await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-    await app.main();
+    app.main();
     for (var i=0;i<30;i++) {
       await tester.pump(const Duration(milliseconds:100));
       await tester.runAsync(() => Future<void>.delayed(const Duration(milliseconds:200)));
