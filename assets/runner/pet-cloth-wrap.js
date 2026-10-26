@@ -14,11 +14,12 @@ export function createClothWrap(model,garments){
  const p=new THREE.Vector3(),tangent=new THREE.Vector3(),across=new THREE.Vector3(),normal=new THREE.Vector3(),delta=new THREE.Vector3(),out=new THREE.Vector3();
  const modelInverse=new THREE.Matrix4(),meshInverse=new THREE.Matrix4(),sourceMatrix=new THREE.Matrix4();
  function update(){
-  model.updateMatrixWorld(true);modelInverse.copy(model.matrixWorld).invert();const cache=new Map();
+  model.updateMatrixWorld(true);modelInverse.copy(model.matrixWorld).invert();const cache=new Map(),updatedSkeletons=new Set();
+  const updateSkeleton=skeleton=>{if(!updatedSkeletons.has(skeleton)){skeleton.update();updatedSkeletons.add(skeleton);}};
   for(const {mesh,lookup,ids,weights,offset,blend,rest,skin} of states){
    mesh.updateWorldMatrix(true,false);meshInverse.copy(mesh.matrixWorld).invert().multiply(model.matrixWorld);
-   if(skin){skin.matrixWorld.copy(mesh.matrixWorld);skin.bindMatrixInverse.copy(mesh.matrixWorld).invert();skin.skeleton.update();}
-   const get=i=>{const source=lookup[i];if(!cache.has(source.mesh))cache.set(source.mesh,new Map());const values=cache.get(source.mesh);if(!values.has(source.index)){source.mesh.skeleton.update();p.fromBufferAttribute(source.mesh.geometry.attributes.position,source.index);source.mesh.applyBoneTransform(source.index,p);sourceMatrix.multiplyMatrices(modelInverse,source.mesh.matrixWorld);values.set(source.index,p.clone().applyMatrix4(sourceMatrix));}return values.get(source.index);};
+   if(skin){skin.matrixWorld.copy(mesh.matrixWorld);skin.bindMatrixInverse.copy(mesh.matrixWorld).invert();updateSkeleton(skin.skeleton);}
+   const get=i=>{const source=lookup[i];if(!cache.has(source.mesh))cache.set(source.mesh,new Map());const values=cache.get(source.mesh);if(!values.has(source.index)){updateSkeleton(source.mesh.skeleton);p.fromBufferAttribute(source.mesh.geometry.attributes.position,source.index);source.mesh.applyBoneTransform(source.index,p);sourceMatrix.multiplyMatrices(modelInverse,source.mesh.matrixWorld);values.set(source.index,p.clone().applyMatrix4(sourceMatrix));}return values.get(source.index);};
    for(let i=0;i<ids.count;i++){
     const a=get(ids.getX(i)),b=get(ids.getY(i)),c=get(ids.getZ(i));
     tangent.subVectors(b,a).normalize();delta.subVectors(c,a);normal.crossVectors(tangent,delta).normalize();across.crossVectors(normal,tangent).normalize();
@@ -26,7 +27,7 @@ export function createClothWrap(model,garments){
     if(mesh.userData.nidoSurfaceWrap.offset_frame==='model')out.add(delta.set(offset.getX(i),offset.getY(i),offset.getZ(i)));
     else out.addScaledVector(tangent,offset.getX(i)).addScaledVector(across,offset.getY(i)).addScaledVector(normal,offset.getZ(i));
     out.applyMatrix4(meshInverse);
-    if(skin&&blend){p.fromArray(rest,i*3);skin.skeleton.update();skin.applyBoneTransform(i,p);out.lerp(p,1-blend.getX(i));}
+    if(skin&&blend){p.fromArray(rest,i*3);skin.applyBoneTransform(i,p);out.lerp(p,1-blend.getX(i));}
     mesh.geometry.attributes.position.setXYZ(i,out.x,out.y,out.z);
    }
    mesh.geometry.attributes.position.needsUpdate=true;mesh.geometry.computeVertexNormals();

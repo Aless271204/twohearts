@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../services/shared_pet_service.dart';
 import '../services/supabase_service.dart';
 import '../core/pet_model_catalog.dart';
@@ -46,8 +47,7 @@ class _PetAdoptionWelcomeState extends State<PetAdoptionWelcome> {
     } catch (_) {
       if (mounted)
         setState(
-          () => error =
-              'La bienvenida está guardada. Toca continuar para entrar al Nido.',
+          () => error = 'La bienvenida está guardada. Toca continuar para entrar al Nido.',
         );
     } finally {
       busy = false;
@@ -104,14 +104,13 @@ class _PetAdoptionWelcomeState extends State<PetAdoptionWelcome> {
             petSpecies: pet.species,
             onExit: arrived,
           ),
-          if (error != null)
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: FilledButton(
-                onPressed: arrived,
-                child: const Text('Continuar al Nido'),
-              ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: FilledButton(
+              onPressed: busy ? null : arrived,
+              child: const Text('Continuar al Nido'),
             ),
+          ),
         ],
       );
     return Column(

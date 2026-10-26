@@ -254,7 +254,7 @@ async function saveRun(){
   finally{start.disabled=false;}
 }
 $('exit').onclick=()=>{music.pause();backdrop.setPaused(true);exitGame();};
-pause.onclick=togglePause;$('jump').onclick=jump;$('left').onclick=()=>move(-1);$('right').onclick=()=>move(1);
+pause.onclick=togglePause;
 $('music').onclick=()=>{if(running&&!paused)music.start();const muted=music.toggleMute();$('music').textContent=muted?'Sonido: silenciado':'Sonido: activado';$('music').setAttribute('aria-label',muted?'Activar audio':'Silenciar audio');};
 let pointerStart=null;
 renderer.domElement.addEventListener('pointerdown',e=>{pointerStart=[e.clientX,e.clientY];});
