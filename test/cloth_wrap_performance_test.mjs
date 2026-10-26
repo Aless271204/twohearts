@@ -1,12 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {execFileSync} from 'node:child_process';
 import * as T from '../assets/runner/vendor/three.module.js';
 
 const three = new URL('../assets/runner/vendor/three.module.js', import.meta.url).href;
 const load = source => import('data:text/javascript;base64,' + Buffer.from(source.replace("from 'three'", `from '${three}'`)).toString('base64'));
-const original = execFileSync('git', ['show','HEAD:assets/runner/pet-cloth-wrap.js'],{encoding:'utf8'});
+const original = fs.readFileSync(new URL('./fixtures/cloth_wrap_reference.txt',import.meta.url),'utf8');
 const updated = fs.readFileSync(new URL('../assets/runner/pet-cloth-wrap.js',import.meta.url),'utf8');
 function fixture() {
   const model=new T.Group(), source=new T.Mesh(new T.BufferGeometry(),new T.MeshBasicMaterial());
