@@ -25,7 +25,8 @@ class PetRoomScreen extends StatefulWidget {
   State<PetRoomScreen> createState() => _PetRoomScreenState();
 }
 
-class _PetRoomScreenState extends State<PetRoomScreen> {
+class _PetRoomScreenState extends State<PetRoomScreen>
+    with WidgetsBindingObserver {
   final inventory = InventoryService.instance, pet = SharedPetService.instance;
   int reaction = 0;
   String? openPanel;
@@ -35,10 +36,18 @@ class _PetRoomScreenState extends State<PetRoomScreen> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     inventory.addListener(_changed);
     pet.addListener(_changed);
     if (!widget.previewMode) {
       inventory.refresh().catchError((Object _) {});
+      pet.refresh().catchError((Object _) {});
+    }
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed && !widget.previewMode) {
       pet.refresh().catchError((Object _) {});
     }
   }
@@ -49,6 +58,7 @@ class _PetRoomScreenState extends State<PetRoomScreen> {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     inventory.removeListener(_changed);
     pet.removeListener(_changed);
     super.dispose();

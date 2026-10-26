@@ -5,6 +5,7 @@ import '../services/supabase_service.dart';
 import '../core/pet_model_catalog.dart';
 import '../presentation/profile_screen/profile_screen.dart';
 import 'forest_runner_view.dart';
+import 'pet_load_status.dart';
 
 class PetAdoptionWelcome extends StatefulWidget {
   const PetAdoptionWelcome({super.key});
@@ -47,7 +48,8 @@ class _PetAdoptionWelcomeState extends State<PetAdoptionWelcome> {
     } catch (_) {
       if (mounted)
         setState(
-          () => error = 'La bienvenida está guardada. Toca continuar para entrar al Nido.',
+          () => error =
+              'La bienvenida está guardada. Toca continuar para entrar al Nido.',
         );
     } finally {
       busy = false;
@@ -56,7 +58,12 @@ class _PetAdoptionWelcomeState extends State<PetAdoptionWelcome> {
 
   @override
   Widget build(BuildContext context) {
-    if (!pet.ready) return const Center(child: CircularProgressIndicator());
+    if (!pet.ready) {
+      return PetLoadStatus(
+        message: pet.loadError,
+        onRetry: () => pet.refresh(),
+      );
+    }
     if (!pet.paired)
       return Center(
         child: Padding(

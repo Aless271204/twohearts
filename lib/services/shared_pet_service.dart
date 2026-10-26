@@ -1,5 +1,9 @@
+import 'dart:async';
+
 import '../core/feature_flags.dart';
+
 import 'package:flutter/foundation.dart';
+
 import 'supabase_service.dart';
 import '../core/pet_model_catalog.dart';
 
@@ -10,6 +14,7 @@ class SharedPetService extends ChangeNotifier {
       if (_account != SupabaseService.instance.currentUser?.id) {
         _generation++;
         data = {};
+        loadError = null;
         _account = SupabaseService.instance.currentUser?.id;
         notifyListeners();
       }
@@ -19,12 +24,16 @@ class SharedPetService extends ChangeNotifier {
   String? _account;
   int _generation = 0;
   bool _changing = false;
+  String? loadError;
+  Future<void>? _refreshing;
+  String? _refreshingUser;
   int get revision => _generation;
   void acceptSnapshot(Map<String, dynamic> snapshot, int revision) {
     if (_changing ||
         revision != _generation ||
         SupabaseService.instance.currentUser?.id == null)
       return;
+    loadError = null;
     data = snapshot;
     _account = SupabaseService.instance.currentUser?.id;
     notifyListeners();
@@ -70,23 +79,43 @@ class SharedPetService extends ChangeNotifier {
     }
   }
 
-  Future<void> refresh() async {
-    if (_changing) return;
+  Future<void> refresh() {
     final uid = SupabaseService.instance.currentUser?.id;
+    if (_refreshing != null && _refreshingUser == uid) return _refreshing!;
+    _refreshingUser = uid;
+    final future = _loadSnapshot(uid);
+    _refreshing = future;
+    return future.whenComplete(() {
+      if (identical(_refreshing, future)) _refreshing = null;
+    });
+  }
+
+  Future<void> _loadSnapshot(String? uid) async {
+    if (_changing) return;
     if (uid == null) {
       data = {};
+      loadError = 'Inicia sesión para ver tu mascota.';
       notifyListeners();
       return;
     }
     final generation = ++_generation;
-    final result = await SupabaseService.instance.client.rpc(
-      'shared_pet_snapshot',
-    );
-    if (generation != _generation ||
-        SupabaseService.instance.currentUser?.id != uid)
-      return;
-    _account = uid;
-    data = Map<String, dynamic>.from(result as Map);
+    loadError = null;
+    notifyListeners();
+    try {
+      final result = await SupabaseService.instance.client
+          .rpc('shared_pet_snapshot')
+          .timeout(const Duration(seconds: 20));
+      if (generation != _generation ||
+          SupabaseService.instance.currentUser?.id != uid)
+        return;
+      _account = uid;
+      data = Map<String, dynamic>.from(result as Map);
+    } catch (_) {
+      if (generation != _generation ||
+          SupabaseService.instance.currentUser?.id != uid)
+        return;
+      loadError = 'No pudimos cargar tu mascota. Revisa la conexión e inténtalo de nuevo.';
+    }
     notifyListeners();
   }
 

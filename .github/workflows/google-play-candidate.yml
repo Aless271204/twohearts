@@ -44,7 +44,7 @@ jobs:
           key: nido-gradle-${{ runner.os }}-${{ hashFiles('android/**/*.gradle.kts', 'android/gradle/wrapper/gradle-wrapper.properties') }}
           restore-keys: nido-gradle-${{ runner.os }}-
       - run: flutter analyze --no-fatal-infos --no-fatal-warnings
-      - run: flutter test test/login_welcome_test.dart test/local_asset_path_test.dart test/asset_byte_range_test.dart test/contact_settings_test.dart test/partner_location_room_test.dart test/shop_carousel_layout_test.dart test/nido_ranking_test.dart
+      - run: flutter test test/pet_load_status_test.dart test/login_welcome_test.dart test/local_asset_path_test.dart test/asset_byte_range_test.dart test/contact_settings_test.dart test/partner_location_room_test.dart test/shop_carousel_layout_test.dart test/nido_ranking_test.dart
       - name: Write public runtime configuration
         run: |
           python3 - <<'PY'
