@@ -16,7 +16,12 @@ class SharedPetService extends ChangeNotifier {
         data = {};
         loadError = null;
         _account = SupabaseService.instance.currentUser?.id;
+        // The previous session's in-flight result is invalidated above. Start a
+        // fresh request instead of leaving a mounted room with an empty state.
+        _refreshing = null;
+        _refreshingUser = null;
         notifyListeners();
+        if (_account != null) unawaited(refresh());
       }
     });
   }
