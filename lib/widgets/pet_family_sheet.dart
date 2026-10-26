@@ -13,12 +13,14 @@ class _PetFamilySheetState extends State<PetFamilySheet> {
   final _pet = SharedPetService.instance;
   final _name = TextEditingController();
   late String _species;
+  String? _petId;
   bool _busy = false;
   String? _error;
   @override
   void initState() {
     super.initState();
     _species = _pet.species;
+    _petId = _pet.activePetId;
     _name.text = _pet.name;
   }
 
@@ -56,7 +58,12 @@ class _PetFamilySheetState extends State<PetFamilySheet> {
       _error = null;
     });
     try {
-      await _pet.change(action, _species, _name.text);
+      await _pet.change(
+        action,
+        _species,
+        _name.text,
+        petId: ['select', 'rename'].contains(action) ? _petId : null,
+      );
       InventoryService.instance.refresh().catchError((Object _) {});
       if (mounted) Navigator.pop(context);
     } catch (_) {
@@ -73,7 +80,7 @@ class _PetFamilySheetState extends State<PetFamilySheet> {
   @override
   Widget build(BuildContext context) {
     final owned = _pet.pets.any((p) => p['species'] == _species);
-    final count = _pet.pets.length;
+    final count = _pet.pets.map((p) => p['species']).toSet().length;
     final requiredLevel = count <= 1
         ? 8
         : count == 2
@@ -116,6 +123,32 @@ class _PetFamilySheetState extends State<PetFamilySheet> {
                 'Nivel compartido ${_pet.familyLevel} · ${_pet.careDays} días de cuidado',
               ),
               const SizedBox(height: 12),
+              if (_pet.selectionConfirmed) ...[
+                const Text(
+                  'Tus mascotas',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                Wrap(
+                  spacing: 8,
+                  children: [
+                    for (final animal in _pet.pets)
+                      ChoiceChip(
+                        label: Text(
+                          '${animal['name']?.toString().trim().isNotEmpty == true ? animal['name'] : PetModelCatalog.labels[animal['species']]} · ${PetModelCatalog.labels[animal['species']]}',
+                        ),
+                        selected: _petId != null && animal['id'] == _petId,
+                        onSelected: _busy
+                            ? null
+                            : (_) => setState(() {
+                                _petId = animal['id'] as String?;
+                                _species = animal['species'] as String;
+                                _name.text = animal['name'] as String? ?? '';
+                              }),
+                      ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+              ],
               Wrap(
                 spacing: 10,
                 runSpacing: 10,
@@ -132,6 +165,9 @@ class _PetFamilySheetState extends State<PetFamilySheet> {
                                 final matching = _pet.pets.where(
                                   (p) => p['species'] == s,
                                 );
+                                _petId = matching.isEmpty
+                                    ? null
+                                    : matching.first['id'] as String?;
                                 _name.text = matching.isEmpty
                                     ? ''
                                     : matching.first['name'] as String? ?? '';
@@ -198,7 +234,7 @@ class _PetFamilySheetState extends State<PetFamilySheet> {
                   child: const Text('Guardar solamente el nombre'),
                 ),
                 Text(
-                  'Etapa: ${PetModelCatalog.stageFor((_pet.pets.firstWhere((p) => p['species'] == _species)['level'] as int?) ?? 1)}',
+                  'Etapa: ${PetModelCatalog.stageFor((_pet.pets.firstWhere((p) => _petId == null ? p['species'] == _species : p['id'] == _petId)['level'] as int?) ?? 1)}',
                   textAlign: TextAlign.center,
                 ),
               ] else ...[

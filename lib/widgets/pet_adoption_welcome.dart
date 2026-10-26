@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../services/shared_pet_service.dart';
+import '../services/inventory_service.dart';
 import '../services/supabase_service.dart';
 import '../core/pet_model_catalog.dart';
 import '../presentation/profile_screen/profile_screen.dart';
@@ -17,6 +18,7 @@ class _PetAdoptionWelcomeState extends State<PetAdoptionWelcome> {
   final pet = SharedPetService.instance, name = TextEditingController();
   String species = 'penguin';
   bool busy = false;
+  bool choosingSolo = false;
   String? error;
   @override
   void dispose() {
@@ -28,7 +30,32 @@ class _PetAdoptionWelcomeState extends State<PetAdoptionWelcome> {
     if (busy) return;
     setState(() => busy = true);
     try {
-      await pet.change('choose', species, name.text);
+      final paid = !pet.paired;
+      if (paid) {
+        final confirmed = await showDialog<bool>(
+          context: context,
+          builder: (c) => AlertDialog(
+            title: const Text('Una nueva compañía'),
+            content: Text(
+              'Adoptar ${PetModelCatalog.labels[species]} por 4.000 de oro. '
+              'La mascota será parte de su Nido cuando enlaces tu cuenta.',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(c, false),
+                child: const Text('Volver'),
+              ),
+              FilledButton(
+                onPressed: () => Navigator.pop(c, true),
+                child: const Text('Confirmar · 4.000 oro'),
+              ),
+            ],
+          ),
+        );
+        if (confirmed != true || !mounted) return;
+      }
+      await pet.change(paid ? 'adopt_gold' : 'choose', species, name.text);
+      await InventoryService.instance.refresh();
     } catch (_) {
       if (mounted)
         setState(
@@ -64,9 +91,9 @@ class _PetAdoptionWelcomeState extends State<PetAdoptionWelcome> {
         onRetry: () => pet.refresh(),
       );
     }
-    if (!pet.paired)
+    if (!pet.paired && !pet.selectionConfirmed && !choosingSolo)
       return Center(
-        child: Padding(
+        child: SingleChildScrollView(
           padding: const EdgeInsets.all(28),
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -78,13 +105,13 @@ class _PetAdoptionWelcomeState extends State<PetAdoptionWelcome> {
               ),
               const SizedBox(height: 16),
               const Text(
-                'Su Nido empieza juntos',
+                'Una pequeña compañía para tu Nido',
                 style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 10),
               const Text(
-                'Enlacen sus cuentas en Configuración. Después podrán adoptar una de las cuatro mascotas.',
+                'Enlaza tu cuenta con esa persona especial para elegir juntos su primera mascota, o dale la bienvenida antes por 4.000 de oro.',
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 18),
@@ -95,7 +122,19 @@ class _PetAdoptionWelcomeState extends State<PetAdoptionWelcome> {
                   ),
                 ),
                 icon: const Icon(Icons.settings_outlined),
-                label: const Text('Configuración'),
+                label: const Text('Enlazar nuestras cuentas'),
+              ),
+              const SizedBox(height: 12),
+              OutlinedButton.icon(
+                onPressed: () => setState(() => choosingSolo = true),
+                icon: const Icon(Icons.pets_rounded),
+                label: const Text('Adoptar · 4.000 de oro'),
+              ),
+              const SizedBox(height: 12),
+              const Text(
+                'Al enlazarse después, conservarán la mascota sin volver a pagar. '
+                'Si ambos ya tienen una, conservarán las dos.',
+                textAlign: TextAlign.center,
               ),
             ],
           ),
@@ -158,11 +197,34 @@ class _PetAdoptionWelcomeState extends State<PetAdoptionWelcome> {
               ),
               if (error != null)
                 Text(error!, style: const TextStyle(color: Colors.red)),
+              if (!pet.paired) ...[
+                Text(
+                  'Tu oro: ${InventoryService.instance.coins} · Adopción: 4.000',
+                ),
+                if (InventoryService.instance.coins < 4000)
+                  const Text('Todavía no tienes suficiente oro.'),
+                TextButton(
+                  onPressed: busy
+                      ? null
+                      : () => setState(() => choosingSolo = false),
+                  child: const Text('Volver'),
+                ),
+              ],
               const SizedBox(height: 8),
               FilledButton.icon(
-                onPressed: busy ? null : adopt,
+                onPressed:
+                    busy ||
+                        (!pet.paired && InventoryService.instance.coins < 4000)
+                    ? null
+                    : adopt,
                 icon: const Icon(Icons.favorite_rounded),
-                label: Text(busy ? 'Preparando su llegada…' : 'Adoptar juntos'),
+                label: Text(
+                  busy
+                      ? 'Preparando su llegada…'
+                      : pet.paired
+                      ? 'Adoptar juntos'
+                      : 'Adoptar · 4.000 de oro',
+                ),
               ),
             ],
           ),

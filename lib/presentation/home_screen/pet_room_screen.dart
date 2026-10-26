@@ -115,7 +115,6 @@ class _PetRoomScreenState extends State<PetRoomScreen>
     body:
         !widget.previewMode &&
             (!pet.ready ||
-                !pet.paired ||
                 !pet.selectionConfirmed ||
                 pet.data['arrival_pending'] == true)
         ? const SafeArea(child: PetAdoptionWelcome())

@@ -45,6 +45,7 @@ class SharedPetService extends ChangeNotifier {
   int get joy => data['joy'] as int? ?? 0;
   int get level => data['level'] as int? ?? 1;
   bool get paired => (data['members'] as List? ?? []).length == 2;
+  String? get activePetId => data['active_pet_id'] as String?;
   String get species => PetModelCatalog.speciesFor(data['species']);
   String get name => (data['name'] as String? ?? '').trim();
   String get displayName => name.isEmpty ? 'Nuestra mascota' : name;
@@ -54,17 +55,22 @@ class SharedPetService extends ChangeNotifier {
   List<Map<String, dynamic>> get pets => (data['pets'] as List? ?? [])
       .map((p) => Map<String, dynamic>.from(p as Map))
       .toList();
-  Future<void> change(String action, String species, String name) async {
+  Future<void> change(
+    String action,
+    String species,
+    String name, {
+    String? petId,
+  }) async {
     if (_changing) throw StateError('Cambio en curso');
     _changing = true;
     try {
       final uid = SupabaseService.instance.currentUser?.id;
       final generation = ++_generation;
       final result = await SupabaseService.instance.client.rpc(
-        'shared_pet_change',
+        petId == null ? 'shared_pet_change' : 'shared_pet_change_by_id',
         params: {
           'p_action': action,
-          'p_species': species,
+          if (petId == null) 'p_species': species else 'p_pet_id': petId,
           'p_name': name.trim(),
         },
       );
@@ -114,7 +120,8 @@ class SharedPetService extends ChangeNotifier {
       if (generation != _generation ||
           SupabaseService.instance.currentUser?.id != uid)
         return;
-      loadError = 'No pudimos cargar tu mascota. Revisa la conexión e inténtalo de nuevo.';
+      loadError =
+          'No pudimos cargar tu mascota. Revisa la conexión e inténtalo de nuevo.';
     }
     notifyListeners();
   }
