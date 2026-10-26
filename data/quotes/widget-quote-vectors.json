@@ -1,0 +1,202 @@
+[
+  {
+    "members": [
+      "demo-a",
+      "demo-b"
+    ],
+    "day": 0,
+    "count": 59,
+    "expected": 22
+  },
+  {
+    "members": [
+      "demo-a",
+      "demo-b"
+    ],
+    "day": 1,
+    "count": 59,
+    "expected": 5
+  },
+  {
+    "members": [
+      "demo-a",
+      "demo-b"
+    ],
+    "day": 19782,
+    "count": 59,
+    "expected": 0
+  },
+  {
+    "members": [
+      "demo-a",
+      "demo-b"
+    ],
+    "day": 20753,
+    "count": 59,
+    "expected": 35
+  },
+  {
+    "members": [
+      "demo-a",
+      "demo-b"
+    ],
+    "day": 22000,
+    "count": 59,
+    "expected": 31
+  },
+  {
+    "members": [
+      "b",
+      "",
+      "a",
+      "a"
+    ],
+    "day": 0,
+    "count": 59,
+    "expected": 4
+  },
+  {
+    "members": [
+      "b",
+      "",
+      "a",
+      "a"
+    ],
+    "day": 1,
+    "count": 59,
+    "expected": 11
+  },
+  {
+    "members": [
+      "b",
+      "",
+      "a",
+      "a"
+    ],
+    "day": 19782,
+    "count": 59,
+    "expected": 35
+  },
+  {
+    "members": [
+      "b",
+      "",
+      "a",
+      "a"
+    ],
+    "day": 20753,
+    "count": 59,
+    "expected": 41
+  },
+  {
+    "members": [
+      "b",
+      "",
+      "a",
+      "a"
+    ],
+    "day": 22000,
+    "count": 59,
+    "expected": 47
+  },
+  {
+    "members": [
+      "demo-a",
+      "demo-b"
+    ],
+    "day": 0,
+    "count": 1000,
+    "expected": 604
+  },
+  {
+    "members": [
+      "demo-a",
+      "demo-b"
+    ],
+    "day": 1,
+    "count": 1000,
+    "expected": 572
+  },
+  {
+    "members": [
+      "demo-a",
+      "demo-b"
+    ],
+    "day": 19782,
+    "count": 1000,
+    "expected": 534
+  },
+  {
+    "members": [
+      "demo-a",
+      "demo-b"
+    ],
+    "day": 20753,
+    "count": 1000,
+    "expected": 716
+  },
+  {
+    "members": [
+      "demo-a",
+      "demo-b"
+    ],
+    "day": 22000,
+    "count": 1000,
+    "expected": 604
+  },
+  {
+    "members": [
+      "b",
+      "",
+      "a",
+      "a"
+    ],
+    "day": 0,
+    "count": 1000,
+    "expected": 869
+  },
+  {
+    "members": [
+      "b",
+      "",
+      "a",
+      "a"
+    ],
+    "day": 1,
+    "count": 1000,
+    "expected": 478
+  },
+  {
+    "members": [
+      "b",
+      "",
+      "a",
+      "a"
+    ],
+    "day": 19782,
+    "count": 1000,
+    "expected": 702
+  },
+  {
+    "members": [
+      "b",
+      "",
+      "a",
+      "a"
+    ],
+    "day": 20753,
+    "count": 1000,
+    "expected": 958
+  },
+  {
+    "members": [
+      "b",
+      "",
+      "a",
+      "a"
+    ],
+    "day": 22000,
+    "count": 1000,
+    "expected": 869
+  }
+]

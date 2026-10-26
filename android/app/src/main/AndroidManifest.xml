@@ -15,12 +15,47 @@
         <meta-data android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="ca-app-pub-4237033451731865~9326389277"/>
         <receiver android:name=".NidoPartnerWidgetProvider" android:exported="false" android:label="NIDO · Para ti">
-            <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE"/></intent-filter>
+            <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE"/><action android:name="android.intent.action.DATE_CHANGED"/><action android:name="android.intent.action.TIME_SET"/><action android:name="android.intent.action.TIMEZONE_CHANGED"/></intent-filter>
             <meta-data android:name="android.appwidget.provider" android:resource="@xml/partner_note_widget_info"/>
         </receiver>
         <receiver android:name=".NidoCoupleWidgetProvider" android:exported="false" android:label="NIDO · Nuestra historia">
-            <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE"/></intent-filter>
+            <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE"/><action android:name="android.intent.action.DATE_CHANGED"/><action android:name="android.intent.action.TIME_SET"/><action android:name="android.intent.action.TIMEZONE_CHANGED"/></intent-filter>
             <meta-data android:name="android.appwidget.provider" android:resource="@xml/couple_story_widget_info"/>
+        </receiver>
+        <receiver android:name=".NidoAnniversaryWidgetProvider" android:exported="false" android:label="NIDO · Próximo aniversario">
+            <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE"/><action android:name="android.intent.action.DATE_CHANGED"/><action android:name="android.intent.action.TIME_SET"/><action android:name="android.intent.action.TIMEZONE_CHANGED"/></intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/nido_anniversary_widget_info"/>
+        </receiver>
+        <receiver android:name=".NidoQuoteWidgetProvider" android:exported="false" android:label="NIDO · Frase diaria">
+            <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE"/><action android:name="android.intent.action.DATE_CHANGED"/><action android:name="android.intent.action.TIME_SET"/><action android:name="android.intent.action.TIMEZONE_CHANGED"/></intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/nido_quote_widget_info"/>
+        </receiver>
+        <receiver android:name=".NidoDistanceWidgetProvider" android:exported="false" android:label="NIDO · Tan cerca de ti">
+            <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE"/><action android:name="android.intent.action.DATE_CHANGED"/><action android:name="android.intent.action.TIME_SET"/><action android:name="android.intent.action.TIMEZONE_CHANGED"/></intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/nido_distance_widget_info"/>
+        </receiver>
+        <activity android:name=".NidoWidgetSettingsActivity" android:exported="true" android:theme="@android:style/Theme.Material.Light.NoActionBar" android:label="Personaliza tu NIDO">
+            <intent-filter><action android:name="android.appwidget.action.APPWIDGET_CONFIGURE"/></intent-filter>
+        </activity>
+        <receiver android:name=".NidoLockPartnerWidgetProvider" android:exported="false" android:label="NIDO · Bloqueo · Para ti">
+            <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE"/><action android:name="android.intent.action.DATE_CHANGED"/><action android:name="android.intent.action.TIME_SET"/><action android:name="android.intent.action.TIMEZONE_CHANGED"/></intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/nido_lock_note_widget_info"/>
+        </receiver>
+        <receiver android:name=".NidoLockCoupleWidgetProvider" android:exported="false" android:label="NIDO · Bloqueo · Días juntos">
+            <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE"/><action android:name="android.intent.action.DATE_CHANGED"/><action android:name="android.intent.action.TIME_SET"/><action android:name="android.intent.action.TIMEZONE_CHANGED"/></intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/nido_lock_days_widget_info"/>
+        </receiver>
+        <receiver android:name=".NidoLockAnniversaryWidgetProvider" android:exported="false" android:label="NIDO · Bloqueo · Aniversario">
+            <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE"/><action android:name="android.intent.action.DATE_CHANGED"/><action android:name="android.intent.action.TIME_SET"/><action android:name="android.intent.action.TIMEZONE_CHANGED"/></intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/nido_lock_anniversary_widget_info"/>
+        </receiver>
+        <receiver android:name=".NidoLockQuoteWidgetProvider" android:exported="false" android:label="NIDO · Bloqueo · Frase diaria">
+            <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE"/><action android:name="android.intent.action.DATE_CHANGED"/><action android:name="android.intent.action.TIME_SET"/><action android:name="android.intent.action.TIMEZONE_CHANGED"/></intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/nido_lock_quote_widget_info"/>
+        </receiver>
+        <receiver android:name=".NidoLockDistanceWidgetProvider" android:exported="false" android:label="NIDO · Bloqueo · Distancia">
+            <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE"/><action android:name="android.intent.action.DATE_CHANGED"/><action android:name="android.intent.action.TIME_SET"/><action android:name="android.intent.action.TIMEZONE_CHANGED"/></intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/nido_lock_distance_widget_info"/>
         </receiver>
         <service android:name=".NidoPartnerWidgetJob" android:permission="android.permission.BIND_JOB_SERVICE" android:exported="true"/>
         <receiver android:name=".NidoReminderReceiver" android:exported="false"><intent-filter><action android:name="android.intent.action.BOOT_COMPLETED"/></intent-filter></receiver>

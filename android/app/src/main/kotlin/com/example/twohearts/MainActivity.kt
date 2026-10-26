@@ -53,7 +53,8 @@ class MainActivity : FlutterFragmentActivity() {
                         else { PartnerWidget.configure(this, url, key, token, user); result.success(true) }
                     }
                     "updateNote" -> { PartnerWidget.store(this, JSONObject(call.arguments as? Map<*, *> ?: emptyMap<String,Any>())); result.success(true) }
-                    "updateCoupleStats" -> { PartnerWidget.prefs(this).edit().putString("couple_stats", JSONObject(call.arguments as? Map<*, *> ?: emptyMap<String,Any>()).toString()).apply(); PartnerWidget.redraw(this); result.success(true) }
+                    "openWidgetSettings" -> { startActivity(Intent(this,NidoWidgetSettingsActivity::class.java));result.success(true) }
+                    "updateCoupleStats" -> { val data=JSONObject(call.arguments as? Map<*, *> ?: emptyMap<String,Any>()); data.optJSONArray("quote_members")?.let { PartnerWidget.prefs(this).edit().putString("quote_members",it.toString()).apply() }; PartnerWidget.prefs(this).edit().putString("couple_stats", JSONObject(call.arguments as? Map<*, *> ?: emptyMap<String,Any>()).toString()).apply(); PartnerWidget.redraw(this); result.success(true) }
                     "clearWidget" -> { PartnerWidget.clear(this); result.success(true) }
                     "pinWidget" -> {
                         val manager = AppWidgetManager.getInstance(this)

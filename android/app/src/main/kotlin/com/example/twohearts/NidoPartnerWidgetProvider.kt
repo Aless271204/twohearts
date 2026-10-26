@@ -28,6 +28,8 @@ object PartnerWidget {
     private const val PREFS = "nido_partner_widget"
     fun prefs(context: Context) = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
     fun configure(context: Context, url: String, key: String, token: String, user: String) {
+        val previousUser=prefs(context).getString("user",null)
+        if(previousUser!=null && previousUser!=user) clear(context)
         // Credentials stay inside this application's private storage. The token can only read
         // the latest note from the linked partner; it is not a Supabase session or refresh token.
         prefs(context).edit().putString("url", url).putString("key", key).putString("token", token).putString("user", user).apply()
@@ -70,68 +72,53 @@ object PartnerWidget {
     }
     @Synchronized fun clear(context: Context) {
         NidoReminders.clear(context)
+        NidoWidgetDesign.revokePrivacy(context)
         val scheduler = context.getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
         scheduler.cancel(JOB); scheduler.cancel(REFRESH_JOB)
         prefs(context).edit().clear().apply(); File(context.filesDir, "partner-note.png").delete(); redraw(context)
     }
     fun redraw(context: Context) {
         val manager = AppWidgetManager.getInstance(context)
-        val ids = manager.getAppWidgetIds(ComponentName(context, NidoPartnerWidgetProvider::class.java))
-        NidoPartnerWidgetProvider().onUpdate(context, manager, ids)
-        NidoCoupleWidgetProvider().onUpdate(context, manager, manager.getAppWidgetIds(ComponentName(context, NidoCoupleWidgetProvider::class.java)))
+        listOf(false,true).forEach { locked -> NidoWidgetDesign.kinds.forEach { kind ->
+            val ids=manager.getAppWidgetIds(ComponentName(context,NidoWidgetDesign.provider(kind,locked)))
+            ids.forEach { NidoWidgetDesign.update(context,manager,it,kind) }
+        } }
     }
 }
 
-/** Uses saved, consented locations. Never represents a cached position as live. */
-class NidoCoupleWidgetProvider : AppWidgetProvider() {
-    override fun onUpdate(context: Context, manager: AppWidgetManager, ids: IntArray) {
-        val stats = try { JSONObject(PartnerWidget.prefs(context).getString("couple_stats", "{}").orEmpty()) } catch (_: Exception) { JSONObject() }
-        val start = try { java.time.LocalDate.parse(stats.optString("start").take(10)) } catch (_: Exception) { null }
-        val today = java.time.LocalDate.now()
-        val dateText = if (start != null && !start.isAfter(today)) "Desde ${start.format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy"))}\n${java.time.temporal.ChronoUnit.DAYS.between(start, today)} días juntos ♥" else "Añade su aniversario en NIDO ♥"
-        val located = try { java.time.OffsetDateTime.parse(stats.optString("located_at")).atZoneSameInstant(java.time.ZoneId.systemDefault()) } catch (_: Exception) { null }
-        val km = stats.optDouble("km", -1.0)
-        val distance = if (km.isFinite() && km >= 0 && located != null) "${String.format(java.util.Locale.getDefault(), "%.1f", km)} km de distancia\nÚltima ubicación · ${located.format(java.time.format.DateTimeFormatter.ofPattern("dd/MM HH:mm"))}" else "Distancia no disponible\nCompartan su ubicación desde NIDO"
-        ids.forEach { id ->
-            val views = RemoteViews(context.packageName, R.layout.couple_story_widget)
-            views.setTextViewText(R.id.couple_story_text, "$dateText\n\n$distance")
-            val launch = PendingIntent.getActivity(context, id, Intent(context, MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP), PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
-            views.setOnClickPendingIntent(R.id.couple_story_root, launch)
-            manager.updateAppWidget(id, views)
-        }
-    }
-}
-
-class NidoPartnerWidgetProvider : AppWidgetProvider() {
+/** Uses only saved, consented locations. All five designs share the same lifecycle. */
+open class NidoPersonalWidgetProvider : AppWidgetProvider() {
+    open val widgetKind = "note"
     override fun onReceive(context: Context, intent: Intent) {
-        super.onReceive(context, intent)
-        if (intent.action == "com.example.twohearts.REFRESH_NOTE") PartnerWidget.refresh(context, true)
+        super.onReceive(context,intent)
+        if(intent.action in listOf(Intent.ACTION_DATE_CHANGED,Intent.ACTION_TIME_CHANGED,Intent.ACTION_TIMEZONE_CHANGED)) {
+            val manager=AppWidgetManager.getInstance(context)
+            onUpdate(context,manager,manager.getAppWidgetIds(ComponentName(context,javaClass)))
+        }
+        if(intent.action=="com.example.twohearts.REFRESH_NOTE") PartnerWidget.refresh(context,true)
     }
     override fun onUpdate(context: Context, manager: AppWidgetManager, ids: IntArray) {
-        if (ids.isNotEmpty()) PartnerWidget.refresh(context)
-        val prefs = PartnerWidget.prefs(context)
-        ids.forEach { id ->
-            val views = RemoteViews(context.packageName, R.layout.partner_note_widget)
-            val text = prefs.getString("text", "").orEmpty()
-            views.setTextViewText(R.id.partner_note_text, text.ifBlank { "Tu pareja puede enviarte una foto, una nota o un dibujo desde NIDO 💗" })
-            val file = File(context.filesDir, "partner-note.png")
-            val bitmap = if (prefs.getBoolean("image", false) && file.exists()) BitmapFactory.decodeFile(file.absolutePath) else null
-            views.setViewVisibility(R.id.partner_note_image, if (bitmap != null) View.VISIBLE else View.GONE)
-            views.setViewVisibility(R.id.partner_note_text, if (bitmap != null) View.GONE else View.VISIBLE)
-            if (bitmap != null) {
-                val scale = minOf(1.0, 400.0 / maxOf(bitmap.width, bitmap.height))
-                val small = Bitmap.createScaledBitmap(bitmap, maxOf(1,(bitmap.width*scale).toInt()), maxOf(1,(bitmap.height*scale).toInt()), true)
-                views.setImageViewBitmap(R.id.partner_note_image, small)
-            }
-            val launch = PendingIntent.getActivity(context, id, Intent(context, MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP), PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
-            views.setOnClickPendingIntent(R.id.partner_note_root, launch)
-            val refresh = PendingIntent.getBroadcast(context, id, Intent(context,NidoPartnerWidgetProvider::class.java).setAction("com.example.twohearts.REFRESH_NOTE"), PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
-            views.setOnClickPendingIntent(R.id.partner_note_refresh, refresh)
-            manager.updateAppWidget(id, views)
-        }
+        if(ids.isNotEmpty() && widgetKind=="note") PartnerWidget.refresh(context)
+        ids.forEach { NidoWidgetDesign.update(context,manager,it,widgetKind) }
     }
+    override fun onAppWidgetOptionsChanged(context: Context, manager: AppWidgetManager, id: Int, options: android.os.Bundle) {
+        super.onAppWidgetOptionsChanged(context,manager,id,options)
+        NidoWidgetDesign.update(context,manager,id,widgetKind)
+    }
+    override fun onDeleted(context: Context, ids: IntArray) { ids.forEach { NidoWidgetDesign.delete(context,it) } }
     override fun onEnabled(context: Context) { super.onEnabled(context); PartnerWidget.refresh(context) }
 }
+class NidoPartnerWidgetProvider : NidoPersonalWidgetProvider()
+class NidoCoupleWidgetProvider : NidoPersonalWidgetProvider() { override val widgetKind="days" }
+class NidoAnniversaryWidgetProvider : NidoPersonalWidgetProvider() { override val widgetKind="anniversary" }
+class NidoQuoteWidgetProvider : NidoPersonalWidgetProvider() { override val widgetKind="quote" }
+class NidoDistanceWidgetProvider : NidoPersonalWidgetProvider() { override val widgetKind="distance" }
+
+class NidoLockPartnerWidgetProvider : NidoPersonalWidgetProvider()
+class NidoLockCoupleWidgetProvider : NidoPersonalWidgetProvider() { override val widgetKind="days" }
+class NidoLockAnniversaryWidgetProvider : NidoPersonalWidgetProvider() { override val widgetKind="anniversary" }
+class NidoLockQuoteWidgetProvider : NidoPersonalWidgetProvider() { override val widgetKind="quote" }
+class NidoLockDistanceWidgetProvider : NidoPersonalWidgetProvider() { override val widgetKind="distance" }
 
 class NidoPartnerWidgetJob : JobService() {
     private val executor = Executors.newSingleThreadExecutor()

@@ -77,6 +77,7 @@ class PartnerArtService extends ChangeNotifier with WidgetsBindingObserver {
           }
           final stats = <String, dynamic>{
             'start': profile?['relationship_start']?.toString() ?? '',
+            'quote_members': [uid, profile?['partner_id'] as String? ?? ''],
           };
           try {
             final shared = await client.rpc('couple_state') as Map;
