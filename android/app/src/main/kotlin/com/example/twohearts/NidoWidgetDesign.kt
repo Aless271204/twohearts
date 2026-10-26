@@ -128,7 +128,7 @@ object NidoWidgetDesign {
             canvas.save();canvas.clipRect(margin,top,w-margin,top+boxHeight);canvas.translate(margin,top+maxOf(0f,(boxHeight-block.height)/2));block.draw(canvas);canvas.restore()
             return block.height.toFloat()
         }
-        text("NIDO",19f,12f,9f,accent,align=Layout.Alignment.ALIGN_NORMAL)
+        text("NIDO",19f,12f,9f,accent)
         val title=names[kinds.indexOf(kind).coerceAtLeast(0)]
         text(title,45f,24f,15f,serif=true)
         val hasPets=design.pet!=0 || design.companion!=0
@@ -197,9 +197,9 @@ object NidoWidgetDesign {
         fun pet(which:Int,left:Boolean) {
             val resource=when(which){1->R.drawable.widget_pet_chick;2->R.drawable.widget_pet_penguin;3->R.drawable.widget_pet_bear;4->R.drawable.widget_pet_pig;else->return}
             val b=BitmapFactory.decodeResource(c.resources,resource)
-            val size=minOf(w*.20f,h*.24f); val ph=size*b.height/b.width
+            val size=minOf(w*.23f,h*.25f); val crop=Rect(0,0,b.width,(b.height*.68f).toInt()); val ph=size*crop.height()/b.width
             val x=if(left) 9f else w-size-9
-            canvas.drawBitmap(b,null,RectF(x,h-ph-5,x+size,h-5),paint);b.recycle()
+            canvas.drawBitmap(b,crop,RectF(x,h-ph-8,x+size,h-8),paint);b.recycle()
         }
         pet(design.pet,true);pet(design.companion,false)
         return Artwork(bitmap,description)
@@ -214,7 +214,7 @@ object NidoWidgetDesign {
         val p=Paint(Paint.ANTI_ALIAS_FLAG);p.color=backgrounds[style.color.coerceIn(0,4)]
         canvas.drawRoundRect(RectF(2f,2f,w-2,h-2),18f,18f,p)
         p.color=Color.rgb(198,165,111);p.style=Paint.Style.STROKE;p.strokeWidth=1f;canvas.drawRoundRect(RectF(4f,4f,w-4,h-4),16f,16f,p);p.style=Paint.Style.FILL
-        val badge=minOf(h*.65f,55f)
+        val badge=minOf(h*.57f,if(style.companion!=0) 44f else 55f)
         fun badge(which:Int,x:Float) {
             val res=when(which){1->R.drawable.widget_pet_chick;2->R.drawable.widget_pet_penguin;3->R.drawable.widget_pet_bear;4->R.drawable.widget_pet_pig;else->return}
             val pet=BitmapFactory.decodeResource(c.resources,res)
@@ -224,7 +224,8 @@ object NidoWidgetDesign {
             canvas.restore();pet.recycle()
         }
         badge(style.pet,12f)
-        val left=if(style.pet!=0) badge+24f else 17f
+        badge(style.companion,if(style.pet!=0) 12f+badge*.60f else 12f)
+        val left=if(style.pet!=0 || style.companion!=0) badge*(if(style.pet!=0 && style.companion!=0)1.60f else 1f)+24f else 17f
         val tw=(w-left-16).toInt().coerceAtLeast(45)
         fun label(t:String,y:Float,bh:Float,size:Float,italic:Boolean=false) {
             val tp=TextPaint(Paint.ANTI_ALIAS_FLAG);tp.color=ink

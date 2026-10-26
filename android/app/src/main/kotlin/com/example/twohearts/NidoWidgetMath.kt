@@ -11,7 +11,7 @@ object NidoWidgetMath {
         if (days(start, today) == null) return null
         fun date(year: Int) = LocalDate.of(year, start!!.monthValue,
             minOf(start.dayOfMonth, YearMonth.of(year, start.monthValue).lengthOfMonth()))
-        val next = date(today.year)
+        val next = date(maxOf(today.year, start!!.year + 1))
         return if (next.isBefore(today)) date(today.year + 1) else next
     }
     // Matches lib/core/couple_daily_quote.dart on VM and web, including UTF-16 IDs.

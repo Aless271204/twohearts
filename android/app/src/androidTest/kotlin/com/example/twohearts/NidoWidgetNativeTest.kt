@@ -43,6 +43,9 @@ class NidoWidgetNativeTest {
   NidoWidgetDesign.save(c,100,NidoWidgetDesign.Style(2,3,4,3,true,true))
   assertEquals(2,NidoWidgetDesign.style(c,100).color);assertTrue(NidoWidgetDesign.style(c,100).revealNote)
   assertFalse(NidoWidgetDesign.style(c,101).revealNote)
+  NidoWidgetDesign.revokePrivacy(c)
+  assertFalse(NidoWidgetDesign.style(c,100).revealNote)
+  assertFalse(NidoWidgetDesign.style(c,100).revealDistance)
   NidoWidgetDesign.delete(c,100);prefs.edit().clear().commit()
  }
  @Test fun remoteViewsInflateInRealHost() {
