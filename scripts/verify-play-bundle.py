@@ -12,8 +12,16 @@ with zipfile.ZipFile(p) as z:
  assert z.testzip() is None,'Invalid archive'
  manifest=z.read('base/manifest/AndroidManifest.xml')
  assert b'app.nido.twohearts' in manifest,'Wrong application ID'
- assert b'1.3.5' in manifest,'Wrong version name'
+ expected_version=re.search(r'^version:\s*([^+\s]+)',(ROOT/'pubspec.yaml').read_text(encoding='utf-8'),re.M)[1]
+ assert expected_version.encode() in manifest,'Wrong version name'
+ report['version_name']=expected_version
  assert b'com.android.vending.BILLING' in manifest,'Missing Play Billing permission'
+ for prefix in ('Nido','NidoLock'):
+  for widget in ('Partner','Couple','Anniversary','Quote','Distance'):
+   assert (prefix+widget+'WidgetProvider').encode() in manifest,'Missing widget: '+prefix+widget
+ quotes=json.loads(z.read('base/assets/couple_quotes_es.json'))
+ assert quotes==json.loads((ROOT/'android/app/src/main/assets/couple_quotes_es.json').read_text(encoding='utf-8')),'Stale widget quotes'
+ report.update(widget_providers_verified=10,widget_quote_count=len(quotes))
  native=[]
  for name in z.namelist():
   if name.endswith('.so') and ('/arm64-v8a/' in name or '/x86_64/' in name):
