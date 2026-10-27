@@ -50,3 +50,14 @@ frases frente a Dart y carga real en AppWidgetHost), más pruebas unitarias de f
 Capturas de renderizado nativo en outputs/widget-native; no son fotos de teléfonos de testers.
 La revisión posterior ajusta el primer aniversario, el encabezado y las mascotas y
 requiere su propia ejecución antes de distribuir el AAB.
+
+## Incidencia de empaquetado
+
+El workflow 40412572537 se canceló por superar 45 minutos antes de crear el AAB.
+Las pruebas Flutter y nativas de esa revisión sí pasaron. No se subió un archivo
+ni se envió esa compilación a Google Play. El borrador Alpha 3 conserva las notas.
+Se fija Ubuntu 24.04 y Flutter 3.47.6, se reduce el máximo de memoria de Gradle,
+se desactiva el vigilante de archivos que registró una excepción y se prepara/cachea
+el NDK antes de empaquetar. compileSdk 37 atiende el requisito del complemento
+de permisos; targetSdk sigue en 36 y minSdk en 24. La nueva ejecución debe confirmar
+si estas medidas resuelven la cancelación; no se certifica el resultado antes de terminar.
