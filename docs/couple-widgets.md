@@ -74,3 +74,32 @@ al complemento integration_test dentro del registro generado de publicación.
 La preparación de CI retira solo esa dependencia SDK de pruebas en su copia
 desechable, después de ejecutar los tests; se conserva en el repositorio.
 La compilación final debe confirmarse antes de considerar enviada la actualización.
+
+## Candidato verificado 1.3.6 / 2034
+
+El workflow 40441836952 terminó correctamente, fuente
+492576a72b3c2a29c4ef35f9cc78178d1c75942e. El archivo firmado pesa
+283.276.728 bytes y su SHA-256 es
+c459225090d47e50635734d1d5388f503185661b7a768d39cc8b0ae32fd6beb9.
+Se comprobó con jarsigner, el certificado de subida existente, los diez proveedores,
+el catálogo nativo de 59 frases, 62 recursos de juegos y alineación ELF de 16 KB.
+La descarga local coincide con ese hash y certificado.
+Las pruebas nativas API24 y API35 volvieron a pasar en 40441836964.
+Estas pruebas no sustituyen la comprobación en los teléfonos de los testers ni
+garantizan widgets de bloqueo en fabricantes que no los admiten.
+
+## Envío a Google Play
+
+El 26 de octubre de 2026 se subió y aceptó el AAB 2034 (1.3.6), minSdk24,
+targetSdk36. Console no registró dispositivos perdidos respecto a 2033.
+Se guardaron las notas es-419 y se envió el único cambio del canal cerrado Alpha,
+«1.3.6 · Widgets para nuestro Nido», con lanzamiento del 100 % del canal existente.
+Tras completar las comprobaciones rápidas, una recarga independiente confirmó:
+«Cambios en revisión» y «Tus cambios están en proceso de revisión».
+Publicación gestionada desactivada: la disponibilidad queda sujeta a aprobación
+de Google; no se certifica que los testers ya puedan descargarla.
+Evidencia local: outputs/play-136/google-play-136-in-review.png.
+
+No se modificaron listas de testers, productos, cuentas de pagos ni el banco.
+La comprobación en teléfonos físicos y la disponibilidad de la familia de bloqueo
+según fabricante siguen siendo validaciones posteriores a la distribución.
