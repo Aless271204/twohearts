@@ -36,6 +36,11 @@ class NidoWidgetNativeTest {
    File(output,"${kind}-${if(lock)"lock" else "home"}.png").outputStream().use{art.bitmap.compress(Bitmap.CompressFormat.PNG,100,it)}
    art.bitmap.recycle()
   }
+  for(kind in NidoWidgetDesign.kinds) {
+   val small=NidoWidgetDesign.render(c,10,kind,180,180,NidoWidgetDesign.Style(1,0,1,2),true)
+   File(output,"${kind}-minimum.png").outputStream().use{small.bitmap.compress(Bitmap.CompressFormat.PNG,100,it)}
+   small.bitmap.recycle()
+  }
   val config=Configuration(c.resources.configuration);config.fontScale=1.4f;val large=c.createConfigurationContext(config)
   val art=NidoWidgetDesign.render(large,10,"quote",320,180,NidoWidgetDesign.Style(3,1,1,0),true)
   File(output,"quote-wide-large-font.png").outputStream().use{art.bitmap.compress(Bitmap.CompressFormat.PNG,100,it)}

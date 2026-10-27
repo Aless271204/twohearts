@@ -125,16 +125,22 @@ object NidoWidgetDesign {
                 .setIncludePad(false).setMaxLines(8).setEllipsize(android.text.TextUtils.TruncateAt.END).build()
             tp.textSize=actual; var block=layout()
             while(block.height>boxHeight && actual>10f) { actual-=1f;tp.textSize=actual;block=layout() }
+            if(block.height>boxHeight) {
+                val lineHeight=(tp.fontMetrics.descent-tp.fontMetrics.ascent).coerceAtLeast(1f)
+                val lines=(boxHeight/lineHeight).toInt().coerceIn(1,8)
+                block=StaticLayout.Builder.obtain(value,0,value.length,tp,available).setAlignment(align)
+                    .setIncludePad(false).setMaxLines(lines).setEllipsize(android.text.TextUtils.TruncateAt.END).build()
+            }
             canvas.save();canvas.clipRect(margin,top,w-margin,top+boxHeight);canvas.translate(margin,top+maxOf(0f,(boxHeight-block.height)/2));block.draw(canvas);canvas.restore()
             return block.height.toFloat()
         }
-        text("NIDO",19f,12f,9f,accent)
+        text("NIDO",if(h<210f) 11f else 19f,12f,9f,accent)
         val title=names[kinds.indexOf(kind).coerceAtLeast(0)]
-        text(title,45f,24f,15f,serif=true)
+        text(title,if(h<210f) 30f else 45f,22f,15f,serif=true)
         val hasPets=design.pet!=0 || design.companion!=0
         val bottom=if(hasPets) minOf(h*.30f,w*.30f) else 18f
         val contentBottom=(h-bottom-8).coerceAtLeast(85f)
-        val contentTop=75f; val contentHeight=(contentBottom-contentTop).coerceAtLeast(20f)
+        val contentTop=if(h<210f) 58f else 75f; val contentHeight=(contentBottom-contentTop).coerceAtLeast(20f)
         val prefs=PartnerWidget.prefs(c)
         val stats=if(demo) JSONObject().put("start",LocalDate.now().minusDays(365).toString()).put("km",12.4).put("located_at",OffsetDateTime.now().minusHours(1).toString()) else try { JSONObject(prefs.getString("couple_stats","{}").orEmpty()) } catch(_:Exception){JSONObject()}
         val start=try { LocalDate.parse(stats.optString("start").take(10)) } catch(_:Exception){null}
