@@ -61,3 +61,8 @@ se desactiva el vigilante de archivos que registró una excepción y se prepara/
 el NDK antes de empaquetar. compileSdk 37 atiende el requisito del complemento
 de permisos; targetSdk sigue en 36 y minSdk en 24. La nueva ejecución debe confirmar
 si estas medidas resuelven la cancelación; no se certifica el resultado antes de terminar.
+
+La comprobación posterior confirmó que sdkmanager no encuentra platforms;android-37
+(workflow 40423612990). Se conserva compileSdk/targetSdk 36 y se fija
+permission_handler 12.0.1 (implementación Android 13.x), con la API de notificaciones
+que usa NIDO. Se mantiene pubspec.lock para resolver la misma combinación en CI.

@@ -10,7 +10,7 @@ val allowTestSigning = System.getenv("NIDO_ALLOW_TEST_SIGNING") == "true"
 
 android {
     namespace = "com.example.twohearts"
-    compileSdk = 37
+    compileSdk = 36
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
