@@ -56,6 +56,16 @@ jobs:
       - run: flutter test test/individual_adoption_ui_test.dart test/pet_load_status_test.dart test/login_welcome_test.dart test/local_asset_path_test.dart test/asset_byte_range_test.dart test/contact_settings_test.dart test/partner_location_room_test.dart test/shop_carousel_layout_test.dart test/nido_ranking_test.dart
       - run: python3 scripts/generate_literary_quotes.py --check
       - run: flutter test test/couple_daily_quote_cycle_test.dart test/phone_widget_settings_test.dart
+      - name: Isolate release from integration-test plugin
+        # Flutter's test preparation can leave its native registrant in release sources.
+        # Remove only this SDK test dependency in the disposable CI checkout after tests.
+        # It remains in the repository for local/integration testing.
+        run: |
+          flutter pub remove --offline integration_test
+          if grep -q 'dev.flutter.plugins.integration_test' android/app/src/main/java/io/flutter/plugins/GeneratedPluginRegistrant.java; then
+            echo 'Test plugin must not be registered in the Play artifact'
+            exit 1
+          fi
       - name: Write public runtime configuration
         run: |
           python3 - <<'PY'

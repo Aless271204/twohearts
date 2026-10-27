@@ -66,3 +66,11 @@ La comprobación posterior confirmó que sdkmanager no encuentra platforms;andro
 (workflow 40423612990). Se conserva compileSdk/targetSdk 36 y se fija
 permission_handler 12.0.1 (implementación Android 13.x), con la API de notificaciones
 que usa NIDO. Se mantiene pubspec.lock para resolver la misma combinación en CI.
+
+La revisión 1ff6d57 pasó las pruebas nativas completas en API24 y API35
+(workflow 40424472067), incluidos los cinco diseños en tamaño mínimo.
+El empaquetado 40424472011 avanzó hasta compilar Java y falló por una referencia
+al complemento integration_test dentro del registro generado de publicación.
+La preparación de CI retira solo esa dependencia SDK de pruebas en su copia
+desechable, después de ejecutar los tests; se conserva en el repositorio.
+La compilación final debe confirmarse antes de considerar enviada la actualización.
