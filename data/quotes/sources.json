@@ -1,0 +1,42 @@
+[
+  {
+    "id": "becquer-53552",
+    "url": "https://www.gutenberg.org/cache/epub/53552/pg53552.txt",
+    "local_file": "becquer-raw.txt",
+    "sha256": "db72bf4d6335251432311789e9fcb5aa4f4217a35731818b9e4ed2b0850a3685",
+    "reviewed_at": "2026-10-26",
+    "method": "Texto UTF-8 descargado de la edición original; solo versos del autor."
+  },
+  {
+    "id": "dario-47650",
+    "url": "https://www.gutenberg.org/cache/epub/47650/pg47650.txt",
+    "local_file": "dario-raw.txt",
+    "sha256": "f574cbdb9b75e201f56093613a5a329fcdd8cc98358e49fb8e6d44742cb3ae6a",
+    "reviewed_at": "2026-10-26",
+    "method": "Texto UTF-8 descargado de la edición original; solo versos del autor."
+  },
+  {
+    "id": "antologia-65880",
+    "url": "https://www.gutenberg.org/cache/epub/65880/pg65880.txt",
+    "local_file": "anthology-raw.txt",
+    "sha256": "f3f09fab95cf952292f1bb4ac0ed0f8d68173199c76e199dc13c42486ead4803",
+    "reviewed_at": "2026-10-26",
+    "method": "Texto UTF-8 descargado de la edición original; solo versos del autor."
+  },
+  {
+    "id": "garcilaso-soneto-v",
+    "url": "https://es.wikisource.org/w/index.php?title=Escrito_est%C3%A1_en_mi_alma_vuestro_gesto&oldid=1496564",
+    "local_file": "garcilaso-soneto-v.txt",
+    "sha256": "0eb02b8c8c5359c89322cee9d912dbe316d4d4c0b0127ce53a93bc006c9bfdfe",
+    "reviewed_at": "2026-10-26",
+    "method": "Pasaje transcrito de la vista de texto primario consultada; hash de la transcripción local, no del HTML remoto."
+  },
+  {
+    "id": "quevedo-amor-constante",
+    "url": "https://es.wikisource.org/w/index.php?title=Amor_constante_m%C3%A1s_all%C3%A1_de_la_muerte&oldid=1543460",
+    "local_file": "quevedo-amor-constante.txt",
+    "sha256": "f9c19131051427839c00aca68a9fbc4d1ba6ad39ac23edc6861fb6bad556f066",
+    "reviewed_at": "2026-10-26",
+    "method": "Pasaje transcrito de la vista de texto primario consultada; hash de la transcripción local, no del HTML remoto."
+  }
+]

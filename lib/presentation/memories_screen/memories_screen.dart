@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'package:latlong2/latlong.dart';
 import '../../core/couple_metrics.dart';
+import '../../core/couple_daily_quote.dart';
 import '../../services/couple_location_service.dart';
 import '../../widgets/partner_art_card.dart';
-import '../../services/app_language.dart';
 import '../../widgets/twohearts_ui.dart';
 import '../../widgets/private_memory_image.dart';
 import '../../widgets/rose_ui.dart';
@@ -138,7 +138,10 @@ class _MemoriesScreenState extends State<MemoriesScreen>
         HomeWidgetService.instance.updateAllWidgets(
           daysTogether: daysTogether ?? 0,
           distanceKm: (_coupleData['distanceKm'] as num?)?.round() ?? 0,
-          dailyQuote: _getDailyQuote(),
+          dailyQuote: _getDailyQuote([
+            SupabaseService.instance.client.auth.currentUser?.id ?? '',
+            myProfile?['partner_id'] as String? ?? '',
+          ]),
           myNickname: myNick,
           partnerNickname: partnerNick,
         );
@@ -148,11 +151,11 @@ class _MemoriesScreenState extends State<MemoriesScreen>
     }
   }
 
-  String _getDailyQuote() {
-    final quotes = AppLanguage.instance.quotes;
-    final now = DateTime.now();
-    return quotes[now.difference(DateTime(now.year)).inDays %
-        quotes.length]['text']!;
+  String _getDailyQuote(List<String> members) {
+    return coupleQuoteCatalog[coupleQuoteIndex(
+      members,
+      DateTime.now(),
+    )]['text']!;
   }
 
   @override

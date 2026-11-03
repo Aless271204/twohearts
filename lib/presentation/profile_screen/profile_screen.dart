@@ -1,3 +1,4 @@
+import '../../widgets/phone_widget_settings.dart';
 import '../../widgets/contact_settings.dart';
 import '../../widgets/private_memory_image.dart';
 import '../../widgets/account_deletion_card.dart';
@@ -252,6 +253,8 @@ class _ProfileScreenState extends State<ProfileScreen>
                       ),
                       const SizedBox(height: 24),
                       _buildSaveButton(),
+                      const SizedBox(height: 24),
+                      const PhoneWidgetSettings(),
                       const SizedBox(height: 24),
                       const ContactSettings(),
                       const SizedBox(height: 24),
