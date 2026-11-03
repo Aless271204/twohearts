@@ -243,6 +243,8 @@ class SupabaseService {
         'profile_not_found' => 'No se encontró tu perfil de usuario.',
         'invalid_connection_type' =>
           'El tipo de conexión seleccionado no es válido.',
+        'rate_limited' =>
+          'Has intentado varios códigos. Espera un minuto antes de reintentar. Si continúa, inténtalo mañana.',
         'not_authenticated' => 'Not authenticated',
         _ => 'No se pudo completar el enlace. Intenta de nuevo.',
       };

@@ -23,6 +23,7 @@ jobs:
         run: |
           npx --yes pnpm@11.25.0 --dir tools/sql-check install --frozen-lockfile --ignore-scripts
           node scripts/check-wallet-half.mjs
+          node scripts/check-invite-limits.mjs
       - name: Verify game rules and release assets
         run: |
           node --test test/cloth_wrap_performance_test.mjs test/snow_engine_test.mjs test/penalty_rules_test.mjs test/maze_engine_test.mjs test/guardian_engine_test.mjs
