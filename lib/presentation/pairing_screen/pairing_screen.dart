@@ -38,13 +38,6 @@ class _PairingScreenState extends State<PairingScreen>
   String? _codeError;
   String? _codeSuccess;
 
-  // Search by email tab
-  final _emailController = TextEditingController();
-  bool _searching = false;
-  String? _searchError;
-  Map<String, dynamic>? _foundUser;
-  bool _linkingFound = false;
-
   // Connection type
   String _connectionType = 'pareja';
 
@@ -59,7 +52,6 @@ class _PairingScreenState extends State<PairingScreen>
   void dispose() {
     _tabController.dispose();
     _codeController.dispose();
-    _emailController.dispose();
     super.dispose();
   }
 
@@ -128,69 +120,6 @@ class _PairingScreenState extends State<PairingScreen>
           _isAlreadyPaired = true;
         });
         _loadPartnerName();
-        ProfileChangeNotifier.instance.notify();
-        widget.onPaired?.call();
-      }
-    }
-  }
-
-  Future<void> _searchByEmail() async {
-    final email = _emailController.text.trim().toLowerCase();
-    if (email.isEmpty) {
-      setState(() => _searchError = 'Ingresa un correo electrónico');
-      return;
-    }
-    setState(() {
-      _searching = true;
-      _searchError = null;
-      _foundUser = null;
-    });
-    try {
-      final user = await SupabaseService.instance.searchUserByEmail(email);
-      if (mounted) {
-        setState(() {
-          _searching = false;
-          if (user == null) {
-            _searchError = 'No se encontró ningún usuario con ese correo.';
-          } else {
-            _foundUser = user;
-          }
-        });
-      }
-    } catch (e) {
-      if (mounted) {
-        setState(() {
-          _searching = false;
-          _searchError = 'Error al buscar. Intenta de nuevo.';
-        });
-      }
-    }
-  }
-
-  Future<void> _linkFoundUser() async {
-    if (_foundUser == null) return;
-    final inviteCode = _foundUser!['invite_code'] as String?;
-    if (inviteCode == null || inviteCode.isEmpty) {
-      setState(
-        () => _searchError = 'Este usuario aún no tiene código de invitación.',
-      );
-      return;
-    }
-    setState(() => _linkingFound = true);
-    final error = await SupabaseService.instance.linkPartner(
-      inviteCode: inviteCode,
-      connectionType: _connectionType,
-    );
-    if (mounted) {
-      setState(() => _linkingFound = false);
-      if (error != null) {
-        setState(() => _searchError = error);
-      } else {
-        setState(() {
-          _isAlreadyPaired = true;
-          _partnerName = _foundUser!['full_name'] as String? ?? 'Tu pareja';
-          _foundUser = null;
-        });
         ProfileChangeNotifier.instance.notify();
         widget.onPaired?.call();
       }
@@ -298,7 +227,7 @@ class _PairingScreenState extends State<PairingScreen>
                         ),
                         tabs: const [
                           Tab(text: 'Ingresar código'),
-                          Tab(text: 'Buscar por correo'),
+                          Tab(text: 'Cómo enlazarnos'),
                         ],
                       ),
                     ),
@@ -316,14 +245,14 @@ class _PairingScreenState extends State<PairingScreen>
                             success: _codeSuccess,
                             onLink: _linkByCode,
                           ),
-                          _SearchEmailTab(
-                            controller: _emailController,
-                            isSearching: _searching,
-                            isLinking: _linkingFound,
-                            error: _searchError,
-                            foundUser: _foundUser,
-                            onSearch: _searchByEmail,
-                            onLink: _linkFoundUser,
+                          const Padding(
+                            padding: EdgeInsets.all(16),
+                            child: Text(
+                              'Tu código es privado. Pídele a la persona que deseas enlazar '
+                              'que te comparta su código y escríbelo en «Ingresar código». '
+                              'NIDO no revela códigos ni busca cuentas por correo.',
+                              textAlign: TextAlign.center,
+                            ),
                           ),
                         ],
                       ),
@@ -677,199 +606,6 @@ class _EnterCodeTab extends StatelessWidget {
           ),
         ),
       ],
-    );
-  }
-}
-
-class _SearchEmailTab extends StatelessWidget {
-  final TextEditingController controller;
-  final bool isSearching;
-  final bool isLinking;
-  final String? error;
-  final Map<String, dynamic>? foundUser;
-  final VoidCallback onSearch;
-  final VoidCallback onLink;
-
-  const _SearchEmailTab({
-    required this.controller,
-    required this.isSearching,
-    required this.isLinking,
-    required this.error,
-    required this.foundUser,
-    required this.onSearch,
-    required this.onLink,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Busca a tu pareja por correo',
-          style: GoogleFonts.dmSans(
-            fontSize: 13,
-            color: const Color(0xFF6B6B6B),
-          ),
-        ),
-        const SizedBox(height: 12),
-        Row(
-          children: [
-            Expanded(
-              child: TextFormField(
-                controller: controller,
-                keyboardType: TextInputType.emailAddress,
-                style: GoogleFonts.dmSans(fontSize: 14),
-                decoration: InputDecoration(
-                  hintText: 'correo@ejemplo.com',
-                  hintStyle: GoogleFonts.dmSans(
-                    fontSize: 13,
-                    color: const Color(0xFFBBBBBB),
-                  ),
-                  prefixIcon: const Icon(
-                    Icons.search_rounded,
-                    color: AppTheme.primary,
-                    size: 20,
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(width: 8),
-            SizedBox(
-              height: 52,
-              width: 52,
-              child: ElevatedButton(
-                onPressed: isSearching ? null : onSearch,
-                style: ElevatedButton.styleFrom(
-                  padding: EdgeInsets.zero,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(14),
-                  ),
-                ),
-                child: isSearching
-                    ? const SizedBox(
-                        width: 18,
-                        height: 18,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          color: Colors.white,
-                        ),
-                      )
-                    : const Icon(Icons.arrow_forward_rounded, size: 20),
-              ),
-            ),
-          ],
-        ),
-        if (error != null) ...[
-          const SizedBox(height: 8),
-          _StatusMessage(message: error!, isError: true),
-        ],
-        if (foundUser != null) ...[
-          const SizedBox(height: 12),
-          _FoundUserCard(
-            user: foundUser!,
-            isLinking: isLinking,
-            onLink: onLink,
-          ),
-        ],
-      ],
-    );
-  }
-}
-
-class _FoundUserCard extends StatelessWidget {
-  final Map<String, dynamic> user;
-  final bool isLinking;
-  final VoidCallback onLink;
-
-  const _FoundUserCard({
-    required this.user,
-    required this.isLinking,
-    required this.onLink,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final name = user['full_name'] as String? ?? 'Usuario';
-    final email = user['email'] as String? ?? '';
-    final initials = name.isNotEmpty ? name[0].toUpperCase() : '?';
-
-    return Container(
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: AppTheme.surfaceVariantLight,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppTheme.primary.withAlpha(60)),
-      ),
-      child: Row(
-        children: [
-          CircleAvatar(
-            radius: 22,
-            backgroundColor: AppTheme.primaryContainer,
-            child: Text(
-              initials,
-              style: GoogleFonts.dmSans(
-                fontSize: 16,
-                fontWeight: FontWeight.w700,
-                color: AppTheme.primary,
-              ),
-            ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  name,
-                  style: GoogleFonts.dmSans(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    color: const Color(0xFF1A1A1A),
-                  ),
-                ),
-                Text(
-                  email,
-                  style: GoogleFonts.dmSans(
-                    fontSize: 12,
-                    color: const Color(0xFF6B6B6B),
-                  ),
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(width: 8),
-          SizedBox(
-            height: 36,
-            child: ElevatedButton(
-              onPressed: isLinking ? null : onLink,
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(horizontal: 14),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(999),
-                ),
-              ),
-              child: isLinking
-                  ? const SizedBox(
-                      width: 14,
-                      height: 14,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        color: Colors.white,
-                      ),
-                    )
-                  : Text(
-                      'Enlazar',
-                      style: GoogleFonts.dmSans(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-            ),
-          ),
-        ],
-      ),
     );
   }
 }

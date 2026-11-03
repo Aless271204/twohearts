@@ -5,6 +5,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../services/memory_album_service.dart';
+import '../../../services/private_photo_bytes.dart';
 import '../../../services/supabase_service.dart';
 import '../../../theme/app_theme.dart';
 
@@ -41,6 +42,22 @@ class _CreateAlbumSheetState extends State<CreateAlbumSheet> {
     ('viaje', '✈️', 'Viaje'),
     ('cita', '💑', 'Cita'),
   ];
+
+  late final String? _ownerUserId;
+
+  @override
+  void initState() {
+    super.initState();
+    _ownerUserId = SupabaseService.instance.currentUser?.id;
+  }
+
+  void _requireSameOwner() {
+    if (_ownerUserId == null ||
+        SupabaseService.instance.currentUser?.id != _ownerUserId) {
+      _uploadedUrls.clear();
+      throw StateError('Tu sesión cambió. Vuelve a abrir el álbum.');
+    }
+  }
 
   @override
   void dispose() {
@@ -107,36 +124,40 @@ class _CreateAlbumSheetState extends State<CreateAlbumSheet> {
     final client = SupabaseService.instance.client;
     final uid = SupabaseService.instance.currentUser?.id;
     if (uid == null) throw StateError('Inicia sesión para guardar tu álbum');
+    _requireSameOwner();
     final urls = <String>[];
 
     for (int i = 0; i < _pickedPhotos.length; i++) {
       final photo = _pickedPhotos[i];
+      _requireSameOwner();
       if (_uploadedUrls.containsKey(photo)) {
         urls.add(_uploadedUrls[photo]!);
         continue;
       }
       final timestamp = DateTime.now().microsecondsSinceEpoch;
-      final ext = photo.name.contains('.')
-          ? photo.name.split('.').last.toLowerCase()
-          : 'jpg';
-      final mime = ext == 'jpg' || ext == 'jpeg' ? 'image/jpeg' : 'image/$ext';
-      if (photo.bytes.length > 10 * 1024 * 1024)
-        throw StateError('Cada foto debe pesar menos de 10 MB');
-      final path = 'albums/$uid/${timestamp}_$i.$ext';
+      final bytes = await privatePhotoBytes(photo.bytes);
+      if (client.auth.currentUser?.id != uid) {
+        throw StateError('Tu sesión cambió. Vuelve a abrir el álbum.');
+      }
+      final path = 'albums/$uid/${timestamp}_$i.png';
 
       try {
         await client.storage
             .from('memory-photos')
             .uploadBinary(
               path,
-              photo.bytes,
-              fileOptions: FileOptions(contentType: mime, upsert: false),
+              bytes,
+              fileOptions: const FileOptions(
+                contentType: 'image/png',
+                upsert: false,
+              ),
             );
+        _requireSameOwner();
         final url = 'memory-photo:$path';
         urls.add(url);
         _uploadedUrls[photo] = url;
       } catch (e) {
-        debugPrint('Photo upload failed: $e');
+        debugPrint('No se pudo subir la foto.');
         rethrow;
       }
     }
@@ -164,6 +185,7 @@ class _CreateAlbumSheetState extends State<CreateAlbumSheet> {
     List<String> photoUrls;
     try {
       photoUrls = await _uploadPhotos();
+      _requireSameOwner();
     } catch (e) {
       if (!mounted) return;
       setState(() {
@@ -178,6 +200,7 @@ class _CreateAlbumSheetState extends State<CreateAlbumSheet> {
     setState(() => _uploadingPhotos = false);
 
     final error = await MemoryAlbumService.instance.createAlbum(
+      expectedUserId: _ownerUserId,
       albumName: name,
       category: _selectedCategory,
       description: _descriptionController.text.trim(),

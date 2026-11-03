@@ -5,6 +5,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../core/app_export.dart';
 import '../../../services/supabase_service.dart';
+import '../../../services/password_recovery.dart';
 
 class AuthBottomSheetWidget extends StatefulWidget {
   final VoidCallback onAuthSuccess;
@@ -106,6 +107,29 @@ class _AuthBottomSheetWidgetState extends State<AuthBottomSheetWidget>
       if (response.user == null) {
         setState(
           () => _errorMessage = 'Registro fallido. Por favor intenta de nuevo.',
+        );
+        return;
+      }
+
+      // A pending email confirmation is not an authenticated session.
+      // Do not link accounts or enter the app before the server grants one.
+      if (response.session == null) {
+        if (!mounted) return;
+        _passwordController.clear();
+        _partnerCodeController.clear();
+        setState(() {
+          _signupStep = 0;
+          _errorMessage = null;
+        });
+        _tabController.animateTo(0);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+              'Revisa tu correo y confirma tu cuenta. Después vuelve a NIDO '
+              'e inicia sesión. Si ya tenías una cuenta, utiliza Entrar.',
+            ),
+            duration: Duration(seconds: 10),
+          ),
         );
         return;
       }
@@ -357,26 +381,9 @@ class _AuthBottomSheetWidgetState extends State<AuthBottomSheetWidget>
   }
 
   Future<void> _handleForgotPassword() async {
-    final email = _emailController.text.trim();
-    if (email.isEmpty) {
-      setState(() => _errorMessage = 'Ingresa tu correo primero.');
-      return;
-    }
-    try {
-      await SupabaseService.instance.client.auth.resetPasswordForEmail(email);
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Correo de recuperación enviado a $email'),
-            backgroundColor: AppTheme.primary,
-          ),
-        );
-      }
-    } catch (e) {
-      setState(
-        () => _errorMessage = 'No se pudo enviar el correo. Intenta de nuevo.',
-      );
-    }
+    PasswordRecovery.instance.begin(_emailController.text);
+    if (!mounted) return;
+    context.go(AppRoutes.passwordRecovery);
   }
 
   Widget _buildSignupForm() {

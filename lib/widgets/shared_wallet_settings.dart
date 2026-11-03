@@ -22,14 +22,18 @@ class _SharedWalletSettingsState extends State<SharedWalletSettings> {
         await db.rpc('wallet_snapshot') as Map,
       );
       if (!mounted || value['shared'] != true) return;
-      final total = (value['coins'] as num).toInt(),
-          share = (value['separation_share'] as num).toInt();
+      if (value['separation_policy'] != 'half_v1') {
+        throw StateError('El reparto seguro todavía no está disponible');
+      }
+      final total = (value['coins'] as num).toInt();
+      final ownShare = (value['separation_own_share'] as num).toInt();
+      final partnerShare = (value['separation_partner_share'] as num).toInt();
       final confirmed = await showDialog<bool>(
         context: context,
         builder: (c) => AlertDialog(
           title: const Text('Separar nuestros Nidos'),
           content: Text(
-            'Tienen $total de oro compartido. Cada persona conservará $share (10 %). Se perderán ${total - 2 * share} de oro de forma permanente.\n\n¿Quieren separar las cuentas con este reparto?',
+            'Tienen $total de oro compartido. Tú conservarás $ownShare y la otra persona $partnerShare. El oro se reparte por mitades, sin perder monedas. Si el total es impar, una persona conserva una moneda adicional.\n\nLos objetos no se duplican. ¿Quieres separar las cuentas con este reparto?',
           ),
           actions: [
             TextButton(

@@ -67,7 +67,7 @@ class SupabaseService {
   }
 
   /// Sign out
-  Future<void> signOut() async {
+  Future<void> signOut({SignOutScope scope = SignOutScope.global}) async {
     try {
       await client
           .rpc('art_action', params: {'p_action': 'revoke_widget'})
@@ -78,7 +78,7 @@ class SupabaseService {
         await const MethodChannel('nido/art').invokeMethod('clearWidget');
       } catch (_) {}
     }
-    await client.auth.signOut();
+    await client.auth.signOut(scope: scope);
   }
 
   /// Sign in with Google (web uses OAuth redirect, mobile uses ID token)
@@ -134,8 +134,8 @@ class SupabaseService {
           .select()
           .eq('id', uid)
           .maybeSingle();
-    } on PostgrestException catch (e) {
-      debugPrint('getMyProfile error: ${e.message}');
+    } on PostgrestException {
+      debugPrint('getMyProfile no disponible.');
       return null;
     }
   }
@@ -165,8 +165,8 @@ class SupabaseService {
           .eq('id', partnerId)
           .maybeSingle();
       return response;
-    } on PostgrestException catch (e) {
-      debugPrint('getPartnerProfile error: ${e.message}');
+    } on PostgrestException {
+      debugPrint('getPartnerProfile no disponible.');
       return null;
     }
   }
@@ -246,11 +246,11 @@ class SupabaseService {
         'not_authenticated' => 'Not authenticated',
         _ => 'No se pudo completar el enlace. Intenta de nuevo.',
       };
-    } on PostgrestException catch (e) {
-      debugPrint('linkPartner error: ${e.message}');
+    } on PostgrestException {
+      debugPrint('linkPartner no disponible.');
       return 'Algo salió mal. Por favor intenta de nuevo.';
-    } catch (e) {
-      debugPrint('linkPartner error: $e');
+    } catch (_) {
+      debugPrint('linkPartner no disponible.');
       return 'Algo salió mal. Por favor intenta de nuevo.';
     }
   }
@@ -328,8 +328,8 @@ class SupabaseService {
 
       final result = await query;
       return List<Map<String, dynamic>>.from(result);
-    } on PostgrestException catch (e) {
-      debugPrint('getMemories error: ${e.message}');
+    } on PostgrestException {
+      debugPrint('getMemories no disponible.');
       return [];
     }
   }
@@ -355,8 +355,8 @@ class SupabaseService {
             .split('T')
             .first,
       });
-    } on PostgrestException catch (e) {
-      debugPrint('addMemory error: ${e.message}');
+    } on PostgrestException {
+      debugPrint('addMemory no disponible.');
     }
   }
 
@@ -364,8 +364,8 @@ class SupabaseService {
   Future<void> deleteMemory(String memoryId) async {
     try {
       await client.from('nido_memories').delete().eq('id', memoryId);
-    } on PostgrestException catch (e) {
-      debugPrint('deleteMemory error: ${e.message}');
+    } on PostgrestException {
+      debugPrint('deleteMemory no disponible.');
     }
   }
 
@@ -394,8 +394,8 @@ class SupabaseService {
           .select()
           .order('created_at', ascending: false);
       return List<Map<String, dynamic>>.from(result);
-    } on PostgrestException catch (e) {
-      debugPrint('getTrips error: ${e.message}');
+    } on PostgrestException {
+      debugPrint('getTrips no disponible.');
       return [];
     }
   }
@@ -426,8 +426,8 @@ class SupabaseService {
         'note': note,
         'image_url': imageUrl,
       });
-    } on PostgrestException catch (e) {
-      debugPrint('addTrip error: ${e.message}');
+    } on PostgrestException {
+      debugPrint('addTrip no disponible.');
     }
   }
 
@@ -456,8 +456,8 @@ class SupabaseService {
           .select()
           .order('date_on', ascending: false);
       return List<Map<String, dynamic>>.from(result);
-    } on PostgrestException catch (e) {
-      debugPrint('getDates error: ${e.message}');
+    } on PostgrestException {
+      debugPrint('getDates no disponible.');
       return [];
     }
   }
@@ -485,8 +485,8 @@ class SupabaseService {
             .first,
         'photos': photos,
       });
-    } on PostgrestException catch (e) {
-      debugPrint('addDate error: ${e.message}');
+    } on PostgrestException {
+      debugPrint('addDate no disponible.');
     }
   }
 
@@ -514,8 +514,8 @@ class SupabaseService {
       if (rows.isEmpty) return null;
       // Include email in result for display
       return {...rows.first, 'email': email.trim().toLowerCase()};
-    } on PostgrestException catch (e) {
-      debugPrint('searchUserByEmail error: ${e.message}');
+    } on PostgrestException {
+      debugPrint('searchUserByEmail no disponible.');
       return null;
     }
   }

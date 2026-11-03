@@ -77,8 +77,8 @@ class MemoryAlbumService {
         params: {'uid': uid},
       );
       return result as String?;
-    } catch (e) {
-      debugPrint('getCoupleId error: $e');
+    } catch (_) {
+      debugPrint('getCoupleId no disponible.');
       return uid;
     }
   }
@@ -93,11 +93,11 @@ class MemoryAlbumService {
       return (response as List<dynamic>)
           .map((e) => MemoryAlbum.fromJson(e as Map<String, dynamic>))
           .toList();
-    } on PostgrestException catch (e) {
-      debugPrint('getAlbums error: ${e.message}');
+    } on PostgrestException {
+      debugPrint('getAlbums no disponible.');
       return [];
-    } catch (e) {
-      debugPrint('getAlbums error: $e');
+    } catch (_) {
+      debugPrint('getAlbums no disponible.');
       return [];
     }
   }
@@ -115,6 +115,7 @@ class MemoryAlbumService {
   /// Create a new album
   Future<String?> createAlbum({
     required String albumName,
+    String? expectedUserId,
     String category = 'general',
     required String description,
     required List<String> photoUrls,
@@ -128,10 +129,16 @@ class MemoryAlbumService {
     if (photoUrls.length > 5) return 'Máximo 5 fotos por álbum';
     final uid = _currentUserId;
     if (uid == null) return 'No autenticado';
+    if (expectedUserId != null && expectedUserId != uid) {
+      return 'Tu sesión cambió. Vuelve a abrir el álbum.';
+    }
 
     try {
       final coupleId = await _getCoupleId();
       if (coupleId == null) return 'No se pudo obtener el ID de pareja';
+      if (_currentUserId != uid) {
+        return 'Tu sesión cambió. Vuelve a abrir el álbum.';
+      }
 
       await _client.from('memory_albums').insert({
         'user_id': uid,
@@ -146,11 +153,11 @@ class MemoryAlbumService {
         if (spotifyPreviewUrl != null) 'spotify_preview_url': spotifyPreviewUrl,
       });
       return null; // success
-    } on PostgrestException catch (e) {
-      debugPrint('createAlbum error: ${e.message}');
-      return 'Error al crear el álbum: ${e.message}';
-    } catch (e) {
-      debugPrint('createAlbum error: $e');
+    } on PostgrestException {
+      debugPrint('createAlbum no disponible.');
+      return 'No pudimos crear el álbum. Revisa la conexión e inténtalo de nuevo.';
+    } catch (_) {
+      debugPrint('createAlbum no disponible.');
       return 'Error al crear el álbum';
     }
   }
@@ -160,27 +167,45 @@ class MemoryAlbumService {
     try {
       final uid = _currentUserId;
       if (uid == null) return 'Inicia sesión para eliminar el álbum';
-      final album = await _client.from('memory_albums').select('user_id,photo_urls').eq('id', albumId).maybeSingle();
-      if (album == null || album['user_id'] != uid) return 'Solo puedes eliminar tus álbumes';
-      await _client.from('memory_albums').delete().eq('id', albumId).eq('user_id', uid);
+      final album = await _client
+          .from('memory_albums')
+          .select('user_id,photo_urls')
+          .eq('id', albumId)
+          .maybeSingle();
+      if (album == null || album['user_id'] != uid)
+        return 'Solo puedes eliminar tus álbumes';
+      await _client
+          .from('memory_albums')
+          .delete()
+          .eq('id', albumId)
+          .eq('user_id', uid);
       // Do not delete a photo reused by another accessible album.
       try {
-        final remaining = await _client.from('memory_albums').select('photo_urls');
+        final remaining = await _client
+            .from('memory_albums')
+            .select('photo_urls');
         final references = <String>{
           for (final row in remaining)
             for (final photo in (row['photo_urls'] as List? ?? []))
-              if (memoryPhotoPath(photo.toString(), SupabaseService.supabaseUrl) case final String path) path,
+              if (memoryPhotoPath(photo.toString(), SupabaseService.supabaseUrl)
+                  case final String path)
+                path,
         };
         final unused = <String>[
           for (final photo in (album['photo_urls'] as List? ?? []))
-            if (memoryPhotoPath(photo.toString(), SupabaseService.supabaseUrl) case final String path)
-              if (path.startsWith('albums/$uid/') && !references.contains(path)) path,
+            if (memoryPhotoPath(photo.toString(), SupabaseService.supabaseUrl)
+                case final String path)
+              if (path.startsWith('albums/$uid/') && !references.contains(path))
+                path,
         ];
-        if (unused.isNotEmpty) await _client.storage.from('memory-photos').remove(unused);
-      } catch (error) { debugPrint('Album removed; photo cleanup needs retry: $error'); }
+        if (unused.isNotEmpty)
+          await _client.storage.from('memory-photos').remove(unused);
+      } catch (_) {
+        debugPrint('La limpieza de fotos requiere reintento.');
+      }
       return null;
-    } on PostgrestException catch (e) {
-      debugPrint('deleteAlbum error: ${e.message}');
+    } on PostgrestException {
+      debugPrint('deleteAlbum no disponible.');
       return 'Error al eliminar el álbum';
     }
   }

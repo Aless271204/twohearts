@@ -1,0 +1,10 @@
+[
+  {
+    "proname": "wallet_snapshot",
+    "definition": "CREATE OR REPLACE FUNCTION public.wallet_snapshot()\n RETURNS jsonb\n LANGUAGE plpgsql\n SECURITY DEFINER\n SET search_path TO ''\nAS $function$\r\ndeclare u uuid:=auth.uid(); ids uuid[]; amount bigint;\r\nbegin\r\n if u is null then raise exception 'Inicia sesión' using errcode='42501';end if;\r\n ids:=nido_private.wallet_members(u);amount:=nido_private.wallet_balance(u);\r\n return jsonb_build_object('coins',amount,'shared',cardinality(ids)=2,'separation_share',floor(amount*.10)::bigint,'separation_percent',10);\r\nend $function$\n"
+  },
+  {
+    "proname": "wallet_unlink",
+    "definition": "CREATE OR REPLACE FUNCTION public.wallet_unlink(p_expected_balance bigint, p_confirm boolean DEFAULT false)\n RETURNS jsonb\n LANGUAGE plpgsql\n SECURITY DEFINER\n SET search_path TO ''\nAS $function$\r\ndeclare u uuid:=auth.uid();ids uuid[]; amount bigint; share bigint;\r\nbegin\r\n if u is null or p_confirm is distinct from true then raise exception 'Confirma la separación y su reparto de oro' using errcode='42501';end if;\r\n perform nido_private.wallet_lock(u);ids:=nido_private.wallet_members(u);\r\n if cardinality(ids)<>2 then raise exception 'No hay una pareja enlazada';end if;\r\n amount:=nido_private.wallet_balance(u);\r\n if amount is distinct from p_expected_balance then raise exception 'El saldo cambió. Revisa de nuevo el reparto antes de confirmar';end if;\r\n share:=floor(amount*.10);\r\n insert into nido_private.wallet_separations(member_a,member_b,balance_before,each_receives,discarded) values(ids[1],ids[2],amount,share,amount-2*share);\r\n update public.game_stats set love_coins=share,updated_at=now() where user_id=any(ids);\r\n update public.user_profiles set partner_id=null where id=any(ids);\r\n return jsonb_build_object('unlinked',true,'coins',share,'discarded',amount-2*share);\r\nend $function$\n"
+  }
+]

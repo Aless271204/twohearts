@@ -4,6 +4,8 @@ import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../presentation/home_screen/home_screen.dart';
+import '../services/password_recovery.dart';
+import '../presentation/sign_up_login_screen/password_recovery_screen.dart';
 import '../presentation/memories_screen/memories_screen.dart';
 import '../presentation/sign_up_login_screen/sign_up_login_screen.dart';
 import '../presentation/social_screen/social_screen.dart';
@@ -18,6 +20,7 @@ import '../presentation/sign_up_login_screen/nido_welcome_screen.dart';
 
 class AppRoutes {
   static const String initial = '/';
+  static const String passwordRecovery = '/recover-account';
   static const String signUpLogin = '/sign-up-login-screen';
   static const String welcomeScreen = '/welcome-screen';
   static const String socialScreen = '/social-screen';
@@ -33,21 +36,35 @@ final GoRouter appRouter = GoRouter(
   observers: [SceneAudioRouteObserver()],
   initialLocation: AppRoutes.initial,
   redirect: (context, state) {
+    final recovery = PasswordRecovery.instance;
+    if (recovery.active &&
+        state.matchedLocation != AppRoutes.passwordRecovery) {
+      return AppRoutes.passwordRecovery;
+    }
+    if (state.matchedLocation == AppRoutes.passwordRecovery) return null;
     final session = Supabase.instance.client.auth.currentSession;
     final isLoggedIn = session != null;
     final isOnAuth =
         state.matchedLocation == AppRoutes.initial ||
         state.matchedLocation == AppRoutes.signUpLogin;
 
-    final welcomeDone = session?.user.userMetadata?['nido_welcome_complete'] == true;
-    if (isLoggedIn && state.matchedLocation == AppRoutes.welcomeScreen &&
-        (welcomeDone || !LoginWelcomeSession.instance.needsWelcome(session.user.id))) {
+    final welcomeDone =
+        session?.user.userMetadata?['nido_welcome_complete'] == true;
+    if (isLoggedIn &&
+        state.matchedLocation == AppRoutes.welcomeScreen &&
+        (welcomeDone ||
+            !LoginWelcomeSession.instance.needsWelcome(session.user.id))) {
       return AppRoutes.memoriesScreen;
     }
-    if (isLoggedIn && !welcomeDone && LoginWelcomeSession.instance.needsWelcome(session.user.id) &&
+    if (isLoggedIn &&
+        !welcomeDone &&
+        LoginWelcomeSession.instance.needsWelcome(session.user.id) &&
         state.matchedLocation != AppRoutes.welcomeScreen) {
       final next = isOnAuth ? AppRoutes.memoriesScreen : state.uri.toString();
-      return Uri(path: AppRoutes.welcomeScreen, queryParameters: {'next': next}).toString();
+      return Uri(
+        path: AppRoutes.welcomeScreen,
+        queryParameters: {'next': next},
+      ).toString();
     }
 
     if (isLoggedIn && isOnAuth) {
@@ -59,29 +76,59 @@ final GoRouter appRouter = GoRouter(
     }
     return null;
   },
-  refreshListenable: GoRouterRefreshStream(
-    Supabase.instance.client.auth.onAuthStateChange,
-  ),
+  refreshListenable: Listenable.merge([
+    PasswordRecovery.instance,
+    GoRouterRefreshStream(Supabase.instance.client.auth.onAuthStateChange),
+  ]),
   routes: [
     GoRoute(
+      path: AppRoutes.passwordRecovery,
+      builder: (context, state) => PasswordRecoveryScreen(
+        recovery: PasswordRecovery.instance,
+        onExit: () => context.go(AppRoutes.initial),
+      ),
+    ),
+    GoRoute(
       path: AppRoutes.welcomeScreen,
-      builder: (context, state) => NidoWelcomeScreen(onFinished: () async {
-        final user = Supabase.instance.client.auth.currentUser;
-        if (user == null) {context.go(AppRoutes.initial); return;}
-        await LoginWelcomeSession.instance.complete(user.id);
-        // Onboarding is presentation state, never an authorization claim.
-        unawaited(Supabase.instance.client.auth.updateUser(UserAttributes(
-          data: {'nido_welcome_complete': true},
-        )).then((_) {}).catchError((Object _) {}));
-        if (!context.mounted) return;
-        final next = state.uri.queryParameters['next'];
-        const allowed = [AppRoutes.socialScreen, AppRoutes.shopScreen,
-          AppRoutes.memoriesScreen, AppRoutes.homeScreen, AppRoutes.activitiesScreen,
-          AppRoutes.profileScreen, AppRoutes.pairingScreen];
-        final target = next == null ? null : Uri.tryParse(next);
-        context.go(target != null && !target.hasScheme && !target.hasAuthority && allowed.contains(target.path)
-          ? target.toString() : AppRoutes.memoriesScreen);
-      }),
+      builder: (context, state) => NidoWelcomeScreen(
+        onFinished: () async {
+          final user = Supabase.instance.client.auth.currentUser;
+          if (user == null) {
+            context.go(AppRoutes.initial);
+            return;
+          }
+          await LoginWelcomeSession.instance.complete(user.id);
+          // Onboarding is presentation state, never an authorization claim.
+          unawaited(
+            Supabase.instance.client.auth
+                .updateUser(
+                  UserAttributes(data: {'nido_welcome_complete': true}),
+                )
+                .then((_) {})
+                .catchError((Object _) {}),
+          );
+          if (!context.mounted) return;
+          final next = state.uri.queryParameters['next'];
+          const allowed = [
+            AppRoutes.socialScreen,
+            AppRoutes.shopScreen,
+            AppRoutes.memoriesScreen,
+            AppRoutes.homeScreen,
+            AppRoutes.activitiesScreen,
+            AppRoutes.profileScreen,
+            AppRoutes.pairingScreen,
+          ];
+          final target = next == null ? null : Uri.tryParse(next);
+          context.go(
+            target != null &&
+                    !target.hasScheme &&
+                    !target.hasAuthority &&
+                    allowed.contains(target.path)
+                ? target.toString()
+                : AppRoutes.memoriesScreen,
+          );
+        },
+      ),
     ),
     GoRoute(
       path: AppRoutes.initial,
@@ -222,7 +269,10 @@ class GoRouterRefreshStream extends ChangeNotifier {
   GoRouterRefreshStream(Stream<AuthState> stream) {
     notifyListeners();
     _subscription = stream.listen((state) {
-      if (state.event == AuthChangeEvent.signedOut) LoginWelcomeSession.instance.reset();
+      PasswordRecovery.instance.handleAuthState(state);
+      if (state.event == AuthChangeEvent.signedOut) {
+        LoginWelcomeSession.instance.reset();
+      }
       notifyListeners();
     });
   }

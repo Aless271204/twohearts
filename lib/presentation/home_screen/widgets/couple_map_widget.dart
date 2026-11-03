@@ -30,6 +30,37 @@ class CoupleMapWidget extends StatefulWidget {
 class _CoupleMapWidgetState extends State<CoupleMapWidget> {
   final _controller = MapController();
   late final CoupleLocationService _shared;
+  Future<void> _changeSharing(bool enabled) async {
+    if (enabled) {
+      final accepted = await showDialog<bool>(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: const Text('Compartir ubicación con tu pareja'),
+          content: const Text(
+            'NIDO obtiene tu ubicación mientras la app está abierta para mostrar '
+            'la distancia y tu posición a tu pareja enlazada. La posición se '
+            'guarda en nuestro servidor; al desactivar el interruptor se detienen '
+            'las actualizaciones, pero se conserva el último punto. Puedes pedir '
+            'que lo eliminemos en alessandroproyectos@gmail.com. '
+            'Puedes elegir ubicación aproximada en el permiso de Android.',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx, false),
+              child: const Text('Ahora no'),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.pop(ctx, true),
+              child: const Text('Continuar'),
+            ),
+          ],
+        ),
+      );
+      if (accepted != true || !mounted) return;
+    }
+    await _shared.setSharing(enabled);
+  }
+
   void _sharedChanged() {
     if (mounted) {
       setState(() {});
@@ -452,9 +483,7 @@ class _CoupleMapWidgetState extends State<CoupleMapWidget> {
                       ),
                     Switch.adaptive(
                       value: _shared.sharing,
-                      onChanged: _shared.busy
-                          ? null
-                          : (value) => _shared.setSharing(value),
+                      onChanged: _shared.busy ? null : _changeSharing,
                       activeTrackColor: AppTheme.primary,
                     ),
                   ],
