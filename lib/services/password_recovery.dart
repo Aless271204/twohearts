@@ -102,7 +102,12 @@ class PasswordRecovery extends ChangeNotifier {
   }
 
   Future<void> sendCode(String value) async {
-    if (busy || !active || resendSeconds > 0) return;
+    if (busy || !active) return;
+    if (resendSeconds > 0) {
+      error = 'Espera $resendSeconds segundos antes de solicitar otro código.';
+      notifyListeners();
+      return;
+    }
     final candidate = value.trim();
     if (!RegExp(r'^[^\s@]+@[^\s@]+\.[^\s@]+$').hasMatch(candidate)) {
       error = 'Escribe un correo válido.';

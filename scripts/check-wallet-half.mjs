@@ -1,6 +1,6 @@
 import fs from 'node:fs';
 import assert from 'node:assert/strict';
-import {PGlite} from 'file:///C:/Users/Lenovo/.codex/.chatgpt-projects/g-p-6ac66fdf30ac819199fd481b4c501ef0/nido-game/tools/sql-test/package/dist/index.js';
+import {PGlite} from '../tools/sql-check/node_modules/@electric-sql/pglite/dist/index.js';
 const db = new PGlite(); await db.waitReady;
 await db.exec(`
 create role anon;create role authenticated;
